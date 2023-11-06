@@ -22,17 +22,17 @@ function createHomeText(scene, fontLoader, size = 0.45) {
         }
       );
 
-      const textMaterialAbout = new THREE.MeshNormalMaterial();
-      const textMeshAbout = new THREE.Mesh(textGeometryAbout, textMaterialAbout);
-      textMeshAbout.position.set(0, 0, 0);
-      scene.add(textMeshAbout);
+      const textMaterial = new THREE.MeshNormalMaterial();
+      const textMeshHome = new THREE.Mesh(textGeometryAbout, textMaterial);
+      textMeshHome.position.set(0, 0, 0);
+      scene.add(textMeshHome);
 
-      const textMaterialHomeCaption = new THREE.MeshBasicMaterial({ color: 0xffffff });
-      const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialHomeCaption);
+      const textMaterialCaption = new THREE.MeshBasicMaterial({color: 0xffffff});
+      const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialCaption);
       textMeshHomeCaption.position.set(0, -0.35, 0);
       scene.add(textMeshHomeCaption);
 
-      resolve({ textMeshAbout, textMeshHomeCaption });
+      resolve({ textMeshHome, textMeshHomeCaption });
     });
   });
 }

@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
-import { createHomeText } from "./src/components/three-components/homeText";
+import { createHomeText } from "./three-components/homeText";
 
-let textMeshAbout, textMeshHomeCaption; // Declare at top level
+
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -12,153 +13,25 @@ const scene = new THREE.Scene();
 
 const objectsDistance = 4;
 
-// Material
-const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
-
-// Meshes
-const mesh1 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(1, 0.25, 125, 15, 2, 7),
-  material
-);
-const mesh2 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.4, 0.35, 100, 16),
-  material
-); //
-const mesh3 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.2, 0.35, 100, 16),
-  material
-); //
-const mesh4 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.8, 0.6, 55, 8, 9, 3),
-  material
-); //home
-const mesh5 = new THREE.Mesh(new THREE.TorusGeometry(1, 0.4, 16, 60), material);
-const mesh6 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.5, 0.25, 77, 8, 20, 1),
-  material
-); //spike ball
-const mesh7 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.8, 0.025, 70, 5, 17.5, 12),
-  material
-); // diamond
-const mesh8 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.0001, 1, 194, 5, 2, 70),
-  material
-); // contact
-const mesh9 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(0.2, 1, 80, 10, 50, 3),
-  material
-); // star contact
-const mesh10 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(2, 0.05, 43, 14, 14, 14),
-  material
-); // star contact
-const mesh11 = new THREE.Mesh(
-  new THREE.TorusKnotGeometry(1.2, 0.4, 120, 10, 10, 1),
-  material
-); // star contact
-
-// general shape
-const mesh12 = mesh5.clone();
-const mesh13 = mesh3.clone();
-
-const mesh14 = mesh5.clone();
-const mesh15 = mesh3.clone();
-
-const mesh16 = mesh5.clone();
-const mesh17 = mesh3.clone();
-
-const mesh18 = mesh5.clone();
-const mesh19 = mesh3.clone();
-
-mesh4.position.y = -objectsDistance * 0;
-mesh2.position.y = -objectsDistance * 1;
-mesh3.position.y = -objectsDistance * 2.2;
-mesh5.position.y = -objectsDistance * 2.2;
-mesh6.position.y = -objectsDistance * 2.5;
-mesh7.position.y = -objectsDistance * 3.85;
-mesh1.position.y = -objectsDistance * 5.5;
-mesh8.position.y = -objectsDistance * 6.5;
-mesh11.position.y = -objectsDistance * 8;
-mesh9.position.y = -objectsDistance * 9.25;
-mesh10.position.y = -objectsDistance * 11;
-mesh12.position.y = -objectsDistance * 10;
-mesh13.position.y = -objectsDistance * 10;
-mesh14.position.y = -objectsDistance * 12;
-mesh15.position.y = -objectsDistance * 12;
-mesh16.position.y = -objectsDistance * 14;
-mesh17.position.y = -objectsDistance * 14;
-mesh18.position.y = -objectsDistance * 3;
-mesh19.position.y = -objectsDistance * 3;
-
-mesh1.position.x = 0;
-mesh2.position.x = 1;
-mesh3.position.x = 2;
-mesh4.position.x = 0;
-mesh5.position.x = 2;
-mesh6.position.x = -2.75;
-mesh7.position.x = 2;
-mesh8.position.x = 0;
-mesh9.position.x = 0;
-mesh10.position.x = 0;
-mesh11.position.x = 0;
-mesh12.position.x = 0;
-mesh13.position.x = 0;
-mesh14.position.x = 0;
-mesh15.position.x = 0;
-mesh16.position.x = 0;
-mesh17.position.x = 0;
-mesh18.position.x = -1;
-mesh19.position.x = -1;
 
 const fontLoader = new FontLoader();
 
 // Usage of the createHomeText function
-createHomeText(scene, fontLoader)
+createHomeText(scene, fontLoader);
 
 const sectionMeshes = [
-  mesh1,
-  mesh2,
-  mesh3,
-  mesh4,
-  mesh5,
-  mesh6,
-  mesh7,
-  mesh8,
-  mesh9,
-  mesh10,
-  mesh11,
-  mesh12,
-  mesh13,
-  mesh14,
-  mesh15,
-  mesh16,
-  mesh17,
-  mesh18,
-  mesh19,
+
 ];
 
-scene.add(
-  mesh1,
-  mesh2,
-  mesh3,
-  // mesh4,
-  mesh5,
-  mesh6,
-  mesh7,
-  mesh8,
-  mesh9,
-  mesh10,
-  mesh11,
-  mesh12,
-  mesh13,
-  mesh14,
-  mesh15,
-  mesh16,
-  mesh17,
-  mesh18,
-  mesh19
-);
+
+const size = 10;
+const divisions = 10;
+
+const gridHelper = new THREE.GridHelper( size, divisions );
+scene.add( gridHelper );
+
+const axesHelper = new THREE.AxesHelper( 5 );
+scene.add( axesHelper );
 
 const particlesCount = 100;
 const positions = new Float32Array(particlesCount * 3);
@@ -185,8 +58,6 @@ const particlesMaterial = new THREE.PointsMaterial({
   alphaTest: 0.5,
   // color: 0x73d7ff,
 });
-
-// Points
 
 const particles = new THREE.Points(particlesGeometry, particlesMaterial);
 // scene.add(particles);
@@ -215,6 +86,38 @@ window.addEventListener("resize", () => {
   renderer.toneMappingWhitePoint = 1.0;
 });
 
+gsap.registerPlugin(ScrollTrigger);
+
+window.addEventListener("scroll", () => {
+  const scrollY = window.scrollY;
+
+  if (scrollY > scrollPos) {
+    gsap.to(camera.position, {
+      y: 14,
+      z: 14,
+      x: 14,
+      duration: 5,
+      ease: 'none',
+      onUpdate: function () {
+        camera.lookAt(0, 0, 0);
+      },
+    });
+  } else if (scrollY < scrollPos) {
+    gsap.to(camera.position, {
+      y: 0,
+      z: 0,
+      x: 0,
+      duration: 5,
+      ease: 'none',
+      duration: 1.5,
+      onUpdate: function () {
+        camera.lookAt(0, 0, 0);
+      },
+    });
+  }
+  scrollPos = scrollY;
+});
+
 let scrollY = window.scrollY;
 let currentSection = 0;
 
@@ -232,36 +135,35 @@ window.addEventListener("scroll", () => {
       y: "+=3",
     });
   }
-
 });
 
 let scrollPos = 0;
 
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
+// window.addEventListener('scroll', () => {
+//   const scrollY = window.scrollY;
 
-  // If the user has scrolled down, move the camera to the right
-  if (scrollY > scrollPos) {
-    gsap.to(camera.position, {
-      x: "+=10", // Move the camera 1 unit to the right
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power1.out",
-      duration: 10,
-    });
-  }
-  // If the user has scrolled up, move the camera to the left
-  else if (scrollY < scrollPos) {
-    gsap.to(camera.position, {
-      x: "-=10", // Move the camera 1 unit to the left
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power1.out",
-      duration: 10,
-    });
-  }
+//   // If the user has scrolled down, move the camera to the right
+//   if (scrollY > scrollPos) {
+//     gsap.to(camera.position, {
+//       x: "+=10", // Move the camera 1 unit to the right
+//       onUpdate: () => camera.updateProjectionMatrix(),
+//       ease: "power0.out",
+//       duration: 10,
+//     });
+//   }
+//   // If the user has scrolled up, move the camera to the left
+//   else if (scrollY < scrollPos) {
+//     gsap.to(camera.position, {
+//       x: "-=10", // Move the camera 1 unit to the left
+//       onUpdate: () => camera.updateProjectionMatrix(),
+//       ease: "power0.out",
+//       duration: 10,
+//     });
+//   }
 
-  // Update scrollPos
-  scrollPos = scrollY;
-});
+//   // Update scrollPos
+//   scrollPos = scrollY;
+// });
 
 const cursor = {};
 cursor.x = 0;
@@ -283,7 +185,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(1,0,6); // Set position like this
+camera.position.set(1, 0, 6); // Set position like this
 // camera.lookAt(new THREE.Vector3(0,0,0));
 cameraGroup.add(camera);
 
