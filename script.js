@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { createHomeText } from "./three-components/homeText";
+import {CSS2DRenderer, CSS2DObject} from "three/examples/jsm/renderers/CSS2DRenderer.js";
 
 
 // Canvas
@@ -67,6 +68,20 @@ const sizes = {
   height: window.innerHeight,
 };
 
+
+// CSS2DRenderer
+const labelRenderer = new CSS2DRenderer()
+labelRenderer.setSize(sizes.width, size.height)
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0px';
+// labelRenderer.domElement.style.pointerEvents = 'none';
+document.body.appendChild(labelRenderer.domElement)
+
+const p = document.createElement('p')
+p.textContent = 'Hello'
+const cPointLabel = new CSS2DObject(p)
+scene.add(cPointLabel)
+
 window.addEventListener("resize", () => {
   // Update sizes
   sizes.width = window.innerWidth;
@@ -84,58 +99,30 @@ window.addEventListener("resize", () => {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
   renderer.toneMappingWhitePoint = 1.0;
+
+  // label css2d renderer
+  labelRenderer.setSize(sizes.width, sizes.height)
 });
 
-gsap.registerPlugin(ScrollTrigger);
-
-window.addEventListener("scroll", () => {
-  const scrollY = window.scrollY;
-
-  if (scrollY > scrollPos) {
-    gsap.to(camera.position, {
-      y: 14,
-      z: 14,
-      x: 14,
-      duration: 5,
-      ease: 'none',
-      onUpdate: function () {
-        camera.lookAt(0, 0, 0);
-      },
-    });
-  } else if (scrollY < scrollPos) {
-    gsap.to(camera.position, {
-      y: 0,
-      z: 0,
-      x: 0,
-      duration: 5,
-      ease: 'none',
-      duration: 1.5,
-      onUpdate: function () {
-        camera.lookAt(0, 0, 0);
-      },
-    });
-  }
-  scrollPos = scrollY;
-});
 
 let scrollY = window.scrollY;
 let currentSection = 0;
 
-window.addEventListener("scroll", () => {
-  scrollY = window.scrollY;
-  const newSection = Math.round(scrollY / sizes.height);
+// window.addEventListener("scroll", () => {
+//   scrollY = window.scrollY;
+//   const newSection = Math.round(scrollY / sizes.height);
 
-  if (newSection != currentSection) {
-    currentSection = newSection;
+//   if (newSection != currentSection) {
+//     currentSection = newSection;
 
-    gsap.to(sectionMeshes[currentSection].rotation, {
-      duration: 1.5,
-      ease: "power2.inOut",
-      x: "+=6",
-      y: "+=3",
-    });
-  }
-});
+//     gsap.to(sectionMeshes[currentSection].rotation, {
+//       duration: 1.5,
+//       ease: "power2.inOut",
+//       x: "+=6",
+//       y: "+=3",
+//     });
+//   }
+// });
 
 let scrollPos = 0;
 
@@ -213,11 +200,13 @@ const tick = () => {
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
 
+  labelRenderer.render(scene, camera)
+
   // Animate meshes
-  for (const mesh of sectionMeshes) {
-    mesh.rotation.x += deltaTime * 0.35;
-    mesh.rotation.y += deltaTime * 0.352;
-  }
+  // for (const mesh of sectionMeshes) {
+  //   mesh.rotation.x += deltaTime * 0.35;
+  //   mesh.rotation.y += deltaTime * 0.352;
+  // }
 
   if (particles) {
     particles.position.y += Math.sin(deltaTime * 0.75) / 5;
