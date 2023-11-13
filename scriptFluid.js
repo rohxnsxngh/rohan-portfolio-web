@@ -27,7 +27,7 @@ import * as dat from 'dat.gui';
 
 // Mobile promo section
 
-function fluidSimulation() {
+async function fluidSimulation() {
 // Simulation section
 const canvas = document.querySelector("canvas.fluid");
 // const canvas = document.getElementsByTagName('canvas')[0];

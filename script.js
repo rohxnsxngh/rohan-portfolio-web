@@ -24,6 +24,21 @@ const sectionMeshes = [
 
 ];
 
+function createCheckpoint(name, x, y, z) {
+  const geo = new THREE.SphereGeometry(0.1)
+  const mat = new THREE.MeshBasicMaterial({color: 0xFF0000})
+  const mesh = new THREE.Mesh(geo, mat)
+  mesh.position.set(x, y, z)
+  mesh.name = name;
+  return mesh
+}
+
+const group = new THREE.Group()
+
+const checkpoint1 = createCheckpoint('checkpoint1', 0, 0, 0)
+group.add(checkpoint1)
+
+scene.add(checkpoint1)
 
 const size = 10;
 const divisions = 10;
