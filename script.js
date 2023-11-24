@@ -3,10 +3,9 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { createHomeText } from "./three-components/homeText";
-import {CSS2DRenderer, CSS2DObject} from "three/examples/jsm/renderers/CSS2DRenderer.js";
-import overlayVertexShader from './src/shaders/overlay/vertex.glsl'
-import overlayFragmentShader from './src/shaders/overlay/fragment.glsl'
-
+import overlayVertexShader from "./src/shaders/overlay/vertex.glsl";
+import overlayFragmentShader from "./src/shaders/overlay/fragment.glsl";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -16,49 +15,46 @@ const scene = new THREE.Scene();
 
 const objectsDistance = 4;
 
-
 const fontLoader = new FontLoader();
 
 // Usage of the createHomeText function
 createHomeText(scene, fontLoader);
 
-const sectionMeshes = [
-
-];
+const sectionMeshes = [];
 
 function createCheckpoint(name, x, y, z) {
-  const geo = new THREE.SphereGeometry(0.1)
-  const mat = new THREE.MeshBasicMaterial({color: 0xFF0000})
-  const mesh = new THREE.Mesh(geo, mat)
-  mesh.position.set(x, y, z)
+  const geo = new THREE.SphereGeometry(0.1);
+  const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, y, z);
   mesh.name = name;
-  return mesh
+  return mesh;
 }
 
-const group = new THREE.Group()
+const group = new THREE.Group();
 
-const checkpoint1 = createCheckpoint('checkpoint1', 0, 0, 0)
-group.add(checkpoint1)
+const checkpoint1 = createCheckpoint("checkpoint1", 0, 0, 0);
+group.add(checkpoint1);
 
-scene.add(checkpoint1)
+// scene.add(checkpoint1);
 
 const size = 10;
 const divisions = 10;
 
-const gridHelper = new THREE.GridHelper( size, divisions );
-scene.add( gridHelper );
+const gridHelper = new THREE.GridHelper(size, divisions);
+scene.add(gridHelper);
 
-const axesHelper = new THREE.AxesHelper( 5 );
-scene.add( axesHelper );
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
 
-const particlesCount = 100;
+const particlesCount = 1000;
 const positions = new Float32Array(particlesCount * 3);
 
 for (let i = 0; i < particlesCount; i++) {
   positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
   positions[i * 3 + 1] =
     objectsDistance * 0.5 -
-    Math.random() * objectsDistance * sectionMeshes.length;
+    Math.random() * objectsDistance * 10;
   positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
 }
 
@@ -78,56 +74,42 @@ const particlesMaterial = new THREE.PointsMaterial({
 });
 
 const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-// scene.add(particles);
+scene.add(particles);
 
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
 
-const overlay = {}
+const overlay = {};
 
-overlay.vignetteColor = {}
-overlay.vignetteColor.value = '#4f1f96'
-overlay.vignetteColor.instance = new THREE.Color(overlay.vignetteColor.value)
+overlay.vignetteColor = {};
+overlay.vignetteColor.value = "#4f1f96";
+overlay.vignetteColor.instance = new THREE.Color(overlay.vignetteColor.value);
 
-overlay.overlayColor = {}
-overlay.overlayColor.value = '#000000'
-overlay.overlayColor.instance = new THREE.Color(overlay.overlayColor.value)
+overlay.overlayColor = {};
+overlay.overlayColor.value = "#000000";
+overlay.overlayColor.instance = new THREE.Color(overlay.overlayColor.value);
 
-overlay.geometry = new THREE.PlaneGeometry(2, 2)
+overlay.geometry = new THREE.PlaneGeometry(2, 2);
 
 overlay.material = new THREE.ShaderMaterial({
-    uniforms:
-    {
-        uVignetteColor: { value: overlay.vignetteColor.instance },
-        uVignetteMultiplier: { value: 1.16 },
-        uVignetteOffset: { value: -0.165 },
-        uOverlayColor: { value: overlay.overlayColor.instance },
-        uOverlayAlpha: { value: 0 }
-    },
-    vertexShader: overlayVertexShader,
-    fragmentShader: overlayFragmentShader,
-    transparent: true,
-    depthTest: false
-})
-overlay.mesh = new THREE.Mesh(overlay.geometry, overlay.material)
-overlay.mesh.userData.noBokeh = true
-overlay.mesh.frustumCulled = false
-scene.add(overlay.mesh)
-
-// CSS2DRenderer
-// const labelRenderer = new CSS2DRenderer()
-// labelRenderer.setSize(sizes.width, size.height)
-// labelRenderer.domElement.style.position = 'absolute';
-// labelRenderer.domElement.style.top = '0px';
-// // labelRenderer.domElement.style.pointerEvents = 'none';
-// document.body.appendChild(labelRenderer.domElement)
-
-// const p = document.createElement('p')
-// p.textContent = 'Hello'
-// const cPointLabel = new CSS2DObject(p)
-// scene.add(cPointLabel)
+  uniforms: {
+    uVignetteColor: { value: overlay.vignetteColor.instance },
+    uVignetteMultiplier: { value: 0.98 },
+    uVignetteOffset: { value: -0.165 },
+    uOverlayColor: { value: overlay.overlayColor.instance },
+    uOverlayAlpha: { value: 0 },
+  },
+  vertexShader: overlayVertexShader,
+  fragmentShader: overlayFragmentShader,
+  transparent: true,
+  depthTest: false,
+});
+overlay.mesh = new THREE.Mesh(overlay.geometry, overlay.material);
+overlay.mesh.userData.noBokeh = true;
+overlay.mesh.frustumCulled = false;
+scene.add(overlay.mesh);
 
 window.addEventListener("resize", () => {
   // Update sizes
@@ -146,32 +128,47 @@ window.addEventListener("resize", () => {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
   renderer.toneMappingWhitePoint = 1.0;
-
-  // label css2d renderer
-  labelRenderer.setSize(sizes.width, sizes.height)
 });
 
-
-let scrollY = window.scrollY;
+// let scrollY = window.scrollY;
+let scrollPos = 0;
 let currentSection = 0;
 
-// window.addEventListener("scroll", () => {
-//   scrollY = window.scrollY;
-//   const newSection = Math.round(scrollY / sizes.height);
+window.addEventListener("scroll", () => {
+  console.log("scrolled")
+  const scrollY = window.scrollY;
 
-//   if (newSection != currentSection) {
-//     currentSection = newSection;
+  if (scrollY > scrollPos) {
+    gsap.to(camera.position, {
+      x: "+=3", // Move the camera 1 unit to the right
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power0.out",
+      duration: 10,
+    });
+  }
+  // If the user has scrolled up, move the camera to the left
+  else if (scrollY < scrollPos) {
+    gsap.to(camera.position, {
+      x: "-=3", // Move the camera 1 unit to the left
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power0.out",
+      duration: 10,
+    });
+  }
 
-//     gsap.to(sectionMeshes[currentSection].rotation, {
-//       duration: 1.5,
-//       ease: "power2.inOut",
-//       x: "+=6",
-//       y: "+=3",
-//     });
-//   }
-// });
+  scrollPos = scrollY;
 
-let scrollPos = 0;
+  // if (newSection != currentSection) {
+  //   currentSection = newSection;
+
+  //   gsap.to(sectionMeshes[currentSection].rotation, {
+  //     duration: 1.5,
+  //     ease: "power2.inOut",
+  //     x: "+=6",
+  //     y: "+=3",
+  //   });
+  // }
+});
 
 // window.addEventListener('scroll', () => {
 //   const scrollY = window.scrollY;
@@ -242,12 +239,13 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const clock = new THREE.Clock();
 let previousTime = 0;
 
+// const controls = new OrbitControls( camera, renderer.domElement );
+// controls.update()
+
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
-
-  // labelRenderer.render(scene, camera)
 
   // Animate meshes
   // for (const mesh of sectionMeshes) {
@@ -260,15 +258,15 @@ const tick = () => {
   }
 
   // Animate camera
-  camera.position.y = (-scrollY / sizes.height) * objectsDistance;
+  // camera.position.y = (-scrollY / sizes.height) * objectsDistance;
 
-  const parallaxX = cursor.x * 1.5;
-  const parallaxY = -cursor.y * 0.5;
+  // const parallaxX = cursor.x * 1.5;
+  // const parallaxY = -cursor.y * 0.5;
 
-  cameraGroup.position.x +=
-    (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-  cameraGroup.position.y +=
-    (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+  // cameraGroup.position.x +=
+  //   (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+  // cameraGroup.position.y +=
+  //   (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
 
   // Render
   renderer.render(scene, camera);

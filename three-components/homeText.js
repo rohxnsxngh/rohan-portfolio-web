@@ -4,7 +4,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 function createHomeText(scene, fontLoader, size = 0.45) {
   return new Promise((resolve, reject) => {
     fontLoader.load("/Fonts/Satoshi_Variable_Bold.json", (droidFont) => {
-      const textGeometryAbout = new TextGeometry("Rohan Singh.", {
+      const textGeometryAbout = new TextGeometry("Rohan.", {
         height: 0.125,
         size: size,
         font: droidFont,
@@ -14,7 +14,7 @@ function createHomeText(scene, fontLoader, size = 0.45) {
       });
 
       const textGeometryHomeCaption = new TextGeometry(
-        "software developer. mechanical engineer.",
+        "software developer.\nmechanical engineer.",
         {
           height: 0.01,
           size: 0.15,
