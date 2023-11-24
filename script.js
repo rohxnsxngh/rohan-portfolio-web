@@ -4,6 +4,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { createHomeText } from "./three-components/homeText";
 import {CSS2DRenderer, CSS2DObject} from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import overlayVertexShader from './src/shaders/overlay/vertex.glsl'
+import overlayFragmentShader from './src/shaders/overlay/fragment.glsl'
 
 
 // Canvas
@@ -83,19 +85,49 @@ const sizes = {
   height: window.innerHeight,
 };
 
+const overlay = {}
+
+overlay.vignetteColor = {}
+overlay.vignetteColor.value = '#4f1f96'
+overlay.vignetteColor.instance = new THREE.Color(overlay.vignetteColor.value)
+
+overlay.overlayColor = {}
+overlay.overlayColor.value = '#000000'
+overlay.overlayColor.instance = new THREE.Color(overlay.overlayColor.value)
+
+overlay.geometry = new THREE.PlaneGeometry(2, 2)
+
+overlay.material = new THREE.ShaderMaterial({
+    uniforms:
+    {
+        uVignetteColor: { value: overlay.vignetteColor.instance },
+        uVignetteMultiplier: { value: 1.16 },
+        uVignetteOffset: { value: -0.165 },
+        uOverlayColor: { value: overlay.overlayColor.instance },
+        uOverlayAlpha: { value: 0 }
+    },
+    vertexShader: overlayVertexShader,
+    fragmentShader: overlayFragmentShader,
+    transparent: true,
+    depthTest: false
+})
+overlay.mesh = new THREE.Mesh(overlay.geometry, overlay.material)
+overlay.mesh.userData.noBokeh = true
+overlay.mesh.frustumCulled = false
+scene.add(overlay.mesh)
 
 // CSS2DRenderer
-const labelRenderer = new CSS2DRenderer()
-labelRenderer.setSize(sizes.width, size.height)
-labelRenderer.domElement.style.position = 'absolute';
-labelRenderer.domElement.style.top = '0px';
-// labelRenderer.domElement.style.pointerEvents = 'none';
-document.body.appendChild(labelRenderer.domElement)
+// const labelRenderer = new CSS2DRenderer()
+// labelRenderer.setSize(sizes.width, size.height)
+// labelRenderer.domElement.style.position = 'absolute';
+// labelRenderer.domElement.style.top = '0px';
+// // labelRenderer.domElement.style.pointerEvents = 'none';
+// document.body.appendChild(labelRenderer.domElement)
 
-const p = document.createElement('p')
-p.textContent = 'Hello'
-const cPointLabel = new CSS2DObject(p)
-scene.add(cPointLabel)
+// const p = document.createElement('p')
+// p.textContent = 'Hello'
+// const cPointLabel = new CSS2DObject(p)
+// scene.add(cPointLabel)
 
 window.addEventListener("resize", () => {
   // Update sizes
@@ -215,7 +247,7 @@ const tick = () => {
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
 
-  labelRenderer.render(scene, camera)
+  // labelRenderer.render(scene, camera)
 
   // Animate meshes
   // for (const mesh of sectionMeshes) {
