@@ -154,7 +154,7 @@ camera.position.set(1, 0, 6); // Set position like this
 cameraGroup.add(camera);
 
 //Light
-const ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
 scene.add(ambientLight);
 
 const pointLight = new THREE.PointLight(0xffffff, 0.8);
@@ -172,48 +172,52 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const clock = new THREE.Clock();
 let previousTime = 0;
 
-// let scrollY = window.scrollY;
-let scrollPos = 0;
-let currentSection = 0;
+// Initialize scrollPos with the initial scroll position
+let scrollPos = window.scrollY;
 
 function timeline() {
   const tl = gsap.timeline();
+  const newScrollPos = window.scrollY; // Get the current scroll position
+
   // Animation for scrolling down
-  if (scrollY > scrollPos) {
+  if (newScrollPos > scrollPos) {
     tl.to(camera.position, {
-      z: "-=4",
+      z: 1,
       onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power0.out",
+      ease: "none",
       duration: 3,
-    }).to(camera.position, {
-      y: "-=4",
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power0.out",
-      duration: 3,
-    });
-  } else if (scrollY < scrollPos) {
+    })
     tl.to(camera.position, {
-      y: "+=5",
+      x: -0.5,
       onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power0.out",
+      ease: "none",
       duration: 3,
-    }).to(camera.position, {
-      z: "+=5",
+    })
+    .to(camera.position, {
+      x: 5,
       onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power0.out",
+      ease: "none",
+      duration: 5,
+    })
+  } else if (newScrollPos < scrollPos) {
+    // Animation for scrolling up
+    tl.to(camera.position, {
+      z: 6,
+      x: 1,
+      y: 0,
+      onUpdate: () => camera.lookAt(1, 0, 0),
+      ease: "power1.out",
       duration: 3,
-    });
+    })
   }
+
+  // Update scrollPos with the new scroll position
+  scrollPos = newScrollPos;
 }
 
 window.addEventListener("scroll", () => {
   console.log("scrolled");
-  const scrollY = window.scrollY;
-  console.log(scrollY);
-
   timeline();
-
-  scrollPos = scrollY;
 });
 
 // const controls = new OrbitControls( camera, renderer.domElement );
