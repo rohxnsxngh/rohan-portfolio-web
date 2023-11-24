@@ -53,8 +53,7 @@ const positions = new Float32Array(particlesCount * 3);
 for (let i = 0; i < particlesCount; i++) {
   positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
   positions[i * 3 + 1] =
-    objectsDistance * 0.5 -
-    Math.random() * objectsDistance * 10;
+    objectsDistance * 0.5 - Math.random() * objectsDistance * 10;
   positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
 }
 
@@ -130,72 +129,6 @@ window.addEventListener("resize", () => {
   renderer.toneMappingWhitePoint = 1.0;
 });
 
-// let scrollY = window.scrollY;
-let scrollPos = 0;
-let currentSection = 0;
-
-window.addEventListener("scroll", () => {
-  console.log("scrolled")
-  const scrollY = window.scrollY;
-
-  if (scrollY > scrollPos) {
-    gsap.to(camera.position, {
-      x: "+=3", // Move the camera 1 unit to the right
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power0.out",
-      duration: 10,
-    });
-  }
-  // If the user has scrolled up, move the camera to the left
-  else if (scrollY < scrollPos) {
-    gsap.to(camera.position, {
-      x: "-=3", // Move the camera 1 unit to the left
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power0.out",
-      duration: 10,
-    });
-  }
-
-  scrollPos = scrollY;
-
-  // if (newSection != currentSection) {
-  //   currentSection = newSection;
-
-  //   gsap.to(sectionMeshes[currentSection].rotation, {
-  //     duration: 1.5,
-  //     ease: "power2.inOut",
-  //     x: "+=6",
-  //     y: "+=3",
-  //   });
-  // }
-});
-
-// window.addEventListener('scroll', () => {
-//   const scrollY = window.scrollY;
-
-//   // If the user has scrolled down, move the camera to the right
-//   if (scrollY > scrollPos) {
-//     gsap.to(camera.position, {
-//       x: "+=10", // Move the camera 1 unit to the right
-//       onUpdate: () => camera.updateProjectionMatrix(),
-//       ease: "power0.out",
-//       duration: 10,
-//     });
-//   }
-//   // If the user has scrolled up, move the camera to the left
-//   else if (scrollY < scrollPos) {
-//     gsap.to(camera.position, {
-//       x: "-=10", // Move the camera 1 unit to the left
-//       onUpdate: () => camera.updateProjectionMatrix(),
-//       ease: "power0.out",
-//       duration: 10,
-//     });
-//   }
-
-//   // Update scrollPos
-//   scrollPos = scrollY;
-// });
-
 const cursor = {};
 cursor.x = 0;
 cursor.y = 0;
@@ -238,6 +171,50 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 const clock = new THREE.Clock();
 let previousTime = 0;
+
+// let scrollY = window.scrollY;
+let scrollPos = 0;
+let currentSection = 0;
+
+function timeline() {
+  const tl = gsap.timeline();
+  // Animation for scrolling down
+  if (scrollY > scrollPos) {
+    tl.to(camera.position, {
+      z: "-=4",
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power0.out",
+      duration: 3,
+    }).to(camera.position, {
+      y: "-=4",
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power0.out",
+      duration: 3,
+    });
+  } else if (scrollY < scrollPos) {
+    tl.to(camera.position, {
+      y: "+=5",
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power0.out",
+      duration: 3,
+    }).to(camera.position, {
+      z: "+=5",
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power0.out",
+      duration: 3,
+    });
+  }
+}
+
+window.addEventListener("scroll", () => {
+  console.log("scrolled");
+  const scrollY = window.scrollY;
+  console.log(scrollY);
+
+  timeline();
+
+  scrollPos = scrollY;
+});
 
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
