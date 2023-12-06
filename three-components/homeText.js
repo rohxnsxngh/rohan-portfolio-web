@@ -31,7 +31,7 @@ function createHomeText(scene, fontLoader, size = 0.45) {
       const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialCaption);
       textMeshHomeCaption.position.set(0, -0.35, 0);
       scene.add(textMeshHomeCaption);
-
+      return textMeshHome, textMeshHomeCaption
       resolve({ textMeshHome, textMeshHomeCaption });
     });
   });

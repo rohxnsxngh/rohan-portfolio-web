@@ -6,6 +6,10 @@ import { createHomeText } from "./three-components/homeText";
 import overlayVertexShader from "./src/shaders/overlay/vertex.glsl";
 import overlayFragmentShader from "./src/shaders/overlay/fragment.glsl";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import {
+  CSS3DRenderer,
+  CSS3DObject,
+} from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -19,8 +23,6 @@ const fontLoader = new FontLoader();
 
 // Usage of the createHomeText function
 createHomeText(scene, fontLoader);
-
-const sectionMeshes = [];
 
 function createCheckpoint(name, x, y, z) {
   const geo = new THREE.SphereGeometry(0.1);
@@ -73,12 +75,30 @@ const particlesMaterial = new THREE.PointsMaterial({
 });
 
 const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-scene.add(particles);
+// scene.add(particles);
 
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
+
+// const cssrenderer = new CSS3DRenderer()
+// cssrenderer.setSize(sizes.width, sizes.height)
+// cssrenderer.domElement.style.position = 'absolute';
+// cssrenderer.domElement.style.pointerEvents = 'none'
+// document.body.appendChild(cssrenderer.domElement)
+
+// const el = document.createElement('div')
+// el.innerHTML = "<h1>Rohan Singh</h1>"
+// el.className = "three-div"
+// el.style.width = "100px"
+// el.style.height = "100px"
+// el.style.zIndex = 5;
+// const obj = new CSS3DObject(el)
+// obj.position.set(0, 0, 2)
+// scene.add(obj)
+
+// console.log(obj)
 
 const overlay = {};
 
@@ -174,32 +194,38 @@ let previousTime = 0;
 
 // Initialize scrollPos with the initial scroll position
 let scrollPos = window.scrollY;
+let animationProgress = false;
 
 function timeline() {
   const tl = gsap.timeline();
   const newScrollPos = window.scrollY; // Get the current scroll position
 
   // Animation for scrolling down
-  if (newScrollPos > scrollPos) {
+  if (newScrollPos > scrollPos && !animationProgress) {
     tl.to(camera.position, {
       z: 1,
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "none",
+      y: -5,
+      x: 0,
+      onUpdate: () => camera.lookAt(1, 0, 0),
+      ease: "power1.out",
+      overwrite: "none",
       duration: 3,
-    })
-    tl.to(camera.position, {
-      x: -0.5,
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "none",
-      duration: 3,
+      onStart: () => {
+        animationProgress = true;
+      },
     })
     .to(camera.position, {
-      x: 5,
+      z: 1,
+      y: 5,
+      x: 0,
       onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "none",
-      duration: 5,
+      ease: "power1.out",
+      duration: 3,
+      onComplete: () => {
+        animationProgress = false
+      }
     })
-  } else if (newScrollPos < scrollPos) {
+  } else if (newScrollPos < scrollPos && !animationProgress) {
     // Animation for scrolling up
     tl.to(camera.position, {
       z: 6,
@@ -207,8 +233,14 @@ function timeline() {
       y: 0,
       onUpdate: () => camera.lookAt(1, 0, 0),
       ease: "power1.out",
-      duration: 3,
-    })
+      duration: 1.5,
+      onStart: () => {
+        animationProgress = true
+      },
+      onComplete: () => {
+        animationProgress = false
+      }
+    });
   }
 
   // Update scrollPos with the new scroll position
@@ -239,18 +271,19 @@ const tick = () => {
   }
 
   // Animate camera
-  // camera.position.y = (-scrollY / sizes.height) * objectsDistance;
+  // // camera.position.y = (-scrollY / sizes.height) * objectsDistance;
 
-  // const parallaxX = cursor.x * 1.5;
-  // const parallaxY = -cursor.y * 0.5;
+  const parallaxX = cursor.x * 1.5;
+  const parallaxY = -cursor.y * 0.5;
 
-  // cameraGroup.position.x +=
-  //   (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-  // cameraGroup.position.y +=
-  //   (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+  cameraGroup.position.x +=
+    (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+  cameraGroup.position.y +=
+    (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
 
   // Render
   renderer.render(scene, camera);
+  // cssrenderer.render(scene, camera)
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
