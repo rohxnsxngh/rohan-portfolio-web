@@ -2,8 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* position: fixed; */
-  /* overflow: hidden; */
   width: 100%;
   height: 100%;
 }
@@ -22,17 +20,14 @@ html {
 }
 
 .webgl {
-  position: absolute;
-  /* pointer-events: none; */
-  /* opacity: 100; */
+  position: fixed;
+  pointer-events: none;
   width: 100%;
   height: 100%;
   top: 0;
   left: 0;
+  z-index: 1;
 }
-
-
-
 
 .fluid {
   position: relative;
@@ -40,7 +35,7 @@ html {
   height: 100%;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 0;
 }
 
 #vueapp {

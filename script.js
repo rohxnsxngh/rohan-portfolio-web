@@ -191,20 +191,21 @@ function timeline() {
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
 
-// window.addEventListener("scroll", () => {
-//   console.log("scrolled");
-//   timeline();
-// });
+window.addEventListener("scroll", () => {
+  console.log("scrolled");
+  timeline();
+});
 
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.update();
+// const controls = new OrbitControls(camera, renderer.domElement);
+// controls.update();
 
 document.addEventListener("DOMContentLoaded", function () {
 
   const cssrenderer = new CSS3DRenderer();
   cssrenderer.setSize(window.innerWidth, window.innerHeight);
-  cssrenderer.domElement.style.position = "absolute";
+  cssrenderer.domElement.style.position = "fixed";
   cssrenderer.domElement.style.top = "0";
+  // cssrenderer.domElement.style.zIndex = 2;
   document.body.appendChild(cssrenderer.domElement);
 
   const element = document.getElementById("vueapp");
@@ -219,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const deltaTime = elapsedTime - previousTime;
     previousTime = elapsedTime;
 
-    controls.update();
+    // controls.update();
 
     // const parallaxX = cursor.x * 1.5;
     // const parallaxY = -cursor.y * 0.5;
