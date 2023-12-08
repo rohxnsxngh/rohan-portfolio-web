@@ -3,7 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   /* position: fixed; */
-  /* overflow: visible; */
+  /* overflow: hidden; */
   width: 100%;
   height: 100%;
 }
@@ -22,20 +22,30 @@ html {
 }
 
 .webgl {
-  position: fixed;
+  position: absolute;
   /* pointer-events: none; */
   /* opacity: 100; */
+  width: 100%;
+  height: 100%;
   top: 0;
   left: 0;
 }
 
+
+
+
 .fluid {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   top: 0;
   left: 0;
   z-index: -1;
+}
+
+#vueapp {
+  width: 100%;
+  height: 100%;
 }
 
 #loader-circular {

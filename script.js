@@ -7,6 +7,10 @@ import overlayVertexShader from "./src/shaders/overlay/vertex.glsl";
 import overlayFragmentShader from "./src/shaders/overlay/fragment.glsl";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
+  CSS2DRenderer,
+  CSS2DObject,
+} from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import {
   CSS3DRenderer,
   CSS3DObject,
 } from "three/examples/jsm/renderers/CSS3DRenderer.js";
@@ -24,22 +28,6 @@ const fontLoader = new FontLoader();
 // Usage of the createHomeText function
 createHomeText(scene, fontLoader);
 
-function createCheckpoint(name, x, y, z) {
-  const geo = new THREE.SphereGeometry(0.1);
-  const mat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(x, y, z);
-  mesh.name = name;
-  return mesh;
-}
-
-const group = new THREE.Group();
-
-const checkpoint1 = createCheckpoint("checkpoint1", 0, 0, 0);
-group.add(checkpoint1);
-
-// scene.add(checkpoint1);
-
 const size = 10;
 const divisions = 10;
 
@@ -49,56 +37,10 @@ scene.add(gridHelper);
 const axesHelper = new THREE.AxesHelper(5);
 scene.add(axesHelper);
 
-const particlesCount = 1000;
-const positions = new Float32Array(particlesCount * 3);
-
-for (let i = 0; i < particlesCount; i++) {
-  positions[i * 3 + 0] = (Math.random() - 0.5) * 10;
-  positions[i * 3 + 1] =
-    objectsDistance * 0.5 - Math.random() * objectsDistance * 10;
-  positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-}
-
-const particlesGeometry = new THREE.BufferGeometry();
-particlesGeometry.setAttribute(
-  "position",
-  new THREE.BufferAttribute(positions, 3)
-);
-
-// Material
-const particlesMaterial = new THREE.PointsMaterial({
-  sizeAttenuation: true,
-  size: 0.03,
-  transparent: true,
-  alphaTest: 0.5,
-  // color: 0x73d7ff,
-});
-
-const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-// scene.add(particles);
-
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
 };
-
-// const cssrenderer = new CSS3DRenderer()
-// cssrenderer.setSize(sizes.width, sizes.height)
-// cssrenderer.domElement.style.position = 'absolute';
-// cssrenderer.domElement.style.pointerEvents = 'none'
-// document.body.appendChild(cssrenderer.domElement)
-
-// const el = document.createElement('div')
-// el.innerHTML = "<h1>Rohan Singh</h1>"
-// el.className = "three-div"
-// el.style.width = "100px"
-// el.style.height = "100px"
-// el.style.zIndex = 5;
-// const obj = new CSS3DObject(el)
-// obj.position.set(0, 0, 2)
-// scene.add(obj)
-
-// console.log(obj)
 
 const overlay = {};
 
@@ -213,8 +155,7 @@ function timeline() {
       onStart: () => {
         animationProgress = true;
       },
-    })
-    .to(camera.position, {
+    }).to(camera.position, {
       z: 1,
       y: 5,
       x: 0,
@@ -222,9 +163,9 @@ function timeline() {
       ease: "power1.out",
       duration: 3,
       onComplete: () => {
-        animationProgress = false
-      }
-    })
+        animationProgress = false;
+      },
+    });
   } else if (newScrollPos < scrollPos && !animationProgress) {
     // Animation for scrolling up
     tl.to(camera.position, {
@@ -235,11 +176,11 @@ function timeline() {
       ease: "power1.out",
       duration: 1.5,
       onStart: () => {
-        animationProgress = true
+        animationProgress = true;
       },
       onComplete: () => {
-        animationProgress = false
-      }
+        animationProgress = false;
+      },
     });
   }
 
@@ -247,46 +188,54 @@ function timeline() {
   scrollPos = newScrollPos;
 }
 
-window.addEventListener("scroll", () => {
-  console.log("scrolled");
-  timeline();
-});
-
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
 
-const tick = () => {
-  const elapsedTime = clock.getElapsedTime();
-  const deltaTime = elapsedTime - previousTime;
-  previousTime = elapsedTime;
+// window.addEventListener("scroll", () => {
+//   console.log("scrolled");
+//   timeline();
+// });
 
-  // Animate meshes
-  // for (const mesh of sectionMeshes) {
-  //   mesh.rotation.x += deltaTime * 0.35;
-  //   mesh.rotation.y += deltaTime * 0.352;
-  // }
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.update();
 
-  if (particles) {
-    particles.position.y += Math.sin(deltaTime * 0.75) / 5;
-  }
+document.addEventListener("DOMContentLoaded", function () {
 
-  // Animate camera
-  // // camera.position.y = (-scrollY / sizes.height) * objectsDistance;
+  const cssrenderer = new CSS3DRenderer();
+  cssrenderer.setSize(window.innerWidth, window.innerHeight);
+  cssrenderer.domElement.style.position = "absolute";
+  cssrenderer.domElement.style.top = "0";
+  document.body.appendChild(cssrenderer.domElement);
 
-  const parallaxX = cursor.x * 1.5;
-  const parallaxY = -cursor.y * 0.5;
+  const element = document.getElementById("vueapp");
+  const cssObject = new CSS3DObject(element);
+  cssObject.position.set(0, -2, -5);
+  cssObject.scale.set(0.005, 0.005, 0.005);
+  // cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  scene.add(cssObject);
 
-  cameraGroup.position.x +=
-    (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-  cameraGroup.position.y +=
-    (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+  const tick = () => {
+    const elapsedTime = clock.getElapsedTime();
+    const deltaTime = elapsedTime - previousTime;
+    previousTime = elapsedTime;
 
-  // Render
-  renderer.render(scene, camera);
-  // cssrenderer.render(scene, camera)
+    controls.update();
 
-  // Call tick again on the next frame
-  window.requestAnimationFrame(tick);
-};
+    // const parallaxX = cursor.x * 1.5;
+    // const parallaxY = -cursor.y * 0.5;
 
-tick();
+    // cameraGroup.position.x +=
+    //   (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+    // cameraGroup.position.y +=
+    //   (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+
+    // Render
+    renderer.render(scene, camera);
+    cssrenderer.render(scene, camera);
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick);
+  };
+
+  tick();
+});
