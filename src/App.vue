@@ -1,7 +1,7 @@
 <template>
-  <div class="text-black bg-white text-4xl" id="vueapp" @click="handleDivClick">
-    hello my name is WOHAN
-    <!-- <Home /> -->
+  <div class="text-white glass text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl" id="vueapp" @click="handleDivClick">
+    <!-- Your title content goes here -->
+    Rohan Singh
   </div>
 </template>
 

@@ -17,6 +17,8 @@ import {
 import { overlay } from "./three-components/overlay";
 import { timeline } from "./three-components/timeline";
 
+
+let animationProgress, cssrenderer;
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -43,26 +45,6 @@ const sizes = {
 
 //vignette
 scene.add(overlay.mesh);
-
-window.addEventListener("resize", handleWindowResize);
-
-function handleWindowResize(cssrenderer) {
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
-
-  camera.aspect = sizes.width / sizes.height;
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  cssrenderer.setSize(sizes.width, sizes.height);
-  cssrenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.9;
-  renderer.toneMappingWhitePoint = 1.0;
-}
 
 const cursor = {};
 cursor.x = 0;
@@ -108,19 +90,20 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const clock = new THREE.Clock();
 let previousTime = 0;
 
-const scrollPos = window.scrollY;
-const animationProgress = false;
+let scrollPos = 0;
+
 
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
 
 window.addEventListener("scroll", () => {
-  console.log("scrolled");
+  console.log("scrolled", scrollPos);
   timeline(animationProgress, scrollPos, camera);
+  scrollPos = window.scrollY;
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  const cssrenderer = new CSS3DRenderer();
+  cssrenderer = new CSS3DRenderer();
   cssrenderer.setSize(window.innerWidth, window.innerHeight);
   cssrenderer.domElement.style.position = "fixed";
   cssrenderer.domElement.style.top = "0";
@@ -129,9 +112,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const element = document.getElementById("vueapp");
   const cssObject = new CSS3DObject(element);
-  cssObject.position.set(0, 0, 0);
+  cssObject.position.set(3, 0, 0);
   cssObject.scale.set(0.005, 0.005, 0.005);
-  cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  // cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(cssObject);
 
   const tick = () => {
@@ -158,4 +141,25 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   tick();
+
+  return cssrenderer
 });
+
+window.addEventListener("resize", handleWindowResize);
+
+function handleWindowResize() {
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
+
+  camera.aspect = sizes.width / sizes.height;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(sizes.width, sizes.height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  cssrenderer.setSize(sizes.width, sizes.height);
+
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.9;
+  renderer.toneMappingWhitePoint = 1.0;
+}
