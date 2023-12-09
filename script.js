@@ -17,8 +17,7 @@ import {
 import { overlay } from "./three-components/overlay";
 import { timeline } from "./three-components/timeline";
 
-
-let animationProgress, cssrenderer;
+let animationProgress, cssrenderer, cssObject;
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -66,7 +65,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(1, 0, 6); 
+camera.position.set(1, 0, 6);
 // camera.lookAt(new THREE.Vector3(0,0,0));
 cameraGroup.add(camera);
 
@@ -83,7 +82,7 @@ const renderer = new THREE.WebGLRenderer({
   antialias: false,
   powerPreference: "high-performance",
 });
-renderer.setClearColor(0x000000, 0); 
+renderer.setClearColor(0x000000, 0);
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
@@ -91,7 +90,6 @@ const clock = new THREE.Clock();
 let previousTime = 0;
 
 let scrollPos = 0;
-
 
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
@@ -111,8 +109,8 @@ document.addEventListener("DOMContentLoaded", function () {
   document.body.appendChild(cssrenderer.domElement);
 
   const element = document.getElementById("vueapp");
-  const cssObject = new CSS3DObject(element);
-  cssObject.position.set(3, 0, 0);
+  cssObject = new CSS3DObject(element);
+  cssObject.position.set(1, 0, 0);
   cssObject.scale.set(0.005, 0.005, 0.005);
   // cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(cssObject);
@@ -132,6 +130,10 @@ document.addEventListener("DOMContentLoaded", function () {
     cameraGroup.position.y +=
       (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
 
+    // Adjust the rotation of cssObject based on cursor movement
+    cssObject.rotation.x = parallaxY * Math.PI * 0.1;
+    cssObject.rotation.y = parallaxX * Math.PI * 0.1;
+
     // Render
     renderer.render(scene, camera);
     cssrenderer.render(scene, camera);
@@ -142,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   tick();
 
-  return cssrenderer
+  return cssrenderer;
 });
 
 window.addEventListener("resize", handleWindowResize);
@@ -156,6 +158,10 @@ function handleWindowResize() {
 
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  // Update the scale of cssObject with the calculated initial scale
+  // console.log(sizes.width, sizes.height)
+  // cssObject.scale.set(sizes.width * 0.005, sizes.height * 0.005, 0.005);
 
   cssrenderer.setSize(sizes.width, sizes.height);
 
