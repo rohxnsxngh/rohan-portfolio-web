@@ -30,12 +30,12 @@ const fontLoader = new FontLoader();
 createText(scene, fontLoader);
 
 //helper
-const size = 10;
-const divisions = 10;
-const gridHelper = new THREE.GridHelper(size, divisions);
-scene.add(gridHelper);
-const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// const size = 10;
+// const divisions = 10;
+// const gridHelper = new THREE.GridHelper(size, divisions);
+// scene.add(gridHelper);
+// const axesHelper = new THREE.AxesHelper(5);
+// scene.add(axesHelper);
 
 const sizes = {
   width: window.innerWidth,
@@ -43,7 +43,7 @@ const sizes = {
 };
 
 //vignette
-scene.add(overlay.mesh);
+// scene.add(overlay.mesh);
 
 const cursor = {};
 cursor.x = 0;
@@ -68,6 +68,9 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(1, 0, 6);
 // camera.lookAt(new THREE.Vector3(0,0,0));
 cameraGroup.add(camera);
+
+// Vignette
+camera.add(overlay.mesh);
 
 //Light
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
@@ -96,6 +99,7 @@ let scrollPos = 0;
 
 window.addEventListener("scroll", () => {
   console.log("scrolled", scrollPos);
+
   timeline(animationProgress, scrollPos, camera);
   scrollPos = window.scrollY;
 });
@@ -105,22 +109,26 @@ document.addEventListener("DOMContentLoaded", function () {
   cssrenderer.setSize(window.innerWidth, window.innerHeight);
   cssrenderer.domElement.style.position = "fixed";
   cssrenderer.domElement.style.top = "0";
-  // cssrenderer.domElement.style.zIndex = 2;
   document.body.appendChild(cssrenderer.domElement);
 
   const element = document.getElementById("vueapp");
+  const element2 = document.getElementById("vueapp2");
   cssObject = new CSS3DObject(element);
-  cssObject.position.set(1, 0, 0);
-  cssObject.scale.set(0.005, 0.005, 0.005);
-  // cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  cssObject.position.set(5, 5, 0);
+  cssObject.scale.set(0.0055, 0.0055, 0.0055);
+  console.log(cssrenderer.getSize);
   scene.add(cssObject);
+
+  // cssObject2 = new CSS3DObject(element2);
+  // cssObject2.position.set(0, 0, 0);
+  // cssObject2.scale.set(0.005, 0.005, 0.005);
+  // cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  // scene.add(cssObject2);
 
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
     const deltaTime = elapsedTime - previousTime;
     previousTime = elapsedTime;
-
-    // controls.update();
 
     const parallaxX = cursor.x * 1.5;
     const parallaxY = -cursor.y * 0.5;
@@ -158,10 +166,6 @@ function handleWindowResize() {
 
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  // Update the scale of cssObject with the calculated initial scale
-  // console.log(sizes.width, sizes.height)
-  // cssObject.scale.set(sizes.width * 0.005, sizes.height * 0.005, 0.005);
 
   cssrenderer.setSize(sizes.width, sizes.height);
 

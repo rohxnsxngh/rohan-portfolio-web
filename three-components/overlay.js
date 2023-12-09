@@ -11,7 +11,7 @@ const material = new THREE.ShaderMaterial({
   uniforms: {
     uVignetteColor: { value: new THREE.Color(vignetteColorValue) },
     uVignetteMultiplier: { value: 0.98 },
-    uVignetteOffset: { value: -0.325 },
+    uVignetteOffset: { value: -0.425 },
     uOverlayColor: { value: new THREE.Color(overlayColorValue) },
     uOverlayAlpha: { value: 0 },
   },
