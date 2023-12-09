@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
-function createHomeText(scene, fontLoader, size = 0.45) {
+function createText(scene, fontLoader, size = 0.45) {
   return new Promise((resolve, reject) => {
     fontLoader.load("/Fonts/Satoshi_Variable_Bold.json", (droidFont) => {
       const textGeometryAbout = new TextGeometry("Rohan.", {
@@ -37,4 +37,4 @@ function createHomeText(scene, fontLoader, size = 0.45) {
   });
 }
 
-export { createHomeText };
+export { createText };

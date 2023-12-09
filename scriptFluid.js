@@ -1,41 +1,8 @@
-/*
-MIT License
-
-Copyright (c) 2017 Pavel Dobryakov
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-*/
-import * as dat from 'dat.gui';
-
 'use strict';
-
-// Mobile promo section
 
 async function fluidSimulation() {
 // Simulation section
 const canvas = document.querySelector("canvas.fluid");
-// const canvas = document.getElementsByTagName('canvas')[0];
-
-// window.addEventListener('resize', () => {
-//     resizeCanvas();
-//     updateCanvasPosition();
-// });
 
 window.addEventListener('scroll', updateCanvasPosition);
 
@@ -46,26 +13,26 @@ let config = {
     SIM_RESOLUTION: 128,
     DYE_RESOLUTION: 1024,
     CAPTURE_RESOLUTION: 512,
-    DENSITY_DISSIPATION: 3,
+    DENSITY_DISSIPATION: 2.75,
     VELOCITY_DISSIPATION: 4,
-    PRESSURE: 1,
+    PRESSURE: 0.8,
     PRESSURE_ITERATIONS: 20,
-    CURL: 50,
-    SPLAT_RADIUS: 0.3,
+    CURL: 20,
+    SPLAT_RADIUS: 0.35,
     SPLAT_FORCE: 6000,
     SHADING: true,
     COLORFUL: true,
-    COLOR_UPDATE_SPEED: 10,
+    COLOR_UPDATE_SPEED: 15,
     PAUSED: false,
     BACK_COLOR: { r: 18, g: 0, b: 38 },
     TRANSPARENT: false,
-    BLOOM: false,
+    BLOOM: true,
     BLOOM_ITERATIONS: 8,
     BLOOM_RESOLUTION: 256,
-    BLOOM_INTENSITY: 0.8,
-    BLOOM_THRESHOLD: 0.6,
+    BLOOM_INTENSITY: 0.2,
+    BLOOM_THRESHOLD: 1,
     BLOOM_SOFT_KNEE: 0.7,
-    SUNRAYS: true,
+    SUNRAYS: false,
     SUNRAYS_RESOLUTION: 196,
     SUNRAYS_WEIGHT: 1.0,
 }
@@ -98,8 +65,6 @@ if (!ext.supportLinearFiltering) {
     config.BLOOM = false;
     config.SUNRAYS = false;
 }
-
-// startGUI();
 
 function getWebGLContext (canvas) {
     const params = { alpha: true, depth: false, stencil: false, antialias: false, preserveDrawingBuffer: false };
