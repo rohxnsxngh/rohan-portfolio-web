@@ -117,7 +117,7 @@ loader.load(
       flatShading: true,
     });
     _robot.traverse((o) => {
-      if (o.isMesh) console.log(o.material);
+      if (o.isMesh)
       o.material = newMaterial;
     });
     _robot.position.set(1, -1.65, 0);
@@ -126,7 +126,6 @@ loader.load(
     _robot.castShadow = true;
     scene.add(_robot);
     _mixerRobot = new THREE.AnimationMixer(_robot);
-    console.log(gltf.animations);
     _mixerRobot.clipAction(gltf.animations[0]).play();
   },
   // // onProgress callback
@@ -161,7 +160,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const element = document.getElementById("vueapp");
   _cssObject = new CSS3DObject(element);
-  _cssObject.position.set(1, -3, 0);
+  // _cssObject.position.set(1, -3, 0);
+  _cssObject.position.set(1, 0, 0);
   _cssObject.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssObject);
 
@@ -196,6 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
         (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
       cameraGroup.position.y +=
         (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+
     }
 
     //robot animation
