@@ -97,7 +97,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 //Robot Model
 const loader = new GLTFLoader();
 loader.load(
-  "/Models/computer_model/scene.gltf",
+  "/Models/robot/scene.gltf",
   function (gltf) {
     _robot = gltf.scene;
     _robot.position.set(1, -1.65, 0);
