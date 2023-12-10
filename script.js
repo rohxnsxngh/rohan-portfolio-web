@@ -78,11 +78,20 @@ cameraGroup.add(camera);
 camera.add(overlay.mesh);
 
 //Light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+const ambientLight = new THREE.AmbientLight(0x080099, 0.8);
 scene.add(ambientLight);
 
-const pointLight = new THREE.PointLight(0xffffff, 0.8);
-camera.add(pointLight);
+const directionalLight3 = new THREE.DirectionalLight( 0xDDA1EF, 0.4 );
+directionalLight3.position.set( 0, 3, 3 );
+scene.add( directionalLight3 );
+
+const directionalLight = new THREE.DirectionalLight(0xb11bfa, 0.8);
+directionalLight.position.set(-2, 2, 0)
+scene.add(directionalLight);
+
+const directionalLight2 = new THREE.DirectionalLight(0xFA1D1B, 1);
+directionalLight2.position.set(2, -2, 0)
+scene.add(directionalLight2);
 
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
@@ -100,6 +109,17 @@ loader.load(
   "/Models/robot/scene.gltf",
   function (gltf) {
     _robot = gltf.scene;
+    var newMaterial = new THREE.MeshPhongMaterial({
+      color: 0x000000,
+      emissive: 0x000000, //change color
+      specular: 0xffffff, //0xEB00D5
+      shininess: 15,
+      flatShading: true,
+    });
+    _robot.traverse((o) => {
+      if (o.isMesh) console.log(o.material);
+      o.material = newMaterial;
+    });
     _robot.position.set(1, -1.65, 0);
     _robot.scale.set(0.9, 0.9, 0.9);
     // object.rotateOnAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
@@ -141,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const element = document.getElementById("vueapp");
   _cssObject = new CSS3DObject(element);
-  _cssObject.position.set(1, -5, 0);
+  _cssObject.position.set(1, -3, 0);
   _cssObject.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssObject);
 

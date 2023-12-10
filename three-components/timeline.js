@@ -32,19 +32,10 @@ export const timeline = (camera) => {
         delay: 0.2,
       })
       .to(camera.position, {
-        z: 6,
-        y: 0,
-        x: 1,
-        onUpdate: () => camera.lookAt(1, 0, 0),
-        ease: "power1.out",
-        overwrite: "none",
-        duration: 2,
-      })
-      .to(camera.position, {
         z: 3,
-        y: -5,
+        y: -3,
         x: 1,
-        onUpdate: () => camera.lookAt(1, -5, 0),
+        onUpdate: () => camera.lookAt(1, -3, 0),
         ease: "power1.out",
         duration: 2.5,
         delay: 0.2,
