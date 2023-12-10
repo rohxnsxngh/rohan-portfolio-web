@@ -32,7 +32,7 @@ export const timeline = (camera) => {
         delay: 0.2,
       })
       .to(camera.position, {
-        z: 2.5,
+        z: 3,
         y: -1,
         x: 1,
         onUpdate: () => camera.lookAt(1, -1, 0),
