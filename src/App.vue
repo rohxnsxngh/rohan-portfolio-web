@@ -1,5 +1,5 @@
 <template>
-  <div class="text-white glass text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl" id="vueapp" @click="handleDivClick">
+  <div class="text-white bg-black opacity-90 glass text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl" id="vueapp" @click="handleDivClick">
     <!-- Your title content goes here -->
     Rohan Singh
     <button id="home" class="btn btn-primary">Home</button>

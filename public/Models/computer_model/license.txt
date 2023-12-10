@@ -1,0 +1,11 @@
+Model Information:
+* title:	"Killer Beats" Casette Mixstation
+* source:	https://sketchfab.com/3d-models/killer-beats-casette-mixstation-1cc1eda430c74e3ea8f39284b2fb01d8
+* author:	Mikkel Garde Blaase (https://sketchfab.com/plorigon)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on ""Killer Beats" Casette Mixstation" (https://sketchfab.com/3d-models/killer-beats-casette-mixstation-1cc1eda430c74e3ea8f39284b2fb01d8) by Mikkel Garde Blaase (https://sketchfab.com/plorigon) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)

@@ -24,15 +24,14 @@ function createText(scene, fontLoader, size = 0.45) {
 
       const textMaterial = new THREE.MeshNormalMaterial();
       const textMeshHome = new THREE.Mesh(textGeometryAbout, textMaterial);
-      textMeshHome.position.set(0, 0, 0);
+      textMeshHome.position.set(0, 0.65, 0);
       scene.add(textMeshHome);
 
       const textMaterialCaption = new THREE.MeshBasicMaterial({color: 0xffffff});
       const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialCaption);
-      textMeshHomeCaption.position.set(0, -0.35, 0);
+      textMeshHomeCaption.position.set(0, 0.25, 0);
       scene.add(textMeshHomeCaption);
       return textMeshHome, textMeshHomeCaption
-      resolve({ textMeshHome, textMeshHomeCaption });
     });
   });
 }

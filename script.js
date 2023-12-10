@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { createText } from "./three-components/text";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import overlayVertexShader from "./src/shaders/overlay/vertex.glsl";
 import overlayFragmentShader from "./src/shaders/overlay/fragment.glsl";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -93,6 +94,29 @@ renderer.setClearColor(0x000000, 0);
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+//Computer Model
+// const loader = new GLTFLoader();
+// loader.load(
+//   "/Models/computer_model/scene.gltf",
+//   function (gltf) {
+//     const object = gltf.scene;
+//     object.position.set(1, -1, 0);
+//     object.scale.set(0.05, 0.05, 0.05);
+//     // object.rotateOnAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
+//     object.castShadow = true;
+//     scene.add(object);
+//   },
+//   // // onProgress callback
+//   function (xhr) {
+//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+//   },
+
+//   // // onError callback
+//   function (err) {
+//     console.log("An error happened");
+//   }
+// );
+
 const clock = new THREE.Clock();
 let previousTime = 0;
 
@@ -114,8 +138,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const element = document.getElementById("vueapp");
   cssObject = new CSS3DObject(element);
-  cssObject.position.set(5, 5, 0);
-  cssObject.scale.set(0.005, 0.005, 0.005);
+  cssObject.position.set(1, -1, 0);
+  cssObject.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(cssObject);
 
   // cssObject2 = new CSS3DObject(element2);
