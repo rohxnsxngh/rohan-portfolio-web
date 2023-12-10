@@ -15,8 +15,11 @@ import {
   CSS3DObject,
 } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { overlay } from "./three-components/overlay";
-import { timeline } from "./three-components/timeline";
-import { animationInProgress, setAnimationInProgress } from "./three-components/animationState";
+import { timeline, returner } from "./three-components/timeline";
+import {
+  animationInProgress,
+  setAnimationInProgress,
+} from "./three-components/animationState";
 
 let cssrenderer, cssObject;
 // Canvas
@@ -122,12 +125,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // scene.add(cssObject2);
 
   // // Get the button element by its id
-  // const homeButton = document.getElementById("home");
+  const homeButton = document.getElementById("home");
 
-  // // Add a click event listener to the button
-  // homeButton.addEventListener("click", function () {
-  //   returnHome( camera)
-  // });
+  // Add a click event listener to the button
+  homeButton.addEventListener("click", function () {
+    if (!animationInProgress) {
+      returner(camera);
+    }
+  });
 
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
