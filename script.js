@@ -22,7 +22,7 @@ import {
   setAnimationInProgress,
 } from "./three-components/animationState";
 
-let cssrenderer, cssObject;
+let _cssrenderer, _cssObject, _mixerRobot, _robot;
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -94,28 +94,31 @@ renderer.setClearColor(0x000000, 0);
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-//Computer Model
-// const loader = new GLTFLoader();
-// loader.load(
-//   "/Models/computer_model/scene.gltf",
-//   function (gltf) {
-//     const object = gltf.scene;
-//     object.position.set(1, -1, 0);
-//     object.scale.set(0.05, 0.05, 0.05);
-//     // object.rotateOnAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
-//     object.castShadow = true;
-//     scene.add(object);
-//   },
-//   // // onProgress callback
-//   function (xhr) {
-//     console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//   },
+//Robot Model
+const loader = new GLTFLoader();
+loader.load(
+  "/Models/computer_model/scene.gltf",
+  function (gltf) {
+    _robot = gltf.scene;
+    _robot.position.set(1, -1.65, 0);
+    _robot.scale.set(0.9, 0.9, 0.9);
+    // object.rotateOnAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
+    _robot.castShadow = true;
+    scene.add(_robot);
+    _mixerRobot = new THREE.AnimationMixer(_robot);
+    console.log(gltf.animations);
+    _mixerRobot.clipAction(gltf.animations[0]).play();
+  },
+  // // onProgress callback
+  function (xhr) {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
 
-//   // // onError callback
-//   function (err) {
-//     console.log("An error happened");
-//   }
-// );
+  // // onError callback
+  function (err) {
+    console.log("An error happened");
+  }
+);
 
 const clock = new THREE.Clock();
 let previousTime = 0;
@@ -130,17 +133,17 @@ window.addEventListener("scroll", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  cssrenderer = new CSS3DRenderer();
-  cssrenderer.setSize(window.innerWidth, window.innerHeight);
-  cssrenderer.domElement.style.position = "fixed";
-  cssrenderer.domElement.style.top = "0";
-  document.body.appendChild(cssrenderer.domElement);
+  _cssrenderer = new CSS3DRenderer();
+  _cssrenderer.setSize(window.innerWidth, window.innerHeight);
+  _cssrenderer.domElement.style.position = "fixed";
+  _cssrenderer.domElement.style.top = "0";
+  document.body.appendChild(_cssrenderer.domElement);
 
   const element = document.getElementById("vueapp");
-  cssObject = new CSS3DObject(element);
-  cssObject.position.set(1, -1, 0);
-  cssObject.scale.set(0.0025, 0.0025, 0.0025);
-  scene.add(cssObject);
+  _cssObject = new CSS3DObject(element);
+  _cssObject.position.set(1, -5, 0);
+  _cssObject.scale.set(0.0025, 0.0025, 0.0025);
+  scene.add(_cssObject);
 
   // cssObject2 = new CSS3DObject(element2);
   // cssObject2.position.set(0, 0, 0);
@@ -175,9 +178,27 @@ document.addEventListener("DOMContentLoaded", function () {
         (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
     }
 
+    //robot animation
+    if (_mixerRobot) {
+      _mixerRobot.update(deltaTime);
+    }
+
+    // Update robot rotation based on mouse movement
+    if (_robot) {
+      // _robot.rotation.x = parallaxY * Math.PI * 0.01
+      // _robot.rotation.y = parallaxX * Math.PI * 0.01
+      // Bobbing motion for the robot
+      const bobbingAmplitude = 0.1; // Adjust as needed
+      const bobbingSpeed = 1.0; // Adjust as needed
+
+      const bobbingHeight =
+        Math.sin(elapsedTime * bobbingSpeed) * bobbingAmplitude;
+      _robot.position.y = bobbingHeight - 1.5; // Adjust the base height as needed
+    }
+
     // Render
     renderer.render(scene, camera);
-    cssrenderer.render(scene, camera);
+    _cssrenderer.render(scene, camera);
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick);
@@ -185,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   tick();
 
-  return cssrenderer;
+  return _cssrenderer;
 });
 
 window.addEventListener("resize", handleWindowResize);
@@ -200,7 +221,7 @@ function handleWindowResize() {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  cssrenderer.setSize(sizes.width, sizes.height);
+  _cssrenderer.setSize(sizes.width, sizes.height);
 
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;

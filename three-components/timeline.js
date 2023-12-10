@@ -13,9 +13,9 @@ export const timeline = (camera) => {
   if (!animationInProgress && camera.position.y === 0) {
     tl.to(camera.position, {
       z: 1,
-      y: 0,
+      y: 1,
       x: -2,
-      onUpdate: () => camera.lookAt(1, 0, 0),
+      onUpdate: () => camera.lookAt(1, 1, 0),
       ease: "power1.out",
       duration: 2.5,
       onStart: () => {
@@ -24,18 +24,27 @@ export const timeline = (camera) => {
     })
       .to(camera.position, {
         z: 1,
-        y: 0,
+        y: 1,
         x: 2,
-        onUpdate: () => camera.lookAt(1, 0, 0),
+        onUpdate: () => camera.lookAt(1, 1, 0),
         ease: "power1.out",
         duration: 2.5,
         delay: 0.2,
       })
       .to(camera.position, {
-        z: 3,
-        y: -1,
+        z: 6,
+        y: 0,
         x: 1,
-        onUpdate: () => camera.lookAt(1, -1, 0),
+        onUpdate: () => camera.lookAt(1, 0, 0),
+        ease: "power1.out",
+        overwrite: "none",
+        duration: 2,
+      })
+      .to(camera.position, {
+        z: 3,
+        y: -5,
+        x: 1,
+        onUpdate: () => camera.lookAt(1, -5, 0),
         ease: "power1.out",
         duration: 2.5,
         delay: 0.2,
