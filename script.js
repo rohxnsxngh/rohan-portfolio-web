@@ -16,8 +16,9 @@ import {
 } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { overlay } from "./three-components/overlay";
 import { timeline } from "./three-components/timeline";
+import { animationInProgress, setAnimationInProgress } from "./three-components/animationState";
 
-let animationProgress, cssrenderer, cssObject;
+let cssrenderer, cssObject;
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -92,16 +93,13 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const clock = new THREE.Clock();
 let previousTime = 0;
 
-let scrollPos = 0;
-
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
 
 window.addEventListener("scroll", () => {
-  console.log("scrolled", scrollPos);
-
-  timeline(animationProgress, scrollPos, camera);
-  scrollPos = window.scrollY;
+  if (!animationInProgress) {
+    timeline(camera);
+  }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -112,11 +110,9 @@ document.addEventListener("DOMContentLoaded", function () {
   document.body.appendChild(cssrenderer.domElement);
 
   const element = document.getElementById("vueapp");
-  const element2 = document.getElementById("vueapp2");
   cssObject = new CSS3DObject(element);
   cssObject.position.set(5, 5, 0);
-  cssObject.scale.set(0.0055, 0.0055, 0.0055);
-  console.log(cssrenderer.getSize);
+  cssObject.scale.set(0.005, 0.005, 0.005);
   scene.add(cssObject);
 
   // cssObject2 = new CSS3DObject(element2);
@@ -125,22 +121,30 @@ document.addEventListener("DOMContentLoaded", function () {
   // cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   // scene.add(cssObject2);
 
+  // // Get the button element by its id
+  // const homeButton = document.getElementById("home");
+
+  // // Add a click event listener to the button
+  // homeButton.addEventListener("click", function () {
+  //   returnHome( camera)
+  // });
+
   const tick = () => {
     const elapsedTime = clock.getElapsedTime();
     const deltaTime = elapsedTime - previousTime;
     previousTime = elapsedTime;
 
-    const parallaxX = cursor.x * 1.5;
-    const parallaxY = -cursor.y * 0.5;
+    const isLargeScreen = window.innerWidth > 750;
 
-    cameraGroup.position.x +=
-      (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-    cameraGroup.position.y +=
-      (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+    if (isLargeScreen && !animationInProgress) {
+      const parallaxX = cursor.x * 1.5;
+      const parallaxY = -cursor.y * 0.5;
 
-    // Adjust the rotation of cssObject based on cursor movement
-    cssObject.rotation.x = parallaxY * Math.PI * 0.1;
-    cssObject.rotation.y = parallaxX * Math.PI * 0.1;
+      cameraGroup.position.x +=
+        (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+      cameraGroup.position.y +=
+        (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+    }
 
     // Render
     renderer.render(scene, camera);

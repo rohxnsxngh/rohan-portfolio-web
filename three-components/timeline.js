@@ -1,21 +1,25 @@
 import { gsap } from "gsap";
+import { animationInProgress, setAnimationInProgress } from "./animationState";
 
-export const timeline = (animationProgress, scrollPos, camera) => {
-  const tl = gsap.timeline();
-  const newScrollPos = window.scrollY; // Get the current scroll position
+export const timeline = (camera) => {
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // Set animationProgress to false when the entire timeline completes
+      setAnimationInProgress(false)
+    },
+  });
 
   // Animation for scrolling down
-  if (!animationProgress && newScrollPos > scrollPos && scrollPos === 0) {
+  if (!animationInProgress && camera.position.y === 0) {
     tl.to(camera.position, {
       z: 1,
       y: 0,
       x: -2,
       onUpdate: () => camera.lookAt(1, 0, 0),
       ease: "power1.out",
-      overwrite: "none",
-      duration: 2,
+      duration: 2.5,
       onStart: () => {
-        animationProgress = true;
+        setAnimationInProgress(true)
       },
     })
       .to(camera.position, {
@@ -24,11 +28,8 @@ export const timeline = (animationProgress, scrollPos, camera) => {
         x: 2,
         onUpdate: () => camera.lookAt(1, 0, 0),
         ease: "power1.out",
-        overwrite: "none",
-        duration: 2,
-        onStart: () => {
-          animationProgress = true;
-        },
+        duration: 2.5,
+        delay: 0.2,
       })
       .to(camera.position, {
         z: 6,
@@ -37,14 +38,33 @@ export const timeline = (animationProgress, scrollPos, camera) => {
         onUpdate: () => camera.lookAt(5, 5, 0),
         ease: "power1.out",
         duration: 2.5,
-        onComplete: () => {
-          animationProgress = true;
-        },
+        delay: 0.2,
       });
   }
 
-  // Update scrollPos with the new scroll position
-  scrollPos = newScrollPos;
-
-  return animationProgress;
+  return animationInProgress;
 };
+
+
+// export const returnHome = (camera) => {
+//   let animationProgress = false;
+
+//   if (!animationProgress && camera) {
+//     gsap.to(camera.position, {
+//       z: 6,
+//       y: 0,
+//       x: 1,
+//       onUpdate: () => camera.lookAt(1, 0, 0),
+//       ease: "power1.out",
+//       overwrite: "none",
+//       duration: 2,
+//       onStart: () => {
+//         animationProgress = true;
+//       },
+//       onComplete: () => {
+//         animationProgress = false;
+//       },
+//       delay: 0.2,
+//     });
+//   }
+// };
