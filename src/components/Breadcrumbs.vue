@@ -1,6 +1,6 @@
 <!-- Breadcrumbs.vue -->
 <template>
-  <div class="flex text-sm rounded-lg" aria-label="Breadcrumb">
+  <div class="flex text-xs rounded-sm" aria-label="Breadcrumb">
     <ul class="flex items-center space-x-4 timeline">
       <!-- <li v-for="(page, index) in pages" :key="index">
         <button
@@ -11,7 +11,16 @@
         </button>
       </li> -->
       <li v-for="(page, index) in pages" :key="index" class="w-24 h-24">
-        <div class="timeline-start">1984</div>
+        <hr class="bg-primary"/>
+        <div class="timeline-start timeline-box bg-transparent">
+          <button
+            :id="page.id"
+            :class="{'text-gray-400': index !== pages.length - 1, 'text-primary': index === pages.length - 1}"
+            class="hover:text-white focus:outline-none"
+          >
+            {{ page.text }}
+          </button>
+        </div>
         <div class="timeline-middle">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -26,15 +35,7 @@
             />
           </svg>
         </div>
-        <div class="timeline-end timeline-box">
-          <button
-            :id="page.id"
-            class="text-gray-400 hover:text-gray-500 focus:outline-none"
-          >
-            {{ page.text }}
-          </button>
-        </div>
-        <hr />
+        <hr class="bg-primary"/>
       </li>
     </ul>
   </div>
