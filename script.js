@@ -82,11 +82,11 @@ const ambientLight = new THREE.AmbientLight(0x000000, 0.8);
 scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xb11bfa, 0.8);
-directionalLight.position.set(-2, 2, 0)
+directionalLight.position.set(-2, 2, 0);
 scene.add(directionalLight);
 
-const directionalLight2 = new THREE.DirectionalLight(0xFA1D1B, 0.8);
-directionalLight2.position.set(2, -2, 0)
+const directionalLight2 = new THREE.DirectionalLight(0xfa1d1b, 0.8);
+directionalLight2.position.set(2, -2, 0);
 scene.add(directionalLight2);
 
 const renderer = new THREE.WebGLRenderer({
@@ -113,8 +113,7 @@ loader.load(
       flatShading: true,
     });
     _robot.traverse((o) => {
-      if (o.isMesh) console.log(o.material);
-      o.material = newMaterial;
+      if (o.isMesh) o.material = newMaterial;
     });
     _robot.position.set(1, -1.65, 0);
     _robot.scale.set(0.9, 0.9, 0.9);
@@ -155,8 +154,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const element = document.getElementById("vueapp");
   _cssObject = new CSS3DObject(element);
-  _cssObject.position.set(1, 1, 9);
-  _cssObject.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
+  _cssObject.position.set(1, -6, 6);
+  _cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   // _cssObject.position.set(1, 0, 0);
   _cssObject.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssObject);
@@ -172,6 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add a click event listener to the button
   homeButton.addEventListener("click", function () {
+    // event.preventDefault();
     if (!animationInProgress) {
       returner(camera);
     }
@@ -185,14 +185,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const isLargeScreen = window.innerWidth > 750;
 
     if (isLargeScreen && !animationInProgress) {
-      const parallaxX = cursor.x * 1.5;
-      const parallaxY = -cursor.y * 0.5;
+      const parallaxX = cursor.x * 0.8;
+      const parallaxY = -cursor.y * 0.4;
 
       cameraGroup.position.x +=
         (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
       cameraGroup.position.y +=
         (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
-
     }
 
     //robot animation

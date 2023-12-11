@@ -33,8 +33,8 @@ export const timeline = (camera) => {
         delay: 0.2,
       })
       .to(camera.position, {
-        z: 6.5,
-        y: 1,
+        z: 6,
+        y: -3.5,
         x: 1,
         onUpdate: () => camera.lookAt(1, 1, 0),
         ease: "power1.out",
@@ -42,7 +42,7 @@ export const timeline = (camera) => {
         delay: 0.2,
       })
       .to(camera.rotation, {
-        y: - Math.PI,
+        x: - Math.PI / 2,
         onUpdate: () => camera.updateProjectionMatrix(),
         ease: "power1.out",
         duration: 4,
