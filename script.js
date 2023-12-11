@@ -16,13 +16,28 @@ import {
   CSS3DObject,
 } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 import { overlay } from "./three-components/overlay";
-import { timeline, returner } from "./three-components/timeline";
+import {
+  initialAnimation,
+  homeAnimation,
+  aboutAnimation,
+  forgeAnimation,
+  experienceAnimation,
+  writingAnimation,
+  contactAnimation,
+} from "./three-components/animation";
 import {
   animationInProgress,
   setAnimationInProgress,
 } from "./three-components/animationState";
 
-let _cssrenderer, _cssObject, _mixerRobot, _robot;
+let _cssrenderer,
+  _cssNavigation,
+  _cssForge,
+  _cssExperience,
+  _cssAbout,
+  _cssWriting,
+  _cssContact;
+let _mixerRobot, _robot;
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -141,39 +156,91 @@ let previousTime = 0;
 
 window.addEventListener("scroll", () => {
   if (!animationInProgress) {
-    timeline(camera);
+    initialAnimation(camera);
   }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   _cssrenderer = new CSS3DRenderer();
   _cssrenderer.setSize(window.innerWidth, window.innerHeight);
   _cssrenderer.domElement.style.position = "fixed";
   _cssrenderer.domElement.style.top = "0";
   document.body.appendChild(_cssrenderer.domElement);
 
-  const element = document.getElementById("vueapp");
-  _cssObject = new CSS3DObject(element);
-  _cssObject.position.set(1, -6, 6);
-  _cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  // _cssObject.position.set(1, 0, 0);
-  _cssObject.scale.set(0.0025, 0.0025, 0.0025);
-  scene.add(_cssObject);
+  const navigationPanel = document.getElementById("navigation-panel");
+  _cssNavigation = new CSS3DObject(navigationPanel);
+  _cssNavigation.position.set(1, -6, 6);
+  _cssNavigation.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  _cssNavigation.scale.set(0.0025, 0.0025, 0.0025);
+  scene.add(_cssNavigation);
 
-  // cssObject2 = new CSS3DObject(element2);
-  // cssObject2.position.set(0, 0, 0);
-  // cssObject2.scale.set(0.005, 0.005, 0.005);
-  // cssObject.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  // scene.add(cssObject2);
+  const forgePanel = document.getElementById("forge-panel");
+  _cssForge = new CSS3DObject(forgePanel);
+  _cssForge.position.set(1, -6, 10);
+  _cssForge.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  _cssForge.scale.set(0.0025, 0.0025, 0.0025);
+  scene.add(_cssForge);
 
-  // // Get the button element by its id
-  const homeButton = document.getElementById("home");
+  const experiencePanel = document.getElementById("experience-panel");
+  _cssExperience = new CSS3DObject(experiencePanel);
+  _cssExperience.position.set(1, -6, 14);
+  _cssExperience.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  _cssExperience.scale.set(0.0025, 0.0025, 0.0025);
+  scene.add(_cssExperience);
 
-  // Add a click event listener to the button
-  homeButton.addEventListener("click", function () {
-    // event.preventDefault();
-    if (!animationInProgress) {
-      returner(camera);
+  const aboutPanel = document.getElementById("about-panel");
+  _cssAbout = new CSS3DObject(aboutPanel);
+  _cssAbout.position.set(1, -6, 18);
+  _cssAbout.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  _cssAbout.scale.set(0.0025, 0.0025, 0.0025);
+  scene.add(_cssAbout);
+
+  const writingPanel = document.getElementById("writing-panel");
+  _cssWriting = new CSS3DObject(writingPanel);
+  _cssWriting.position.set(1, -6, 22);
+  _cssWriting.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  _cssWriting.scale.set(0.0025, 0.0025, 0.0025);
+  scene.add(_cssWriting);
+
+  const contactPanel = document.getElementById("contact-panel");
+  _cssContact = new CSS3DObject(contactPanel);
+  _cssContact.position.set(1, -6, 26);
+  _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  _cssContact.scale.set(0.0025, 0.0025, 0.0025);
+  scene.add(_cssContact);
+
+  const homeTrigger = document.getElementById("home");
+  const forgeTrigger = document.getElementById("forge");
+  const experienceTrigger = document.getElementById("experience");
+  const aboutTrigger = document.getElementById("about");
+  const writingTrigger = document.getElementById("writing");
+  const contactTrigger = document.getElementById("contact");
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+
+    // Check if the clicked element has an ID and perform the corresponding action
+    switch (target.id) {
+      case "home":
+        if (!animationInProgress) homeAnimation(camera);
+        break;
+      case "forge":
+        if (!animationInProgress) forgeAnimation(camera);
+        break;
+      case "experience":
+        if (!animationInProgress) experienceAnimation(camera);
+        break;
+      case "about":
+        if (!animationInProgress) aboutAnimation(camera);
+        break;
+      case "writing":
+        if (!animationInProgress) writingAnimation(camera);
+        break;
+      case "contact":
+        if (!animationInProgress) contactAnimation(camera);
+        break;
+      default:
+        break;
     }
   });
 
