@@ -72,6 +72,28 @@ export const homeAnimation = (camera) => {
   return animationInProgress;
 };
 
+export const navigationAnimation = (camera) => {
+  if (!animationInProgress && camera) {
+    gsap.to(camera.position, {
+      z: 6,
+      x: 1,
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power1.out",
+      overwrite: "none",
+      duration: 2,
+      onStart: () => {
+        setAnimationInProgress(true);
+      },
+      onComplete: () => {
+        setAnimationInProgress(false);
+      },
+      delay: 0.2,
+    });
+  }
+
+  return animationInProgress;
+};
+
 export const forgeAnimation = (camera) => {
   if (!animationInProgress && camera) {
     gsap.to(camera.position, {

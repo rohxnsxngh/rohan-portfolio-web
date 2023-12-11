@@ -1,13 +1,17 @@
+<!-- Breadcrumbs.vue -->
 <template>
   <div class="flex" aria-label="Breadcrumb">
     <ol class="flex items-center space-x-4">
       <li v-for="(page, index) in pages" :key="index">
-        <a :href="page.link" class="text-gray-400 hover:text-gray-500">
+        <button
+          :id="page.id"
+          class="text-gray-400 hover:text-gray-500 focus:outline-none"
+        >
           {{ page.text }}
-        </a>
+        </button>
       </li>
     </ol>
-</div>
+  </div>
 </template>
 
 <script>

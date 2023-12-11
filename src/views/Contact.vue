@@ -5,20 +5,29 @@
     @click="handleDivClick"
   >
     Contact
-    <div>
+    <!-- <div>
       <button id="home" class="btn bg-primary-content">Home</button>
-    </div>
+    </div> -->
+    <Breadcrumbs :pages="breadcrumbPages"/>
   </div>
 </template>
 
 <script>
-// import Breadcrumbs from '../components/Breadcrumbs.vue';
+import Breadcrumbs from "../components/Breadcrumbs.vue";
 
 export default {
   name: "contact",
+  components: {
+    Breadcrumbs,
+  },
   data() {
     return {
       observer: null,
+      breadcrumbPages: [
+        { text: 'Home', id: 'home' },
+        { text: 'Navigation', id: 'navigation' },
+        { text: 'Contact', id: 'contact' },
+      ],
     };
   },
   methods: {

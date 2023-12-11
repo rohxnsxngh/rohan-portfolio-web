@@ -18,6 +18,7 @@ import {
 import { overlay } from "./three-components/overlay";
 import {
   initialAnimation,
+  navigationAnimation,
   homeAnimation,
   aboutAnimation,
   forgeAnimation,
@@ -223,6 +224,9 @@ document.addEventListener("DOMContentLoaded", () => {
     switch (target.id) {
       case "home":
         if (!animationInProgress) homeAnimation(camera);
+        break;
+      case "navigation":
+        if (!animationInProgress) navigationAnimation(camera);
         break;
       case "forge":
         if (!animationInProgress) forgeAnimation(camera);
