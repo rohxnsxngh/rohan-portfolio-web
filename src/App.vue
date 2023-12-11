@@ -7,12 +7,6 @@
     <!-- Your title content goes here -->
     Rohan Singh
     <button id="home" class="btn btn-primary">Home</button>
-    <router-link
-      to="/"
-      class="text-sm sm:text-lg text-white font-semibold hover:text-black mr-4"
-    >
-      Home
-    </router-link>
   </div>
 </template>
 

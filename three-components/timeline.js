@@ -11,13 +11,14 @@ export const timeline = (camera) => {
 
   // Animation for scrolling down
   if (!animationInProgress && camera.position.y === 0) {
-    tl.to(camera.position, {
+    tl
+    .to(camera.position, {
       z: 1,
       y: 1,
       x: -2,
       onUpdate: () => camera.lookAt(1, 1, 0),
       ease: "power1.out",
-      duration: 2.5,
+      duration: 2,
       onStart: () => {
         setAnimationInProgress(true);
       },
@@ -28,16 +29,23 @@ export const timeline = (camera) => {
         x: 2,
         onUpdate: () => camera.lookAt(1, 1, 0),
         ease: "power1.out",
-        duration: 2.5,
+        duration: 2,
         delay: 0.2,
       })
       .to(camera.position, {
-        z: 3,
-        y: -3,
+        z: 6.5,
+        y: 1,
         x: 1,
-        onUpdate: () => camera.lookAt(1, -3, 0),
+        onUpdate: () => camera.lookAt(1, 1, 0),
         ease: "power1.out",
-        duration: 2.5,
+        duration: 2,
+        delay: 0.2,
+      })
+      .to(camera.rotation, {
+        y: - Math.PI,
+        onUpdate: () => camera.updateProjectionMatrix(),
+        ease: "power1.out",
+        duration: 4,
         delay: 0.2,
       });
   }

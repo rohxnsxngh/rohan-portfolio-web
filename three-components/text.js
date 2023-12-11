@@ -23,8 +23,12 @@ function createText(scene, fontLoader, size = 0.45) {
       );
 
       const textMaterial = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        flatShading: true,
+        color: 0xff0000,
+        emissive: 0x170033, //change color
+        specular: 0xffffff, //0xEB00D5
+        shininess: 5,
+        // flatShading: true,
+        // wireframe: true
       });
       const textMeshHome = new THREE.Mesh(textGeometryAbout, textMaterial);
       textMeshHome.position.set(0, 1, 0);
