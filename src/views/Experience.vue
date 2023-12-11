@@ -5,16 +5,26 @@
     @click="handleDivClick"
   >
     Experience
-    <button id="home" class="btn bg-primary-content">Home</button>
+    <Breadcrumbs :pages="breadcrumbPages"/>
   </div>
 </template>
 
 <script>
+import Breadcrumbs from "../components/Breadcrumbs.vue";
+
 export default {
   name: "experience",
+  components: {
+    Breadcrumbs,
+  },
   data() {
     return {
       observer: null,
+      breadcrumbPages: [
+        { text: "Home", id: "home" },
+        { text: "Navigation", id: "navigation" },
+        { text: "Experience", id: "experience" },
+      ],
     };
   },
   methods: {

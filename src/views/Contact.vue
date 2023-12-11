@@ -5,10 +5,7 @@
     @click="handleDivClick"
   >
     Contact
-    <!-- <div>
-      <button id="home" class="btn bg-primary-content">Home</button>
-    </div> -->
-    <Breadcrumbs :pages="breadcrumbPages"/>
+    <Breadcrumbs :pages="breadcrumbPages" />
   </div>
 </template>
 
@@ -24,9 +21,9 @@ export default {
     return {
       observer: null,
       breadcrumbPages: [
-        { text: 'Home', id: 'home' },
-        { text: 'Navigation', id: 'navigation' },
-        { text: 'Contact', id: 'contact' },
+        { text: "Home", id: "home" },
+        { text: "Navigation", id: "navigation" },
+        { text: "Contact", id: "contact" },
       ],
     };
   },
