@@ -108,10 +108,22 @@ renderer.setClearColor(0x000000, 0);
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-const loadingProgressText = document.getElementById("loading-module");
+const manager = new THREE.LoadingManager()
+
+const progressBar = document.getElementById('progress-bar')
+
+manager.onProgress = (url, loaded, total) => {
+  progressBar.value = (loaded / total) * 100
+}
+
+manager.onLoad = () => {
+  loadingContainer.style.display = 'none'
+}
+
+const loadingContainer = document.querySelector('div.loading-container')
 
 //Robot Model
-const loader = new GLTFLoader();
+const loader = new GLTFLoader(manager);
 loader.load(
   "/Models/robot/scene.gltf",
   function (gltf) {
@@ -132,21 +144,12 @@ loader.load(
     scene.add(_robot);
     _mixerRobot = new THREE.AnimationMixer(_robot);
     _mixerRobot.timeScale = 1.25;
-    _mixerRobot.clipAction(gltf.animations[0]).play();d
-    if (loadingProgressText) {
-      // console.log("assets loaded", progress)
-      loadingProgressText.style.visibility = "hidden";
-      loadingProgressText.style.zIndex = "-1";
-    }
+    _mixerRobot.clipAction(gltf.animations[0]).play();
   },
   // // onProgress callback
   function (xhr) {
     const progress = (xhr.loaded / xhr.total) * 100;
-    // if (loadingProgressText && progress === 100) {
-    //   console.log("assets loaded", progress)
-    //   loadingProgressText.style.visibility = "hidden";
-    //   loadingProgressText.style.zIndex = "-1";
-    // }
+    console.log(progress);
   },
 
   // // onError callback
@@ -216,13 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssContact);
 
-  // const homeTrigger = document.getElementById("home");
-  // const forgeTrigger = document.getElementById("forge");
-  // const experienceTrigger = document.getElementById("experience");
-  // const aboutTrigger = document.getElementById("about");
-  // const writingTrigger = document.getElementById("writing");
-  // const contactTrigger = document.getElementById("contact");
-
   document.addEventListener("click", (event) => {
     const target = event.target;
 
@@ -278,11 +274,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update robot rotation based on mouse movement
     if (_robot) {
-      // _robot.rotation.x = parallaxY * Math.PI * 0.01
-      // _robot.rotation.y = parallaxX * Math.PI * 0.01
-      // Bobbing motion for the robot
-      const bobbingAmplitude = 0.1; // Adjust as needed
-      const bobbingSpeed = 1.0; // Adjust as needed
+      const bobbingAmplitude = 0.1;
+      const bobbingSpeed = 1.0;
 
       const bobbingHeight =
         Math.sin(elapsedTime * bobbingSpeed) * bobbingAmplitude;

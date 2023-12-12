@@ -13,9 +13,13 @@
   <body>
     <canvas class="webgl"></canvas>
     <canvas class="fluid"></canvas>
-    <div id="loading-module"><p id="loading-progress">Loading...</p></div>
+    <div class="loading-container">
+      <label for="progress-bar">Loading...</label>
+      <progress id="progress-bar" value="0" max="100"></progress>
+    </div>
     <script type="module" src="./script.js"></script>
     <script type="module" src="./fluid.js"></script>
+    <script type="module" src="./loading.js"></script>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
