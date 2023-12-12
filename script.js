@@ -132,16 +132,21 @@ loader.load(
     scene.add(_robot);
     _mixerRobot = new THREE.AnimationMixer(_robot);
     _mixerRobot.timeScale = 1.25;
-    _mixerRobot.clipAction(gltf.animations[0]).play();
-
+    _mixerRobot.clipAction(gltf.animations[0]).play();d
+    if (loadingProgressText) {
+      // console.log("assets loaded", progress)
+      loadingProgressText.style.visibility = "hidden";
+      loadingProgressText.style.zIndex = "-1";
+    }
   },
   // // onProgress callback
   function (xhr) {
     const progress = (xhr.loaded / xhr.total) * 100;
-    if (loadingProgressText && progress === 100) {
-      console.log("assets loaded", progress)
-      loadingProgressText.style.visibility = "hidden";
-    }
+    // if (loadingProgressText && progress === 100) {
+    //   console.log("assets loaded", progress)
+    //   loadingProgressText.style.visibility = "hidden";
+    //   loadingProgressText.style.zIndex = "-1";
+    // }
   },
 
   // // onError callback
