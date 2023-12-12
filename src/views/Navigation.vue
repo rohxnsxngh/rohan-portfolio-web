@@ -5,17 +5,10 @@
     @click="handleDivClick"
   >
     <!-- Your title content goes here -->
-    <div class="sm:flex sm:flex-row flex-col sm:p-10 p-2">
-      <div class="avatar sm:h-full h-0 sm:w-48 mr-10 sm:block hidden">
-        <div
-          class="w-full rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2"
-        >
-          <img src="/Images/profile.jpg" />
-        </div>
-      </div>
+    <div class="sm:flex sm:flex-row flex-col sm:p-8 p-2">
       <div class="grid grid-rows-3 grid-flow-col sm:gap-10 gap-4">
         <div>
-          <button id="home" class="btn bg-primary-content">Home</button>
+          <button id="home" class="btn bg-primary-content w-full h-full">Home</button>
         </div>
         <div>
           <button id="forge" class="btn bg-primary-content">Forge</button>

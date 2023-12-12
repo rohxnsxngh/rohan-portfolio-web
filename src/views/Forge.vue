@@ -5,9 +5,9 @@
     @click="handleDivClick"
   >
     Forge
-    <div class="flex flex-col sm:p-10 p-2">
+    <div class="flex flex-col">
       <div></div>
-      <Breadcrumbs :pages="breadcrumbPages" class="float-right"/>
+      <Breadcrumbs :pages="breadcrumbPages" class="float-right" />
     </div>
   </div>
 </template>

@@ -30,6 +30,7 @@ import {
   animationInProgress,
   setAnimationInProgress,
 } from "./three-components/animationState";
+import { sound } from "./three-components/sound";
 
 let _cssrenderer,
   _cssInit,
@@ -227,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if the clicked element has an ID and perform the corresponding action
     switch (target.id) {
       case "init-panel":
-        if (!animationInProgress) initialAnimation(camera);
+        if (!animationInProgress) initialAnimation(camera); sound(camera);
         break;
       case "home":
         if (!animationInProgress) homeAnimation(camera, 6);
