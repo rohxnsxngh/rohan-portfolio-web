@@ -105,22 +105,21 @@ const renderer = new THREE.WebGLRenderer({
   powerPreference: "high-performance",
 });
 renderer.setClearColor(0x000000, 0);
-renderer.setSize(sizes.width, sizes.height);
+renderer.setSize(sizes.width, sizes.height, false);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-const manager = new THREE.LoadingManager()
+const manager = new THREE.LoadingManager();
 
-const progressBar = document.getElementById('progress-bar')
+const progressBar = document.getElementById("progress-bar");
+const loadingContainer = document.querySelector("div.loading-container");
 
 manager.onProgress = (url, loaded, total) => {
-  progressBar.value = (loaded / total) * 100
-}
+  progressBar.value = (loaded / total) * 100;
+};
 
 manager.onLoad = () => {
-  loadingContainer.style.display = 'none'
-}
-
-const loadingContainer = document.querySelector('div.loading-container')
+  loadingContainer.style.display = "none";
+};
 
 //Robot Model
 const loader = new GLTFLoader(manager);
@@ -172,7 +171,7 @@ window.addEventListener("scroll", () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   _cssrenderer = new CSS3DRenderer();
-  _cssrenderer.setSize(window.innerWidth, window.innerHeight);
+  _cssrenderer.setSize(window.innerWidth, window.innerHeight, false);
   _cssrenderer.domElement.style.position = "fixed";
   _cssrenderer.domElement.style.top = "0";
   document.body.appendChild(_cssrenderer.domElement);
@@ -307,7 +306,11 @@ function handleWindowResize() {
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+  const maxWidth = 1280;
+  const maxHeight = 1024;
+
   _cssrenderer.setSize(sizes.width, sizes.height);
+  console.log(_cssrenderer.getSize())
 
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
