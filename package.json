@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tweenjs/tween.js": "^21.0.0",
     "bootstrap": "^5.2.0",
     "dat.gui": "^0.7.9",
     "gsap": "^3.12.2",

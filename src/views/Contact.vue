@@ -5,10 +5,7 @@
     @click="handleDivClick"
   >
     Contact
-    <div class="flex flex-col sm:p-10 p-2">
-      <div></div>
-      <Breadcrumbs :pages="breadcrumbPages" class="float-right"/>
-    </div>
+    <Breadcrumbs :pages="breadcrumbPages" />
   </div>
 </template>
 

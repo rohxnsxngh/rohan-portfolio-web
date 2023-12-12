@@ -30,26 +30,15 @@ function createText(scene, fontLoader, size = 0.45) {
         // flatShading: true,
         // wireframe: true
       });
-      textGeometryHomeCaption.computeBoundingBox();
-      const center = textGeometryHomeCaption.boundingBox.getCenter(new THREE.Vector3());
       const textMeshHome = new THREE.Mesh(textGeometryAbout, textMaterial);
-      // textMeshHome.updateMatrixWorld();
-      // center.applyMatrix4(textMeshHome.matrixWorld);
-      textMeshHome.position.set(-150, 175, 0);
-      textMeshHome.scale.set(150, 150, 150);
+      textMeshHome.position.set(0, 1, 0);
       scene.add(textMeshHome);
 
-      const textMaterialCaption = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-      });
-      const textMeshHomeCaption = new THREE.Mesh(
-        textGeometryHomeCaption,
-        textMaterialCaption
-      );
-      textMeshHomeCaption.position.set(-150, 135, 0);
-      textMeshHomeCaption.scale.set(150, 150, 150);
+      const textMaterialCaption = new THREE.MeshBasicMaterial({color: 0xffffff});
+      const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialCaption);
+      textMeshHomeCaption.position.set(0, 0.65, 0);
       scene.add(textMeshHomeCaption);
-      return textMeshHome, textMeshHomeCaption;
+      return textMeshHome, textMeshHomeCaption
     });
   });
 }
