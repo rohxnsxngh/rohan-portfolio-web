@@ -50,14 +50,6 @@ const fontLoader = new FontLoader();
 // Usage of the createHomeText function
 createText(scene, fontLoader);
 
-//helper
-// const size = 10;
-// const divisions = 10;
-// const gridHelper = new THREE.GridHelper(size, divisions);
-// scene.add(gridHelper);
-// const axesHelper = new THREE.AxesHelper(5);
-// scene.add(axesHelper);
-
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight,
@@ -94,8 +86,9 @@ cameraGroup.add(camera);
 camera.add(overlay.mesh);
 
 //Light
-const ambientLight = new THREE.AmbientLight(0x000000, 0.8);
-scene.add(ambientLight);
+const directionalLight3 = new THREE.DirectionalLight(0x8580df, 0.05);
+directionalLight3.position.set(0, 0, 3);
+scene.add(directionalLight3);
 
 const directionalLight = new THREE.DirectionalLight(0xb11bfa, 0.8);
 directionalLight.position.set(-2, 2, 0);
@@ -114,6 +107,8 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setClearColor(0x000000, 0);
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+const loadingProgressText = document.getElementById("loading-module");
 
 //Robot Model
 const loader = new GLTFLoader();
@@ -136,16 +131,22 @@ loader.load(
     _robot.castShadow = true;
     scene.add(_robot);
     _mixerRobot = new THREE.AnimationMixer(_robot);
+    _mixerRobot.timeScale = 1.25;
     _mixerRobot.clipAction(gltf.animations[0]).play();
+
   },
   // // onProgress callback
   function (xhr) {
-    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+    const progress = (xhr.loaded / xhr.total) * 100;
+    if (loadingProgressText && progress === 100) {
+      console.log("assets loaded", progress)
+      loadingProgressText.style.visibility = "hidden";
+    }
   },
 
   // // onError callback
   function (err) {
-    console.log("An error happened");
+    console.log(err, "An error happened");
   }
 );
 
@@ -210,12 +211,12 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssContact);
 
-  const homeTrigger = document.getElementById("home");
-  const forgeTrigger = document.getElementById("forge");
-  const experienceTrigger = document.getElementById("experience");
-  const aboutTrigger = document.getElementById("about");
-  const writingTrigger = document.getElementById("writing");
-  const contactTrigger = document.getElementById("contact");
+  // const homeTrigger = document.getElementById("home");
+  // const forgeTrigger = document.getElementById("forge");
+  // const experienceTrigger = document.getElementById("experience");
+  // const aboutTrigger = document.getElementById("about");
+  // const writingTrigger = document.getElementById("writing");
+  // const contactTrigger = document.getElementById("contact");
 
   document.addEventListener("click", (event) => {
     const target = event.target;

@@ -4,38 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/rs.svg" />
     <link rel="stylesheet" href="/src/style.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
     <title>Rohan Singh</title>
   </head>
   <body>
-    <!-- Loading and Start Screen -->
-    <!-- <div class="progress-bar-container">
-      <label for="progress-bar">Loading...</label>
-      <div id="loader-circular"></div>
-    </div> -->
-    <!-- Loading and Start Screen -->
     <canvas class="webgl"></canvas>
     <canvas class="fluid"></canvas>
+    <div id="loading-module"><p id="loading-progress">Loading...</p></div>
     <script type="module" src="./script.js"></script>
-    <script type="module" src="./scriptFluid.js"></script>
-    <div id="app"></div>  
-    <!-- <script type="module" src="./three-components/scroll.js"></script> -->
+    <script type="module" src="./fluid.js"></script>
+    <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
-    <!-- <div class="line-container">
-      <svg
-        width="36"
-        height="883"
-        fill="none"
-        preserveAspectRatio="xMidYMax meet"
-      >
-        <g filter="url(#filter0_dddddd_2_6)"></g>
-        <path
-          d="M2 1.5V34.5H18V1.5H35V34.5H52.5V1.5H70V34.5V77H52.5V46.5H35V77H18V46.5H2V77V117.5H18V89H35V117.5H52.5V89H70V117.5V157.5H52.5V130.5H35V157.5H18V130.5H2V157.5V197H18V168.5H35V197H52.5V168.5H70V242.5H52.5V207.5H35V242.5H18V207.5H2V278H18V252.5H35V278H52.5V252.5H70V278V316H52.5V288H35V316H18V288H2V316V352.5H18V328H35V352.5H52.5V328H70V352.5V400H52.5V363.5H35V400H18V363.5H2V400V426H18V415.5H35V426H52.5V415.5H70V426V441.5H52.5V435.5H35V441.5H18V435.5H2V486.5H18V456H35V486.5H52.5V456H70V486.5V522H52.5V498.5H35V522H18V498.5H2V522V558.5H18V533.5H35V558.5H52.5V533.5H70V563.5V592H52.5V563.5H35V592H18V563.5H2V592V619H18V608.5H35V619H52.5V608.5H70V651H52.5V632H35V651H18V632H2V651V693.5H18V665H35V693.5H52.5V665H70V693.5V776H52.5V707.5H35V776H18V707.5H2V776V821H18V789.5H35V821H52.5V789.5H70V821V836.5H52.5V828H35V836.5H18V828H2V836.5V858H18V850.5H35V858H52.5V850.5H70V858V881.5H52.5V871H35V881.5H18V871H2V881.5"
-          stroke="#ffffff"
-          stroke-width="0.75"
-        />
-        <g />
-      </svg>
-    </div> -->
   </body>
 </html>

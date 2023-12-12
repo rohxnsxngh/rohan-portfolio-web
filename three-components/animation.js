@@ -90,7 +90,7 @@ export const navigationAnimation = (camera) => {
 function pageToPageAnimation(timeline, camera, zPosition) {
   timeline
     .to(camera.position, {
-      y: -3,
+      y: -2.75,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
@@ -118,7 +118,7 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       delay: 0.2,
     })
     .to(camera.position, {
-      y: -3.5,
+      y: -3.25,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
