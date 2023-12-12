@@ -1066,7 +1066,7 @@ function resizeCanvas () {
 
 function updateCanvasPosition() {
     const scrollTop = window.scrollY;
-    canvas.style.top = `${scrollTop}px`;
+    canvas.style.transform = `translateY(${scrollTop}px)`;
 }
 
 function updateColors (dt) {

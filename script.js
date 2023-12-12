@@ -170,49 +170,49 @@ window.addEventListener("scroll", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  _cssrenderer = new CSS3DRenderer();
+  _cssrenderer = new CSS2DRenderer();
   _cssrenderer.setSize(window.innerWidth, window.innerHeight, false);
   _cssrenderer.domElement.style.position = "fixed";
   _cssrenderer.domElement.style.top = "0";
   document.body.appendChild(_cssrenderer.domElement);
 
   const navigationPanel = document.getElementById("navigation-panel");
-  _cssNavigation = new CSS3DObject(navigationPanel);
+  _cssNavigation = new CSS2DObject(navigationPanel);
   _cssNavigation.position.set(1, -6, 6);
   _cssNavigation.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   _cssNavigation.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssNavigation);
 
   const forgePanel = document.getElementById("forge-panel");
-  _cssForge = new CSS3DObject(forgePanel);
+  _cssForge = new CSS2DObject(forgePanel);
   _cssForge.position.set(1, -6, 10);
   _cssForge.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   _cssForge.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssForge);
 
   const experiencePanel = document.getElementById("experience-panel");
-  _cssExperience = new CSS3DObject(experiencePanel);
+  _cssExperience = new CSS2DObject(experiencePanel);
   _cssExperience.position.set(1, -6, 14);
   _cssExperience.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   _cssExperience.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssExperience);
 
   const aboutPanel = document.getElementById("about-panel");
-  _cssAbout = new CSS3DObject(aboutPanel);
+  _cssAbout = new CSS2DObject(aboutPanel);
   _cssAbout.position.set(1, -6, 18);
   _cssAbout.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   _cssAbout.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssAbout);
 
   const writingPanel = document.getElementById("writing-panel");
-  _cssWriting = new CSS3DObject(writingPanel);
+  _cssWriting = new CSS2DObject(writingPanel);
   _cssWriting.position.set(1, -6, 22);
   _cssWriting.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   _cssWriting.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssWriting);
 
   const contactPanel = document.getElementById("contact-panel");
-  _cssContact = new CSS3DObject(contactPanel);
+  _cssContact = new CSS2DObject(contactPanel);
   _cssContact.position.set(1, -6, 26);
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   _cssContact.scale.set(0.0025, 0.0025, 0.0025);
@@ -310,7 +310,6 @@ function handleWindowResize() {
   const maxHeight = 1024;
 
   _cssrenderer.setSize(sizes.width, sizes.height);
-  console.log(_cssrenderer.getSize())
 
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.9;
