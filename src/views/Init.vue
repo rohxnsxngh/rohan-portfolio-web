@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-10 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+    class="text-white overscroll-none touch-none subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-10 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
     id="init-panel"
     @click="handleDivClick"
   ></div>

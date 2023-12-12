@@ -31,7 +31,8 @@ import {
   setAnimationInProgress,
 } from "./three-components/animationState";
 
-let _cssrenderer,_cssInit,
+let _cssrenderer,
+  _cssInit,
   _cssNavigation,
   _cssForge,
   _cssExperience,
@@ -86,7 +87,7 @@ cameraGroup.add(camera);
 camera.add(overlay.mesh);
 
 //Light
-const directionalLight3 = new THREE.DirectionalLight(0x8580df, 0.05);
+const directionalLight3 = new THREE.DirectionalLight(0x8580df, 0.1);
 directionalLight3.position.set(0, 0, 3);
 scene.add(directionalLight3);
 
@@ -163,12 +164,6 @@ let previousTime = 0;
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
 
-// window.addEventListener("scroll", () => {
-//   if (!animationInProgress) {
-//     initialAnimation(camera);
-//   }
-// });
-
 document.addEventListener("DOMContentLoaded", () => {
   _cssrenderer = new CSS2DRenderer();
   _cssrenderer.setSize(window.innerWidth, window.innerHeight, false);
@@ -218,6 +213,14 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssContact);
 
+  document.addEventListener("scroll", (event) => {
+    const target = event.target;
+
+    if (target.id === "init-panel" && !animationInProgress) {
+      initialAnimation(camera);
+    }
+  });
+
   document.addEventListener("click", (event) => {
     const target = event.target;
 
@@ -230,22 +233,26 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!animationInProgress) homeAnimation(camera, 6);
         break;
       case "navigation":
-        if (!animationInProgress) navigationAnimation(camera, _cssNavigation.position.z);
+        if (!animationInProgress)
+          navigationAnimation(camera, _cssNavigation.position.z);
         break;
       case "forge":
         if (!animationInProgress) forgeAnimation(camera, _cssForge.position.z);
         break;
       case "experience":
-        if (!animationInProgress) experienceAnimation(camera, _cssExperience.position.z);
+        if (!animationInProgress)
+          experienceAnimation(camera, _cssExperience.position.z);
         break;
       case "about":
         if (!animationInProgress) aboutAnimation(camera, _cssAbout.position.z);
         break;
       case "writing":
-        if (!animationInProgress) writingAnimation(camera, _cssWriting.position.z);
+        if (!animationInProgress)
+          writingAnimation(camera, _cssWriting.position.z);
         break;
       case "contact":
-        if (!animationInProgress) contactAnimation(camera, _cssContact.position.z);
+        if (!animationInProgress)
+          contactAnimation(camera, _cssContact.position.z);
         break;
       default:
         break;
