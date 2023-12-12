@@ -31,7 +31,7 @@ import {
   setAnimationInProgress,
 } from "./three-components/animationState";
 
-let _cssrenderer,
+let _cssrenderer,_cssInit,
   _cssNavigation,
   _cssForge,
   _cssExperience,
@@ -163,11 +163,11 @@ let previousTime = 0;
 // const controls = new OrbitControls( camera, renderer.domElement );
 // controls.update()
 
-window.addEventListener("scroll", () => {
-  if (!animationInProgress) {
-    initialAnimation(camera);
-  }
-});
+// window.addEventListener("scroll", () => {
+//   if (!animationInProgress) {
+//     initialAnimation(camera);
+//   }
+// });
 
 document.addEventListener("DOMContentLoaded", () => {
   _cssrenderer = new CSS2DRenderer();
@@ -176,46 +176,46 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssrenderer.domElement.style.top = "0";
   document.body.appendChild(_cssrenderer.domElement);
 
+  const initPanel = document.getElementById("init-panel");
+  _cssInit = new CSS2DObject(initPanel);
+  _cssInit.position.set(1, 0, 0);
+  // _cssInit.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  scene.add(_cssInit);
+
   const navigationPanel = document.getElementById("navigation-panel");
   _cssNavigation = new CSS2DObject(navigationPanel);
   _cssNavigation.position.set(1, -6, 6);
   _cssNavigation.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  _cssNavigation.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssNavigation);
 
   const forgePanel = document.getElementById("forge-panel");
   _cssForge = new CSS2DObject(forgePanel);
   _cssForge.position.set(1, -6, 10);
   _cssForge.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  _cssForge.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssForge);
 
   const experiencePanel = document.getElementById("experience-panel");
   _cssExperience = new CSS2DObject(experiencePanel);
   _cssExperience.position.set(1, -6, 14);
   _cssExperience.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  _cssExperience.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssExperience);
 
   const aboutPanel = document.getElementById("about-panel");
   _cssAbout = new CSS2DObject(aboutPanel);
   _cssAbout.position.set(1, -6, 18);
   _cssAbout.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  _cssAbout.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssAbout);
 
   const writingPanel = document.getElementById("writing-panel");
   _cssWriting = new CSS2DObject(writingPanel);
   _cssWriting.position.set(1, -6, 22);
   _cssWriting.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  _cssWriting.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssWriting);
 
   const contactPanel = document.getElementById("contact-panel");
   _cssContact = new CSS2DObject(contactPanel);
   _cssContact.position.set(1, -6, 26);
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-  _cssContact.scale.set(0.0025, 0.0025, 0.0025);
   scene.add(_cssContact);
 
   document.addEventListener("click", (event) => {
@@ -223,26 +223,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Check if the clicked element has an ID and perform the corresponding action
     switch (target.id) {
+      case "init-panel":
+        if (!animationInProgress) initialAnimation(camera);
+        break;
       case "home":
-        if (!animationInProgress) homeAnimation(camera);
+        if (!animationInProgress) homeAnimation(camera, 6);
         break;
       case "navigation":
-        if (!animationInProgress) navigationAnimation(camera);
+        if (!animationInProgress) navigationAnimation(camera, _cssNavigation.position.z);
         break;
       case "forge":
-        if (!animationInProgress) forgeAnimation(camera);
+        if (!animationInProgress) forgeAnimation(camera, _cssForge.position.z);
         break;
       case "experience":
-        if (!animationInProgress) experienceAnimation(camera);
+        if (!animationInProgress) experienceAnimation(camera, _cssExperience.position.z);
         break;
       case "about":
-        if (!animationInProgress) aboutAnimation(camera);
+        if (!animationInProgress) aboutAnimation(camera, _cssAbout.position.z);
         break;
       case "writing":
-        if (!animationInProgress) writingAnimation(camera);
+        if (!animationInProgress) writingAnimation(camera, _cssWriting.position.z);
         break;
       case "contact":
-        if (!animationInProgress) contactAnimation(camera);
+        if (!animationInProgress) contactAnimation(camera, _cssContact.position.z);
         break;
       default:
         break;
@@ -256,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLargeScreen = window.innerWidth > 750;
 
-    if (isLargeScreen && !animationInProgress) {
+    if (isLargeScreen && !animationInProgress && camera.position.y === 0) {
       const parallaxX = cursor.x * 0.8;
       const parallaxY = -cursor.y * 0.4;
 
@@ -305,9 +308,6 @@ function handleWindowResize() {
 
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  const maxWidth = 1280;
-  const maxHeight = 1024;
 
   _cssrenderer.setSize(sizes.width, sizes.height);
 

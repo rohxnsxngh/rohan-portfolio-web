@@ -1,4 +1,5 @@
 <template>
+  <Init />
   <Navigation />
   <Forge />
   <Experience />
@@ -14,6 +15,7 @@ import Experience from "./views/Experience.vue";
 import About from "./views/About.vue";
 import Writing from "./views/Writing.vue";
 import Contact from "./views/Contact.vue";
+import Init from "./views/Init.vue";
 
 export default {
   name: "home",
@@ -24,6 +26,7 @@ export default {
     About,
     Writing,
     Contact,
+    Init
   },
   data() {
     return {

@@ -26,7 +26,7 @@ let config = {
     PAUSED: false,
     BACK_COLOR: "#230E42",
     TRANSPARENT: false,
-    BLOOM: true,
+    BLOOM: false,
     BLOOM_ITERATIONS: 8,
     BLOOM_RESOLUTION: 256,
     BLOOM_INTENSITY: 0.2,
@@ -1427,11 +1427,21 @@ function correctDeltaY (delta) {
     return delta;
 }
 
-function generateColor () {
-    let c = HSVtoRGB(Math.random(), 1.0, 1.0);
+function generateColor() {
+    // Generate hue values between approximately 0.6 (more blue) and 0.95 (less pink)
+    let h = 0.6 + Math.random() * 0.25;
+
+    // Saturation and value are kept at maximum for vibrant colors
+    let s = 1.0;
+    let v = 1.0;
+
+    let c = HSVtoRGB(h, s, v);
+
+    // Adjust the color intensity to your preference
     c.r *= 0.15;
     c.g *= 0.15;
     c.b *= 0.15;
+
     return c;
 }
 

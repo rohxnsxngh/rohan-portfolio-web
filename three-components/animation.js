@@ -132,7 +132,7 @@ function pageToPageAnimation(timeline, camera, zPosition) {
     });
 }
 
-export const forgeAnimation = (camera) => {
+export const forgeAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -141,13 +141,13 @@ export const forgeAnimation = (camera) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, 10);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const experienceAnimation = (camera) => {
+export const experienceAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -156,13 +156,13 @@ export const experienceAnimation = (camera) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, 14);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const aboutAnimation = (camera) => {
+export const aboutAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -171,13 +171,13 @@ export const aboutAnimation = (camera) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, 18);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const writingAnimation = (camera) => {
+export const writingAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -186,13 +186,13 @@ export const writingAnimation = (camera) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, 22);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const contactAnimation = (camera) => {
+export const contactAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -201,7 +201,7 @@ export const contactAnimation = (camera) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, 26);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
