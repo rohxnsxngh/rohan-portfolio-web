@@ -55,29 +55,11 @@
                   </button>
                 </li>
                 <li class="step step-primary" data-content="●">
-                  <button id="home" class="btn btn-sm bg-primary-content">
+                  <button id="contact" class="btn btn-sm bg-primary-content">
                     Contact
                   </button>
                 </li>
               </ul>
-
-              <!-- <button id="home" class="btn bg-primary-content">Home</button>
-
-              <button id="forge" class="btn bg-primary-content">Forge</button>
-
-              <button id="experience" class="btn bg-primary-content">
-                Experience
-              </button>
-
-              <button id="about" class="btn bg-primary-content">About</button>
-
-              <button id="writing" class="btn bg-primary-content">
-                Writing
-              </button>
-
-              <button id="contact" class="btn bg-primary-content">
-                Contact
-              </button> -->
             </div>
           </div>
         </div>
