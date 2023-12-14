@@ -14,7 +14,7 @@
       >
         <div class="hero-content text-center">
           <div class="max-w-md">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-left font-bold">
+            <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold">
               Welcome.
               <div class="divider"></div>
               <p class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl my-4">

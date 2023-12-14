@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
     id="experience-panel"
     @click="handleDivClick"
   >
@@ -13,7 +13,7 @@
 
       <div
         role="tablist"
-        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content row-start-1 col-start-1 col-span-6 text-sm my-4 top-0"
+        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content row-start-1 col-start-1 col-span-6 my-4 top-0"
       >
         <!-- Toyota -->
         <input
