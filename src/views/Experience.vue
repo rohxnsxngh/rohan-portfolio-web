@@ -4,7 +4,52 @@
     id="experience-panel"
     @click="handleDivClick"
   >
-    <Menu />
+    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-2">
+      <div class="">
+        <Menu />
+      </div>
+
+      <div
+        role="tablist"
+        class="tabs tabs-lifted sm:tabs-sm tabs-xs bg-primary-content row-start-2 col-start-1 col-span-6 text-sm my-4"
+      >
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab hover:bg-primary hover:text-white"
+          aria-label="Toyota Motors North America"
+        />
+        <div
+          role="tabpanel"
+          class="tabs tabs-lifted tabs-xs bg-primary-content text-4xl my-4 col-span-6"
+        >
+          <br />
+          <h1 class="text-4xl font-bold">Toyota Motors North America</h1>
+          <div class="divider"></div>
+          <h1 class="text-2xl">Software Systems Engineer I</h1>
+        </div>
+
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab hover:bg-primary hover:text-white"
+          aria-label="Tesla"
+        />
+        <div
+          role="tabs tabs-lifted tabs-xs bg-primary-content row-start-2 col-start-1 col-span-6 text-sm my-4"
+        ></div>
+
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab hover:bg-primary hover:text-white"
+          aria-label="Tesla"
+        />
+      </div>
+    </div>
   </div>
 </template>
 

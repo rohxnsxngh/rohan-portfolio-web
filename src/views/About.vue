@@ -4,7 +4,33 @@
     id="about-panel"
     @click="handleDivClick"
   >
-    <Menu />
+    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
+      <div class="">
+        <Menu />
+      </div>
+
+      <div
+        class="hero min-h-screen row-start-2 col-start-1 row-span-5 col-span-6"
+      >
+        <div class="hero-content text-left">
+          <div class="max-w-md">
+            <h1 class="text-4xl font-bold">
+              Little bit about me.
+              <p class="text-sm text-left font-semibold my-4">
+                I am a software engineer with a background in mechanical
+                engineering and a passion for developing innovative solutions.
+                My experience in engineering has given me a solid foundation in
+                the principles of robotics, mechatronics, and dynamics, which I
+                have applied to my work in software development. In my free
+                time, I enjoy exploring new developments in robotics and
+                mechatronics, and applying my skills to personal projects that
+                challenge me to learn and grow.
+              </p>
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

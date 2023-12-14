@@ -51,7 +51,7 @@
               class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
-              Navigation
+              Welcome
             </button>
             <button
               id="about"

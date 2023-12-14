@@ -108,7 +108,7 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 2,
+      duration: 1,
       onStart: () => {
         setAnimationInProgress(true);
       },
