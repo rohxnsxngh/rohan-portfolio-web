@@ -16,43 +16,43 @@
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaRoadster.jpg"
+            src="/public/Images/TeslaRoadster.jpg"
             class="rounded-box object-cover"
           />
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaModelYWrapped.jpg"
+            src="/public/Images/TeslaModelYWrapped.jpg"
             class="rounded-box object-cover"
           />
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaCyberTruck.jpg"
+            src="/public/Images/TeslaCyberTruck.jpg"
             class="rounded-box object-cover"
           />
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaOptimus.jpg"
+            src="/public/Images/TeslaOptimus.jpg"
             class="rounded-box object-cover"
           />
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaLiDARRainbow.png"
+            src="/public/Images/TeslaLiDARRainbow.png"
             class="rounded-box object-cover"
           />
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaLiDARControlTargets.png"
+            src="/public/Images/TeslaLiDARControlTargets.png"
             class="rounded-box object-cover"
           />
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaFlyingY.jpg"
+            src="/public/Images/TeslaFlyingY.jpg"
             class="rounded-box object-cover"
           />
         </div>
