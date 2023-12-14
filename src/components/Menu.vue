@@ -34,56 +34,56 @@
 
       <div
         v-show="isDropdownOpen"
-        class="text-white sm:w-60 w-48 h-72 overscroll-none subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl absolute top-12"
+        class="text-white sm:w-60 z-[1] w-48 h-72 overscroll-none subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl absolute top-12"
         id="navigation-panel"
       >
         <div class="flex flex-col p-2">
           <div class="sm:text-sm text-xs space-y-1">
             <button
               id="home"
-              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
+              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
               Home
             </button>
             <button
               id="navigation"
-              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
+              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
               Navigation
             </button>
             <button
               id="about"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
               About
             </button>
             <button
               id="forge"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
               Forge
             </button>
             <button
               id="experience"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
               Experience
             </button>
             <button
               id="writing"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
               Writing
             </button>
             <button
               id="contact"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
               @click="toggleDropdown"
             >
               Contact

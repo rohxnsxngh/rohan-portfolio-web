@@ -1,10 +1,12 @@
 <template>
   <div
-    class="text-white overscroll-none subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
     id="forge-panel"
     @click="handleDivClick"
   >
-    <Menu />
+    <!-- <div class="grid grid-rows-6 grid-flow-col gap-4"> -->
+      <Menu />
+    <!-- </div> -->
   </div>
 </template>
 
