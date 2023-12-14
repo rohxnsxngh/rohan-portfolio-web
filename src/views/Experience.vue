@@ -4,18 +4,19 @@
     id="experience-panel"
     @click="handleDivClick"
   >
-    Experience
-    <Breadcrumbs :pages="breadcrumbPages"/>
+    <Menu />
   </div>
 </template>
 
 <script>
 import Breadcrumbs from "../components/Breadcrumbs.vue";
+import Menu from "../components/Menu.vue";
 
 export default {
   name: "experience",
   components: {
     Breadcrumbs,
+    Menu,
   },
   data() {
     return {

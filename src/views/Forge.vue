@@ -4,21 +4,19 @@
     id="forge-panel"
     @click="handleDivClick"
   >
-    Forge
-    <div class="flex flex-col">
-      <div></div>
-      <Breadcrumbs :pages="breadcrumbPages" class="float-right" />
-    </div>
+    <Menu />
   </div>
 </template>
 
 <script>
 import Breadcrumbs from "../components/Breadcrumbs.vue";
+import Menu from "../components/Menu.vue";
 
 export default {
   name: "forge",
   components: {
     Breadcrumbs,
+    Menu,
   },
   data() {
     return {

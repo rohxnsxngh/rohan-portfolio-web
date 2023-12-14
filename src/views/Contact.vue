@@ -4,18 +4,19 @@
     id="contact-panel"
     @click="handleDivClick"
   >
-    Contact
-    <Breadcrumbs :pages="breadcrumbPages" />
+    <Menu />
   </div>
 </template>
 
 <script>
 import Breadcrumbs from "../components/Breadcrumbs.vue";
+import Menu from "../components/Menu.vue";
 
 export default {
   name: "contact",
   components: {
     Breadcrumbs,
+    Menu,
   },
   data() {
     return {

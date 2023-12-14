@@ -1,11 +1,8 @@
 import * as THREE from "three";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { createText } from "./three-components/text";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import overlayVertexShader from "./src/shaders/overlay/vertex.glsl";
-import overlayFragmentShader from "./src/shaders/overlay/fragment.glsl";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   CSS2DRenderer,
@@ -228,7 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if the clicked element has an ID and perform the corresponding action
     switch (target.id) {
       case "init-panel":
-        if (!animationInProgress) initialAnimation(camera); sound(camera);
+        if (!animationInProgress) initialAnimation(camera);
+        sound(camera);
         break;
       case "home":
         if (!animationInProgress) homeAnimation(camera, 6);
@@ -267,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLargeScreen = window.innerWidth > 750;
 
-    if (isLargeScreen && !animationInProgress && camera.position.y === 0) {
+    if (isLargeScreen && !animationInProgress) {
       const parallaxX = cursor.x * 0.8;
       const parallaxY = -cursor.y * 0.4;
 

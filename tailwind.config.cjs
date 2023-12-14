@@ -16,6 +16,9 @@ module.exports = {
       colors: {
         'regal-blue': '#73d7ff',
       },
+      fontFamily: {
+        satoshi: ["Satoshi-Black", "bold"],
+      }
     },
   },
   plugins: [require("daisyui")],
