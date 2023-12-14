@@ -4,32 +4,44 @@
     id="experience-panel"
     @click="handleDivClick"
   >
-    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-2">
+    <div
+      class="grid sm:grid-rows-6 grid-rows-8 sm:grid-cols-6 grid-cols-3 grid-flow-col gap-2"
+    >
       <div class="">
         <Menu />
       </div>
 
       <div
         role="tablist"
-        class="tabs tabs-lifted sm:tabs-sm tabs-xs bg-primary-content row-start-2 col-start-1 col-span-6 text-sm my-4"
+        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content row-start-2 col-start-1 col-span-6 text-sm my-4"
       >
+        <!-- Toyota -->
         <input
           type="radio"
           name="my_tabs_2"
           role="tab"
           class="tab hover:bg-primary hover:text-white"
-          aria-label="Toyota Motors North America"
+          aria-label="Toyota"
+          checked
+        />
+        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
+          <ExperienceToyota />
+        </div>
+        <!-- Tesla -->
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab hover:bg-primary hover:text-white"
+          aria-label="Tesla"
         />
         <div
           role="tabpanel"
-          class="tabs tabs-lifted tabs-xs bg-primary-content text-4xl my-4 col-span-6"
+          class="tab-content bg-primary-content rounded-box p-6"
         >
-          <br />
-          <h1 class="text-4xl font-bold">Toyota Motors North America</h1>
-          <div class="divider"></div>
-          <h1 class="text-2xl">Software Systems Engineer I</h1>
+          <ExperienceTesla />
         </div>
-
+        <!-- Tesla -->
         <input
           type="radio"
           name="my_tabs_2"
@@ -38,16 +50,11 @@
           aria-label="Tesla"
         />
         <div
-          role="tabs tabs-lifted tabs-xs bg-primary-content row-start-2 col-start-1 col-span-6 text-sm my-4"
-        ></div>
-
-        <input
-          type="radio"
-          name="my_tabs_2"
-          role="tab"
-          class="tab hover:bg-primary hover:text-white"
-          aria-label="Tesla"
-        />
+          role="tabpanel"
+          class="tab-content bg-primary=content rounded-box p-6"
+        >
+          <ExperienceTeslaFirst/>
+        </div>
       </div>
     </div>
   </div>
@@ -56,12 +63,18 @@
 <script>
 import Breadcrumbs from "../components/Breadcrumbs.vue";
 import Menu from "../components/Menu.vue";
+import ExperienceToyota from "../components/ExperienceToyota.vue";
+import ExperienceTesla from "../components/ExperienceTesla.vue";
+import ExperienceTeslaFirst from "../components/ExperienceTeslaFirst.vue";
 
 export default {
   name: "experience",
   components: {
     Breadcrumbs,
     Menu,
+    ExperienceToyota,
+    ExperienceTesla,
+    ExperienceTeslaFirst
   },
   data() {
     return {

@@ -3,7 +3,7 @@
     <div class="relative inline-block text-white">
       <div class="flex">
         <button
-          class="btn bg-primary-content border-none w-32 focus:outline-none hover:text-white hover:bg-primary"
+          class="btn btn-large bg-primary-content border-none w-32 focus:outline-none hover:text-white hover:bg-primary"
           @click="toggleDropdown"
         >
           <svg

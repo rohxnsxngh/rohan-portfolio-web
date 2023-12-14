@@ -14,12 +14,13 @@
       >
         <div class="hero-content text-center">
           <div class="max-w-md">
-            <h1 class="text-4xl text-left font-bold">
-              Welcome to my portfolio.
-              <p class="text-sm tracking-wide my-4">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl text-left font-bold">
+              Welcome.
+              <div class="divider"></div>
+              <p class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl my-4">
                 I hope you enjoy exploring my portfolio website as much as I
                 enjoyed building it. If you have any questions or comments, I
-                would love to hear them. You can reach me <a id="contact" class="underline decoration-solid">here.</a>
+                would love to hear them. You can reach me <a id="contact" class="underline decoration-solid text-primary">here.</a>
               </p>
             </h1>
           </div>
