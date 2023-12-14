@@ -30,7 +30,7 @@
         </div>
         <div class="carousel-item">
           <img
-            src="../../public/Images/TeslaMoreAesthetic.jpg"
+            src="../../public/Images/TeslaMoreAesthetic.png"
             class="rounded-box object-cover"
           />
         </div>
