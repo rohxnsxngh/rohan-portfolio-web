@@ -7,13 +7,13 @@
     <div
       class="grid sm:grid-rows-6 grid-rows-8 sm:grid-cols-6 grid-cols-3 grid-flow-col gap-2"
     >
-      <div class="">
+      <div class="row-start-1 lg:col-start-6 sm:col-start-5 col-start-4 col-span-1">
         <Menu />
       </div>
 
       <div
         role="tablist"
-        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content row-start-2 col-start-1 col-span-6 text-sm my-4"
+        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content row-start-1 col-start-1 col-span-6 text-sm my-4 top-0"
       >
         <!-- Toyota -->
         <input
@@ -37,7 +37,7 @@
         />
         <div
           role="tabpanel"
-          class="tab-content bg-primary-content rounded-box p-6"
+          class="tab-content bg-primary-content rounded-box"
         >
           <ExperienceTesla />
         </div>
@@ -51,7 +51,7 @@
         />
         <div
           role="tabpanel"
-          class="tab-content bg-primary=content rounded-box p-6"
+          class="tab-content bg-primary=content rounded-box"
         >
           <ExperienceTeslaFirst/>
         </div>

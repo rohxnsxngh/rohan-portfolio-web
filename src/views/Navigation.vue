@@ -5,7 +5,7 @@
     @click="handleDivClick"
   >
     <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
-      <div class="">
+      <div class="row-start-1 lg:col-start-6 sm:col-start-5 col-start-4 col-span-1">
         <Menu />
       </div>
 

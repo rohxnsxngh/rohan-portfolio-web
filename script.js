@@ -211,13 +211,28 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssContact);
 
-  document.addEventListener("scroll", (event) => {
+  document.addEventListener("click", (event) => {
     const target = event.target;
 
     if (target.id === "init-panel" && !animationInProgress) {
+      // enterFullscreen();
       initialAnimation(camera);
     }
   });
+
+  // Function to enter fullscreen
+  function enterFullscreen() {
+    var element = document.documentElement; // Fullscreen the entire document
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+  }
 
   document.addEventListener("click", (event) => {
     const target = event.target;
@@ -265,15 +280,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLargeScreen = window.innerWidth > 750;
 
-    if (isLargeScreen && !animationInProgress) {
-      const parallaxX = cursor.x * 0.8;
-      const parallaxY = -cursor.y * 0.4;
+    // if (isLargeScreen && !animationInProgress) {
+    //   const parallaxX = cursor.x * 0.8;
+    //   const parallaxY = -cursor.y * 0.4;
 
-      cameraGroup.position.x +=
-        (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-      cameraGroup.position.y +=
-        (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
-    }
+    //   cameraGroup.position.x +=
+    //     (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+    //   cameraGroup.position.y +=
+    //     (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+    // }
 
     //robot animation
     if (_mixerRobot) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="sm:p-4 p-2">
+  <div class="mt-4">
     <div class="relative inline-block text-white">
       <div class="flex">
         <button
