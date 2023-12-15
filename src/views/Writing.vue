@@ -4,18 +4,31 @@
     id="writing-panel"
     @click="handleDivClick"
   >
-    Writing
-    <Breadcrumbs :pages="breadcrumbPages"/>
+    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
+      <div class="">
+        <Menu />
+      </div>
+
+      <div
+        class="hero min-h-screen row-start-2 col-start-1 row-span-5 col-span-6"
+      >
+        <div class="hero-content text-center">
+          <div class="max-w-md">
+            <h1 class="text-5xl font-bold">Writing.</h1>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import Breadcrumbs from "../components/Breadcrumbs.vue";
+import Menu from "../components/Menu.vue";
 
 export default {
   name: "writing",
   components: {
-    Breadcrumbs,
+    Menu,
   },
   data() {
     return {

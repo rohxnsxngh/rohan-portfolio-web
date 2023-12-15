@@ -4,9 +4,21 @@
     id="forge-panel"
     @click="handleDivClick"
   >
-    <!-- <div class="grid grid-rows-6 grid-flow-col gap-4"> -->
-      <Menu />
-    <!-- </div> -->
+    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
+      <div class="">
+        <Menu />
+      </div>
+
+      <div
+        class="hero min-h-screen row-start-2 col-start-1 row-span-5 col-span-6"
+      >
+        <div class="hero-content text-center">
+          <div class="max-w-md">
+            <h1 class="text-5xl font-bold">Forge.</h1>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
