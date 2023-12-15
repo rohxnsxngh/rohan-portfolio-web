@@ -1,12 +1,12 @@
 <template>
   <div class="">
-    <div class="h-20 flex flex-col">
-      <h1 class="font-bold ml-2 text-lg">Tesla</h1>
-      <p class="font-bold ml-2 text-sm text-primary">
-        Software Engineering Intern
+    <div class="lg:h-48 sm:h-32 h-20 flex flex-col my-8">
+      <h1 class="font-bold ml-2 lg:text-8xl :sm:text-6xl text-3xl">Tesla.</h1>
+      <p class="font-bold ml-2 lg:text-4xl  sm:text-2xl text-lg text-primary">
+        Software Engineering Intern.
       </p>
-      <p class="font-bold ml-2 text-xs text-base-100">
-        January 2022 - September 2022.
+      <p class="font-bold ml-2 lg:text-2xl sm:text-lg text-xs text-slate-500">
+        May 2023 - September 2023.
       </p>
     </div>
     <div

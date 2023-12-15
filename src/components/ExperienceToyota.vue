@@ -1,34 +1,23 @@
 <template>
-  <div class="flex flex-col Class
-Properties
-overflow-auto">
-    <br />
-    <h1 class="sm:text-6xl text-4xl font-bold mx-4">Toyota Motors North America</h1>
-
-    <h1 class="sm:text-4xl text-2xl font-semibold my-4 text-primary mx-4">
-      Software Systems Engineer I
-    </h1>
-    <ul class="mx-4 flex flex-col sm:text-2xl text-xs">
-      <li class="list-disc">
-        Developed and maintained software applications for in-vehicle
-        infotainment systems, enhancing user experience and delivering features
-        such as navigation, entertainment, and connectivity.
-      </li>
-      <li class="list-disc">
-        Led software integration efforts, facilitating seamless communication
-        between various vehicle components, including sensors, ECUs, and
-        telematics modules, optimizing system performance.
-      </li>
-      <li class="list-disc">
-        Conducted system-level testing, validation, and troubleshooting to
-        identify and resolve software defects, resulting in improved software
-        quality and reduced production delays.
-      </li>
-      <li class="list-disc">
-        Demonstrated proficiency in programming languages such as C/C++ and
-        Python, as well as familiarity with real-time operating systems (RTOS)
-        like AUTOSAR.
-      </li>
-    </ul>
+  <div class="">
+    <div class="lg:h-48 sm:h-32 h-20 flex flex-col my-8">
+      <h1 class="font-bold ml-2 lg:text-8xl :sm:text-6xl text-3xl">Toyota.</h1>
+      <p class="font-bold ml-2 lg:text-4xl  sm:text-2xl text-lg text-primary">
+        Software Systems Engineer.
+      </p>
+      <p class="font-bold ml-2 lg:text-2xl sm:text-lg text-xs text-slate-500">
+        September 2023 - Current.
+      </p>
+    </div>
+    <div
+      class="carousel carousel-center lg:max-w-8xl md:max-w-4xl sm:max-w-xl p-4 space-x-4 bg-neutral rounded-box h-1/2"
+    >
+      <div class="carousel-item">
+        <img
+          src="/Images/TeslaCyberRodeo.jpg"
+          class="rounded-box object-cover"
+        />
+      </div>
+    </div>
   </div>
 </template>

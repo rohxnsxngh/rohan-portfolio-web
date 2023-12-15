@@ -13,7 +13,7 @@
 
       <div
         role="tablist"
-        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content row-start-1 col-start-1 col-span-6 my-4 top-0"
+        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content row-start-1 col-start-1 col-span-6"
       >
         <!-- Toyota -->
         <input
