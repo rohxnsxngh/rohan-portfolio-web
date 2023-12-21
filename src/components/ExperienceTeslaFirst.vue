@@ -30,29 +30,39 @@
     <div class="px-2">
       <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box h-1/2">
         <div class="carousel-item">
-          <img src="/Images/TeslaCyberRodeo.jpg" class="rounded-box object-cover" />
+          <img id="tesla-first-item1" src="/Images/TeslaCyberRodeo.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaRoadster.jpg" class="rounded-box object-cover" />
+          <img id="tesla-first-item2" src="/Images/TeslaRoadster.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaModelYWrapped.jpg" class="rounded-box object-cover" />
+          <img id="tesla-first-item3" src="/Images/TeslaModelYWrapped.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaCyberTruck.jpg" class="rounded-box object-cover" />
+          <img id="tesla-first-item4" src="/Images/TeslaCyberTruck.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaOptimus.jpg" class="rounded-box object-cover" />
+          <img id="tesla-first-item5" src="/Images/TeslaOptimus.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaLiDARRainbow.png" class="rounded-box object-cover" />
+          <img id="tesla-first-item6" src="/Images/TeslaLiDARRainbow.png" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaLiDARControlTargets.png" class="rounded-box object-cover" />
+          <img id="tesla-first-item7" src="/Images/TeslaLiDARControlTargets.png" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaFlyingY.jpg" class="rounded-box object-cover" />
+          <img id="tesla-first-item8" src="/Images/TeslaFlyingY.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
+      </div>
+      <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
+        <a href="#tesla-first-item1" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a href="#tesla-first-item2" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a href="#tesla-first-item3" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a href="#tesla-first-item4" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a href="#tesla-first-item5" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a href="#tesla-first-item6" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a href="#tesla-first-item7" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a href="#tesla-first-item8" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
       </div>
     </div>
   </div>

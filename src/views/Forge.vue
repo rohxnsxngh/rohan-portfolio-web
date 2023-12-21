@@ -17,14 +17,26 @@
         <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
           aria-label="Graphics" />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
-          <ForgeGraphics/>
+          <ForgeGraphics />
         </div>
         <!-- Tesla -->
         <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Tesla" />
+          aria-label="Strandbeest" />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
           <!-- <ForgeResearch /> -->
-          hello 2
+          Strandbeest
+        </div>
+        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="Maze" />
+        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
+          <!-- <ForgeResearch /> -->
+          Maze
+        </div>
+        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="ML/AI" />
+        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
+          <!-- <ForgeResearch /> -->
+          Machine Learning
         </div>
       </div>
     </div>

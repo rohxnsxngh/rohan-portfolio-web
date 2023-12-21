@@ -12,7 +12,7 @@
         <div class="px-2">
             <div class="carousel carousel-center max-w-xl bg-neutral rounded-box h-1/2">
                 <div class="carousel-item">
-                    <img src="/Images/TeslaMoreAesthetic.PNG" class="rounded-box object-cover" />
+                    <!-- <img src="/Images/TeslaMoreAesthetic.PNG" class="rounded-box object-cover" /> -->
                 </div>
             </div>
         </div>

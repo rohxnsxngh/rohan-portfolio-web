@@ -14,6 +14,9 @@
                 <div class="carousel-item">
                     <img src="/Images/ResearchCustomStrats.jpg" class="rounded-box object-cover" />
                 </div>
+                <div class="carousel-item">
+                    <img src="/Images/ResearchUNET.jpg" class="rounded-box object-cover" />
+                </div>
             </div>
         </div>
 
