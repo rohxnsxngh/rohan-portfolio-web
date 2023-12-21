@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="relative inline-block text-white">
+    <div class="fixed top-0 text-white">
       <div class="flex">
         <button
           class="btn btn-large bg-primary-content border-none w-32 focus:outline-none hover:text-white hover:bg-primary"
