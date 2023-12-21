@@ -9,13 +9,13 @@
       <div role="tablist" class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content">
         <!-- Research -->
         <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Echocardiogram Research" checked />
+          aria-label="Research" checked />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
           <ForgeResearch />
         </div>
         <!-- Hans and Aubs -->
         <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Graphics & Shaders Experiment" />
+          aria-label="Graphics" />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
           <ForgeGraphics/>
         </div>

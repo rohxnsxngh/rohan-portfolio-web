@@ -25,7 +25,7 @@
             role="button"
             class="btn btn-ghost btn-circle avatar antialiased right-0"
           >
-            <div class="w-12 rounded-full">
+            <div class="w-8 rounded-full">
               <img alt="Profile Picture" src="/Images/profile.jpg" />
             </div>
           </div>
