@@ -1,6 +1,6 @@
 <template>
   <div class="flex sm:flex-row flex-col sm:p-8 md:p-4 p-2 space-y-2">
-    <div class="lg:h-48 sm:h-32 h-20 flex flex-col my-8">
+    <div class="lg:h-48 sm:h-32 h-20 flex flex-col mb-8">
       <h1 class="font-bold ml-2 lg:text-8xl sm:text-6xl text-3xl">Tesla.</h1>
       <p class="font-bold ml-2 lg:text-4xl  sm:text-2xl text-lg text-primary">
         Software Engineering Intern.
