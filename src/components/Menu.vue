@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4">
+  <div>
     <div class="relative inline-block text-white">
       <div class="flex">
         <button
@@ -11,7 +11,7 @@
             class="h-5 w-5"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="currentColor"
+            stroke="white"
           >
             <path
               stroke-linecap="round"

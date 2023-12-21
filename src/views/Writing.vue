@@ -5,7 +5,7 @@
     @click="handleDivClick"
   >
     <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
-      <div class="">
+      <div class="m-2">
         <Menu />
       </div>
 
@@ -14,7 +14,9 @@
       >
         <div class="hero-content text-center">
           <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Writing.</h1>
+            <h1 class="text-5xl font-bold">Writing.
+              <div class="divider"></div>
+            </h1>
           </div>
         </div>
       </div>

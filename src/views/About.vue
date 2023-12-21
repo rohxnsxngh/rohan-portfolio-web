@@ -5,7 +5,7 @@
     @click="handleDivClick"
   >
     <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
-      <div class="">
+      <div class="m-2">
         <Menu />
       </div>
 
@@ -14,9 +14,10 @@
       >
         <div class="hero-content text-left">
           <div class="max-w-md">
-            <h1 class="text-4xl font-bold">
+            <h1 class="text-4xl text-left font-bold">
               Little bit about me.
-              <p class="text-sm text-left font-semibold my-4">
+              <div class="divider"></div>
+              <p class="text-sm md:text-md lg:text-lg xl:text-xl my-4">
                 I am a software engineer with a background in mechanical
                 engineering and a passion for developing innovative solutions.
                 My experience in engineering has given me a solid foundation in
