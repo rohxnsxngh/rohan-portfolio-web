@@ -41,49 +41,49 @@
           <div class="sm:text-sm text-xs space-y-1">
             <button
               id="home"
-              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:invert hover:translate-x-3"
+              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
               Home
             </button>
             <button
               id="navigation"
-              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:invert hover:translate-x-3"
+              class="btn btn-sm border-none text-center bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
               Welcome
             </button>
             <button
               id="about"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
               About
             </button>
             <button
               id="forge"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
               Forge
             </button>
             <button
               id="experience"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
               Experience
             </button>
             <button
               id="writing"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
               Writing
             </button>
             <button
               id="contact"
-              class="btn btn-sm border-none bg-primary-content hover:text-white hover:invert hover:translate-x-3"
+              class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
               Contact

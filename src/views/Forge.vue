@@ -1,21 +1,31 @@
 <template>
   <div
-    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
-    id="forge-panel"
-    @click="handleDivClick"
-  >
-    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
-      <div class="m-2">
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
+    id="forge-panel" @click="handleDivClick">
+    <div class="flex flex-col">
+      <div>
         <Menu />
       </div>
-
-      <div
-        class="hero min-h-screen row-start-2 col-start-1 row-span-5 col-span-6"
-      >
-        <div class="hero-content text-center">
-          <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Forge.</h1>
-          </div>
+      <div role="tablist" class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content">
+        <!-- Toyota -->
+        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="Toyota" checked />
+        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
+          <ForgeResearch />
+        </div>
+        <!-- Tesla -->
+        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="Tesla" />
+        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
+          <!-- <ForgeResearch /> -->
+          hello
+        </div>
+        <!-- Tesla -->
+        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="Tesla" />
+        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
+          <!-- <ForgeResearch /> -->
+          hello 2
         </div>
       </div>
     </div>
@@ -23,23 +33,18 @@
 </template>
 
 <script>
-import Breadcrumbs from "../components/Breadcrumbs.vue";
 import Menu from "../components/Menu.vue";
+import ForgeResearch from "../components/ForgeResearch.vue";
 
 export default {
-  name: "forge",
+  name: "experience",
   components: {
-    Breadcrumbs,
     Menu,
+    ForgeResearch
   },
   data() {
     return {
       observer: null,
-      breadcrumbPages: [
-        { text: "Home", id: "home" },
-        { text: "Navigation", id: "navigation" },
-        { text: "Forge", id: "forge" },
-      ],
     };
   },
   methods: {

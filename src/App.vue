@@ -1,8 +1,8 @@
 <template>
   <Init />
   <Navigation />
-  <Forge />
   <Experience />
+  <Forge />
   <About />
   <Writing />
   <Contact />
