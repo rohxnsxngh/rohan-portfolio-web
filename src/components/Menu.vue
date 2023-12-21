@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="relative inline-block text-white">
+    <div class="top-0 text-white">
       <div class="flex">
         <button
           class="btn btn-large bg-primary-content border-none w-32 focus:outline-none hover:text-white hover:bg-primary"
@@ -25,7 +25,7 @@
             role="button"
             class="btn btn-ghost btn-circle avatar antialiased right-0"
           >
-            <div class="w-8 rounded-full">
+            <div class="w-12 rounded-full">
               <img alt="Profile Picture" src="/Images/profile.jpg" />
             </div>
           </div>
@@ -34,7 +34,7 @@
 
       <div
         v-show="isDropdownOpen"
-        class="text-white sm:w-60 z-[1] w-48 h-72 overscroll-none subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl absolute top-12"
+        class="text-white sm:w-60 z-[5] w-48 h-72 overscroll-none subpixel-antialiased bg-primary-content border border-base-300 opacity-100 text-4xl rounded-lg md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl absolute top-12"
         id="navigation-panel"
       >
         <div class="flex flex-col p-2">
