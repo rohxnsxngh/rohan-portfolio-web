@@ -10,9 +10,15 @@
       </p>
     </div>
     <div class="px-2">
-      <div class="carousel carousel-center max-w-xl bg-neutral rounded-box h-1/2">
+      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box h-1/2">
         <div class="carousel-item">
-          <img src="/Images/TeslaCyberRodeo.jpg" class="rounded-box object-cover" />
+          <img src="/Images/ToyotaConceptCar.jpeg" class="rounded-box object-cover" />
+        </div>
+        <div class="carousel-item">
+          <img src="/Images/ToyotaHeadquarters.jpg" class="rounded-box object-cover" />
+        </div>
+        <div class="carousel-item">
+          <img src="/Images/LexusConceptCar.jpg" class="rounded-box object-cover" />
         </div>
       </div>
     </div>

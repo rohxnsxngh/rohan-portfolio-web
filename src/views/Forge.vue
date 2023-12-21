@@ -3,22 +3,21 @@
     class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
     id="forge-panel" @click="handleDivClick">
     <div class="flex flex-col">
-      <div>
+      <div class="m-2">
         <Menu />
       </div>
       <div role="tablist" class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content">
-        <!-- Toyota -->
+        <!-- Research -->
         <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Toyota" checked />
+          aria-label="Echocardiogram Research" checked />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
           <ForgeResearch />
         </div>
-        <!-- Tesla -->
+        <!-- Hans and Aubs -->
         <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Tesla" />
+          aria-label="Graphics & Shaders Experiment" />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
-          <!-- <ForgeResearch /> -->
-          hello
+          <ForgeGraphics/>
         </div>
         <!-- Tesla -->
         <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
@@ -35,12 +34,14 @@
 <script>
 import Menu from "../components/Menu.vue";
 import ForgeResearch from "../components/ForgeResearch.vue";
+import ForgeGraphics from "../components/ForgeGraphics.vue";
 
 export default {
   name: "experience",
   components: {
     Menu,
-    ForgeResearch
+    ForgeResearch,
+    ForgeGraphics
   },
   data() {
     return {

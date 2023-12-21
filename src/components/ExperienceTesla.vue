@@ -10,7 +10,16 @@
       </p>
     </div>
     <div class="px-2">
-      <div class="carousel carousel-center max-w-xl bg-neutral rounded-box h-1/2">
+      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box h-1/2">
+        <div class="carousel-item">
+          <img src="/Images/TeslaRobotics.jpg" class="rounded-box object-cover" />
+        </div>
+        <div class="carousel-item">
+          <img src="/Images/TeslaLight.jpg" class="rounded-box object-cover" />
+        </div>
+        <div class="carousel-item">
+          <img src="/Images/TeslaMoreAesthetic.PNG" class="rounded-box object-cover" />
+        </div>
         <div class="carousel-item">
           <img src="/Images/TeslaCrashDummySideView.jpg" class="rounded-box object-contain" />
         </div>
@@ -18,22 +27,13 @@
           <img src="/Images/TeslaFDTDataDisplay.png" class="rounded-box object-cover" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaMapWithConversion.png" class="rounded-box object-cover" />
+          <img src="/Images/TeslaMapWithConversion.png" class="rounded-box object-contain" />
         </div>
         <div class="carousel-item">
-          <!-- <img
-            src="/Images/TeslaMoreAesthetic.png"
-            class="rounded-box object-cover"
-          /> -->
+          <img src="/Images/TeslaRevitExtractionServiceArchitecture.png" class="rounded-box object-contain" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/TeslaMapWithConversion.png" class="rounded-box object-cover" />
-        </div>
-        <div class="carousel-item">
-          <img src="/Images/TeslaMapWithConversion.png" class="rounded-box object-cover" />
-        </div>
-        <div class="carousel-item">
-          <img src="/Images/TeslaMapWithConversion.png" class="rounded-box object-cover" />
+          <img src="/Images/TeslaCyberRodeoScreen.jpg" class="rounded-box object-contain" />
         </div>
       </div>
     </div>

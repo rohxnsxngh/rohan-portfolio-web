@@ -6,11 +6,11 @@
         Software Engineering Intern.
       </p>
       <p class="font-bold ml-2 lg:text-2xl sm:text-lg text-xs text-slate-500">
-        May 2023 - September 2023.
+        January 2022 - September 2022.
       </p>
     </div>
     <div class="px-2">
-      <div class="carousel carousel-center max-w-xl bg-neutral rounded-box h-1/2">
+      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box h-1/2">
         <div class="carousel-item">
           <img src="/Images/TeslaCyberRodeo.jpg" class="rounded-box object-cover" />
         </div>
