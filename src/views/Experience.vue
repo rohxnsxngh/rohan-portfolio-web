@@ -8,7 +8,7 @@
     <div class="">
       <Menu />
     </div>
-    <div class="">
+    <div class="min-w-[320px]">
       <div
         role="tablist"
         class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
