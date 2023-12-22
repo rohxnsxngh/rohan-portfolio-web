@@ -12,11 +12,11 @@
         </p>
         <button
           class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary"
-          onclick="graphics_project.showModal()"
+          onclick="maze_project.showModal()"
         >
           Learn More
         </button>
-        <dialog id="graphics_project" class="modal">
+        <dialog id="maze_project" class="modal">
           <div class="modal-box w-11/12 max-w-5xl">
             <div class="flex flex-col">
               LiDAR Driven Maze Navigating Robot

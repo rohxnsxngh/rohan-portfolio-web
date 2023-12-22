@@ -47,7 +47,7 @@
           </div>
           <div class="carousel-item">
             <img
-              src="/Images/StrandbeestLinkagesMath.png"
+              src="/Images/StrandBeestLinkagesMath.png"
               class="rounded-box object-cover"
             />
           </div>
