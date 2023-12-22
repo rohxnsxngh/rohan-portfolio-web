@@ -4,13 +4,13 @@
     id="navigation-panel"
     @click="handleDivClick"
   >
-    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
-      <div class="m-2">
+    <div class="flex flex-col">
+      <div class="">
         <Menu />
       </div>
 
       <div
-        class="hero min-h-screen row-start-2 col-start-1 row-span-5 col-span-6"
+        class="hero min-h-screen"
       >
         <div class="hero-content text-center">
           <div class="max-w-md">

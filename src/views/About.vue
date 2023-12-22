@@ -2,12 +2,12 @@
   <div
     class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
     id="about-panel" @click="handleDivClick">
-    <div class="grid grid-rows-6 grid-cols-6 grid-flow-col gap-4">
-      <div class="m-2">
+    <div class="flex flex-col">
+      <div class="">
         <Menu />
       </div>
 
-      <div class="hero min-h-screen row-start-2 col-start-1 row-span-5 col-span-6">
+      <div class="hero min-h-screen">
         <div class="hero-content text-left">
           <div class="max-w-md">
             <h1 class="text-4xl text-left font-bold">
