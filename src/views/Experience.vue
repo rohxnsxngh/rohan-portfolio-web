@@ -5,10 +5,10 @@
     @click="handleDivClick"
   >
   <div class="flex flex-col">
-    <div class="fixed top-0">
+    <div class="top-0">
       <Menu />
     </div>
-    <div class="h-screen sm:mb-20 mb-12 xs:mt-12 mt-4">
+    <div class="h-screen mb-48">
       <div
         role="tablist"
         class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
