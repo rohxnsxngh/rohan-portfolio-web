@@ -1,7 +1,7 @@
 <template>
   <div class="flex sm:flex-row flex-col sm:p-8 md:p-4 p-2 space-y-2">
     <div class="lg:h-48 sm:h-32 h-20 flex flex-col mb-8">
-      <h1 class="font-bold lg:text-4xl sm:text-4xl text-2xl">
+      <h1 class="font-bold lg:text-4xl sm:text-4xl text-xl">
         Echocardiagram Analysis.
       </h1>
       <p class="font-bold lg:text-2xl sm:text-2xl text-lg text-primary">

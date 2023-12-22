@@ -67,8 +67,7 @@
             role="tabpanel"
             class="tab-content bg-primary-content rounded-box"
           >
-            <!-- <ForgeResearch /> -->
-            Maze
+            <ForgeMaze />
           </div>
           <input
             type="radio"
@@ -81,8 +80,7 @@
             role="tabpanel"
             class="tab-content bg-primary-content rounded-box"
           >
-            <!-- <ForgeResearch /> -->
-            Machine Learning
+            <ForgeMachineLearning />
           </div>
         </div>
       </div>
@@ -95,6 +93,8 @@ import Menu from "../components/Menu.vue";
 import ForgeResearch from "../components/ForgeResearch.vue";
 import ForgeGraphics from "../components/ForgeGraphics.vue";
 import ForgeStrandbeest from "../components/ForgeStrandbeest.vue";
+import ForgeMachineLearning from "../components/ForgeMachineLearning.vue";
+import ForgeMaze from "../components/ForgeMaze.vue";
 
 export default {
   name: "experience",
@@ -103,6 +103,8 @@ export default {
     ForgeResearch,
     ForgeGraphics,
     ForgeStrandbeest,
+    ForgeMachineLearning,
+    ForgeMaze,
   },
   data() {
     return {
