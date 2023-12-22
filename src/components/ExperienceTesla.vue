@@ -39,7 +39,7 @@
           <img id="tesla-item2" src="/Images/TeslaLight.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item3" src="/Images/TeslaMoreAesthetic.PNG" class="rounded-box object-cover scroll-mt-96" />
+          <img id="tesla-item3" src="/Images/TeslaMoreAesthetic.png" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
           <img id="tesla-item4" src="/Images/TeslaCrashDummySideView.jpg" class="rounded-box object-cover scroll-mt-96" />
