@@ -31,7 +31,7 @@
 
     </div>
     <div class="px-2">
-      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-fit">
+      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-10/12">
         <div class="carousel-item">
           <img id="tesla-item1" src="/Images/TeslaRobotics.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
