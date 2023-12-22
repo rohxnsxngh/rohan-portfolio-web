@@ -1,14 +1,14 @@
 <template>
   <div
-    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 min-w-[440px]"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
     id="experience-panel"
     @click="handleDivClick"
   >
   <div class="flex flex-col">
-    <div class="">
+    <div class="fixed top-0">
       <Menu />
     </div>
-    <div class="h-screen">
+    <div class="h-screen sm:mb-20 mb-12 xs:mt-12 mt-4">
       <div
         role="tablist"
         class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
