@@ -16,6 +16,9 @@
           <div class="max-w-md">
             <h1 class="text-5xl font-bold">Writing.
               <div class="divider"></div>
+              <p class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold">
+                Coming soon...
+              </p>
             </h1>
           </div>
         </div>
