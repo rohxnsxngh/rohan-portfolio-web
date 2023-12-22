@@ -37,7 +37,7 @@
     </div>
     <div class="px-2">
       <div
-        class="carousel carousel-center max-w-xl bg-primary-content sm:h-1/2 h-4/5 rounded-box focus-within:p-2"
+        class="carousel carousel-center max-w-xl bg-primary-content sm:h-1/2 h-80 rounded-box focus-within:p-2"
       >
         <div class="carousel-item">
           <img
