@@ -10,10 +10,10 @@
       <div class="hero min-h-screen">
         <div class="hero-content text-left">
           <div class="max-w-md">
-            <h1 class="text-4xl text-left font-bold">
+            <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold">
               Little bit about me.
               <div class="divider"></div>
-              <p class="text-sm md:text-md lg:text-lg xl:text-xl my-4 font-thin">
+              <p class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold">
                 I am a software engineer with a background in mechanical
                 engineering and a passion for developing innovative solutions.
                 My experience in engineering has given me a solid foundation in

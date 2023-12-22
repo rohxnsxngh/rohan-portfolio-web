@@ -17,7 +17,7 @@
             <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold">
               Welcome.
               <div class="divider"></div>
-              <p class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl my-4">
+              <p class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl font-semibold">
                 I hope you enjoy exploring my portfolio website as much as I
                 enjoyed building it. If you have any questions or comments, I
                 would love to hear them. You can reach me <a id="contact" class="underline decoration-solid text-primary">here.</a>
