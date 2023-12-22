@@ -84,6 +84,9 @@ cameraGroup.add(camera);
 // Vignette
 camera.add(overlay.mesh);
 
+// Fog
+// scene.fog = new THREE.Fog(0x000000, 6, 10);
+
 //Light
 const directionalLight3 = new THREE.DirectionalLight(0x8580df, 0.1);
 directionalLight3.position.set(0, 0, 3);
@@ -132,6 +135,8 @@ loader.load(
       specular: 0xffffff, //0xEB00D5
       shininess: 15,
       flatShading: true,
+      // transparent: true,
+      // opacity: 0
     });
     _robot.traverse((o) => {
       if (o.isMesh) o.material = newMaterial;
@@ -211,12 +216,21 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssContact);
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", async(event) => {
     const target = event.target;
 
     if (target.id === "init-panel" && !animationInProgress) {
       // enterFullscreen();
       initialAnimation(camera);
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      if (_robot) {
+        _robot.traverse((o) => {
+          if (o.isMesh) {
+            o.material.transparent = true;
+            o.material.opacity = 0;
+          }
+        });
+      }
     }
   });
 
@@ -280,15 +294,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLargeScreen = window.innerWidth > 750;
 
-    if (isLargeScreen && !animationInProgress) {
-      const parallaxX = cursor.x * 0.8;
-      const parallaxY = -cursor.y * 0.4;
+    // if (isLargeScreen && !animationInProgress) {
+    //   const parallaxX = cursor.x * 0.8;
+    //   const parallaxY = -cursor.y * 0.4;
 
-      cameraGroup.position.x +=
-        (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-      cameraGroup.position.y +=
-        (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
-    }
+    //   cameraGroup.position.x +=
+    //     (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+    //   cameraGroup.position.y +=
+    //     (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+    // }
 
     //robot animation
     if (_mixerRobot) {
