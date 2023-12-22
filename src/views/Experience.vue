@@ -4,11 +4,11 @@
     id="experience-panel"
     @click="handleDivClick"
   >
-  <div class="flex flex-col">
-    <div class="">
+  <div class="grid sm:grid-rows-12 grid-rows-4 grid-flow-col gap-1">
+    <div class="row-start-1 sm:col-span-11 col-span-3">
       <Menu />
     </div>
-    <div class="min-w-[320px]">
+    <div class="row-start-2 sm:col-span-11 col-span-3">
       <div
         role="tablist"
         class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
