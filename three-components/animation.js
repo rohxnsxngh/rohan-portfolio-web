@@ -79,7 +79,7 @@ export const navigationAnimation = (camera) => {
   return animationInProgress;
 };
 
-function pageToPageAnimation(timeline, camera, zPosition, cameraGroup) {
+function pageToPageAnimation(timeline, camera, zPosition) {
   timeline
     .to(camera.rotation, {
       z: Math.PI / 6,
@@ -123,7 +123,7 @@ function pageToPageAnimation(timeline, camera, zPosition, cameraGroup) {
     });
 }
 
-export const forgeAnimation = (camera, zPosition, cameraGroup) => {
+export const forgeAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -132,13 +132,13 @@ export const forgeAnimation = (camera, zPosition, cameraGroup) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const experienceAnimation = (camera, zPosition, cameraGroup) => {
+export const experienceAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -147,13 +147,13 @@ export const experienceAnimation = (camera, zPosition, cameraGroup) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const aboutAnimation = (camera, zPosition, cameraGroup) => {
+export const aboutAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -162,13 +162,13 @@ export const aboutAnimation = (camera, zPosition, cameraGroup) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const writingAnimation = (camera, zPosition, cameraGroup) => {
+export const writingAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -177,13 +177,13 @@ export const writingAnimation = (camera, zPosition, cameraGroup) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;
 };
 
-export const contactAnimation = (camera, zPosition, cameraGroup) => {
+export const contactAnimation = (camera, zPosition) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -192,7 +192,7 @@ export const contactAnimation = (camera, zPosition, cameraGroup) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
+    pageToPageAnimation(tl, camera, zPosition);
   }
 
   return animationInProgress;

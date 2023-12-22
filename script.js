@@ -248,21 +248,21 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "navigation":
         if (!animationInProgress)
-          navigationAnimation(camera, _cssNavigation.position.z, cameraGroup);
+          navigationAnimation(camera, _cssNavigation.position.z);
         break;
       case "forge":
-        if (!animationInProgress) forgeAnimation(camera, _cssForge.position.z, cameraGroup);
+        if (!animationInProgress) forgeAnimation(camera, _cssForge.position.z);
         break;
       case "experience":
         if (!animationInProgress)
-          experienceAnimation(camera, _cssExperience.position.z, cameraGroup);
+          experienceAnimation(camera, _cssExperience.position.z);
         break;
       case "about":
-        if (!animationInProgress) aboutAnimation(camera, _cssAbout.position.z, cameraGroup);
+        if (!animationInProgress) aboutAnimation(camera, _cssAbout.position.z);
         break;
       case "writing":
         if (!animationInProgress)
-          writingAnimation(camera, _cssWriting.position.z, cameraGroup);
+          writingAnimation(camera, _cssWriting.position.z);
         break;
       case "contact":
         if (!animationInProgress)
