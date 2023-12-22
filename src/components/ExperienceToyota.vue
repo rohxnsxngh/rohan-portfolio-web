@@ -2,7 +2,7 @@
   <div
     class="flex sm:flex-row flex-col sm:p-8 md:p-4 p-2 space-y-2 overflow-hidden"
   >
-    <div class="lg:h-48 sm:h-32 h-20 flex flex-col mb-8">
+    <div class="h-fit flex flex-col mb-8">
       <h1 class="font-bold lg:text-8xl sm:text-6xl text-3xl">Toyota.</h1>
       <p class="font-bold lg:text-4xl sm:text-2xl text-sm text-primary">
         Software Systems Engineer.

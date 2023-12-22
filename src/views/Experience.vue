@@ -1,14 +1,14 @@
 <template>
   <div
-    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 min-w-[300px]"
     id="experience-panel"
     @click="handleDivClick"
   >
-  <div class="grid sm:grid-rows-12 grid-rows-4 grid-flow-col gap-1">
-    <div class="row-start-1 sm:col-span-11 col-span-3">
+  <div class="flex flex-col">
+    <div class="min-w-80 max-h-12">
       <Menu />
     </div>
-    <div class="row-start-2 sm:col-span-11 col-span-3">
+    <div class="">
       <div
         role="tablist"
         class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
