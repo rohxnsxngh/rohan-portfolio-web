@@ -1,32 +1,55 @@
 <template>
   <div
     class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
-    id="experience-panel" @click="handleDivClick">
-    <div class="flex flex-col space-y-2">
-      <!-- <div class="">
-        <Menu />
-      </div> -->
-      <div role="tablist" class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content">
+    id="experience-panel"
+    @click="handleDivClick"
+  >
+  <div class="flex flex-col">
+    <div class="">
+      <Menu />
+    </div>
+    <div class="">
+      <div
+        role="tablist"
+        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
+      >
         <!-- Toyota -->
-        <input type="radio" name="my_tabs_2" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Toyota" checked />
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="Toyota"
+          checked
+        />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
           <ExperienceToyota />
         </div>
         <!-- Tesla -->
-        <input type="radio" name="my_tabs_2" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Tesla" />
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="Tesla"
+        />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
           <ExperienceTesla />
         </div>
         <!-- Tesla -->
-        <input type="radio" name="my_tabs_2" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Tesla" />
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab hover:bg-primary hover:text-white font-semibold"
+          aria-label="Tesla"
+        />
         <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
           <ExperienceTeslaFirst />
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 
