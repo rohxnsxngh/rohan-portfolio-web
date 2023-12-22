@@ -248,21 +248,21 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "navigation":
         if (!animationInProgress)
-          navigationAnimation(camera, _cssNavigation.position.z);
+          navigationAnimation(camera, _cssNavigation.position.z, cameraGroup);
         break;
       case "forge":
-        if (!animationInProgress) forgeAnimation(camera, _cssForge.position.z);
+        if (!animationInProgress) forgeAnimation(camera, _cssForge.position.z, cameraGroup);
         break;
       case "experience":
         if (!animationInProgress)
-          experienceAnimation(camera, _cssExperience.position.z);
+          experienceAnimation(camera, _cssExperience.position.z, cameraGroup);
         break;
       case "about":
-        if (!animationInProgress) aboutAnimation(camera, _cssAbout.position.z);
+        if (!animationInProgress) aboutAnimation(camera, _cssAbout.position.z, cameraGroup);
         break;
       case "writing":
         if (!animationInProgress)
-          writingAnimation(camera, _cssWriting.position.z);
+          writingAnimation(camera, _cssWriting.position.z, cameraGroup);
         break;
       case "contact":
         if (!animationInProgress)
@@ -280,15 +280,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLargeScreen = window.innerWidth > 750;
 
-    // if (isLargeScreen && !animationInProgress) {
-    //   const parallaxX = cursor.x * 0.8;
-    //   const parallaxY = -cursor.y * 0.4;
+    if (isLargeScreen && !animationInProgress) {
+      const parallaxX = cursor.x * 0.8;
+      const parallaxY = -cursor.y * 0.4;
 
-    //   cameraGroup.position.x +=
-    //     (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-    //   cameraGroup.position.y +=
-    //     (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
-    // }
+      cameraGroup.position.x +=
+        (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+      cameraGroup.position.y +=
+        (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+    }
 
     //robot animation
     if (_mixerRobot) {

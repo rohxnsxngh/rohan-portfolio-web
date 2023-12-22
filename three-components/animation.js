@@ -23,14 +23,6 @@ export const initialAnimation = (camera) => {
       },
     })
       .to(camera.position, {
-        z: 1,
-        y: 1,
-        x: 2,
-        onUpdate: () => camera.lookAt(1, 1, 0),
-        ease: "power1.out",
-        duration: 2,
-      })
-      .to(camera.position, {
         z: 6,
         y: -3.5,
         x: 1,
@@ -87,10 +79,10 @@ export const navigationAnimation = (camera) => {
   return animationInProgress;
 };
 
-function pageToPageAnimation(timeline, camera, zPosition) {
+function pageToPageAnimation(timeline, camera, zPosition, cameraGroup) {
   timeline
-    .to(camera.position, {
-      y: -2.75,
+    .to(camera.rotation, {
+      z: Math.PI / 6,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
@@ -104,7 +96,6 @@ function pageToPageAnimation(timeline, camera, zPosition) {
     })
     .to(camera.position, {
       z: zPosition,
-      x: 1,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
@@ -117,8 +108,8 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       },
       delay: 0.2,
     })
-    .to(camera.position, {
-      y: -3.25,
+    .to(camera.rotation, {
+      z: - Math.PI / 6,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
@@ -132,7 +123,7 @@ function pageToPageAnimation(timeline, camera, zPosition) {
     });
 }
 
-export const forgeAnimation = (camera, zPosition) => {
+export const forgeAnimation = (camera, zPosition, cameraGroup) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -141,13 +132,13 @@ export const forgeAnimation = (camera, zPosition) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition);
+    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
   }
 
   return animationInProgress;
 };
 
-export const experienceAnimation = (camera, zPosition) => {
+export const experienceAnimation = (camera, zPosition, cameraGroup) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -156,13 +147,13 @@ export const experienceAnimation = (camera, zPosition) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition);
+    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
   }
 
   return animationInProgress;
 };
 
-export const aboutAnimation = (camera, zPosition) => {
+export const aboutAnimation = (camera, zPosition, cameraGroup) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -171,13 +162,13 @@ export const aboutAnimation = (camera, zPosition) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition);
+    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
   }
 
   return animationInProgress;
 };
 
-export const writingAnimation = (camera, zPosition) => {
+export const writingAnimation = (camera, zPosition, cameraGroup) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -186,13 +177,13 @@ export const writingAnimation = (camera, zPosition) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition);
+    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
   }
 
   return animationInProgress;
 };
 
-export const contactAnimation = (camera, zPosition) => {
+export const contactAnimation = (camera, zPosition, cameraGroup) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes
@@ -201,7 +192,7 @@ export const contactAnimation = (camera, zPosition) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, zPosition);
+    pageToPageAnimation(tl, camera, zPosition, cameraGroup);
   }
 
   return animationInProgress;
