@@ -28,7 +28,7 @@
       </dialog>
     </div>
     <div class="px-2">
-      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-fit">
+      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box xs:h-1/2 h-full">
         <div class="carousel-item">
           <img id="tesla-first-item1" src="/Images/TeslaCyberRodeo.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>

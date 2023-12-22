@@ -8,7 +8,7 @@
     <div class="top-0">
       <Menu />
     </div>
-    <div class="h-screen mb-48">
+    <div class="inset-0 mb-48">
       <div
         role="tablist"
         class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"

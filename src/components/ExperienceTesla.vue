@@ -31,7 +31,7 @@
 
     </div>
     <div class="px-2">
-      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-fit">
+      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box xs:h-1/2 h-full">
         <div class="carousel-item">
           <img id="tesla-item1" src="/Images/TeslaRobotics.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
@@ -42,19 +42,19 @@
           <!-- <img id="tesla-item3" src="/Images/TeslaMoreAesthetic.PNG" class="rounded-box object-cover scroll-mt-96" /> -->
         </div>
         <div class="carousel-item">
-          <img id="tesla-item4" src="/Images/TeslaCrashDummySideView.jpg" class="rounded-box object-contain scroll-mt-96" />
+          <img id="tesla-item4" src="/Images/TeslaCrashDummySideView.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
           <img id="tesla-item5" src="/Images/TeslaFDTDataDisplay.png" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item6" src="/Images/TeslaMapWithConversion.png" class="rounded-box object-contain scroll-mt-96" />
+          <img id="tesla-item6" src="/Images/TeslaMapWithConversion.png" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item7" src="/Images/TeslaRevitExtractionServiceArchitecture.png" class="rounded-box object-contain scroll-mt-96" />
+          <img id="tesla-item7" src="/Images/TeslaRevitExtractionServiceArchitecture.png" class="rounded-box object-cover scroll-mt-96" />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item8" src="/Images/TeslaCyberRodeoScreen.jpg" class="rounded-box object-contain scroll-mt-96" />
+          <img id="tesla-item8" src="/Images/TeslaCyberRodeoScreen.jpg" class="rounded-box object-cover scroll-mt-96" />
         </div>
       </div>
       <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">

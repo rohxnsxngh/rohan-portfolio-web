@@ -37,7 +37,7 @@
     </div>
     <div class="px-2">
       <div
-        class="carousel carousel-center max-w-xl bg-primary-content sm:h-1/2 h-fit rounded-box focus-within:p-2"
+        class="carousel carousel-center max-w-xl bg-primary-content xs:h-1/2 h-full rounded-box focus-within:p-2"
       >
         <div class="carousel-item">
           <img
@@ -50,7 +50,7 @@
           <img
             id="item2"
             src="/Images/ToyotaHeadquarters.jpg"
-            class="rounded-box object-cover"
+            class="rounded-box object-fill"
           />
         </div>
         <div class="carousel-item">
