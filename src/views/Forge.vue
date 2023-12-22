@@ -1,42 +1,89 @@
 <template>
   <div
     class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
-    id="forge-panel" @click="handleDivClick">
+    id="forge-panel"
+    @click="handleDivClick"
+  >
     <div class="flex flex-col">
-      <div class="m-2">
+      <div class="top-0">
         <Menu />
       </div>
-      <div role="tablist" class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content">
-        <!-- Research -->
-        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Research" checked />
-        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
-          <ForgeResearch />
-        </div>
-        <!-- Hans and Aubs -->
-        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Graphics" />
-        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
-          <ForgeGraphics />
-        </div>
-        <!-- Tesla -->
-        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Strandbeest" />
-        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
-          <!-- <ForgeResearch /> -->
-          Strandbeest
-        </div>
-        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="Maze" />
-        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
-          <!-- <ForgeResearch /> -->
-          Maze
-        </div>
-        <input type="radio" name="my_tabs_3" role="tab" class="tab hover:bg-primary hover:text-white font-semibold"
-          aria-label="ML/AI" />
-        <div role="tabpanel" class="tab-content bg-primary-content rounded-box">
-          <!-- <ForgeResearch /> -->
-          Machine Learning
+      <div class="inset-0 mb-48">
+        <div
+          role="tablist"
+          class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
+        >
+          <!-- Research -->
+          <input
+            type="radio"
+            name="my_tabs_3"
+            role="tab"
+            class="tab hover:bg-primary hover:text-white font-semibold"
+            aria-label="Research"
+            checked
+          />
+          <div
+            role="tabpanel"
+            class="tab-content bg-primary-content rounded-box"
+          >
+            <ForgeResearch />
+          </div>
+          <!-- Hans and Aubs -->
+          <input
+            type="radio"
+            name="my_tabs_3"
+            role="tab"
+            class="tab hover:bg-primary hover:text-white font-semibold"
+            aria-label="Graphics"
+          />
+          <div
+            role="tabpanel"
+            class="tab-content bg-primary-content rounded-box"
+          >
+            <ForgeGraphics />
+          </div>
+          <!-- Tesla -->
+          <input
+            type="radio"
+            name="my_tabs_3"
+            role="tab"
+            class="tab hover:bg-primary hover:text-white font-semibold"
+            aria-label="Strandbeest"
+          />
+          <div
+            role="tabpanel"
+            class="tab-content bg-primary-content rounded-box"
+          >
+            <ForgeStrandbeest />
+          </div>
+          <input
+            type="radio"
+            name="my_tabs_3"
+            role="tab"
+            class="tab hover:bg-primary hover:text-white font-semibold"
+            aria-label="Maze"
+          />
+          <div
+            role="tabpanel"
+            class="tab-content bg-primary-content rounded-box"
+          >
+            <!-- <ForgeResearch /> -->
+            Maze
+          </div>
+          <input
+            type="radio"
+            name="my_tabs_3"
+            role="tab"
+            class="tab hover:bg-primary hover:text-white font-semibold"
+            aria-label="ML/AI"
+          />
+          <div
+            role="tabpanel"
+            class="tab-content bg-primary-content rounded-box"
+          >
+            <!-- <ForgeResearch /> -->
+            Machine Learning
+          </div>
         </div>
       </div>
     </div>
@@ -47,13 +94,15 @@
 import Menu from "../components/Menu.vue";
 import ForgeResearch from "../components/ForgeResearch.vue";
 import ForgeGraphics from "../components/ForgeGraphics.vue";
+import ForgeStrandbeest from "../components/ForgeStrandbeest.vue";
 
 export default {
   name: "experience",
   components: {
     Menu,
     ForgeResearch,
-    ForgeGraphics
+    ForgeGraphics,
+    ForgeStrandbeest,
   },
   data() {
     return {
