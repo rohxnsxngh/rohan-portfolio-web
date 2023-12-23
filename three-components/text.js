@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 
 function createText(scene, fontLoader, size = 0.45) {
-  return new Promise((resolve, reject) => {
     fontLoader.load("/Fonts/Satoshi_Variable_Bold.json", (droidFont) => {
       const textGeometryAbout = new TextGeometry("Rohan.", {
         height: 0.125,
@@ -38,8 +37,8 @@ function createText(scene, fontLoader, size = 0.45) {
       const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialCaption);
       textMeshHomeCaption.position.set(0, 0.65, 0);
       scene.add(textMeshHomeCaption);
+      console.log(textMeshHome, textMeshHomeCaption)
       return textMeshHome, textMeshHomeCaption
-    });
   });
 }
 

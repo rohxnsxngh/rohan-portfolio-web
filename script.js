@@ -47,7 +47,8 @@ const scene = new THREE.Scene();
 const fontLoader = new FontLoader();
 
 // Usage of the createHomeText function
-createText(scene, fontLoader);
+const text = createText(scene, fontLoader);
+console.log(text)
 
 const sizes = {
   width: window.innerWidth,
@@ -221,6 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (target.id === "init-panel" && !animationInProgress) {
       // enterFullscreen();
+      console.log(text)
       initialAnimation(camera);
       await new Promise(resolve => setTimeout(resolve, 5000));
       if (_robot) {
