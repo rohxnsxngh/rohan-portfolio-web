@@ -37,8 +37,6 @@ function createText(scene, fontLoader, size = 0.45) {
       const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialCaption);
       textMeshHomeCaption.position.set(0, 0.65, 0);
       scene.add(textMeshHomeCaption);
-      console.log(textMeshHome, textMeshHomeCaption)
-      return textMeshHome, textMeshHomeCaption
   });
 }
 

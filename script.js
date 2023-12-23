@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { createText } from "./three-components/text";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   CSS2DRenderer,
@@ -47,8 +48,7 @@ const scene = new THREE.Scene();
 const fontLoader = new FontLoader();
 
 // Usage of the createHomeText function
-const text = createText(scene, fontLoader);
-console.log(text)
+createText(scene, fontLoader);
 
 const sizes = {
   width: window.innerWidth,
@@ -217,14 +217,24 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssContact);
 
-  document.addEventListener("click", async(event) => {
+  document.addEventListener("click", async (event) => {
     const target = event.target;
 
     if (target.id === "init-panel" && !animationInProgress) {
       // enterFullscreen();
-      console.log(text)
       initialAnimation(camera);
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      const node = [];
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      scene.traverse((child) => {
+        if (
+          child instanceof THREE.Mesh &&
+          child.geometry instanceof TextGeometry
+        ) {
+          node.push(child);
+        }
+      });
+      scene.remove(node[0]);
+      scene.remove(node[1]);
       if (_robot) {
         _robot.traverse((o) => {
           if (o.isMesh) {
@@ -234,6 +244,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+    // if (scene) {
+    // }
   });
 
   // Function to enter fullscreen
