@@ -115,15 +115,16 @@ const manager = new THREE.LoadingManager();
 
 const progressBar = document.getElementById("progress-bar");
 const loadingContainer = document.querySelector("div.loading-container");
+loadingContainer.style.display = "none";
 
 manager.onProgress = (url, loaded, total) => {
   console.log(loaded)
   progressBar.value = (loaded / total) * 100;
 };
 
-manager.onLoad = () => {
-  loadingContainer.style.display = "none";
-};
+// manager.onLoad = () => {
+//   loadingContainer.style.display = "none";
+// };
 
 //Robot Model
 const loader = new GLTFLoader(manager);
