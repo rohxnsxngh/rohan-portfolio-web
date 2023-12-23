@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { createText } from "./three-components/text";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
@@ -125,8 +126,12 @@ manager.onLoad = () => {
   loadingContainer.style.display = "none";
 };
 
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/'); // use a full url path
+
 //Robot Model
 const loader = new GLTFLoader(manager);
+loader.setDRACOLoader(dracoLoader);
 loader.load(
   "/Models/robot_playground.glb",
    async (glb) => {
