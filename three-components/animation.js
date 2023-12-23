@@ -88,7 +88,7 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 0.5,
+      duration: 0.025,
       onStart: () => {
         setAnimationInProgress(true);
       },
@@ -98,25 +98,25 @@ function pageToPageAnimation(timeline, camera, zPosition) {
     })
     .to(camera.position, {
       z: 45,
-      x: 1,
+      // x: 1,
       onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power3.out",
+      ease: "expoScale.out",
       overwrite: "none",
-      duration: 1.25,
+      duration: 1,
       onStart: () => {
         setAnimationInProgress(true);
       },
       onComplete: () => {
         setAnimationInProgress(false);
       },
-      delay: 1,
+      delay: 0.25,
     })
     .to(camera.position, {
       z: zPosition,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 1,
+      duration: 0.025,
       onStart: () => {
         setAnimationInProgress(true);
       },
@@ -132,7 +132,7 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 1,
+      duration: 0.25,
       onStart: () => {
         setAnimationInProgress(true);
       },
