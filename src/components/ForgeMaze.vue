@@ -5,19 +5,19 @@
           LiDAR Maze Robot.
         </h1>
         <p class="font-bold lg:text-2xl sm:text-2xl text-lg text-primary">
-          Texas A&M Robotics Team Lead.
+          Texas A&M University Robotics.
         </p>
         <p class="font-bold lg:text-xl sm:text-md text-xs text-slate-500">
           August 2022 - May 2023.
         </p>
         <button
-          class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary"
+          class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
           onclick="maze_project.showModal()"
         >
           Learn More
         </button>
         <dialog id="maze_project" class="modal">
-        <div class="modal-box w-11/12 max-w-5xl">
+        <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div>
             <h1 class="font-bold text-xl">
               LiDAR Driven Maze Robot

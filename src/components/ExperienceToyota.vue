@@ -11,13 +11,13 @@
         September 2023 - Current.
       </p>
       <button
-        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary"
+        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
         onclick="toyota_experience.showModal()"
       >
         Learn More
       </button>
       <dialog id="toyota_experience" class="modal">
-        <div class="modal-box w-11/12 max-w-5xl">
+        <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
             Toyota Contributions
 
@@ -50,7 +50,7 @@
           <img
             id="item2"
             src="/Images/ToyotaHeadquarters.jpg"
-            class="rounded-box object-fill"
+            class="rounded-box object-cover"
           />
         </div>
         <div class="carousel-item">

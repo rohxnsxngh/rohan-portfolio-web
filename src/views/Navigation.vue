@@ -5,7 +5,7 @@
     @click="handleDivClick"
   >
     <div class="flex flex-col">
-      <div class="">
+      <div class="m-2">
         <Menu />
       </div>
 
@@ -14,10 +14,10 @@
       >
         <div class="hero-content text-center">
           <div class="max-w-md">
-            <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold">
+            <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold text-center">
               Welcome.
               <div class="divider"></div>
-              <p class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl font-semibold">
+              <p class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl font-semibold text-left">
                 I hope you enjoy exploring my portfolio website as much as I
                 enjoyed building it. If you have any questions or comments, I
                 would love to hear them. You can reach me <a id="contact" class="underline decoration-solid text-primary">here.</a>

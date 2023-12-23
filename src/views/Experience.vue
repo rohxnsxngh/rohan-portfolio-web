@@ -5,13 +5,13 @@
     @click="handleDivClick"
   >
   <div class="flex flex-col">
-    <div class="top-0">
+    <div class="top-0 m-2">
       <Menu />
     </div>
     <div class="inset-0 mb-48">
       <div
         role="tablist"
-        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content"
+        class="tabs tabs-lifted lg:tabs-lg sm:tabs-sm tabs-xs bg-primary-content self-center"
       >
         <!-- Toyota -->
         <input

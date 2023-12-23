@@ -3,17 +3,17 @@
     class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-90 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
     id="about-panel" @click="handleDivClick">
     <div class="flex flex-col">
-      <div class="">
+      <div class="m-2">
         <Menu />
       </div>
 
       <div class="hero min-h-screen">
         <div class="hero-content text-left">
           <div class="max-w-md">
-            <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-4xl text-left font-bold">
+            <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-4xl text-left font-bold text-center">
               Little bit about me.
               <div class="divider"></div>
-              <p class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold">
+              <p class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left">
                 I am a software engineer with a background in mechanical
                 engineering and a passion for developing innovative solutions.
                 My experience in engineering has given me a solid foundation in

@@ -5,7 +5,7 @@
     @click="handleDivClick"
   >
     <div class="flex flex-col">
-      <div class="top-0">
+      <div class="top-0 m-2">
         <Menu />
       </div>
       <div class="inset-0 mb-48">

@@ -11,13 +11,13 @@
         August 2020 - May 2023.
       </p>
       <button
-        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary"
+        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
         onclick="strandbeest_project.showModal()"
       >
         Learn More
       </button>
       <dialog id="strandbeest_project" class="modal">
-        <div class="modal-box w-11/12 max-w-5xl">
+        <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div>
             <h1 class="font-bold text-xl">
               Strandbeest Robot
