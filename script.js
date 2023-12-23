@@ -117,6 +117,7 @@ const progressBar = document.getElementById("progress-bar");
 const loadingContainer = document.querySelector("div.loading-container");
 
 manager.onProgress = (url, loaded, total) => {
+  console.log(loaded)
   progressBar.value = (loaded / total) * 100;
 };
 
