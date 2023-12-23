@@ -82,7 +82,7 @@ export const navigationAnimation = (camera) => {
 function pageToPageAnimation(timeline, camera, zPosition) {
   timeline
     .to(camera.rotation, {
-      z: -Math.PI / 8192,
+      z: - Math.PI / 16,
       x: Math.PI / 8192,
       y: Math.PI / 8192,
       onUpdate: () => camera.updateProjectionMatrix(),
@@ -102,14 +102,14 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "expoScale.out",
       overwrite: "none",
-      duration: 1,
+      duration: 1.5,
       onStart: () => {
         setAnimationInProgress(true);
       },
       onComplete: () => {
         setAnimationInProgress(false);
       },
-      delay: 0.25,
+      delay: 0.025,
     })
     .to(camera.position, {
       z: zPosition,
