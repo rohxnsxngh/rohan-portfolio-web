@@ -29,12 +29,12 @@ let config = {
     BLOOM: true,
     BLOOM_ITERATIONS: 8,
     BLOOM_RESOLUTION: 256,
-    BLOOM_INTENSITY: 0.2,
+    BLOOM_INTENSITY: 0.6,
     BLOOM_THRESHOLD: 1,
     BLOOM_SOFT_KNEE: 0.7,
-    SUNRAYS: false,
+    SUNRAYS: true,
     SUNRAYS_RESOLUTION: 196,
-    SUNRAYS_WEIGHT: 1.0,
+    SUNRAYS_WEIGHT: 0.2,
 }
 
 function pointerPrototype () {
