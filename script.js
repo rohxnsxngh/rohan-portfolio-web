@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.id === "init-panel" && !animationInProgress) {
-      // enterFullscreen();
+      enterFullscreen();
       initialAnimation(camera);
       const node = [];
       await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -242,8 +242,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
-    // if (scene) {
-    // }
   });
 
   // Function to enter fullscreen
@@ -315,17 +313,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const deltaTime = elapsedTime - previousTime;
     previousTime = elapsedTime;
 
-    const isLargeScreen = window.innerWidth > 750;
+    const isLargeScreen = window.innerWidth > 760;
 
-    // if (isLargeScreen && !animationInProgress) {
-    //   const parallaxX = cursor.x * 0.8;
-    //   const parallaxY = -cursor.y * 0.4;
+    if (isLargeScreen && !animationInProgress) {
+      const parallaxX = cursor.x * 0.8;
+      const parallaxY = -cursor.y * 0.4;
 
-    //   cameraGroup.position.x +=
-    //     (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-    //   cameraGroup.position.y +=
-    //     (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
-    // }
+      cameraGroup.position.x +=
+        (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+      cameraGroup.position.y +=
+        (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+    }
 
     //robot animation
     if (_mixerRobot) {
