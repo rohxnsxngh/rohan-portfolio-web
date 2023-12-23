@@ -32,7 +32,7 @@ let config = {
     BLOOM_INTENSITY: 0.6,
     BLOOM_THRESHOLD: 1,
     BLOOM_SOFT_KNEE: 0.7,
-    SUNRAYS: true,
+    SUNRAYS: false,
     SUNRAYS_RESOLUTION: 196,
     SUNRAYS_WEIGHT: 0.2,
 }
