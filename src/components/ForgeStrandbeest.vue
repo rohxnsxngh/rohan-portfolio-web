@@ -1,70 +1,81 @@
 <template>
-    <div class="flex sm:flex-row flex-col sm:p-8 md:p-4 p-2 space-y-2">
-      <div class="lg:h-48 sm:h-32 h-20 flex flex-col mb-8">
-        <h1 class="font-bold lg:text-4xl sm:text-4xl text-xl">
-          Strandbeest Robot.
-        </h1>
-        <p class="font-bold lg:text-2xl sm:text-2xl text-lg text-primary">
-          Texas A&M University Robotics.
-        </p>
-        <p class="font-bold lg:text-xl sm:text-md text-xs text-slate-500">
-          August 2020 - May 2023.
-        </p>
-        <button
-          class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary"
-          onclick="strandbeest_project.showModal()"
-        >
-          Learn More
-        </button>
-        <dialog id="strandbeest_project" class="modal">
-          <div class="modal-box w-11/12 max-w-5xl">
-            <div class="flex flex-col">
-              Texas A&M University Robotics Team & Leadership Experience (TURTLE)
-  
-              <div class="modal-action sm:w-1/4 w-full right-0 float-right">
-                <form method="dialog">
-                  <!-- if there is a button in form, it will close the modal -->
-                  <button
-                    class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
-                  >
-                    Close
-                  </button>
-                </form>
-              </div>
-            </div>
+  <div class="flex sm:flex-row flex-col sm:p-8 md:p-4 p-2 space-y-2">
+    <div class="lg:h-48 sm:h-32 h-20 flex flex-col mb-8">
+      <h1 class="font-bold lg:text-4xl sm:text-4xl text-xl">
+        Strandbeest Robot.
+      </h1>
+      <p class="font-bold lg:text-2xl sm:text-2xl text-lg text-primary">
+        Texas A&M University Robotics.
+      </p>
+      <p class="font-bold lg:text-xl sm:text-md text-xs text-slate-500">
+        August 2020 - May 2023.
+      </p>
+      <button
+        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary"
+        onclick="strandbeest_project.showModal()"
+      >
+        Learn More
+      </button>
+      <dialog id="strandbeest_project" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl">
+          <div>
+            <h1 class="font-bold text-xl">
+              Strandbeest Robot
+              <p class="font-normal text-sm">
+                Although humans primarily use wheeled vehicles for ground transportation, it's worth noting that there are no biological creatures in nature that move on wheels. Instead, living creatures use legs or crawl to navigate the ground. Walking, as a means of locomotion, offers numerous advantages over wheel locomotion, including lower energy consumption, greater flexibility in traversing obstacles, less damage to the ground, and no requirement for roads (Moldovan et al., 2011). As a result, scientists are actively designing vehicles inspired by natural locomotion, with legs being one of the most popular choices. For example, Dutch physicist and artist Theo Jansen has developed a twelve-bar mechanism for legs in his kinetic sculptures (Jansen, 2007), which is now known as the "Theo Jansen linkage" and can be adapted for use in walking vehicles. This project aimed to design and build a Strandbeest robot, inspired by the Theo Jansen linkage mechanism. By utilizing legs instead of wheels, this robot enjoys several benefits, including lower energy consumption, greater maneuverability, and the ability to overcome obstacles with ease.
+          <div class="modal-action h-6">
+            <form method="dialog">
+              <!-- if there is a button, it will close the modal -->
+              <button class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary">Close</button>
+            </form>
           </div>
-        </dialog>
-      </div>
-      <div class="px-2">
-        <div
-          class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-80"
-        >
-          <div class="carousel-item">
-            <img
-              src="/Images/StrandbeestPrototype.png"
-              class="rounded-box object-scale-down"
-            />
+              </p>
+            </h1>
           </div>
-          <div class="carousel-item">
-            <img
-              src="/Images/StrandBeestLinkagesMath.png"
-              class="rounded-box object-cover"
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="/Images/StrandbeestLinkagesDrawing.png"
-              class="rounded-box object-cover"
-            />
-          </div>
-          <div class="carousel-item">
-            <img
-              src="/Images/StrandbeestElectronicsDiagram.png"
-              class="rounded-box object-cover"
-            />
-          </div>
+        </div>
+      </dialog>
+    </div>
+    <div class="px-2">
+      <div
+        class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-80"
+      >
+        <div class="carousel-item">
+          <img
+            src="/Images/strandbeestCAD.png"
+            class="rounded-box object-cover"
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="/Images/StrandbeestMotion.gif"
+            class="rounded-box object-cover"
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="/Images/StrandbeestPrototype.png"
+            class="rounded-box object-scale-down"
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="/Images/StrandBeestLinkagesMath.png"
+            class="rounded-box object-contain"
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="/Images/StrandbeestLinkagesDrawing.png"
+            class="rounded-box object-contain"
+          />
+        </div>
+        <div class="carousel-item">
+          <img
+            src="/Images/StrandbeestElectronicsDiagram.png"
+            class="rounded-box object-contain"
+          />
         </div>
       </div>
     </div>
-  </template>
-  
+  </div>
+</template>

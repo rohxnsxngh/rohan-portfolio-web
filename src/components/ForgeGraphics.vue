@@ -18,19 +18,31 @@
       </button>
       <dialog id="graphics_project" class="modal">
         <div class="modal-box w-11/12 max-w-5xl">
-          <div class="flex flex-col">
-            Graphics & Shaders Experiment
+          <div>
+            <h1 class="font-bold text-xl">
+              Graphics, ThreeJS, & Shaders Experiment
+              <p class="font-normal text-sm">
+                This project is an immersive, entertaining experience that allows users to interact with dynamic and engaging visuals. It was built as a platform for experimenting with various techniques in computer graphics and audio processing, such as audio visualizers, shaders, procedural generation, and textures.
 
-            <div class="modal-action sm:w-1/4 w-full right-0 float-right">
-              <form method="dialog">
-                <!-- if there is a button in form, it will close the modal -->
-                <button
-                  class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
-                >
-                  Close
-                </button>
-              </form>
-            </div>
+The project is built primarily with Three.js, a JavaScript library for creating and displaying 3D graphics on web browsers. The project aims to leverage the power of Three.js to create a rich, interactive and visually stunning experience for the user. It utilizes audio input to drive the animation and visuals of the scene, creating a real-time audio visualization. It also uses 3D models created in Blender and exported to be displayed in the browser.
+
+Procedural generation techniques are used to create unique and varied visuals with each experience, giving the user a different experience every time. This includes generating textures and shapes, which change depending on user interaction, or with the audio input.
+
+The project also makes use of shaders, which are small programs that run on the graphics processing unit (GPU) to generate the final images rendered on the screen. These shaders allow for complex and dynamic visuals, such as reflections, refractions, and realistic lighting effects.
+
+Finally, the project utilizes browser based technologies, the user can enjoy the immersive experience from anywhere and any device with a web browser and internet connection. The goal of the project is to provide an entertaining and engaging experience for the user, whether for entertainment or for other purposes such as gaming, music and other immersive experiences. This project is in development and has no real end goal as it's simply a method for artistic expression.
+
+Demo: https://rohxnsxngh.vercel.app/
+
+
+          <div class="modal-action h-6">
+            <form method="dialog">
+              <!-- if there is a button, it will close the modal -->
+              <button class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary">Close</button>
+            </form>
+          </div>
+              </p>
+            </h1>
           </div>
         </div>
       </dialog>
@@ -40,7 +52,13 @@
         class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-80"
       >
         <div class="carousel-item">
-          <!-- <img src="/Images/TeslaMoreAesthetic.PNG" class="rounded-box object-cover" /> -->
+          <img src="/Images/HansAubsHome.png" class="rounded-box object-cover" />
+        </div>
+        <div class="carousel-item">
+          <img src="/Images/HansAubsLab.png" class="rounded-box object-cover" />
+        </div>
+        <div class="carousel-item">
+          <img src="/Images/HansAubsForge.png" class="rounded-box object-cover" />
         </div>
       </div>
     </div>
