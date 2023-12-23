@@ -127,9 +127,9 @@ manager.onLoad = () => {
 //Robot Model
 const loader = new GLTFLoader(manager);
 loader.load(
-  "/Models/robot/scene.gltf",
-  function (gltf) {
-    _robot = gltf.scene;
+  "/Models/robot_playground.glb",
+  function (glb) {
+    _robot = glb.scene;
     var newMaterial = new THREE.MeshPhongMaterial({
       color: 0x000000,
       emissive: 0x000000, //change color
@@ -146,7 +146,7 @@ loader.load(
     scene.add(_robot);
     _mixerRobot = new THREE.AnimationMixer(_robot);
     _mixerRobot.timeScale = 1.25;
-    _mixerRobot.clipAction(gltf.animations[0]).play();
+    _mixerRobot.clipAction(glb.animations[0]).play();
   },
   // // onProgress callback
   function (xhr) {
