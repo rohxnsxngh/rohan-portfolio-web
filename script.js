@@ -129,7 +129,7 @@ manager.onLoad = () => {
 const loader = new GLTFLoader(manager);
 loader.load(
   "/Models/robot_playground.glb",
-  function (glb) {
+   async (glb) => {
     _robot = glb.scene;
     var newMaterial = new THREE.MeshPhongMaterial({
       color: 0x000000,
