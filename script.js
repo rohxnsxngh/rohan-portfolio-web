@@ -116,10 +116,10 @@ const manager = new THREE.LoadingManager();
 const progressBar = document.getElementById("progress-bar");
 const loadingContainer = document.querySelector("div.loading-container");
 
-manager.onProgress = (url, loaded, total) => {
-  console.log(loaded)
-  progressBar.value = (loaded / total) * 100;
-};
+// manager.onProgress = (url, loaded, total) => {
+//   // console.log(loaded / total)
+//   // progressBar.value = (loaded / total) * 100;
+// };
 
 manager.onLoad = () => {
   loadingContainer.style.display = "none";
@@ -152,7 +152,8 @@ loader.load(
   // // onProgress callback
   function (xhr) {
     const progress = (xhr.loaded / xhr.total) * 100;
-    console.log(progress);
+    progressBar.value = (xhr.loaded / xhr.total) * 100;
+    console.log(progressBar.value, progress);
   },
 
   // // onError callback
