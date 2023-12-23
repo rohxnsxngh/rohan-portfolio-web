@@ -16,7 +16,7 @@ export const initialAnimation = (camera) => {
       y: 1,
       x: -2,
       onUpdate: () => camera.lookAt(1, 1, 0),
-      ease: "power1.out",
+      ease: "power3.out",
       duration: 2,
       onStart: () => {
         setAnimationInProgress(true);
@@ -33,8 +33,8 @@ export const initialAnimation = (camera) => {
       .to(camera.rotation, {
         x: -Math.PI / 2,
         onUpdate: () => camera.updateProjectionMatrix(),
-        ease: "power1.out",
-        duration: 4,
+        ease: "power3.out",
+        duration: 2,
       });
   }
 
@@ -88,7 +88,7 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 0.25,
+      duration: 0.5,
       onStart: () => {
         setAnimationInProgress(true);
       },
@@ -97,12 +97,26 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       },
     })
     .to(camera.position, {
-      z: 50,
+      z: 45,
       x: 1,
+      onUpdate: () => camera.updateProjectionMatrix(),
+      ease: "power3.out",
+      overwrite: "none",
+      duration: 1.25,
+      onStart: () => {
+        setAnimationInProgress(true);
+      },
+      onComplete: () => {
+        setAnimationInProgress(false);
+      },
+      delay: 1,
+    })
+    .to(camera.position, {
+      z: zPosition,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 1.5,
+      duration: 1,
       onStart: () => {
         setAnimationInProgress(true);
       },
@@ -118,27 +132,13 @@ function pageToPageAnimation(timeline, camera, zPosition) {
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 0.25,
+      duration: 1,
       onStart: () => {
         setAnimationInProgress(true);
       },
       onComplete: () => {
         setAnimationInProgress(false);
       },
-    })
-    .to(camera.position, {
-      z: zPosition,
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power1.out",
-      overwrite: "none",
-      duration: 0.25,
-      onStart: () => {
-        setAnimationInProgress(true);
-      },
-      onComplete: () => {
-        setAnimationInProgress(false);
-      },
-      delay: 1,
     });
 }
 
