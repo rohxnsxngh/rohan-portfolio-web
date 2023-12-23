@@ -136,8 +136,6 @@ loader.load(
       specular: 0xffffff, //0xEB00D5
       shininess: 15,
       flatShading: true,
-      // transparent: true,
-      // opacity: 0
     });
     _robot.traverse((o) => {
       if (o.isMesh) o.material = newMaterial;
@@ -272,7 +270,18 @@ document.addEventListener("DOMContentLoaded", () => {
         sound(camera);
         break;
       case "home":
-        if (!animationInProgress) homeAnimation(camera, 6);
+        if (!animationInProgress) {
+          if (_robot) {
+            _robot.traverse((o) => {
+              if (o.isMesh) {
+                o.material.transparent = false;
+                o.material.opacity = 1;
+              }
+            });
+          }
+          createText(scene, fontLoader);
+          homeAnimation(camera, 6);
+        }
         break;
       case "navigation":
         if (!animationInProgress)
