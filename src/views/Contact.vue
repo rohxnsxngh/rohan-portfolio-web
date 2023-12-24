@@ -9,14 +9,21 @@
         <Menu />
       </div>
 
-      <div
-        class="hero min-h-screen"
-      >
+      <div class="hero min-h-screen">
         <div class="hero-content text-center">
           <div class="max-w-md">
             <h1 class="text-5xl font-bold">
               Contact
+
               <div class="divider"></div>
+              <p
+                class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left"
+              >
+                Get in touch!
+                <i class="fi fi-sr-envelope"></i>
+                <i class="fi fi-brands-github"></i>
+                <i class="fi fi-brands-linkedin"></i>
+              </p>
             </h1>
           </div>
         </div>

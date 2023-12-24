@@ -11,10 +11,10 @@
         September 2023 - Current.
       </p>
       <button
-        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
+        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2 inline-block"
         onclick="toyota_experience.showModal()"
       >
-        Learn More
+      <i class="fi fi-br-info mt-1 mx-2 text-black hover:text-white"></i>Learn more
       </button>
       <dialog id="toyota_experience" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
