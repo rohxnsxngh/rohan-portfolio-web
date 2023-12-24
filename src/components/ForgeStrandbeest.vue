@@ -44,38 +44,70 @@
           <img
             src="/Images/strandbeestCAD.png"
             class="rounded-box object-cover"
+            id="item1-sb"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/StrandbeestMotion.gif"
             class="rounded-box object-cover"
+            id="item2-sb"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/StrandbeestPrototype.png"
             class="rounded-box object-scale-down"
+            id="item3-sb"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/StrandBeestLinkagesMath.png"
             class="rounded-box object-contain"
+            id="item4-sb"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/StrandbeestLinkagesDrawing.png"
             class="rounded-box object-contain"
+            id="item5-sb"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/StrandbeestElectronicsDiagram.png"
             class="rounded-box object-contain"
+            id="item6-sb"
           />
         </div>
+      </div>
+      <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
+        <a
+          href="#item1-sb"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item2-sb"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item3-sb"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item4-sb"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item5-sb"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item6-sb"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
       </div>
     </div>
   </div>

@@ -60,38 +60,70 @@ games, and understanding umpire behavior.
           <img
             src="/Images/MachineLearningBaseball.png"
             class="rounded-box object-contain"
+            id="item1-ml"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/MachineLearningBaseball1.png"
             class="rounded-box object-contain"
+            id="item2-ml"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/MachineLearningBaseball2.png"
             class="rounded-box object-contain"
+            id="item3-ml"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/MachineLearningBaseballMapping.png"
             class="rounded-box object-contain"
+            id="item4-ml"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/MachineLearningEric.png"
             class="rounded-box object-contain"
+            id="item5-ml"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/MachineLearningMalachi.png"
             class="rounded-box object-contain"
+            id="item6-ml"
           />
         </div>
+      </div>
+      <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
+        <a
+          href="#item1-ml"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item2-ml"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item3-ml"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item4-ml"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item5-ml"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item6-ml"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
       </div>
     </div>
   </div>

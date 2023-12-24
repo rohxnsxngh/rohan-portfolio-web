@@ -82,14 +82,26 @@
           <img
             src="/Images/ResearchCustomStrats.jpg"
             class="rounded-box object-cover"
+            id="item1-research"
           />
         </div>
         <div class="carousel-item">
           <img
             src="/Images/ResearchUNET.jpg"
             class="rounded-box object-cover"
+            id="item2-research"
           />
         </div>
+      </div>
+      <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
+        <a
+          href="#item1-research"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item2-research"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
       </div>
     </div>
   </div>

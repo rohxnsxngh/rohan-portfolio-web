@@ -53,14 +53,28 @@ Demo: https://rohxnsxngh.vercel.app/
         class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-80"
       >
         <div class="carousel-item">
-          <img src="/Images/HansAubsHome.png" class="rounded-box object-cover" />
+          <img src="/Images/HansAubsHome.png" class="rounded-box object-cover" id="item1-forge" />
         </div>
         <div class="carousel-item">
-          <img src="/Images/HansAubsLab.png" class="rounded-box object-cover" />
+          <img src="/Images/HansAubsLab.png" class="rounded-box object-cover" id="item2-forge"/>
         </div>
         <div class="carousel-item">
-          <img src="/Images/HansAubsForge.png" class="rounded-box object-cover" />
+          <img src="/Images/HansAubsForge.png" class="rounded-box object-cover" id="item3-forge"/>
         </div>
+      </div>
+      <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
+        <a
+          href="#item1-forge"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item2-forge"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item3-forge"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
       </div>
     </div>
   </div>

@@ -47,15 +47,29 @@ In an effort to augment the Maze Bot's capabilities, advanced technologies such 
           class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-80"
         >
         <div class="carousel-item">
-            <img src="/Images/MazeBotModel.png" class="rounded-box object-scale-down" />
+            <img src="/Images/MazeBotModel.png" class="rounded-box object-scale-down" id="item1-maze"/>
           </div>
           <div class="carousel-item">
-            <img src="/Images/LiDARMappingMazeBot.png" class="rounded-box object-scale-down" />
+            <img src="/Images/LiDARMappingMazeBot.png" class="rounded-box object-scale-down" id="item2-maze"/>
           </div>
           <div class="carousel-item">
-            <img src="/Images/KinematicsProfilesMazeBot.png" class="rounded-box object-scale-down" />
+            <img src="/Images/KinematicsProfilesMazeBot.png" class="rounded-box object-scale-down" id="item3-maze"/>
           </div>
         </div>
+        <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
+        <a
+          href="#item1-maze"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item2-maze"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#item3-maze"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+      </div>
       </div>
     </div>
   </template>
