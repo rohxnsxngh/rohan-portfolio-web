@@ -19,7 +19,8 @@
       <dialog id="toyota_experience" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
-            Toyota Contributions
+            <h1 class="font-bold text-xl text-primary">Toyota Contributions</h1>
+            <div class="divider"></div>
 
             <div class="modal-action sm:w-1/4 w-full right-0 float-right">
               <form method="dialog">

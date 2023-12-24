@@ -19,9 +19,10 @@
       <dialog id="research_project" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div>
-            <h1 class="font-bold text-xl">
-              Echocardiogram Machine Learning Research
-              <p class="font-normal text-sm">
+            <h1 class="font-bold text-xl text-primary">
+              Echocardiogram Machine Learning 
+              <div class="divider"></div>
+              <p class="font-normal text-sm text-white">
                 In my pursuit of expanding my expertise, I actively engaged in
                 research under the mentorship of Dr. Iman Borazjani. Our
                 collaborative research endeavor centered around the application

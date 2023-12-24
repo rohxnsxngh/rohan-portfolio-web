@@ -9,63 +9,126 @@
         May 2023 - September 2023.
       </p>
 
-
       <button
         class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
-        onclick="tesla_experience.showModal()">Learn More</button>
+        onclick="tesla_experience.showModal()"
+      >
+        Learn More
+      </button>
       <dialog id="tesla_experience" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
-          <div class="flex flex-col">Tesla Contributions
+          <div class="flex flex-col">
+            <h1 class="font-bold text-xl text-primary">Tesla Contributions</h1>
+            <div class="divider"></div>
 
             <div class="modal-action sm:w-1/4 w-full right-0 float-right">
               <form method="dialog">
                 <!-- if there is a button in form, it will close the modal -->
                 <button
-                  class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right">Close</button>
+                  class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
+                >
+                  Close
+                </button>
               </form>
             </div>
           </div>
-
         </div>
       </dialog>
-
     </div>
     <div class="px-2">
-      <div class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-80">
+      <div
+        class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-80"
+      >
         <div class="carousel-item">
-          <img id="tesla-item1" src="/Images/TeslaRobotics.jpg" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item1"
+            src="/Images/TeslaRobotics.jpg"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item2" src="/Images/TeslaLight.jpg" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item2"
+            src="/Images/TeslaLight.jpg"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item3" src="/Images/TeslaAestheticsFDT.png" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item3"
+            src="/Images/TeslaAestheticsFDT.png"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item4" src="/Images/TeslaCrashDummySideView.jpg" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item4"
+            src="/Images/TeslaCrashDummySideView.jpg"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item5" src="/Images/TeslaFDTDataDisplay.png" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item5"
+            src="/Images/TeslaFDTDataDisplay.png"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item6" src="/Images/TeslaMapWithConversion.png" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item6"
+            src="/Images/TeslaMapWithConversion.png"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item7" src="/Images/TeslaRevitExtractionServiceArchitecture.png" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item7"
+            src="/Images/TeslaRevitExtractionServiceArchitecture.png"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
         <div class="carousel-item">
-          <img id="tesla-item8" src="/Images/TeslaCyberRodeoScreen.jpg" class="rounded-box object-cover scroll-mt-96" />
+          <img
+            id="tesla-item8"
+            src="/Images/TeslaCyberRodeoScreen.jpg"
+            class="rounded-box object-cover scroll-mt-96"
+          />
         </div>
       </div>
       <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
-        <a href="#tesla-item1" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
-        <a href="#tesla-item2" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
-        <a href="#tesla-item3" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
-        <a href="#tesla-item4" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
-        <a href="#tesla-item5" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
-        <a href="#tesla-item6" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
-        <a href="#tesla-item7" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
-        <a href="#tesla-item8" class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"></a>
+        <a
+          href="#tesla-item1"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#tesla-item2"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#tesla-item3"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#tesla-item4"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#tesla-item5"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#tesla-item6"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#tesla-item7"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
+        <a
+          href="#tesla-item8"
+          class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
+        ></a>
       </div>
     </div>
   </div>
