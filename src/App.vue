@@ -6,6 +6,7 @@
   <About />
   <Writing />
   <Contact />
+  <Finish />
 </template>
 
 <script>
@@ -16,6 +17,7 @@ import About from "./views/About.vue";
 import Writing from "./views/Writing.vue";
 import Contact from "./views/Contact.vue";
 import Init from "./views/Init.vue";
+import Finish from "./views/Finish.vue";
 
 export default {
   name: "home",
@@ -26,7 +28,8 @@ export default {
     About,
     Writing,
     Contact,
-    Init
+    Init,
+    Finish
   },
   data() {
     return {

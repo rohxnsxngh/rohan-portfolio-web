@@ -36,7 +36,7 @@ let _cssrenderer,
   _cssForge,
   _cssExperience,
   _cssAbout,
-  _cssWriting,
+  _cssWriting, _cssFinish,
   _cssContact;
 let _mixerRobot, _robot;
 // Canvas
@@ -215,6 +215,12 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssContact);
 
+  const finishPanel = document.getElementById("finish-panel");
+  _cssFinish = new CSS2DObject(finishPanel);
+  _cssFinish.position.set(1, -6, 30);
+  _cssFinish.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  scene.add(_cssFinish);
+
   document.addEventListener("click", async (event) => {
     const target = event.target;
 
@@ -300,6 +306,10 @@ document.addEventListener("DOMContentLoaded", () => {
           writingAnimation(camera, _cssWriting.position.z);
         break;
       case "contact":
+        if (!animationInProgress)
+          contactAnimation(camera, _cssContact.position.z);
+        break;
+      case "finish-panel":
         if (!animationInProgress)
           contactAnimation(camera, _cssContact.position.z);
         break;
