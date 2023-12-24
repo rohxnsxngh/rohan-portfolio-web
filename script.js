@@ -36,7 +36,8 @@ let _cssrenderer,
   _cssForge,
   _cssExperience,
   _cssAbout,
-  _cssWriting, _cssFinish,
+  _cssWriting,
+  _cssFinish,
   _cssContact;
 let _mixerRobot, _robot;
 // Canvas
@@ -128,7 +129,7 @@ manager.onLoad = () => {
 const loader = new GLTFLoader(manager);
 loader.load(
   "/Models/robot_playground.glb",
-   async (glb) => {
+  async (glb) => {
     _robot = glb.scene;
     var newMaterial = new THREE.MeshPhongMaterial({
       color: 0x000000,
@@ -221,6 +222,24 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssFinish.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssFinish);
 
+  const returnToOriginalPosition = (
+    _cssNavigation,
+    _cssForge,
+    _cssExperience,
+    _cssAbout,
+    _cssContact,
+    _cssFinish,
+    _cssWriting
+  ) => {
+    _cssNavigation.position.set(1, -6, 6);
+    _cssForge.position.set(1, -6, 10);
+    _cssExperience.position.set(1, -6, 14);
+    _cssAbout.position.set(1, -6, 18);
+    _cssWriting.position.set(1, -6, 22);
+    _cssContact.position.set(1, -6, 26);
+    _cssFinish.position.set(1, -6, 30);
+  };
+
   document.addEventListener("click", async (event) => {
     const target = event.target;
 
@@ -271,6 +290,15 @@ document.addEventListener("DOMContentLoaded", () => {
     switch (target.id) {
       case "init-panel":
         if (!animationInProgress) initialAnimation(camera);
+        returnToOriginalPosition(
+          _cssNavigation,
+          _cssForge,
+          _cssExperience,
+          _cssAbout,
+          _cssContact,
+          _cssFinish,
+          _cssWriting
+        );
         sound(camera);
         break;
       case "home":
@@ -289,29 +317,81 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "navigation":
         if (!animationInProgress)
-          navigationAnimation(camera, _cssNavigation.position.z);
+          returnToOriginalPosition(
+            _cssNavigation,
+            _cssForge,
+            _cssExperience,
+            _cssAbout,
+            _cssContact,
+            _cssFinish,
+            _cssWriting
+          );
+        navigationAnimation(camera, _cssNavigation);
         break;
       case "forge":
-        if (!animationInProgress) forgeAnimation(camera, _cssForge.position.z);
+        if (!animationInProgress)
+          returnToOriginalPosition(
+            _cssNavigation,
+            _cssForge,
+            _cssExperience,
+            _cssAbout,
+            _cssContact,
+            _cssFinish,
+            _cssWriting
+          );
+        forgeAnimation(camera, _cssForge);
         break;
       case "experience":
         if (!animationInProgress)
-          experienceAnimation(camera, _cssExperience.position.z);
+          returnToOriginalPosition(
+            _cssNavigation,
+            _cssForge,
+            _cssExperience,
+            _cssAbout,
+            _cssContact,
+            _cssFinish,
+            _cssWriting
+          );
+        experienceAnimation(camera, _cssExperience);
         break;
       case "about":
-        if (!animationInProgress) aboutAnimation(camera, _cssAbout.position.z);
+        if (!animationInProgress)
+          returnToOriginalPosition(
+            _cssNavigation,
+            _cssForge,
+            _cssExperience,
+            _cssAbout,
+            _cssContact,
+            _cssFinish,
+            _cssWriting
+          );
+        aboutAnimation(camera, _cssAbout);
         break;
       case "writing":
         if (!animationInProgress)
-          writingAnimation(camera, _cssWriting.position.z);
+          returnToOriginalPosition(
+            _cssNavigation,
+            _cssForge,
+            _cssExperience,
+            _cssAbout,
+            _cssContact,
+            _cssFinish,
+            _cssWriting
+          );
+        writingAnimation(camera, _cssWriting);
         break;
       case "contact":
         if (!animationInProgress)
-          contactAnimation(camera, _cssContact.position.z);
-        break;
-      case "finish-panel":
-        if (!animationInProgress)
-          contactAnimation(camera, _cssContact.position.z);
+          returnToOriginalPosition(
+            _cssNavigation,
+            _cssForge,
+            _cssExperience,
+            _cssAbout,
+            _cssContact,
+            _cssFinish,
+            _cssWriting
+          );
+        contactAnimation(camera, _cssContact);
         break;
       default:
         break;
