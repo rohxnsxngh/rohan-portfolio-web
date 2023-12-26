@@ -10,26 +10,76 @@
       </p>
 
       <button
-        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
+        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2 inline-block"
         onclick="tesla_experience.showModal()"
       >
-        Learn More
+        <i class="fi fi-bs-info mx-1 text-slate-500"></i>Learn More
       </button>
       <dialog id="tesla_experience" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
             <h1 class="font-bold text-xl text-primary">Tesla Contributions</h1>
             <div class="divider"></div>
-
-            <div class="modal-action sm:w-1/4 w-full right-0 float-right">
-              <form method="dialog">
-                <!-- if there is a button in form, it will close the modal -->
-                <button
-                  class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
-                >
-                  Close
-                </button>
-              </form>
+            <div class="">
+              <ul
+                class="font-normal sm:text-sm text-xs text-white h-fit list-disc list-outside"
+              >
+                <li class="text-primary">
+                  <div class="text-white">
+                    Automated and optimized Revit model extraction, reducing
+                    manual tasks from 12 hours to minutes and processing 20-25
+                    Revit models in 50 minutes, all while maintaining
+                    scalability and cost-efficiency.
+                  </div>
+                </li>
+                <li class="text-primary">
+                  <div class="text-white">
+                    Developed a robust, user-friendly tool featuring automatic
+                    synchronization, error logging, persistent background jobs,
+                    and a custom frontend with real-time status updates on the
+                    Revit extraction tool, enhancing accessibility and
+                    transparency for users.
+                  </div>
+                </li>
+                <li class="text-primary">
+                  <div class="text-white">
+                    Employed alternative to Autodesk Forge Flex tokens for
+                    cost-effective operation, managing expenses at $30/day per
+                    token, resulting in potential annual cost savings ranging
+                    from $163,800 (15 tokens) to $491,400 (45 tokens) for
+                    minimal usage, while ensuring scalability with increased
+                    factory projects.
+                  </div>
+                </li>
+                <li class="text-primary">
+                  <div class="text-white">
+                    Assisted development of a cutting-edge tracking service
+                    utilizing Golang and leveraging the Ericsson network's 5G
+                    capabilities to monitor and optimize the real-time movements
+                    of AGVs, cranes, vehicles, and other assets, enhancing
+                    operational efficiency and asset management.
+                  </div>
+                </li>
+                <li class="text-primary">
+                  <div class="text-white">
+                    Provided comprehensive frontend development support using
+                    ReactJS, Python, and Deck.gl to visualize the data extracted
+                    by the Revit extraction tool, seamlessly transforming it
+                    into GeoJSON format and rendering it in a dynamic 3D
+                    display, enhancing data visualization and user interaction.
+                  </div>
+                </li>
+                <div class="modal-action sm:w-1/4 w-full right-0 float-right">
+                  <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button
+                      class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
+                    >
+                      Close
+                    </button>
+                  </form>
+                </div>
+              </ul>
             </div>
           </div>
         </div>
@@ -85,7 +135,7 @@
           <img
             id="tesla-item7"
             src="/Images/TeslaRevitExtractionServiceArchitecture.png"
-            class="rounded-box object-cover scroll-mt-96"
+            class="rounded-box object-scale-down scroll-mt-96"
           />
         </div>
         <div class="carousel-item">

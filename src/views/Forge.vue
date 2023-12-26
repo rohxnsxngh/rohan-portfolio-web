@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-90 text-4xl rounded-lg opacity-90"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-65 text-4xl rounded-lg opacity-90"
     id="forge-panel"
     @click="handleDivClick"
   >

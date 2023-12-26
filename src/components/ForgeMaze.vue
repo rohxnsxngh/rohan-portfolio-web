@@ -11,10 +11,10 @@
           August 2022 - May 2023.
         </p>
         <button
-          class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
+          class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2 inline-block"
           onclick="maze_project.showModal()"
         >
-          Learn More
+        <i class="fi fi-bs-info mx-1 text-slate-500"></i>Learn More
         </button>
         <dialog id="maze_project" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">

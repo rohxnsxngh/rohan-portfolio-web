@@ -14,23 +14,59 @@
         class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2 inline-block"
         onclick="toyota_experience.showModal()"
       >
-      <i class="fi fi-br-info mt-1 mx-2 text-black hover:text-white"></i>Learn more
+        <i class="fi fi-bs-info mx-1 text-slate-500"></i>Learn more
       </button>
       <dialog id="toyota_experience" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
             <h1 class="font-bold text-xl text-primary">Toyota Contributions</h1>
             <div class="divider"></div>
-
-            <div class="modal-action sm:w-1/4 w-full right-0 float-right">
-              <form method="dialog">
-                <!-- if there is a button in form, it will close the modal -->
-                <button
-                  class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
-                >
-                  Close
-                </button>
-              </form>
+            <div class="">
+              <ul
+                class="font-normal sm:text-sm text-xs text-white h-fit list-disc list-outside"
+              >
+                <li class="text-primary">
+                  <div class="text-white">
+                    Developed and maintained software applications for
+                    in-vehicle infotainment systems, enhancing user experience
+                    and delivering features such as navigation, entertainment,
+                    and connectivity.
+                  </div>
+                </li>
+                <li class="text-primary">
+                  <div class="text-white">
+                    Led software integration efforts, facilitating seamless
+                    communication between various vehicle components, including
+                    sensors, ECUs, and telematics modules, optimizing system
+                    performance.
+                  </div>
+                </li>
+                <li class="text-primary">
+                  <div class="text-white">
+                    Conducted system-level testing, validation, and
+                    troubleshooting to identify and resolve software defects,
+                    resulting in improved software quality and reduced
+                    production delays.
+                  </div>
+                </li>
+                <li class="text-primary">
+                  <div class="text-white">
+                    Demonstrated proficiency in programming languages such as
+                    C/C++ and Python, as well as familiarity with real-time
+                    operating systems (RTOS) like AUTOSAR.
+                  </div>
+                </li>
+                <div class="modal-action sm:w-1/4 w-full right-0 float-right">
+                  <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button
+                      class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
+                    >
+                      Close
+                    </button>
+                  </form>
+                </div>
+              </ul>
             </div>
           </div>
         </div>

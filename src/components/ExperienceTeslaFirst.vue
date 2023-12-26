@@ -9,26 +9,66 @@
         January 2022 - September 2022.
       </p>
       <button
-        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2"
+        class="my-2 btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary w-1/2 inline-block"
         onclick="tesla_experience_first.showModal()"
       >
-        Learn More
+      <i class="fi fi-bs-info mx-1 text-slate-500"></i>Learn More
       </button>
       <dialog id="tesla_experience_first" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
             <h1 class="font-bold text-xl text-primary">Tesla Contributions</h1>
             <div class="divider"></div>
-
-            <div class="modal-action sm:w-1/4 w-full right-0 float-right">
-              <form method="dialog">
-                <!-- if there is a button in form, it will close the modal -->
-                <button
-                  class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
-                >
-                  Close
-                </button>
-              </form>
+            <div class="">
+              <ul
+                class="font-normal sm:text-sm text-xs text-white h-fit list-disc list-outside"
+              >
+                <li>
+                  Collaborated with software engineers to develop and test
+                  application procedures for system efficiency.
+                </li>
+                <li>
+                  Assisted in implementing a project tracking system that has
+                  tracked over 30,000+ scopes worth over $300 million across
+                  GigaTexas from start to finish. This system tracks labor,
+                  reports spending, forecasts for funding, and has project
+                  controls in place to identify work at risk.
+                </li>
+                <li>
+                  Developed dashboards, reports, and other tools that provide
+                  visibility and transparency to project productivity, progress,
+                  changes, and KPI to ensure alignment with project goals by
+                  utilizing web development and embedded Power BI.
+                </li>
+                <li>
+                  Assisting the Texas Giga Factory BIM team who is responsible
+                  for managing the digital model and data representations of the
+                  factory and its productions assets used by engineering,
+                  construction, manufacturing, and operations teams.
+                </li>
+                <li>
+                  Providing design and construction coordination services aimed
+                  at maximizing constructability, safety, maintainability, and
+                  future factory expansion options. Implementing myriad of
+                  technology and processes used to maintain all factory models
+                  and their associated data in as close to real-time as
+                  possible.
+                </li>
+                <li>
+                  Using LIDAR scanning and reality capture with Cintoo to map
+                  the factory and resolve clashes.
+                </li>
+                <div class="modal-action sm:w-1/4 w-full right-0 float-right">
+                  <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button
+                      class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
+                    >
+                      Close
+                    </button>
+                  </form>
+                </div>
+              </ul>
             </div>
           </div>
         </div>
