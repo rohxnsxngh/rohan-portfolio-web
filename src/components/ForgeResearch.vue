@@ -20,7 +20,7 @@
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div>
             <h1 class="font-bold text-xl text-primary">
-              Echocardiogram Machine Learning 
+              Echocardiogram Machine Learning. 
               <div class="divider"></div>
               <p class="font-normal text-sm text-white">
                 In my pursuit of expanding my expertise, I actively engaged in

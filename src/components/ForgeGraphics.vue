@@ -20,7 +20,7 @@
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div>
             <h1 class="font-bold text-xl text-primary">
-              Graphics, ThreeJS, & Shaders Experiment
+              Graphics, ThreeJS, & Shaders Experiment.
               <div class="divider"></div>
               <p class="font-normal text-sm text-white">
                 This project is an immersive, entertaining experience that allows users to interact with dynamic and engaging visuals. It was built as a platform for experimenting with various techniques in computer graphics and audio processing, such as audio visualizers, shaders, procedural generation, and textures.

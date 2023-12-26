@@ -20,7 +20,7 @@
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div>
             <h1 class="font-bold text-xl text-primary">
-              Strandbeest Robot
+              Strandbeest Robot.
                    <div class="divider"></div>
               <p class="font-normal text-sm text-white">
                 Although humans primarily use wheeled vehicles for ground transportation, it's worth noting that there are no biological creatures in nature that move on wheels. Instead, living creatures use legs or crawl to navigate the ground. Walking, as a means of locomotion, offers numerous advantages over wheel locomotion, including lower energy consumption, greater flexibility in traversing obstacles, less damage to the ground, and no requirement for roads (Moldovan et al., 2011). As a result, scientists are actively designing vehicles inspired by natural locomotion, with legs being one of the most popular choices. For example, Dutch physicist and artist Theo Jansen has developed a twelve-bar mechanism for legs in his kinetic sculptures (Jansen, 2007), which is now known as the "Theo Jansen linkage" and can be adapted for use in walking vehicles. This project aimed to design and build a Strandbeest robot, inspired by the Theo Jansen linkage mechanism. By utilizing legs instead of wheels, this robot enjoys several benefits, including lower energy consumption, greater maneuverability, and the ability to overcome obstacles with ease.

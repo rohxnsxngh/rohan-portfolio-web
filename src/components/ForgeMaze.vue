@@ -20,7 +20,7 @@
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div>
             <h1 class="font-bold text-xl text-primary">
-              LiDAR Driven Maze Robot
+              LiDAR Driven Maze Robot.
               <div class="divider"></div>
               <p class="font-normal text-sm text-white">
                 In the pursuit of understanding autonomous robotics, the Texas A&M University Robotics team, under my leadership, undertook a comprehensive project named "Maze Bot." This initiative aimed to develop a sophisticated robotic system capable of navigating intricate mazes through the integration of advanced mechanical and software engineering techniques.
