@@ -32,7 +32,7 @@
     <Transition appear name="fade">
       <div
         v-show="isDropdownOpen"
-        class="text-white sm:w-60 z-[5] w-48 h-80 overscroll-none subpixel-antialiased bg-primary-content border border-base-300 opacity-100 text-4xl rounded-lg md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl absolute sm:top-16 top-12"
+        class="text-white sm:w-60 z-[5] w-48 h-72 overscroll-none subpixel-antialiased bg-primary-content border border-base-300 opacity-100 text-4xl rounded-lg md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl absolute sm:top-16 top-12"
         id="navigation-panel"
       >
         <div class="flex flex-col p-2 sm:text-sm text-xs space-y-1">
@@ -99,7 +99,7 @@
               Contact
             </button>
           </div>
-          <div>
+          <!-- <div>
             <button
               id="credit"
               class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
@@ -107,7 +107,7 @@
             >
               Credits
             </button>
-          </div>
+          </div> -->
         </div>
       </div>
     </Transition>
