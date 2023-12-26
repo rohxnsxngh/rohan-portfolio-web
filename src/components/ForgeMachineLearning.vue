@@ -39,7 +39,8 @@ machine learning models—Support Vector Machine (SVM), Gradient Boosting Classi
 Random Forest Classifier (RFC)—were implemented and tested for accuracy. The results indicated that all
 three methods performed similarly, achieving accuracies between 0.883 and 0.890. The report discussed
 the potential future applications of these models in testing alternative umpire decisions, simulating complete
-games, and understanding umpire behavior.
+games, and understanding umpire behavior.<br/><br/>
+<a href="https://github.com/rohxnsxngh/Machine-Learning-MEEN/tree/main/Project"><i class="fi fi-brands-github align-center text-2xl text-primary hover:text-white"></i></a>
           <div class="modal-action h-6">
             <form method="dialog">
               <!-- if there is a button, it will close the modal -->
