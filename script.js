@@ -176,7 +176,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const initPanel = document.getElementById("init-panel");
   _cssInit = new CSS2DObject(initPanel);
   _cssInit.position.set(1, 0, 0);
-  // _cssInit.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssInit);
 
   const navigationPanel = document.getElementById("navigation-panel");
@@ -286,50 +285,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Add event listeners for user interaction
-  let isDragging = false;
-  let previousMousePosition = {
-    x: 0,
-    y: 0,
-  };
-
-  function onDocumentMouseDown(event) {
-    isDragging = true;
-  }
-
-  function onDocumentMouseMove(event) {
-    if (isDragging) {
-      const deltaMove = {
-        x: event.clientX - previousMousePosition.x,
-        y: event.clientY - previousMousePosition.y,
-      };
-
-      // Rotate the rotating object based on the mouse movement
-      _robot.rotation.y += deltaMove.x * 0.005;
-
-      // Store the current mouse position for the next frame
-      previousMousePosition = {
-        x: event.clientX,
-        y: event.clientY,
-      };
-    }
-  }
-
-  function onDocumentMouseUp(event) {
-    isDragging = false;
-  }
-
-  document.addEventListener("mousedown", onDocumentMouseDown, false);
-  document.addEventListener("mousemove", onDocumentMouseMove, false);
-  document.addEventListener("mouseup", onDocumentMouseUp, false);
-
   document.addEventListener("click", async (event) => {
     const target = event.target;
 
     // Check if the clicked element has an ID and perform the corresponding action
     switch (target.id) {
       case "init-panel":
-        if (!animationInProgress) initialAnimation(camera);
+        if (!animationInProgress) 
+        initPanel.style.opacity = 0.1
+        initialAnimation(camera);
         returnToOriginalPosition(
           _cssNavigation,
           _cssForge,
@@ -467,15 +431,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLargeScreen = window.innerWidth > 760;
 
-    // if (isLargeScreen && !animationInProgress) {
-    //   const parallaxX = cursor.x * 0.8;
-    //   const parallaxY = -cursor.y * 0.4;
+    if (isLargeScreen && !animationInProgress && camera.rotation.x > 2* -Math.PI / 6) {
+      const parallaxX = cursor.x * 0.8;
+      const parallaxY = -cursor.y * 0.4;
 
-    //   cameraGroup.position.x +=
-    //     (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
-    //   cameraGroup.position.y +=
-    //     (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
-    // }
+      cameraGroup.position.x +=
+        (parallaxX - cameraGroup.position.x) * 5 * deltaTime;
+      cameraGroup.position.y +=
+        (parallaxY - cameraGroup.position.y) * 5 * deltaTime;
+    }
 
     //robot animation
     if (_mixerRobot) {
