@@ -26,7 +26,7 @@ let config = {
     PAUSED: false,
     BACK_COLOR: "#230E42",
     TRANSPARENT: false,
-    BLOOM: true,
+    BLOOM: false,
     BLOOM_ITERATIONS: 8,
     BLOOM_RESOLUTION: 256,
     BLOOM_INTENSITY: 0.6,

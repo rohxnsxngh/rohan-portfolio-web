@@ -36,9 +36,9 @@
         </div>
       </dialog>
     </div>
-    <div class="px-2">
+    <div class="">
       <div
-        class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-80"
+        class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-96 border-2 border-primary hover:border-white"
       >
         <div class="carousel-item">
           <img

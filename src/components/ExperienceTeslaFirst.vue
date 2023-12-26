@@ -17,7 +17,7 @@
       <dialog id="tesla_experience_first" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
-            <h1 class="font-bold text-xl text-primary">Tesla Contributions</h1>
+            <h1 class="font-bold text-xl text-primary">Tesla</h1>
             <div class="divider"></div>
             <div class="">
               <ul
@@ -74,9 +74,9 @@
         </div>
       </dialog>
     </div>
-    <div class="px-2">
+    <div class="">
       <div
-        class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-80"
+        class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-96 border-2 border-primary hover:border-white"
       >
         <div class="carousel-item">
           <img

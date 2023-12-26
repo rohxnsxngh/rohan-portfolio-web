@@ -18,7 +18,7 @@
       <dialog id="tesla_experience" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
-            <h1 class="font-bold text-xl text-primary">Tesla Contributions</h1>
+            <h1 class="font-bold text-xl text-primary">Tesla</h1>
             <div class="divider"></div>
             <div class="">
               <ul
@@ -85,9 +85,9 @@
         </div>
       </dialog>
     </div>
-    <div class="px-2">
+    <div class="">
       <div
-        class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-80"
+        class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-96 border-2 border-primary hover:border-white"
       >
         <div class="carousel-item">
           <img
@@ -146,7 +146,10 @@
           />
         </div>
       </div>
-      <div class="w-full justify-center flex text-xs px-2 h-2 gap-1">
+      <div
+        class="w-full justify-center flex text-xs px-2 h-2 gap-1"
+        id="img-navigation-tesla"
+      >
         <a
           href="#tesla-item1"
           class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
@@ -185,5 +188,23 @@
 </template>
 
 <script>
-// import hello from "/Images";
+export default {
+  mounted() {
+    document
+      .getElementById("img-navigation-tesla")
+      .addEventListener("click", this.handleNavigationClick);
+  },
+  methods: {
+    handleNavigationClick(event) {
+      event.preventDefault()
+      // Use smooth scrolling to the top of the page
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
+      // You can add your own logic here if needed
+    },
+  },
+};
 </script>

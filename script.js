@@ -180,49 +180,44 @@ document.addEventListener("DOMContentLoaded", () => {
   scene.add(_cssInit);
 
   const navigationPanel = document.getElementById("navigation-panel");
-  navigationPanel.style.opacity = 0.85
+  navigationPanel.style.opacity = 0.85;
   _cssNavigation = new CSS2DObject(navigationPanel);
   _cssNavigation.position.set(1, -6, 6);
   _cssNavigation.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssNavigation);
 
   const forgePanel = document.getElementById("forge-panel");
-  forgePanel.style.opacity = 0.85
+  forgePanel.style.opacity = 0.85;
   _cssForge = new CSS2DObject(forgePanel);
   _cssForge.position.set(1, -6, 10);
   _cssForge.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssForge);
 
   const experiencePanel = document.getElementById("experience-panel");
-  experiencePanel.style.opacity = 0.85
   _cssExperience = new CSS2DObject(experiencePanel);
   _cssExperience.position.set(1, -6, 14);
   _cssExperience.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssExperience);
 
   const aboutPanel = document.getElementById("about-panel");
-  aboutPanel.style.opacity = 0.85
   _cssAbout = new CSS2DObject(aboutPanel);
   _cssAbout.position.set(1, -6, 18);
   _cssAbout.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssAbout);
 
   const writingPanel = document.getElementById("writing-panel");
-  writingPanel.style.opacity = 0.85
   _cssWriting = new CSS2DObject(writingPanel);
   _cssWriting.position.set(1, -6, 22);
   _cssWriting.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssWriting);
 
   const contactPanel = document.getElementById("contact-panel");
-  contactPanel.style.opacity = 0.85
   _cssContact = new CSS2DObject(contactPanel);
   _cssContact.position.set(1, -6, 26);
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssContact);
 
   const finishPanel = document.getElementById("finish-panel");
-  finishPanel.style.opacity = 0.85
   _cssFinish = new CSS2DObject(finishPanel);
   _cssFinish.position.set(1, -6, 30);
   _cssFinish.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
@@ -237,6 +232,8 @@ document.addEventListener("DOMContentLoaded", () => {
     _cssFinish,
     _cssWriting
   ) => {
+    _cssFinish.element.style.opacity = 1;
+    console.log(_cssFinish.element.style.opacity);
     _cssNavigation.position.set(1, -6, 6);
     _cssForge.position.set(1, -6, 10);
     _cssExperience.position.set(1, -6, 14);
@@ -289,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", async (event) => {
     const target = event.target;
 
     // Check if the clicked element has an ID and perform the corresponding action
@@ -319,6 +316,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           createText(scene, fontLoader);
           homeAnimation(camera, 6);
+          await new Promise((resolve) => setTimeout(resolve, 4000));
+          _cssFinish.element.style.opacity = 0;
+          console.log(_cssFinish.element.style.opacity);
         }
         break;
       case "navigation":
@@ -333,6 +333,9 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssWriting
           );
         navigationAnimation(camera, _cssNavigation);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        _cssFinish.element.style.opacity = 0;
+        console.log(_cssFinish.element.style.opacity);
         break;
       case "forge":
         if (!animationInProgress)
@@ -346,6 +349,9 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssWriting
           );
         forgeAnimation(camera, _cssForge);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        _cssFinish.element.style.opacity = 0;
+        console.log(_cssFinish.element.style.opacity);
         break;
       case "experience":
         if (!animationInProgress)
@@ -359,6 +365,9 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssWriting
           );
         experienceAnimation(camera, _cssExperience);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        _cssFinish.element.style.opacity = 0;
+        console.log(_cssFinish.element.style.opacity);
         break;
       case "about":
         if (!animationInProgress)
@@ -372,6 +381,9 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssWriting
           );
         aboutAnimation(camera, _cssAbout);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        _cssFinish.element.style.opacity = 0;
+        console.log(_cssFinish.element.style.opacity);
         break;
       case "writing":
         if (!animationInProgress)
@@ -385,6 +397,9 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssWriting
           );
         writingAnimation(camera, _cssWriting);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        _cssFinish.element.style.opacity = 0;
+        console.log(_cssFinish.element.style.opacity);
         break;
       case "contact":
         if (!animationInProgress)
@@ -398,6 +413,9 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssWriting
           );
         contactAnimation(camera, _cssContact);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        _cssFinish.element.style.opacity = 0;
+        console.log(_cssFinish.element.style.opacity);
         break;
       default:
         break;

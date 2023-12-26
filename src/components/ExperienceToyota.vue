@@ -19,7 +19,7 @@
       <dialog id="toyota_experience" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
-            <h1 class="font-bold text-xl text-primary">Toyota Contributions</h1>
+            <h1 class="font-bold text-xl text-primary">Toyota</h1>
             <div class="divider"></div>
             <div class="">
               <ul
@@ -72,9 +72,9 @@
         </div>
       </dialog>
     </div>
-    <div class="px-2">
+    <div class="">
       <div
-        class="carousel carousel-center max-w-xl bg-primary-content sm:h-1/2 h-80 rounded-box focus-within:p-2"
+        class="carousel carousel-center max-w-xl bg-primary-content sm:h-1/2 h-96 rounded-box focus-within:p-2 border-2 border-primary hover:border-white"
       >
         <div class="carousel-item">
           <img
