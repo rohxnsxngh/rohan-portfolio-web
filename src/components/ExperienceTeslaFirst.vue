@@ -17,11 +17,11 @@
       <dialog id="tesla_experience_first" class="modal">
         <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
-            <h1 class="font-bold text-xl text-primary">Tesla.</h1>
+            <h1 class="font-bold md:text-4xl sm:text-2xl text-xl text-primary">Tesla.</h1>
             <div class="divider"></div>
             <div class="">
               <ul
-                class="font-normal text-sm text-white h-fit list-disc list-outside"
+                class="font-normal md:text-lg sm:text-md text-sm text-white h-fit list-disc list-outside"
               >
                 <li>
                   Collaborated with software engineers to develop and test

@@ -90,7 +90,7 @@ camera.add(overlay.mesh);
 // scene.fog = new THREE.Fog(0x000000, 6, 10);
 
 //Light
-const directionalLight3 = new THREE.DirectionalLight(0x8580df, 0.2);
+const directionalLight3 = new THREE.DirectionalLight(0x8580df, 0.175);
 directionalLight3.position.set(0, 0, 3);
 scene.add(directionalLight3);
 

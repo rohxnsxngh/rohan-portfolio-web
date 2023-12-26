@@ -16,7 +16,7 @@ function createText(scene, fontLoader, size = 0.45) {
         "software developer.\nmechanical engineer.",
         {
           height: 0.01,
-          size: 0.15,
+          size: 0.145,
           font: droidFont,
         }
       );
@@ -35,7 +35,7 @@ function createText(scene, fontLoader, size = 0.45) {
 
       const textMaterialCaption = new THREE.MeshBasicMaterial({color: 0xffffff});
       const textMeshHomeCaption = new THREE.Mesh(textGeometryHomeCaption, textMaterialCaption);
-      textMeshHomeCaption.position.set(0, 0.65, 0);
+      textMeshHomeCaption.position.set(0, 0.75, 0);
       scene.add(textMeshHomeCaption);
   });
 }
