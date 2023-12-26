@@ -152,7 +152,6 @@ loader.load(
   // // onProgress callback
   function (xhr) {
     const progress = (xhr.loaded / xhr.total) * 100;
-    console.log(progress);
   },
 
   // // onError callback

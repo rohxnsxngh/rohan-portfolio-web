@@ -1,7 +1,7 @@
 <template>
   <div
     class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-65 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
-    id="about-panel" @click="handleDivClick">
+    id="about-panel">
     <div class="flex flex-col">
       <div class="m-2">
         <Menu />
@@ -43,11 +43,6 @@ export default {
     return {
       observer: null,
     };
-  },
-  methods: {
-    handleDivClick() {
-      console.log("Hello");
-    },
   },
 };
 </script>

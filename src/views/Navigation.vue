@@ -2,7 +2,6 @@
   <div
     class="text-white fixed overscroll-none overflow-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-65 text-xs"
     id="navigation-panel"
-    @click="handleDivClick"
   >
     <div class="flex flex-col">
       <div class="m-2">

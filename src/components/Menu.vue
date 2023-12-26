@@ -71,7 +71,7 @@
               class="btn btn-sm border-none bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3"
               @click="toggleDropdown"
             >
-              Forge
+              Projects
             </button>
           </div>
           <div>

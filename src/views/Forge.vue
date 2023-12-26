@@ -2,7 +2,6 @@
   <div
     class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-65 text-4xl rounded-lg opacity-90"
     id="forge-panel"
-    @click="handleDivClick"
   >
     <div class="flex flex-col">
       <div class="top-0 m-2">
@@ -105,16 +104,6 @@ export default {
     ForgeStrandbeest,
     ForgeMachineLearning,
     ForgeMaze,
-  },
-  data() {
-    return {
-      observer: null,
-    };
-  },
-  methods: {
-    handleDivClick() {
-      console.log("Hello");
-    },
   },
 };
 </script>
