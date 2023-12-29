@@ -18,7 +18,7 @@
                 Little bit about me.
                 <div class="divider divider-primary"></div>
                 <p
-                  class="text-lg md:text-md lg:text-lg xl:text-xl font-semibold text-left"
+                  class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left"
                 >
                   I am a
                   <span class="text-primary">software engineer</span> with a
