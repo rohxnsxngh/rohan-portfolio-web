@@ -21,7 +21,7 @@
           <div>
             <h1 class="font-bold text-xl text-primary">
               LiDAR Driven Maze Robot.
-              <div class="divider"></div>
+              <div class="divider divider-primary"></div>
               <p class="font-normal text-sm text-white">
                 In the pursuit of understanding autonomous robotics, the Texas A&M University Robotics team, under my leadership, undertook a comprehensive project named "Maze Bot." This initiative aimed to develop a sophisticated robotic system capable of navigating intricate mazes through the integration of advanced mechanical and software engineering techniques.
 The team, consisting of Christian Flewelling, Vincent Galvan, Garrett Adams, and Anna Font, initiated the project by upgrading the Maze Bot's hardware components. Notable improvements included the integration of high torque 750Kv motors, which bolstered the robot's rotational force for enhanced maneuverability in intricate mazes. The adoption of 8192 CPR encoders provided precise position tracking, essential for navigating predefined paths with accuracy. ODrive 3.6 for motor control introduced dynamic velocity profiles, optimizing the robot's speed based on navigational demands. A DC voltage step-down converter ensured stable power distribution, contributing to overall operational robustness. The incorporation of a Jetson WiFi module elevated communication capabilities, enabling seamless data exchange and potential collaboration with external systems. These hardware improvements collectively fortified the Maze Bot, equipping it with advanced mechanical capabilities tailored to address the challenges of maze navigation with efficiency and precision.

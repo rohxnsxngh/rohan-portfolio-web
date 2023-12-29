@@ -18,7 +18,7 @@
         <div class="modal-box h-fit w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
             <h1 class="font-bold md:text-4xl sm:text-2xl text-xl text-primary">Tesla.</h1>
-            <div class="divider"></div>
+            <div class="divider divider-primary"></div>
             <div class="">
               <ul
                 class="font-normal md:text-lg sm:text-md text-sm text-white h-fit list-disc list-outside"

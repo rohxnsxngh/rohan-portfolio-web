@@ -21,7 +21,7 @@
           <div>
             <h1 class="font-bold text-xl text-primary">
               Echocardiogram Machine Learning. 
-              <div class="divider"></div>
+              <div class="divider divider-primary"></div>
               <p class="font-normal text-sm text-white">
                 In my pursuit of expanding my expertise, I actively engaged in
                 research under the mentorship of Dr. Iman Borazjani. Our

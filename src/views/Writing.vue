@@ -14,7 +14,7 @@
         <div class="hero-content text-center">
           <div class="max-w-md">
             <h1 class="text-5xl font-bold">Writing.
-              <div class="divider"></div>
+              <div class="divider divider-primary"></div>
               <p class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold">
                 Coming soon...
               </p>

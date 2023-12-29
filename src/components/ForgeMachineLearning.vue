@@ -21,7 +21,7 @@
           <div>
             <h1 class="font-bold text-xl text-primary">
               Machine Learning Applied to Baseball.
-              <div class="divider"></div>
+              <div class="divider divider-primary"></div>
               <p class="font-normal text-sm text-white">
                 The application of machine learning models in baseball umpiring introduces intriguing
 possibilities. Firstly, these models would be used to test how alternative umpires might have handled

@@ -119,7 +119,7 @@ function pageToPageAnimation(timeline, camera, panel) {
     })
     .to(panel.position, {
       y: 0,
-      z: 30,
+      z: 34,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
@@ -148,7 +148,7 @@ function pageToPageAnimation(timeline, camera, panel) {
       z: 0,
       x: -Math.PI / 2,
       y: 0,
-      onUpdate: () => camera.lookAt(1, -6, 30),
+      onUpdate: () => camera.lookAt(1, -6, 34),
       ease: "power1.out",
       overwrite: "none",
       duration: 0.5,
@@ -160,8 +160,8 @@ function pageToPageAnimation(timeline, camera, panel) {
       },
     })
     .to(camera.position, {
-      z: 30,
-      onUpdate: () => camera.lookAt(1, -6, 30),
+      z: 34,
+      onUpdate: () => camera.lookAt(1, -6, 34),
       ease: "power1.out",
       overwrite: "none",
       duration: 0.5,
@@ -236,6 +236,21 @@ export const writingAnimation = (camera, panel) => {
 };
 
 export const contactAnimation = (camera, panel) => {
+  const tl = gsap.timeline({
+    onComplete: () => {
+      // Set animationProgress to false when the entire timeline completes
+      setAnimationInProgress(false);
+    },
+  });
+
+  if (!animationInProgress && camera) {
+    pageToPageAnimation(tl, camera, panel);
+  }
+
+  return animationInProgress;
+};
+
+export const creditsAnimation = (camera, panel) => {
   const tl = gsap.timeline({
     onComplete: () => {
       // Set animationProgress to false when the entire timeline completes

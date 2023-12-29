@@ -23,6 +23,7 @@ import {
   experienceAnimation,
   writingAnimation,
   contactAnimation,
+  creditsAnimation
 } from "./three-components/animation";
 import {
   animationInProgress,
@@ -38,6 +39,7 @@ let _cssrenderer,
   _cssAbout,
   _cssWriting,
   _cssFinish,
+  _cssCredits,
   _cssContact;
 let _mixerRobot, _robot;
 
@@ -217,9 +219,15 @@ document.addEventListener("DOMContentLoaded", () => {
   _cssContact.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssContact);
 
+  const creditPanel = document.getElementById("credit-panel");
+  _cssCredits = new CSS2DObject(creditPanel);
+  _cssCredits.position.set(1, -6, 30);
+  _cssCredits.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+  scene.add(_cssCredits);
+
   const finishPanel = document.getElementById("finish-panel");
   _cssFinish = new CSS2DObject(finishPanel);
-  _cssFinish.position.set(1, -6, 30);
+  _cssFinish.position.set(1, -6, 34);
   _cssFinish.rotateOnAxis(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
   scene.add(_cssFinish);
 
@@ -230,7 +238,8 @@ document.addEventListener("DOMContentLoaded", () => {
     _cssAbout,
     _cssContact,
     _cssFinish,
-    _cssWriting
+    _cssWriting,
+    _cssCredits
   ) => {
     _cssFinish.element.style.opacity = 1;
     _cssNavigation.position.set(1, -6, 6);
@@ -239,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
     _cssAbout.position.set(1, -6, 18);
     _cssWriting.position.set(1, -6, 22);
     _cssContact.position.set(1, -6, 26);
+    _cssCredits.position.set(1, -6, 26);
     _cssFinish.position.set(1, -6, 30);
   };
 
@@ -300,7 +310,8 @@ document.addEventListener("DOMContentLoaded", () => {
           _cssAbout,
           _cssContact,
           _cssFinish,
-          _cssWriting
+          _cssWriting,
+          _cssCredits
         );
         sound(camera);
         break;
@@ -330,7 +341,8 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssAbout,
             _cssContact,
             _cssFinish,
-            _cssWriting
+            _cssWriting,
+            _cssCredits
           );
         navigationAnimation(camera, _cssNavigation);
         await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -345,7 +357,8 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssAbout,
             _cssContact,
             _cssFinish,
-            _cssWriting
+            _cssWriting,
+            _cssCredits
           );
         forgeAnimation(camera, _cssForge);
         await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -360,7 +373,8 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssAbout,
             _cssContact,
             _cssFinish,
-            _cssWriting
+            _cssWriting,
+            _cssCredits
           );
         experienceAnimation(camera, _cssExperience);
         await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -375,7 +389,8 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssAbout,
             _cssContact,
             _cssFinish,
-            _cssWriting
+            _cssWriting,
+            _cssCredits
           );
         aboutAnimation(camera, _cssAbout);
         await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -390,7 +405,8 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssAbout,
             _cssContact,
             _cssFinish,
-            _cssWriting
+            _cssWriting,
+            _cssCredits
           );
         writingAnimation(camera, _cssWriting);
         await new Promise((resolve) => setTimeout(resolve, 4000));
@@ -405,9 +421,26 @@ document.addEventListener("DOMContentLoaded", () => {
             _cssAbout,
             _cssContact,
             _cssFinish,
-            _cssWriting
+            _cssWriting,
+            _cssCredits
           );
         contactAnimation(camera, _cssContact);
+        await new Promise((resolve) => setTimeout(resolve, 4000));
+        _cssFinish.element.style.opacity = 0;
+        break;
+      case "credit":
+        if (!animationInProgress)
+          returnToOriginalPosition(
+            _cssNavigation,
+            _cssForge,
+            _cssExperience,
+            _cssAbout,
+            _cssContact,
+            _cssFinish,
+            _cssWriting,
+            _cssCredits
+          );
+        creditsAnimation(camera, _cssCredits);
         await new Promise((resolve) => setTimeout(resolve, 4000));
         _cssFinish.element.style.opacity = 0;
         break;

@@ -14,7 +14,7 @@
             <h1 class="text-5xl font-bold">
               Contact
 
-              <div class="divider"></div>
+              <div class="divider divider-primary"></div>
               <p
                 class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-center"
               >

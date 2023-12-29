@@ -22,7 +22,7 @@
             <h1 class="font-bold md:text-4xl sm:text-2xl text-xl text-primary h-fit">
               Toyota Motors North America.
             </h1>
-            <div class="divider"></div>
+            <div class="divider divider-primary"></div>
             <div class="">
               <ul
                 class="font-normal md:text-lg sm:text-md text-sm text-white h-fit list-disc list-outside"

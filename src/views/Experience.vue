@@ -4,7 +4,7 @@
     id="experience-panel"
   >
   <div class="flex flex-col">
-    <div class="top-0 m-2">
+    <div class="top-0 m-2 h-fit">
       <Menu />
     </div>
     <div class="inset-0 mb-48">

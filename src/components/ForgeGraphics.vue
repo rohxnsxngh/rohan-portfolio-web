@@ -21,7 +21,7 @@
           <div>
             <h1 class="font-bold text-xl text-primary">
               Graphics, ThreeJS, & Shaders Experiment.
-              <div class="divider"></div>
+              <div class="divider divider-primary"></div>
               <p class="font-normal text-sm text-white">
                 This project is an immersive, entertaining experience that allows users to interact with dynamic and engaging visuals. It was built as a platform for experimenting with various techniques in computer graphics and audio processing, such as audio visualizers, shaders, procedural generation, and textures.
 The project is built primarily with Three.js, a JavaScript library for creating and displaying 3D graphics on web browsers. The project aims to leverage the power of Three.js to create a rich, interactive and visually stunning experience for the user. It utilizes audio input to drive the animation and visuals of the scene, creating a real-time audio visualization. It also uses 3D models created in Blender and exported to be displayed in the browser.
