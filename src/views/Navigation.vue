@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white fixed overscroll-none overflow-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-60 text-xs"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-55 text-4xl rounded-lg"
     id="navigation-panel"
   >
     <div class="flex flex-col">
@@ -8,18 +8,23 @@
         <Menu />
       </div>
 
-      <div
-        class="hero min-h-screen"
-      >
+      <div class="hero min-h-screen">
         <div class="hero-content text-center">
-          <div class="max-w-md">
-            <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold text-center">
+          <div class="lg:max-w-4xl max-w-md">
+            <h1
+              class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold text-center"
+            >
               Welcome.
               <div class="divider"></div>
-              <p class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl font-semibold text-left">
+              <p
+                class="text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-4xl font-semibold text-left"
+              >
                 I hope you enjoy exploring my portfolio website as much as I
                 enjoyed building it. If you have any questions or comments, I
-                would love to hear them. You can reach me <a id="contact" class="underline decoration-solid text-primary">here.</a>
+                would love to hear them. You can reach me
+                <a id="contact" class="underline decoration-solid text-primary"
+                  >here.</a
+                >
               </p>
             </h1>
           </div>

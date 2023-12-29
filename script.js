@@ -40,6 +40,7 @@ let _cssrenderer,
   _cssFinish,
   _cssContact;
 let _mixerRobot, _robot;
+
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
 
@@ -232,7 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
     _cssWriting
   ) => {
     _cssFinish.element.style.opacity = 1;
-    console.log(_cssFinish.element.style.opacity);
     _cssNavigation.position.set(1, -6, 6);
     _cssForge.position.set(1, -6, 10);
     _cssExperience.position.set(1, -6, 14);
@@ -291,8 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if the clicked element has an ID and perform the corresponding action
     switch (target.id) {
       case "init-panel":
-        if (!animationInProgress) 
-        initPanel.style.opacity = 0.1
+        if (!animationInProgress) initPanel.style.opacity = 0.1;
         initialAnimation(camera);
         returnToOriginalPosition(
           _cssNavigation,
@@ -315,12 +314,11 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             });
           }
-          _robot.rotation.set(0, 0, 0)
+          _robot.rotation.set(0, 0, 0);
           createText(scene, fontLoader);
           homeAnimation(camera, 6);
           await new Promise((resolve) => setTimeout(resolve, 4000));
           _cssFinish.element.style.opacity = 0;
-          console.log(_cssFinish.element.style.opacity);
         }
         break;
       case "navigation":
@@ -337,7 +335,6 @@ document.addEventListener("DOMContentLoaded", () => {
         navigationAnimation(camera, _cssNavigation);
         await new Promise((resolve) => setTimeout(resolve, 4000));
         _cssFinish.element.style.opacity = 0;
-        console.log(_cssFinish.element.style.opacity);
         break;
       case "forge":
         if (!animationInProgress)
@@ -353,7 +350,6 @@ document.addEventListener("DOMContentLoaded", () => {
         forgeAnimation(camera, _cssForge);
         await new Promise((resolve) => setTimeout(resolve, 4000));
         _cssFinish.element.style.opacity = 0;
-        console.log(_cssFinish.element.style.opacity);
         break;
       case "experience":
         if (!animationInProgress)
@@ -369,7 +365,6 @@ document.addEventListener("DOMContentLoaded", () => {
         experienceAnimation(camera, _cssExperience);
         await new Promise((resolve) => setTimeout(resolve, 4000));
         _cssFinish.element.style.opacity = 0;
-        console.log(_cssFinish.element.style.opacity);
         break;
       case "about":
         if (!animationInProgress)
@@ -385,7 +380,6 @@ document.addEventListener("DOMContentLoaded", () => {
         aboutAnimation(camera, _cssAbout);
         await new Promise((resolve) => setTimeout(resolve, 4000));
         _cssFinish.element.style.opacity = 0;
-        console.log(_cssFinish.element.style.opacity);
         break;
       case "writing":
         if (!animationInProgress)
@@ -401,7 +395,6 @@ document.addEventListener("DOMContentLoaded", () => {
         writingAnimation(camera, _cssWriting);
         await new Promise((resolve) => setTimeout(resolve, 4000));
         _cssFinish.element.style.opacity = 0;
-        console.log(_cssFinish.element.style.opacity);
         break;
       case "contact":
         if (!animationInProgress)
@@ -417,7 +410,6 @@ document.addEventListener("DOMContentLoaded", () => {
         contactAnimation(camera, _cssContact);
         await new Promise((resolve) => setTimeout(resolve, 4000));
         _cssFinish.element.style.opacity = 0;
-        console.log(_cssFinish.element.style.opacity);
         break;
       default:
         break;
@@ -431,7 +423,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const isLargeScreen = window.innerWidth > 760;
 
-    if (isLargeScreen && !animationInProgress && camera.rotation.x > 2* -Math.PI / 6) {
+    if (
+      isLargeScreen &&
+      !animationInProgress &&
+      camera.rotation.x > (2 * -Math.PI) / 6
+    ) {
       const parallaxX = cursor.x * 0.8;
       const parallaxY = -cursor.y * 0.4;
 

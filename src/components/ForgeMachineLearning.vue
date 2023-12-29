@@ -17,7 +17,7 @@
       <i class="fi fi-bs-info mx-1 text-slate-500"></i>Learn More
       </button>
       <dialog id="baseball_project" class="modal">
-        <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
+        <div class="modal-box h-fit w-11/12 max-w-5xl bg-primary-content">
           <div>
             <h1 class="font-bold text-xl text-primary">
               Machine Learning Applied to Baseball.
@@ -55,7 +55,7 @@ games, and understanding umpire behavior.<br/><br/>
     </div>
     <div class="">
       <div
-        class="carousel carousel-center max-w-xl bg-neutral rounded-box sm:h-1/2 h-96 border-2 border-primary hover:border-white"
+        class="carousel carousel-center max-w-4xl bg-neutral rounded-box sm:h-1/2 h-96 border-2 border-primary hover:border-white"
       >
         <div class="carousel-item">
           <img

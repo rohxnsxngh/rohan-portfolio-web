@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content skeleton border border-base-300 opacity-60 text-4xl rounded-lg opacity-90 md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-50 text-4xl rounded-lg"
     id="about-panel">
     <div class="flex flex-col">
       <div class="m-2">
@@ -9,7 +9,7 @@
 
       <div class="hero min-h-screen">
         <div class="hero-content text-left">
-          <div class="max-w-md">
+          <div class="lg:max-w-4xl max-w-md">
             <h1 class="text-4xl md:text-4xl lg:text-6xl xl:text-4xl text-left font-bold text-center">
               Little bit about me.
               <div class="divider"></div>

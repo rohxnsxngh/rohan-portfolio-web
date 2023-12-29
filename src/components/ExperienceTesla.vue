@@ -16,7 +16,7 @@
         <i class="fi fi-bs-info mx-1 text-slate-500"></i>Learn More
       </button>
       <dialog id="tesla_experience" class="modal">
-        <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
+        <div class="modal-box h-fit w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
             <h1 class="font-bold md:text-4xl sm:text-2xl text-xl text-primary">Tesla.</h1>
             <div class="divider"></div>
@@ -87,7 +87,7 @@
     </div>
     <div class="">
       <div
-        class="carousel carousel-center max-w-xl bg-primary-content rounded-box sm:h-1/2 h-96 border-2 border-primary hover:border-white"
+        class="carousel carousel-center max-w-4xl bg-primary-content rounded-box sm:h-1/2 h-96 border-2 border-primary hover:border-white"
       >
         <div class="carousel-item">
           <img

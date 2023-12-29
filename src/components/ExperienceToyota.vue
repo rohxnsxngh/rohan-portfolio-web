@@ -17,9 +17,9 @@
         <i class="fi fi-bs-info mx-1 text-slate-500"></i>Learn more
       </button>
       <dialog id="toyota_experience" class="modal">
-        <div class="modal-box w-11/12 max-w-5xl bg-primary-content">
+        <div class="modal-box h-fit w-11/12 max-w-5xl bg-primary-content">
           <div class="flex flex-col">
-            <h1 class="font-bold md:text-4xl sm:text-2xl text-xl text-primary">
+            <h1 class="font-bold md:text-4xl sm:text-2xl text-xl text-primary h-fit">
               Toyota Motors North America.
             </h1>
             <div class="divider"></div>
@@ -68,17 +68,17 @@
                     measures to ensure the robustness of in-vehicle software.
                   </div>
                 </li>
-                <div class="modal-action sm:w-1/4 w-full right-0 float-right">
-                  <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button
-                      class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
-                    >
-                      Close
-                    </button>
-                  </form>
-                </div>
               </ul>
+              <div class="modal-action sm:w-1/4 w-full right-0 float-right">
+                <form method="dialog">
+                  <!-- if there is a button in form, it will close the modal -->
+                  <button
+                    class="btn btn-xs sm:btn-sm text-black bg-white border-2 border-primary hover:text-white hover:border-primary float-right"
+                  >
+                    Close
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -86,7 +86,7 @@
     </div>
     <div class="">
       <div
-        class="carousel carousel-center max-w-xl bg-primary-content sm:h-1/2 h-96 rounded-box focus-within:p-2 border-2 border-primary hover:border-white"
+        class="carousel carousel-center max-w-4xl bg-primary-content sm:h-1/2 h-96 rounded-box focus-within:p-2 border-2 border-primary hover:border-white"
       >
         <div class="carousel-item">
           <img

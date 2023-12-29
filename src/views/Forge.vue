@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-60 text-4xl rounded-lg opacity-90"
+    class="text-white overscroll-none saturate-100 subpixel-antialiased bg-primary-content border border-base-300 opacity-55 text-4xl rounded-lg"
     id="forge-panel"
   >
     <div class="flex flex-col">

@@ -10,14 +10,14 @@ export const initialAnimation = (camera) => {
   });
 
   // Animation for scrolling down
-  if (!animationInProgress && camera.position.y === 0) {
+  if (!animationInProgress) {
     tl.to(camera.position, {
       z: 1,
       y: 1,
       x: -2,
       onUpdate: () => camera.lookAt(1, 1, 0),
       ease: "power3.out",
-      duration: 2,
+      duration: 1.5,
       onStart: () => {
         setAnimationInProgress(true);
       },
@@ -28,13 +28,20 @@ export const initialAnimation = (camera) => {
         x: 1,
         onUpdate: () => camera.lookAt(1, 1, 0),
         ease: "power1.out",
-        duration: 2,
+        duration: 1.5,
       })
       .to(camera.rotation, {
         x: -Math.PI / 2,
+        y: 0,
+        z: 0,
         onUpdate: () => camera.updateProjectionMatrix(),
-        ease: "power3.out",
+        ease: "power1.out",
         duration: 2,
+      })
+      .to(camera.rotation, {
+        onUpdate: () => camera.lookAt(1, -6, 6),
+        ease: "power1.out",
+        duration: 0.025,
       });
   }
 
