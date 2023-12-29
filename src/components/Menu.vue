@@ -62,7 +62,7 @@
               class="btn btn-sm border-none text-left bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3 inline-block mx-4"
               @click="toggleDropdown"
             >
-              <i class="fi fi-rr-information text-white mr-2"></i>
+              <i class="fi fi-rr-bulb text-white mr-2"></i>
               About
             </button>
           </div>
@@ -72,7 +72,7 @@
               class="btn btn-sm border-none text-left bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3 inline-block mx-4"
               @click="toggleDropdown"
             >
-            <i class="fi fi-rr-apps text-white mr-2"></i>
+              <i class="fi fi-rr-apps text-white mr-2"></i>
               Projects
             </button>
           </div>
@@ -102,7 +102,7 @@
               class="btn btn-sm border-none text-left bg-primary-content hover:text-white hover:bg-primary hover:translate-x-3 inline-block mx-4"
               @click="toggleDropdown"
             >
-            <i class="fi fi-rr-paper-plane text-white mr-2"></i>
+              <i class="fi fi-rr-paper-plane text-white mr-2"></i>
               Contact
             </button>
           </div>

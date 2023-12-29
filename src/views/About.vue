@@ -39,23 +39,23 @@
             >
               <pre
                 data-prefix="$"
-                class="text-2xl"
+                class="sm:text-2xl text-xl"
               ><code>npm i <span class="text-primary">rohan singh</span></code></pre>
               <pre
                 data-prefix=">"
-                class="text-red-700 text-2xl"
+                class="text-red-700 sm:text-2xl text-xl"
               ><code>npm WARN deprecated</code></pre>
               <pre
                 data-prefix=">"
-                class="text-warning text-2xl"
+                class="text-warning sm:text-2xl text-xl"
               ><code>installing...</code></pre>
               <pre
                 data-prefix=">"
-                class="text-red-500 text-2xl"
+                class="text-red-700 sm:text-2xl text-xl"
               ><code>243 dependencies😇</code></pre>
               <pre
                 data-prefix=">"
-                class="text-success text-2xl"
+                class="text-success sm:text-2xl text-xl"
               ><code>Done</code></pre>
             </div>
           </div>
