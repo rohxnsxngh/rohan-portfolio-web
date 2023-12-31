@@ -16,28 +16,51 @@
             >
               Credits.
               <div class="divider"></div>
-              <p
-                class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left"
-              >
-                robot model:<a
-                  class="link link-primary"
-                  href="https://sketchfab.com/3d-models/robot-playground-59fc99d8dcb146f3a6c16dbbcc4680da"
-                >
-                  attribution</a
-                ><br />
-                flaticon:<a
-                  class="link link-primary"
-                  href="https://www.flaticon.com/"
-                >
-                  attribution</a
-                ><br />
-                fluid simulation:<a
-                  class="link link-primary"
-                  href="https://github.com/PavelDoGreat/WebGL-Fluid-Simulation"
-                >
-                  attribution</a
-                ><br />
-              </p>
+              <div class="chat chat-start h-fit">
+                <div class="chat-bubble chat-bubble-primary text-sm">
+                  <p
+                    class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left hover:text-white"
+                  >
+                    robot model:
+                    <a
+                      class="link"
+                      href="https://sketchfab.com/3d-models/robot-playground-59fc99d8dcb146f3a6c16dbbcc4680da"
+                    >
+                      attribution</a
+                    >
+                  </p>
+                </div>
+              </div>
+              <div class="chat chat-end h-fit">
+                <div class="chat-bubble chat-bubble-primary text-sm">
+                  <p
+                    class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left hover:text-white"
+                  >
+                    flaticon:
+                    <a
+                      class="link"
+                      href="https://github.com/PavelDoGreat/WebGL-Fluid-Simulation"
+                    >
+                      attribution</a
+                    >
+                  </p>
+                </div>
+              </div>
+              <div class="chat chat-start h-fit">
+                <div class="chat-bubble chat-bubble-primary text-sm">
+                  <p
+                    class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left hover:text-white"
+                  >
+                    fluid simulation:
+                    <a
+                      class="link"
+                      href="https://github.com/PavelDoGreat/WebGL-Fluid-Simulation"
+                    >
+                      attribution</a
+                    >
+                  </p>
+                </div>
+              </div>
             </h1>
           </div>
         </div>

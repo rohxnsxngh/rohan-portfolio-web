@@ -18,11 +18,29 @@
               <p
                 class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-center"
               >
-                Get in touch!<br/><br/>
-                <a href="https://github.com/rohxnsxngh"><i class="fi fi-brands-github align-center text-3xl text-primary hover:text-white"></i></a><br/><br/>
-                <a href="mailto:rohan.singh.do@gmail.com"><i class="fi fi fi-sr-envelope align-center text-3xl text-primary hover:text-white"></i></a><br/><br/>
-                <a href="https://www.linkedin.com/in/rohan-singh1122/"><i class="fi fi fi-brands-linkedin align-center text-3xl text-primary hover:text-white"></i></a><br/><br/>
-                <a href="/Rohan_Singh_Resume_2023.pdf" target="_blank" rel="noopener noreferrer" class="underline text-primary hover:text-white">resume.</a>
+                Get in touch!<br /><br />
+                <a href="https://github.com/rohxnsxngh"
+                  ><i
+                    class="fi fi-brands-github align-center text-3xl text-primary hover:text-white"
+                  ></i></a
+                ><br /><br />
+                <a href="mailto:rohan.singh.do@gmail.com"
+                  ><i
+                    class="fi fi fi-sr-envelope align-center text-3xl text-primary hover:text-white"
+                  ></i></a
+                ><br /><br />
+                <a href="https://www.linkedin.com/in/rohan-singh1122/"
+                  ><i
+                    class="fi fi fi-brands-linkedin align-center text-3xl text-primary hover:text-white"
+                  ></i></a
+                ><br /><br />
+                <a
+                  href="/Rohan_Singh_Resume_2023.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="underline text-primary hover:text-white"
+                  >resume.</a
+                >
               </p>
             </h1>
           </div>
