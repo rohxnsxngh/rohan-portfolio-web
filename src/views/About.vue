@@ -10,7 +10,7 @@
 
       <div class="hero min-h-screen">
         <div class="hero-content text-left">
-          <div class="lg:max-w-4xl max-w-md">
+          <div class="lg:max-w-5xl max-w-md">
             <div class="h-fit">
               <h1
                 class="text-4xl md:text-4xl lg:text-6xl xl:text-4xl text-left font-bold text-center"
@@ -35,7 +35,7 @@
               </h1>
             </div>
             <div
-              class="mockup-code h-fit opacity-65 mt-8 text-left bg-primary-content border border-primary hover:border-white"
+              class="mockup-code h-fit opacity-65 mt-6 text-left bg-primary-content border border-primary hover:border-white"
             >
               <pre
                 data-prefix="$"

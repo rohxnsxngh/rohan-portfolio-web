@@ -256,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = event.target;
 
     if (target.id === "init-panel" && !animationInProgress) {
-      // enterFullscreen();
+      enterFullscreen();
       initialAnimation(camera);
       const node = [];
       await new Promise((resolve) => setTimeout(resolve, 5000));

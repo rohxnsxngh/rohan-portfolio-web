@@ -10,7 +10,7 @@
 
       <div class="hero min-h-screen">
         <div class="hero-content text-center">
-          <div class="sm:max-w-4xl max-w-xs">
+          <div class="sm:max-w-5xl max-w-xs">
             <div class="h-fit">
               <h1
                 class="text-4xl md:text-4xl lg:text-6xl xl:text-8xl text-left font-bold text-center"
@@ -33,7 +33,7 @@
               </h1>
             </div>
             <div
-              class="mockup-browser border border-primary bg-primary-content h-fit sm:w-full w-96 mt-20 hover:border-white"
+              class="mockup-browser border border-primary bg-primary-content h-fit sm:w-full w-96 mt-6 hover:border-white"
             >
               <div class="mockup-browser-toolbar">
                 <div class="input border border-base-300 text-md">
