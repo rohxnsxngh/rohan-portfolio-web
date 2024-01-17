@@ -17,7 +17,7 @@
               Credits.
               <div class="divider"></div>
               <div class="chat chat-start h-fit">
-                <div class="chat-bubble chat-bubble-primary text-sm">
+                <div class="chat-bubble chat-bubble-white text-sm">
                   <p
                     class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left hover:text-white"
                   >
@@ -47,7 +47,7 @@
                 </div>
               </div>
               <div class="chat chat-start h-fit">
-                <div class="chat-bubble chat-bubble-primary text-sm">
+                <div class="chat-bubble chat-bubble-white text-sm">
                   <p
                     class="text-sm md:text-md lg:text-lg xl:text-xl font-semibold text-left hover:text-white"
                   >
