@@ -35,7 +35,7 @@
                   ></i></a
                 ><br /><br />
                 <a
-                  href="/Rohan_Singh_Resume_2023.pdf"
+                  href="/Rohan_Singh_Resume_2024.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="underline text-primary hover:text-white"
