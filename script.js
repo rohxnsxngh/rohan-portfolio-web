@@ -248,8 +248,8 @@ document.addEventListener("DOMContentLoaded", () => {
     _cssAbout.position.set(1, -6, 18);
     _cssWriting.position.set(1, -6, 22);
     _cssContact.position.set(1, -6, 26);
-    _cssCredits.position.set(1, -6, 26);
-    _cssFinish.position.set(1, -6, 30);
+    _cssCredits.position.set(1, -6, 30);
+    _cssFinish.position.set(1, -6, 34);
   };
 
   document.addEventListener("click", async (event) => {

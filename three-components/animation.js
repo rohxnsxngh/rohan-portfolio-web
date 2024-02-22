@@ -80,46 +80,16 @@ export const navigationAnimation = (camera, panel) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, panel);
+    pageToPageAnimation(tl, camera, panel.position.z);
   }
 
   return animationInProgress;
 };
 
-function pageToPageAnimation(timeline, camera, panel) {
+function pageToPageAnimation(timeline, camera, zPosition) {
   timeline
     .to(camera.rotation, {
-      z: -Math.PI / 16,
-      x: Math.PI / 8192,
-      y: Math.PI / 8192,
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "power1.out",
-      overwrite: "none",
-      duration: 0.025,
-      onStart: () => {
-        setAnimationInProgress(true);
-      },
-      onComplete: () => {
-        setAnimationInProgress(false);
-      },
-    })
-    .to(camera.position, {
-      z: 60,
-      onUpdate: () => camera.updateProjectionMatrix(),
-      ease: "expoScale.out",
-      overwrite: "none",
-      duration: 1,
-      delay: 0.2,
-      onStart: () => {
-        setAnimationInProgress(true);
-      },
-      onComplete: () => {
-        setAnimationInProgress(false);
-      },
-    })
-    .to(panel.position, {
-      y: 0,
-      z: 34,
+      z: Math.PI / 6,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
@@ -131,24 +101,23 @@ function pageToPageAnimation(timeline, camera, panel) {
         setAnimationInProgress(false);
       },
     })
-    .to(panel.position, {
-      y: -6,
+    .to(camera.position, {
+      z: zPosition,
       onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
-      duration: 0.25,
+      duration: 2,
       onStart: () => {
         setAnimationInProgress(true);
       },
       onComplete: () => {
         setAnimationInProgress(false);
       },
+      delay: 0.2,
     })
     .to(camera.rotation, {
-      z: 0,
-      x: -Math.PI / 2,
-      y: 0,
-      onUpdate: () => camera.lookAt(1, -6, 34),
+      z: - Math.PI / 6,
+      onUpdate: () => camera.updateProjectionMatrix(),
       ease: "power1.out",
       overwrite: "none",
       duration: 0.5,
@@ -158,20 +127,6 @@ function pageToPageAnimation(timeline, camera, panel) {
       onComplete: () => {
         setAnimationInProgress(false);
       },
-    })
-    .to(camera.position, {
-      z: 34,
-      onUpdate: () => camera.lookAt(1, -6, 34),
-      ease: "power1.out",
-      overwrite: "none",
-      duration: 0.5,
-      onStart: () => {
-        setAnimationInProgress(true);
-      },
-      onComplete: () => {
-        setAnimationInProgress(false);
-      },
-      delay: 1,
     });
 }
 
@@ -184,7 +139,7 @@ export const forgeAnimation = (camera, panel) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, panel);
+    pageToPageAnimation(tl, camera, panel.position.z);
   }
 
   return animationInProgress;
@@ -199,7 +154,7 @@ export const experienceAnimation = (camera, panel) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, panel);
+    pageToPageAnimation(tl, camera, panel.position.z);
   }
 
   return animationInProgress;
@@ -214,7 +169,7 @@ export const aboutAnimation = (camera, panel) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, panel);
+    pageToPageAnimation(tl, camera, panel.position.z);
   }
 
   return animationInProgress;
@@ -229,7 +184,7 @@ export const writingAnimation = (camera, panel) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, panel);
+    pageToPageAnimation(tl, camera, panel.position.z);
   }
 
   return animationInProgress;
@@ -244,7 +199,7 @@ export const contactAnimation = (camera, panel) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, panel);
+    pageToPageAnimation(tl, camera, panel.position.z);
   }
 
   return animationInProgress;
@@ -259,7 +214,7 @@ export const creditsAnimation = (camera, panel) => {
   });
 
   if (!animationInProgress && camera) {
-    pageToPageAnimation(tl, camera, panel);
+    pageToPageAnimation(tl, camera, panel.position.z);
   }
 
   return animationInProgress;
