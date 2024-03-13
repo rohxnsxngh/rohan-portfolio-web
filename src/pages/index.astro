@@ -1,17 +1,13 @@
 ---
-import Navbar from '../components/Navigation.astro'
+import Navbar from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+import Home from "../components/Home.astro";
 ---
 
-<html>
-<head>
-  <title>My Astro Website</title>
-  <style>
-
-  </style>
-</head>
-<body>
-  <Navbar />
-  <h1>Welcome to my website</h1>
-  <p>This is the homepage of my Astro website.</p>
-</body>
-</html>
+<Layout>
+  <Navbar>
+    <Home />
+  </Navbar>
+  <Footer />
+</Layout>
