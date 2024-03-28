@@ -117,7 +117,7 @@
             class="rounded-box object-cover scroll-mt-96"
           />
         </div>
-        <div class="carousel-item">
+        <!-- <div class="carousel-item">
           <img
             id="tesla-item5"
             src="/Images/TeslaFDTDataDisplay.png"
@@ -130,7 +130,7 @@
             src="/Images/TeslaMapWithConversion.png"
             class="rounded-box object-cover scroll-mt-96"
           />
-        </div>
+        </div> -->
         <div class="carousel-item">
           <img
             id="tesla-item7"
@@ -166,14 +166,14 @@
           href="#tesla-item4"
           class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
         ></a>
-        <a
+        <!-- <a
           href="#tesla-item5"
           class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
         ></a>
         <a
           href="#tesla-item6"
           class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
-        ></a>
+        ></a> -->
         <a
           href="#tesla-item7"
           class="bg-primary w-2 rounded ring-2 ring-primary-content hover:bg-primary-content hover:ring-primary"
