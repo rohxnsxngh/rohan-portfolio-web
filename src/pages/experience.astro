@@ -2,15 +2,16 @@
 import Navbar from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Layout from "../layouts/Layout.astro";
-import Nvidia from "../components/Nvidia.astro";
-import Toyota from "../components/Toyota.astro";
-import Tesla1 from "../components/Tesla1.astro";
-import Tesla2 from "../components/Tesla2.astro";
+import Nvidia from "../components/experience/Nvidia.astro";
+import Toyota from "../components/experience/Toyota.astro";
+import Tesla1 from "../components/experience/Tesla1.astro";
+import Tesla2 from "../components/experience/Tesla2.astro";
 ---
 
 <Layout>
   <Navbar>
-    <div class="p-2">
+    <div class="sm:px-20 px-6 py-2">
+      <h1 class="font-semibold sm:text-4xl text-2xl">Experiences</h1>
       <Toyota />
       <Tesla1 />
       <Tesla2 />
