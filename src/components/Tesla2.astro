@@ -1,15 +1,26 @@
+<style>
+  /* Adjust the drawer content to appear above other elements */
+  .drawer-content {
+    z-index: 0; /* High value to ensure it's above others */
+  }
+</style>
+
 <div class="drawer drawer-end">
   <input id="tesla1-drawer" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content">
     <!-- Page content here -->
     <label
+      id="tesla1-open-button"
       for="tesla1-drawer"
       class="w-full btn btn-primary-content">Tesla</label
     >
   </div>
   <div class="drawer-side">
-    <label for="tesla1-drawer" aria-label="close sidebar" class="drawer-overlay"
-    ></label>
+    <label
+      id="tesla1-close-button"
+      for="tesla1-drawer"
+      aria-label="close sidebar"
+      class="drawer-overlay"></label>
     <ul class="menu p-4 w-11/12 min-h-full bg-base-200 text-base-content">
       <!-- Sidebar content here -->
       <div>
@@ -79,3 +90,32 @@
     </ul>
   </div>
 </div>
+
+<script>
+  const tesla1OpenDrawer = document.getElementById("tesla1-open-button");
+  const tesla1CloseDrawer = document.getElementById("tesla1-close-button");
+
+  const nvidiaContent = document.querySelector(
+    ".nvidia-content.drawer-content"
+  );
+
+  tesla1OpenDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = -1;
+    } else {
+      console.error("nvidiaOpenDrawer is undefined");
+    }
+  });
+
+  tesla1CloseDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = 0;
+    } else {
+      console.error("tesla1CloseDrawer is undefined");
+    }
+  });
+</script>
