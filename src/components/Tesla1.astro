@@ -1,0 +1,138 @@
+<style>
+  /* Adjust the drawer content to appear above other elements */
+  .drawer-content {
+    z-index: 0; /* High value to ensure it's above others */
+  }
+</style>
+
+<div class="drawer drawer-end">
+  <input id="tesla1-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="tesla1-content drawer-content">
+    <!-- Page content here -->
+    <label
+      id="tesla1-open-button"
+      for="tesla1-drawer"
+      class="w-full btn btn-primary-content">Tesla1</label
+    >
+  </div>
+  <div class="drawer-side">
+    <label
+      id="tesla1-close-button"
+      for="tesla1-drawer"
+      aria-label="close sidebar"
+      class="drawer-overlay"></label>
+    <ul class="menu p-4 w-11/12 min-h-full bg-base-200 text-base-content">
+      <!-- Sidebar content here -->
+      <div class="my-2">
+        <h1 class="mb-2 font-bold">Second Internship Experience at Tesla</h1>
+        <p class="mb-2">
+          During my second internship at Tesla, I was immersed in a world of
+          innovation, tackling projects that pushed the boundaries of technology
+          and reshaped the future of factory design and operations. Here's a
+          detailed look at some of the key projects I worked on:
+        </p>
+        <h1 class="mb-2 font-bold">Revolutionizing Revit Model Extraction</h1>
+        <p class="mb-2">
+          I spearheaded the development of a powerful C# tool aimed at
+          revolutionizing the Revit model extraction process. This tool
+          strategically improved interoperability between Revit and Tesla's
+          in-house software, facilitating the extraction of Revit element
+          metadata for a variety of tools across the organization. Specifically,
+          the extracted metadata powered critical analyses for Tesla's material
+          flow team, enabling calculations of operational and automation costs,
+          tracking of Key Performance Indicators (KPIs), and optimization of
+          layout iterations. By reducing manual efforts from 12 hours to mere
+          minutes, this extraction service not only streamlined processes but
+          also resulted in substantial cost savings.
+        </p>
+        <h1 class="mb-2 font-bold">Architecting Scalable Solutions</h1>
+        <p class="mb-2">
+          Architecting the Revit Extraction Service posed intricate challenges,
+          requiring a nuanced strategy to navigate the complexities of the Revit
+          API and optimize interaction with the BIM cloud. I devised a
+          self-sustaining architecture for real-time extraction, leveraging
+          parallel processing for large-scale models prevalent in Tesla's
+          factories. Scalability considerations were paramount, with extensive
+          error logging introduced to facilitate immediate issue resolution and
+          post-processing analysis. A comprehensive frontend was also developed
+          to visualize extraction data and monitor job statuses, ensuring
+          flawless execution of critical processes.
+        </p>
+        <h1 class="mb-2 font-bold">
+          Frontend Development for Data Visualization
+        </h1>
+        <p class="mb-2">
+          My proficiency in JavaScript played a pivotal role in the development
+          of a sophisticated front-end tool complementing the automated Revit
+          model extraction process. Leveraging frameworks like ReactJS and
+          Deck.gl, I contributed to dynamic data visualizations that enhanced
+          user interaction and facilitated insightful analyses. By mastering the
+          intricacies of Deck.gl, I transformed extracted data into visually
+          compelling 3D representations, empowering stakeholders to make
+          informed decisions about factory design and layout optimization.
+        </p>
+        <h1 class="mb-2 font-bold">Pioneering 5G Ericsson Positioning Trial</h1>
+        <p class="mb-2">
+          I participated in groundbreaking trials aimed at harnessing the
+          capabilities of the Ericsson network's 5G infrastructure to monitor
+          and optimize the real-time movements of assets within Tesla's
+          facilities. Collaborating closely with the development team, I
+          designed and implemented sophisticated algorithms for converting
+          geographical coordinates into pixel values on graphical interfaces.
+          This innovative trial showcased the potential of leveraging 5G for
+          real-time asset monitoring, providing valuable insights into
+          operational efficiency and pushing technological boundaries.
+        </p>
+        <h1 class="mb-2 font-bold">Conclusion</h1>
+        <p class="mb-2">
+          My internship at Tesla was a transformative experience that allowed me
+          to contribute to cutting-edge projects at the forefront of innovation.
+          From revolutionizing Revit model extraction to pioneering trials with
+          5G technology, I gained invaluable insights and skills that will
+          undoubtedly shape my future career in technology and engineering.
+          Working alongside experts in the field and tackling real-world
+          challenges has fueled my passion for innovation and inspired me to
+          continue pushing boundaries in the pursuit of technological
+          advancement.
+        </p>
+      </div>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const tesla1OpenDrawer = document.getElementById("tesla1-open-button");
+  const tesla1CloseDrawer = document.getElementById("tesla1-close-button");
+
+  const nvidiaContent = document.querySelector(
+    ".nvidia-content.drawer-content"
+  );
+
+  const tesla2Content = document.querySelector(
+    ".tesla2-content.drawer-content"
+  );
+
+  tesla1OpenDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = -1;
+      // @ts-ignore
+      tesla2Content.style.zIndex = -1;
+    } else {
+      console.error("nvidiaOpenDrawer is undefined");
+    }
+  });
+
+  tesla1CloseDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = 0;
+      // @ts-ignore
+      tesla2Content.style.zIndex = 0;
+    } else {
+      console.error("tesla1CloseDrawer is undefined");
+    }
+  });
+</script>

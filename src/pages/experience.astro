@@ -1,0 +1,21 @@
+---
+import Navbar from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+import Nvidia from "../components/Nvidia.astro";
+import Toyota from "../components/Toyota.astro";
+import Tesla1 from "../components/Tesla1.astro";
+import Tesla2 from "../components/Tesla2.astro";
+---
+
+<Layout>
+  <Navbar>
+    <div class="p-2">
+      <Toyota />
+      <Tesla1 />
+      <Tesla2 />
+      <Nvidia />
+    </div>
+  </Navbar>
+  <Footer />
+</Layout>

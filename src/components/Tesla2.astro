@@ -1,0 +1,140 @@
+<style>
+  /* Adjust the drawer content to appear above other elements */
+  .drawer-content {
+    z-index: 0; /* High value to ensure it's above others */
+  }
+</style>
+
+<div class="drawer drawer-end">
+  <input id="tesla2-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="tesla2-content drawer-content">
+    <!-- Page content here -->
+    <label
+      id="tesla2-open-button"
+      for="tesla2-drawer"
+      class="w-full btn btn-primary-content">Tesla2</label
+    >
+  </div>
+  <div class="drawer-side">
+    <label
+      id="tesla2-close-button"
+      for="tesla2-drawer"
+      aria-label="close sidebar"
+      class="drawer-overlay"></label>
+    <ul class="menu p-4 w-11/12 min-h-full bg-base-200 text-base-content">
+      <!-- Sidebar content here -->
+      <div class="my-2">
+        <h1 class="mb-2 font-bold">
+          My Co-Op Journey at Tesla: Exploring Software Engineering in a
+          High-Tech Environment
+        </h1>
+        <p class="mb-2">
+          During my internship at Tesla, I had the opportunity to work as a
+          Software Engineering Intern, delving into various projects that
+          enriched my technical skills and provided valuable industry insights.
+        </p>
+        <h1 class="mb-2 font-bold">Collaborating for System Efficiency</h1>
+        <p class="mb-2">
+          I collaborated closely with software engineers to develop and test
+          application procedures aimed at enhancing system efficiency. This
+          involved analyzing existing processes and implementing improvements to
+          optimize performance.
+        </p>
+        <h1 class="mb-2 font-bold">Implementing a Project Tracking System</h1>
+        <p class="mb-2">
+          At the heart of Tesla's operations lay a complex web of projects, each
+          with its own set of scopes, timelines, and budgets. I played a pivotal
+          role in implementing a robust project tracking system that
+          revolutionized how projects were managed at GigaTexas. This system
+          meticulously tracked over 30,000 scopes, worth over $300 million, from
+          inception to completion. By integrating labor tracking, spending
+          reports, funding forecasts, and project controls, we provided
+          stakeholders with real-time insights into project progress and
+          potential risks, enabling proactive decision-making and ensuring
+          projects stayed on track.
+        </p>
+        <h1 class="mb-2 font-bold">Developing Dashboards and Reports</h1>
+        <p class="mb-2">
+          Using my expertise in web development and Power BI, I took on the
+          challenge of developing dashboards and reports that provided
+          stakeholders with actionable insights into project productivity,
+          progress, changes, and Key Performance Indicators (KPIs). These
+          dashboards not only presented data in a visually compelling manner but
+          also allowed stakeholders to drill down into specific metrics,
+          identify trends, and make informed decisions. From designing user
+          interfaces to implementing complex data pipelines, this project
+          allowed me to showcase my technical prowess while delivering tangible
+          value to the organization.
+        </p>
+        <h1 class="mb-2 font-bold">
+          Assisting the BIM Team in Digital Modeling
+        </h1>
+        <p class="mb-2">
+          Working closely with the Building Information Modeling (BIM) team at
+          the Texas Giga Factory, I gained firsthand experience in managing
+          digital models and data representations of the factory and its
+          production assets. From coordinating design and construction efforts
+          to optimizing factory layouts for maximum efficiency, I played a
+          pivotal role in ensuring seamless collaboration across engineering,
+          construction, manufacturing, and operations teams. This involved
+          leveraging my understanding of CAD/BIM software and industry best
+          practices to drive continuous improvement and innovation in digital
+          modeling processes.
+        </p>
+        <h1 class="mb-2 font-bold">
+          Leveraging Advanced Technologies for Reality Capture
+        </h1>
+        <p class="mb-2">
+          As part of Tesla's commitment to innovation, I had the opportunity to
+          work with cutting-edge technologies like LiDAR scanning and reality
+          capture. By harnessing the power of these technologies, we were able
+          to create highly accurate "As-Built" records of the factory and its
+          production components. From conducting LiDAR scans to processing point
+          cloud data and resolving clashes in 3D models, I gained invaluable
+          hands-on experience in the latest tools and techniques used in the
+          industry.
+        </p>
+        <h1 class="mb-2 font-bold">9 Months at Tesla</h1>
+        <p class="mb-10">
+          My internship at Tesla was not just a learning experience but a
+          journey of personal and professional growth. From collaborating with
+          experts in the field to tackling real-world challenges and leveraging
+          advanced technologies, I gained insights and skills that will
+          undoubtedly shape my future career in software engineering. As I look
+          back on my time at Tesla, I am grateful for the opportunities I had
+          and excited for the possibilities that lie ahead in the dynamic world
+          of technology and innovation.
+        </p>
+      </div>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const tesla1OpenDrawer = document.getElementById("tesla2-open-button");
+  const tesla1CloseDrawer = document.getElementById("tesla2-close-button");
+
+  const nvidiaContent = document.querySelector(
+    ".nvidia-content.drawer-content"
+  );
+
+  tesla1OpenDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = -1;
+    } else {
+      console.error("nvidiaOpenDrawer is undefined");
+    }
+  });
+
+  tesla1CloseDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = 0;
+    } else {
+      console.error("tesla1CloseDrawer is undefined");
+    }
+  });
+</script>
