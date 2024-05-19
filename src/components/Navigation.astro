@@ -87,6 +87,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     const themeToggle = document.getElementById("theme-toggle");
     const htmlElement = document.documentElement;
+    const savedTheme = localStorage.getItem("theme"); // Retrieve saved theme from localStorage
 
     if (themeToggle) {
       themeToggle.addEventListener("click", function (e) {
@@ -98,9 +99,10 @@
         const checkbox = this.querySelector('input[type="checkbox"]');
 
         // Check if the checkbox element exists
+        // Toggle the data-theme attribute based on the current value
+        const currentTheme = htmlElement.getAttribute("data-theme");
+
         if (checkbox) {
-          // Toggle the data-theme attribute based on the current value
-          const currentTheme = htmlElement.getAttribute("data-theme");
           if (currentTheme === "nord") {
             htmlElement.setAttribute("data-theme", "dark");
             // @ts-ignore
@@ -111,7 +113,17 @@
             checkbox.checked = false; // Update checkbox state for animation
           }
         }
+
+        // Save the theme preference to localStorage
+        console.log(htmlElement.getAttribute("data-theme"))
+        localStorage.setItem("theme", htmlElement.getAttribute("data-theme") || "nord"); // Store the new theme
       });
+    }
+    // Apply the saved theme when the page loads
+    if (savedTheme) {
+      htmlElement.setAttribute("data-theme", savedTheme);
+      // Assuming there's a way to update the checkbox state visually without directly interacting with it
+      // This might require additional logic depending on how your UI updates
     }
   });
 </script>
