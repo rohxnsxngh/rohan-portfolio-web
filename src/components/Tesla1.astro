@@ -1,61 +1,138 @@
-<details
-  class="collapse bg-inherit rounded-lg border border-primary-content my-4 hover:border-2 shadow-2xl"
->
-  <summary class="collapse-title sm:text-xl text-md font-medium text-primary"
-    >Tesla
-    <span class="float-right text-xs text-white mt-1"
-      >May 2023 - September 2023.</span
-    ></summary
-  >
-  <div class="collapse-content">
-    <h1 class="text-sm">Software Engineering Intern</h1>
-    <div class="p-6">
-      <ul
-        class="font-normal sm:text-md sm:text-md text-sm text-white h-fit list-disc list-outside"
-      >
-        <li class="text-primary">
-          <div class="text-white">
-            Automated and optimized Revit model extraction, reducing manual
-            tasks from 12 hours to minutes and processing 20-25 Revit models in
-            50 minutes, all while maintaining scalability and cost-efficiency.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Developed a robust, user-friendly tool featuring automatic
-            synchronization, error logging, persistent background jobs, and a
-            custom frontend with real-time status updates on the Revit
-            extraction tool, enhancing accessibility and transparency for users.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Employed alternative to Autodesk Forge Flex tokens for
-            cost-effective operation, managing expenses at $30/day per token,
-            resulting in potential annual cost savings ranging from $163,800 (15
-            tokens) to $491,400 (45 tokens) for minimal usage, while ensuring
-            scalability with increased factory projects.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Assisted development of a cutting-edge tracking service utilizing
-            Golang and leveraging the Ericsson network's 5G capabilities to
-            monitor and optimize the real-time movements of AGVs, cranes,
-            vehicles, and other assets, enhancing operational efficiency and
-            asset management.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Provided comprehensive frontend development support using ReactJS,
-            Python, and Deck.gl to visualize the data extracted by the Revit
-            extraction tool, seamlessly transforming it into GeoJSON format and
-            rendering it in a dynamic 3D display, enhancing data visualization
-            and user interaction.
-          </div>
-        </li>
-      </ul>
-    </div>
+<style>
+  /* Adjust the drawer content to appear above other elements */
+  .drawer-content {
+    z-index: 0; /* High value to ensure it's above others */
+  }
+</style>
+
+<div class="drawer drawer-end">
+  <input id="tesla1-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="tesla1-content drawer-content">
+    <!-- Page content here -->
+    <label
+      id="tesla1-open-button"
+      for="tesla1-drawer"
+      class="w-full btn btn-primary-content">Tesla1</label
+    >
   </div>
-</details>
+  <div class="drawer-side">
+    <label
+      id="tesla1-close-button"
+      for="tesla1-drawer"
+      aria-label="close sidebar"
+      class="drawer-overlay"></label>
+    <ul class="menu p-4 w-11/12 min-h-full bg-base-200 text-base-content">
+      <!-- Sidebar content here -->
+      <div class="my-2">
+        <h1 class="mb-2 font-bold">Second Internship Experience at Tesla</h1>
+        <p class="mb-2">
+          During my second internship at Tesla, I was immersed in a world of
+          innovation, tackling projects that pushed the boundaries of technology
+          and reshaped the future of factory design and operations. Here's a
+          detailed look at some of the key projects I worked on:
+        </p>
+        <h1 class="mb-2 font-bold">Revolutionizing Revit Model Extraction</h1>
+        <p class="mb-2">
+          I spearheaded the development of a powerful C# tool aimed at
+          revolutionizing the Revit model extraction process. This tool
+          strategically improved interoperability between Revit and Tesla's
+          in-house software, facilitating the extraction of Revit element
+          metadata for a variety of tools across the organization. Specifically,
+          the extracted metadata powered critical analyses for Tesla's material
+          flow team, enabling calculations of operational and automation costs,
+          tracking of Key Performance Indicators (KPIs), and optimization of
+          layout iterations. By reducing manual efforts from 12 hours to mere
+          minutes, this extraction service not only streamlined processes but
+          also resulted in substantial cost savings.
+        </p>
+        <h1 class="mb-2 font-bold">Architecting Scalable Solutions</h1>
+        <p class="mb-2">
+          Architecting the Revit Extraction Service posed intricate challenges,
+          requiring a nuanced strategy to navigate the complexities of the Revit
+          API and optimize interaction with the BIM cloud. I devised a
+          self-sustaining architecture for real-time extraction, leveraging
+          parallel processing for large-scale models prevalent in Tesla's
+          factories. Scalability considerations were paramount, with extensive
+          error logging introduced to facilitate immediate issue resolution and
+          post-processing analysis. A comprehensive frontend was also developed
+          to visualize extraction data and monitor job statuses, ensuring
+          flawless execution of critical processes.
+        </p>
+        <h1 class="mb-2 font-bold">
+          Frontend Development for Data Visualization
+        </h1>
+        <p class="mb-2">
+          My proficiency in JavaScript played a pivotal role in the development
+          of a sophisticated front-end tool complementing the automated Revit
+          model extraction process. Leveraging frameworks like ReactJS and
+          Deck.gl, I contributed to dynamic data visualizations that enhanced
+          user interaction and facilitated insightful analyses. By mastering the
+          intricacies of Deck.gl, I transformed extracted data into visually
+          compelling 3D representations, empowering stakeholders to make
+          informed decisions about factory design and layout optimization.
+        </p>
+        <h1 class="mb-2 font-bold">Pioneering 5G Ericsson Positioning Trial</h1>
+        <p class="mb-2">
+          I participated in groundbreaking trials aimed at harnessing the
+          capabilities of the Ericsson network's 5G infrastructure to monitor
+          and optimize the real-time movements of assets within Tesla's
+          facilities. Collaborating closely with the development team, I
+          designed and implemented sophisticated algorithms for converting
+          geographical coordinates into pixel values on graphical interfaces.
+          This innovative trial showcased the potential of leveraging 5G for
+          real-time asset monitoring, providing valuable insights into
+          operational efficiency and pushing technological boundaries.
+        </p>
+        <h1 class="mb-2 font-bold">Conclusion</h1>
+        <p class="mb-2">
+          My internship at Tesla was a transformative experience that allowed me
+          to contribute to cutting-edge projects at the forefront of innovation.
+          From revolutionizing Revit model extraction to pioneering trials with
+          5G technology, I gained invaluable insights and skills that will
+          undoubtedly shape my future career in technology and engineering.
+          Working alongside experts in the field and tackling real-world
+          challenges has fueled my passion for innovation and inspired me to
+          continue pushing boundaries in the pursuit of technological
+          advancement.
+        </p>
+      </div>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const tesla1OpenDrawer = document.getElementById("tesla1-open-button");
+  const tesla1CloseDrawer = document.getElementById("tesla1-close-button");
+
+  const nvidiaContent = document.querySelector(
+    ".nvidia-content.drawer-content"
+  );
+
+  const tesla2Content = document.querySelector(
+    ".tesla2-content.drawer-content"
+  );
+
+  tesla1OpenDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = -1;
+      // @ts-ignore
+      tesla2Content.style.zIndex = -1;
+    } else {
+      console.error("nvidiaOpenDrawer is undefined");
+    }
+  });
+
+  tesla1CloseDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = 0;
+      // @ts-ignore
+      tesla2Content.style.zIndex = 0;
+    } else {
+      console.error("tesla1CloseDrawer is undefined");
+    }
+  });
+</script>

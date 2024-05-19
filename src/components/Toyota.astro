@@ -1,55 +1,136 @@
-<details
-  class="collapse bg-inherit rounded-lg border border-primary-content my-4 hover:border-2 shadow-2xl"
->
-  <summary class="collapse-title sm:text-xl text-md font-medium text-primary"
-    >Toyota
-    <span class="float-right text-xs text-white mt-1">Aug. 2023 - Current.</span
-    ></summary
-  >
-  <div class="collapse-content">
-    <h1 class="text-sm">Software Systems Engineer</h1>
-    <div class="p-6">
-      <ul
-        class="font-normal sm:text-md sm:text-md text-sm text-white h-fit list-disc list-outside"
-      >
-        <li class="text-primary">
-          <div class="text-white">
-            Developed and maintained software applications for in-vehicle
-            infotainment systems, enhancing user experience and delivering
-            features such as navigation, entertainment, and connectivity.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Led software integration efforts, facilitating seamless
-            communication between various vehicle components, including sensors,
-            ECUs, and telematics modules, optimizing system performance.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Conducted system-level testing, validation, and troubleshooting to
-            identify and resolve software defects, resulting in improved
-            software quality and reduced production delays.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Demonstrated proficiency in programming languages such as C/C++ and
-            Python, as well as familiarity with real-time operating systems
-            (RTOS) like AUTOSAR.
-          </div>
-        </li>
-        <li class="text-primary">
-          <div class="text-white">
-            Collaborated closely with the Software Reliability Engineering team,
-            leveraging tools such as MongoDB Charts and Datadog to debug and
-            pinpoint issues. This collaboration enhanced our ability to monitor
-            system health, identify potential reliability issues, and implement
-            proactive measures to ensure the robustness of in-vehicle software.
-          </div>
-        </li>
-      </ul>
-    </div>
+<style>
+  /* Adjust the drawer content to appear above other elements */
+  .drawer-content {
+    z-index: 0; /* High value to ensure it's above others */
+  }
+</style>
+
+<div class="drawer drawer-end">
+  <input id="toyota-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content">
+    <!-- Page content here -->
+    <label
+      id="toyota-open-button"
+      for="toyota-drawer"
+      class="w-full btn btn-primary-content">Toyota</label
+    >
   </div>
-</details>
+  <div class="drawer-side">
+    <label
+      id="toyota-close-button"
+      for="toyota-drawer"
+      aria-label="close sidebar"
+      class="drawer-overlay"></label>
+    <ul class="menu p-4 w-11/12 min-h-full bg-base-200 text-base-content">
+      <!-- Sidebar content here -->
+      <div class="my-2">
+        <h1 class="mb-2 font-bold">
+          Currently a Software Systems Engineer at Toyota Motors
+        </h1>
+        <p class="mb-2">
+          As a Software Systems Engineer within Toyota Motors' esteemed
+          rotational program, I've had the privilege to explore diverse facets
+          of software development, aligning with my passion for robotics and
+          reinforcement learning. Through engaging rotations, I've actively
+          contributed to projects at the forefront of automotive innovation,
+          pushing the boundaries of technology in the automotive industry.
+        </p>
+        <h1 class="mb-2 font-bold">Driving Autonomous Innovation</h1>
+        <p class="mb-2">
+          In collaboration with the Advanced Driver Assistance Systems focus
+          group, I delved into the integration of reinforcement learning
+          algorithms to enhance autonomous driving capabilities. My role
+          involved optimizing decision-making processes in real-world scenarios,
+          drawing upon my robotics background to contribute to the development
+          of adaptive and intelligent driving systems. By leveraging
+          cutting-edge technologies, I played a pivotal role in enhancing the
+          safety and efficiency of autonomous vehicles, shaping the future of
+          mobility.
+        </p>
+        <h1 class="mb-2 font-bold">
+          Insights from Data Analytics and Machine Learning
+        </h1>
+        <p class="mb-2">
+          During a rotation with the Data Analytics and Machine Learning
+          Applications focus group, I gained invaluable insights into the
+          intricate interplay between data-driven insights and machine learning
+          algorithms. I actively participated in developing algorithms for
+          predictive maintenance, applying reinforcement learning techniques to
+          enhance the efficiency and reliability of automotive systems. By
+          harnessing the power of data analytics and machine learning, I
+          contributed to optimizing overall vehicle performance and reliability,
+          driving continuous improvement in Toyota's automotive solutions.
+        </p>
+        <h1 class="mb-2 font-bold">Expanding Horizons and Fueling Ambition</h1>
+        <p class="mb-2">
+          These varied experiences within Toyota's rotational program have not
+          only expanded my technical skill set but also reinforced my commitment
+          to pursuing advanced studies in robotics and reinforcement learning.
+          The exposure to real-world applications and challenges has fueled my
+          ambition to contribute significantly to the intersection of automated
+          technology and intelligent systems. As I continue to navigate the
+          dynamic landscape of automotive innovation, I am driven by a passion
+          for pushing boundaries and shaping the future of mobility at Toyota
+          Motors.
+        </p>
+        <h1 class="mb-2 font-bold">Conclusion</h1>
+        <p class="mb-2">
+          My journey as a Software Systems Engineer at Toyota Motors has been an
+          enriching experience filled with opportunities to innovate and
+          contribute to groundbreaking projects. From driving autonomous
+          innovation to harnessing the power of data analytics and machine
+          learning, I am proud to be part of a team dedicated to pushing the
+          boundaries of technology in the automotive industry. As I continue to
+          grow and evolve in my role, I am excited to play a pivotal role in
+          shaping the future of mobility and driving transformative change at
+          Toyota Motors.
+        </p>
+      </div>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const toyotaOpenDrawer = document.getElementById("toyota-open-button");
+  const toyotaCloseDrawer = document.getElementById("toyota-close-button");
+
+  const nvidiaContent = document.querySelector(
+    ".nvidia-content.drawer-content"
+  );
+
+  const tesla2Content = document.querySelector(
+    ".tesla2-content.drawer-content"
+  );
+
+  const tesla1Content = document.querySelector(
+    ".tesla1-content.drawer-content"
+  );
+
+  toyotaOpenDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = -1;
+      // @ts-ignore
+      tesla2Content.style.zIndex = -1;
+      // @ts-ignore
+      tesla1Content.style.zIndex = -1;
+    } else {
+      console.error("nvidiaOpenDrawer is undefined");
+    }
+  });
+
+  toyotaCloseDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (nvidiaContent) {
+      // @ts-ignore
+      nvidiaContent.style.zIndex = 0;
+      // @ts-ignore
+      tesla2Content.style.zIndex = 0;
+      // @ts-ignore
+      tesla1Content.style.zIndex = 0;
+    } else {
+      console.error("toyotaCloseDrawer is undefined");
+    }
+  });
+</script>
