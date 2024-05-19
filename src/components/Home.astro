@@ -1,9 +1,23 @@
 <div class="hero min-h-screen bg-base-200">
   <div class="hero-content flex-col lg:flex-row-reverse">
-    <img
-      src="/public/images/RS.jpg"
-      class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 border border-primary hover:border-4"
-    />
+    <label class="swap swap-flip text-9xl">
+      <!-- this hidden checkbox controls the state -->
+      <input type="checkbox" />
+
+      <div class="swap-on">
+        <img
+          src="/public/images/profile.jpg"
+          class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 border border-primary hover:border-4"
+        />
+      </div>
+      <div class="swap-off">
+        <img
+          src="/public/images/RS.jpg"
+          class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 border border-primary hover:border-4"
+        />
+      </div>
+    </label>
+
     <div>
       <p class="py-6 px-6 sm:text-2xl text-md">
         I am a
