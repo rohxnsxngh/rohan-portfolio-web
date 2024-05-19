@@ -2,12 +2,21 @@
 import Navbar from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import Graphics from "../components/project/Graphics.astro";
+import Strandbeest from "../components/project/Strandbeest.astro";
+import Baseball from "../components/project/Baseball.astro";
+import Maze from "../components/project/Maze.astro";
 ---
 
 <Layout>
   <Navbar>
-    <div class="px-6 py-2">
-        Projects</div>
+    <div class="sm:px-20 px-6 py-2">
+      <h1 class="font-semibold sm:text-4xl text-2xl">Projects</h1>
+      <Maze />
+      <Baseball />
+      <Strandbeest />
+      <Graphics />
+    </div>
   </Navbar>
   <Footer />
 </Layout>

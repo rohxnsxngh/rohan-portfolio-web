@@ -1,0 +1,88 @@
+<style>
+    /* Adjust the drawer content to appear above other elements */
+    .drawer-content {
+      z-index: 0; /* High value to ensure it's above others */
+    }
+  </style>
+  
+  <div class="drawer drawer-end">
+    <input id="strandbeest-drawer" type="checkbox" class="drawer-toggle" />
+    <div class="strandbeest-content drawer-content">
+      <!-- Page content here -->
+      <label
+        id="strandbeest-open-button"
+        for="strandbeest-drawer"
+        class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
+        >Mechanical Strandbeest Robot</label
+      >
+    </div>
+    <div class="drawer-side">
+      <label
+        id="strandbeest-close-button"
+        for="strandbeest-drawer"
+        aria-label="close sidebar"
+        class="drawer-overlay"></label>
+      <ul class="menu p-4 w-11/12 min-h-full bg-base-200 text-base-content">
+        <!-- Sidebar content here -->
+        <div class="my-2">
+          <h1 class="mb-2 font-bold">
+
+          </h1>
+          <p class="mb-2">
+
+          </p>
+    
+  
+          <h1 class="mb-2 font-bold"></h1>
+          <p class="mb-2">
+
+          </p>
+          <h1 class="mb-2 font-bold">
+          </h1>
+          <p class="mb-2">
+
+          </p>
+  
+          <h1 class="mb-2 font-bold"></h1>
+          <p class="mb-2">
+
+          </p>
+
+          <h1 class="mb-2 font-bold"></h1>
+          <p class="mb-2">
+
+          </p>
+        </div>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+  const strandbeestOpenDrawer = document.getElementById("strandbeest-open-button");
+  const strandbeestCloseDrawer = document.getElementById("strandbeest-close-button");
+
+  const graphicsContent = document.querySelector(
+    ".graphics-content.drawer-content"
+  );
+
+  strandbeestOpenDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (graphicsContent) {
+      // @ts-ignore
+      graphicsContent.style.zIndex = -1;
+    } else {
+      console.error("nvidiaOpenDrawer is undefined");
+    }
+  });
+
+  strandbeestCloseDrawer?.addEventListener("click", () => {
+    // Check if nvidiaOpenDrawer is defined before accessing its style property
+    if (graphicsContent) {
+      // @ts-ignore
+      graphicsContent.style.zIndex = 0;
+    } else {
+      console.error("tesla1CloseDrawer is undefined");
+    }
+  });
+  </script>
+  
