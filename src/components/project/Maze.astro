@@ -22,22 +22,145 @@
       for="maze-drawer"
       aria-label="close sidebar"
       class="drawer-overlay"></label>
-    <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
       <!-- Sidebar content here -->
       <div class="my-2">
-        <h1 class="mb-2 font-bold"></h1>
-        <p class="mb-2"></p>
+        <h1 class="mb-2 font-bold">
+          LiDAR Driven Maze Bot: A Technical Exploration of Autonomous Robotics
+        </h1>
+        <p class="mb-2">
+          The LiDAR Driven Maze Bot project, undertaken by the Texas A&M
+          University Robotics team under my leadership, aimed to develop an
+          advanced robotic system capable of autonomously navigating complex
+          mazes. This initiative focused on integrating cutting-edge mechanical
+          and software engineering techniques to enhance the robot’s
+          capabilities while maintaining a relatively cheap budget for the
+          project. The project team included Christian Flewelling, Vincent
+          Galvan, Garrett Adams, and Anna Font. We began by upgrading the Maze
+          Bot’s hardware components to improve its maneuverability and precision
+          in navigating intricate mazes.
+        </p>
 
-        <h1 class="mb-2 font-bold"></h1>
-        <p class="mb-2"></p>
-        <h1 class="mb-2 font-bold"></h1>
-        <p class="mb-2"></p>
+        <img
+        src="/images/project/MazeBotModel.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
 
-        <h1 class="mb-2 font-bold"></h1>
-        <p class="mb-2"></p>
+        <h1 class="mb-2 font-bold">Hardware Enhancements</h1>
+        <p class="mb-2">
+          In the maze robot, the integration of motors and encoders plays a
+          crucial role in enhancing its navigational capabilities. High torque
+          750Kv motors are utilized to bolster the robot’s rotational force,
+          enabling it to maneuver through complex maze structures with increased
+          agility and precision. The inclusion of 8192 CPR encoders ensures
+          precise position tracking, facilitating accurate navigation along
+          predefined paths within the maze environment. For motor control and
+          power distribution, the ODrive 3.6 motor controller is implemented,
+          offering dynamic velocity profiles that optimize the robot’s speed
+          based on navigational demands. This dynamic control mechanism allows
+          the robot to adapt its speed in real-time, enhancing its ability to
+          navigate through the maze efficiently. Additionally, a DC voltage
+          step-down converter is employed to maintain stable power distribution
+          throughout the robot's components, contributing to its overall
+          operational stability and reliability. This integrated approach to
+          motor and encoder utilization, coupled with effective power
+          management, equips the maze robot with the capabilities needed to
+          successfully navigate complex maze environments with precision and
+          efficiency. The maze robot's communication capabilities are improved
+          with the addition of the Jetson WiFi Module. This upgrade enhances its
+          ability to exchange data seamlessly and potentially collaborate with
+          external systems. By integrating this module, the robot can
+          efficiently transmit and receive information, facilitating
+          communication with other devices or systems within its environment.
+          These enhancements strengthen the robot's performance and adaptability
+          in navigating complex maze environments.
+        </p>
 
-        <h1 class="mb-2 font-bold"></h1>
-        <p class="mb-2"></p>
+        <h1 class="mb-2 font-bold">Mechanical Design and Fabrication</h1>
+        <p class="mb-2">
+          In the mechanical design and fabrication of the Maze Bot, gear ratio
+          calibration played a significant role. A 6:1 gear ratio was
+          established to find the right balance between motor torque and speed,
+          optimizing the robot's performance for navigating mazes with both
+          power and agility. CAD modeling was crucial for redesigning the
+          robot's base to seamlessly integrate motor mounts and create a
+          comprehensive frame to accommodate various electrical components. This
+          structured approach ensured stability and simplified maintenance.
+          Various manufacturing processes were employed, including laser cutting
+          for precise components like gears and linkages, and 3D printing for
+          custom parts to ensure high precision and durability. The assembly
+          process involved meticulous integration of all components to achieve a
+          robust and functional design. These steps collectively contributed to
+          the development of a reliable and efficient Maze Bot capable of
+          navigating complex mazes effectively.
+        </p>
+
+        <img
+        src="/images/project/MazeBotGearRatio.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
+
+        <h1 class="mb-2 font-bold">Software Development</h1>
+        <p class="mb-2">
+          In the software development phase, the team utilized ROS 2 Humble to
+          facilitate essential functions like message passing and visualization,
+          ensuring seamless communication within the team. Integration with GIT
+          provided a robust version control system, enabling organized tracking
+          and management of changes throughout the project. Algorithm
+          development was a key focus, with the team working on algorithms to
+          enhance the Maze Bot’s navigation capabilities. Fast-Marching Trees
+          were employed for generating intricate piecewise linear paths in known
+          maze environments, while Bezier Curves were integrated into the paths.
+          These curves, composed of four meticulously chosen control points,
+          ensured optimal and graceful traversal of the maze. Through these
+          software developments, the Maze Bot was equipped with efficient
+          navigation algorithms, enhancing its ability to navigate mazes
+          effectively. In trajectory planning, the team utilized TOPPRA
+          (Time-Optimal Path Parameterization) to generate position, velocity,
+          and acceleration profiles. This approach ensured smooth and controlled
+          traversal through varying terrains, enhancing the Maze Bot's ability
+          to navigate with precision and efficiency.
+        </p>
+
+        <img
+        src="/images/project/KinematicsProfilesMazeBot.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
+
+      <img
+      src="/images/project/LiDARMappingMazeBot.png"
+      class="w-full my-2 rounded-lg border-2 border-primary"
+    />
+
+        <h1 class="mb-2 font-bold">
+          Advanced Technologies and Future Enhancements
+        </h1>
+        <p class="mb-10">
+          Advanced technologies and future enhancements in the LiDAR Driven Maze
+          Bot project include the integration of LiDAR and Jetson Nano for
+          improved perception and decision-making capabilities. The inclusion of
+          the RPLidar A1 enhances the robot’s perception and mapping of its
+          surroundings, providing precise localization crucial for effective
+          navigation. Additionally, the Jetson Nano, running Jetson Linux 18.04,
+          powers the advanced processing required for real-time data analysis
+          and decision-making, enabling the robot to make informed navigational
+          decisions autonomously. The Maze Bot’s software has evolved to
+          navigate both known and partially known environments, showcasing
+          adaptability and dynamic problem-solving capabilities. Future
+          enhancements will focus on the development of advanced control
+          software, emphasizing the seamless integration of LiDAR and advanced
+          localization techniques. This integration will further improve the
+          robot’s navigation capabilities by enhancing its ability to perceive
+          and respond to its environment accurately. Additionally, efforts will
+          be made towards achieving fully autonomous maze navigation through the
+          implementation of sensors and algorithms designed specifically for
+          autonomous operation, enabling the Maze Bot to navigate mazes without
+          human intervention. These enhancements represent the ongoing evolution
+          of the Maze Bot project towards achieving greater autonomy and
+          efficiency in maze navigation.
+        </p>
       </div>
     </ul>
   </div>
