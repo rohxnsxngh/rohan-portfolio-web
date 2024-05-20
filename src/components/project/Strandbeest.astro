@@ -1,65 +1,207 @@
 <style>
-    /* Adjust the drawer content to appear above other elements */
-    .drawer-content {
-      z-index: 0; /* High value to ensure it's above others */
-    }
-  </style>
-  
-  <div class="drawer drawer-end">
-    <input id="strandbeest-drawer" type="checkbox" class="drawer-toggle" />
-    <div class="strandbeest-content drawer-content">
-      <!-- Page content here -->
-      <label
-        id="strandbeest-open-button"
-        for="strandbeest-drawer"
-        class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-        >Mechanical Strandbeest Robot</label
-      >
-    </div>
-    <div class="drawer-side">
-      <label
-        id="strandbeest-close-button"
-        for="strandbeest-drawer"
-        aria-label="close sidebar"
-        class="drawer-overlay"></label>
-      <ul class="menu p-4 w-11/12 min-h-full bg-base-200 text-base-content">
-        <!-- Sidebar content here -->
-        <div class="my-2">
-          <h1 class="mb-2 font-bold">
+  /* Adjust the drawer content to appear above other elements */
+  .drawer-content {
+    z-index: 0; /* High value to ensure it's above others */
+  }
+</style>
 
-          </h1>
-          <p class="mb-2">
-
-          </p>
-    
-  
-          <h1 class="mb-2 font-bold"></h1>
-          <p class="mb-2">
-
-          </p>
-          <h1 class="mb-2 font-bold">
-          </h1>
-          <p class="mb-2">
-
-          </p>
-  
-          <h1 class="mb-2 font-bold"></h1>
-          <p class="mb-2">
-
-          </p>
-
-          <h1 class="mb-2 font-bold"></h1>
-          <p class="mb-2">
-
-          </p>
-        </div>
-      </ul>
-    </div>
+<div class="drawer drawer-end">
+  <input id="strandbeest-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="strandbeest-content drawer-content">
+    <!-- Page content here -->
+    <label
+      id="strandbeest-open-button"
+      for="strandbeest-drawer"
+      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
+      >Mechanical Strandbeest Robot</label
+    >
   </div>
-  
-  <script>
-  const strandbeestOpenDrawer = document.getElementById("strandbeest-open-button");
-  const strandbeestCloseDrawer = document.getElementById("strandbeest-close-button");
+  <div class="drawer-side">
+    <label
+      id="strandbeest-close-button"
+      for="strandbeest-drawer"
+      aria-label="close sidebar"
+      class="drawer-overlay"></label>
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
+      <!-- Sidebar content here -->
+      <div class="my-2">
+        <h1 class="mb-2 font-bold">
+          StrandBeest: A Detailed Exploration of Kinetic Robotics
+        </h1>
+        <p class="mb-2">
+          The StrandBeest project is inspired by Theo Jansen’s wind-powered
+          kinetic sculptures and embodies a blend of rigorous research,
+          innovative design, and precise manufacturing. This project aims to
+          recreate and enhance the mechanical marvel of Jansen's creations
+          through advanced robotics and control systems.
+        </p>
+
+        <img
+        src="/images/project/StrandbeestPrototype.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
+
+        <h1 class="mb-2 font-bold">Determining Key Parameters</h1>
+        <p class="mb-2">
+          In the initial research phase, we concentrated on identifying critical
+          dimensions and operational requirements for the StrandBeest's
+          functionality. This involved a meticulous analysis of the leg linkage
+          dimensions, where we determined the optimal lengths and precise pivot
+          points necessary for achieving the desired kinematic motion. We also
+          explored various leg configurations to ensure smooth, efficient, and
+          stable movement, considering factors such as load distribution and
+          articulation mechanics. Additionally, we assessed the motor
+          requirements, selecting low-speed, high-torque motors that provide the
+          necessary power to drive the system while maintaining precise control.
+          This selection was based on torque-to-speed ratios, power efficiency,
+          and the capability to handle dynamic loads, ensuring reliable and
+          responsive movement under varying operational conditions. Through this
+          comprehensive approach, we laid a solid foundation for the
+          StrandBeest's mechanical design and performance optimization.
+        </p>
+
+        <img
+        src="/images/project/StrandBeestLinkagesMath.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
+
+        <img
+        src="/images/project/StrandbeestLinkagesDrawing.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
+
+        <h1 class="mb-2 font-bold">Solidworks Design</h1>
+        <p class="mb-2">
+          Using SolidWorks, we transformed these parameters into a detailed 3D
+          model, resulting in the creation of eight leg assemblies and four gear
+          assemblies. The eight leg assemblies were meticulously designed to
+          ensure synchronized and stable movement, taking into account factors
+          such as weight distribution, pivot accuracy, and the mechanical
+          linkage system to replicate the natural walking motion of the
+          StrandBeest. The four gear assemblies were engineered to ensure
+          efficient power transmission from the motors to the legs, focusing on
+          gear ratios, torque transfer, and minimizing energy loss. These gear
+          assemblies were optimized for durability and smooth operation,
+          facilitating precise control and effective propulsion. This modeling
+          phase was crucial for visualizing the complete mechanical system and
+          verifying the design's feasibility before physical prototyping.
+        </p>
+
+        <img
+        src="/images/project/strandbeestCAD.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
+
+        <h1 class="mb-2 font-bold">Manufacturing Phase</h1>
+        <p class="mb-2">
+          During the precision crafting phase, we employed a blend of
+          traditional and modern manufacturing techniques to realize the design.
+          Laser cutting was utilized to create precise gears and leg linkages,
+          ensuring accuracy and consistency across all components, which is
+          crucial for the mechanical integrity and synchronized movement of the
+          StrandBeest. A scroll saw was used to craft the base plate of the
+          chassis, allowing for intricate and stable designs that support the
+          overall structure effectively. Additionally, steel components,
+          including axles, bearings, and spacers, were incorporated to enhance
+          the durability and robustness of the assembly. These steel parts were
+          selected for their strength and reliability, ensuring the structure
+          could withstand operational stresses and maintain its performance over
+          time. This meticulous approach to manufacturing ensured that each part
+          met the required specifications and contributed to the overall
+          functionality and resilience of the StrandBeest.
+        </p>
+
+        <h1 class="mb-2 font-bold">Assembly</h1>
+        <p class="mb-2">
+          The components were meticulously assembled with a focus on balancing
+          structural integrity and functional efficiency. The leg assemblies and
+          gear assemblies were carefully integrated to ensure synchronized
+          movement and efficient power transfer. This integration involved
+          precise alignment and secure fastening of each component to maintain
+          the desired kinematic behavior and mechanical stability. By ensuring
+          that the leg assemblies operated in harmony and the gear assemblies
+          effectively transmitted motor power, we achieved a seamless and
+          coordinated movement. This careful assembly process was essential to
+          realize the full potential of the design, ensuring that the
+          StrandBeest operated smoothly and reliably under various conditions.
+        </p>
+
+        <h1 class="mb-2 font-bold">
+          Control System & Communication and Operations
+        </h1>
+        <p class="mb-2">
+          The motor control system is the heart of the StrandBeest's
+          functionality, incorporating advanced components to ensure precise and
+          coordinated operation. The ODrive 3.6 motor controller is employed to
+          provide precise control over the motors, which is essential for
+          achieving synchronized leg movement and maintaining overall stability.
+          To ensure accurate feedback on the position and speed of the motors, a
+          CUI-AMT10 encoder with 8192 counts per revolution (cpr) is used,
+          enabling fine-grained monitoring and adjustments in real-time. For
+          communication and operations, Websockets are utilized to facilitate
+          seamless data exchange between the control components, ensuring timely
+          and reliable communication. At the core of the control system is a
+          Raspberry Pi 4B running Debian Bullseye, which serves as the central
+          processing unit, overseeing all operations and managing the various
+          inputs and outputs. To provide a user-friendly interface for
+          monitoring and controlling the StrandBeest, a dashboard GUI built on
+          Pygame is implemented. This interface allows operators to easily
+          visualize the status of the system and make necessary adjustments,
+          ensuring efficient and intuitive control over the StrandBeest's
+          movements.
+        </p>
+        <h1 class="mb-2 font-bold">Electronics and Connectivity</h1>
+        <p class="mb-2">
+          The electronic diagram encapsulates the intricate connectivity of the
+          control system components, providing a comprehensive illustration of
+          the system's architecture. It details the power supply distribution,
+          highlighting how power is allocated to various components to ensure
+          stable and efficient operation. Additionally, the diagram maps out the
+          signal routing, depicting the paths for data and control signals that
+          facilitate coordinated operations. This detailed visualization ensures
+          that each component is correctly connected, with clear pathways for
+          power and communication, thereby enabling the precise control and
+          synchronization necessary for the StrandBeest's functionality. The
+          electronic diagram serves as a crucial reference for both the assembly
+          and troubleshooting processes, ensuring that all connections are
+          properly implemented and maintained.
+        </p>
+
+        <img
+        src="/images/project/StrandbeestElectronicsDiagram.png"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
+
+        <h1 class="mb-2 font-bold">Future Enhancements</h1>
+        <p class="mb-2">
+          Looking ahead, several enhancements are planned to improve the
+          StrandBeest’s functionality and performance. These include increasing
+          joint stability by enhancing the durability and reliability of the leg
+          joints, ensuring long-term operational integrity. The addition of feet
+          aims to improve mobility on challenging surfaces and ensure smoother
+          movement. To further increase stability, reinforcing ribs will be
+          added for additional structural support. Weight reduction efforts will
+          focus on the main chassis plate to improve overall efficiency and ease
+          of movement. Lastly, advanced control features will be incorporated,
+          such as sensors for autonomous operation, allowing the StrandBeest to
+          navigate and react to its environment dynamically. These upgrades are
+          designed to enhance the StrandBeest’s robustness, agility, and
+          adaptability.
+        </p>
+      </div>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const strandbeestOpenDrawer = document.getElementById(
+    "strandbeest-open-button"
+  );
+  const strandbeestCloseDrawer = document.getElementById(
+    "strandbeest-close-button"
+  );
 
   const graphicsContent = document.querySelector(
     ".graphics-content.drawer-content"
@@ -84,5 +226,4 @@
       console.error("tesla1CloseDrawer is undefined");
     }
   });
-  </script>
-  
+</script>
