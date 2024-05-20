@@ -2,11 +2,15 @@
 import Navbar from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import EchocardiagramMLResearch from "../components/research/EchocardiagramMLResearch.astro";
 ---
 
 <Layout>
   <Navbar>
-    <div class="px-6 py-2">Research</div>
+    <div class="sm:px-20 px-6 py-2">
+      <h1 class="font-semibold sm:text-4xl text-2xl">Research</h1>
+      <EchocardiagramMLResearch />
+    </div>
   </Navbar>
   <Footer />
 </Layout>
