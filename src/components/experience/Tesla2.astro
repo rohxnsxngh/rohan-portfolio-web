@@ -16,6 +16,7 @@ import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaC
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
+    touch-action: auto!important;
   }
 </style>
 
@@ -42,15 +43,15 @@ import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaC
       class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
     >
       <!-- Sidebar content here -->
-      <div class="my-2 sm:text-2xl text-md">
+      <div class="my-2 sm:text-lg text-md">
         <h1 class="mb-2 font-bold">
           My Co-Op Journey at Tesla: Exploring Software Engineering in a
           High-Tech Environment
         </h1>
         <p class="mb-2">
-          During my internship at Tesla, I had the opportunity to work as a
-          Software Engineering Intern, delving into various projects that
-          enriched my technical skills and provided valuable industry insights.
+          During my internship at Tesla, I got to work as a Software Engineering
+          Intern. I dived into different projects that boosted my technical
+          skills and gave me some awesome industry insights.
         </p>
 
         <Image
@@ -215,15 +216,33 @@ import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaC
   const tesla1OpenDrawer = document.getElementById("tesla2-open-button");
   const tesla1CloseDrawer = document.getElementById("tesla2-close-button");
 
+  const toyotaContent = document.querySelector(
+    ".toyota-content.drawer-content"
+  );
+
   const nvidiaContent = document.querySelector(
     ".nvidia-content.drawer-content"
   );
 
+  const tesla2Content = document.querySelector(
+    ".tesla2-content.drawer-content"
+  );
+
+  const tesla1Content = document.querySelector(
+    ".tesla1-content.drawer-content"
+  );
+
   tesla1OpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (nvidiaContent) {
+    if (tesla2Content) {
+      // @ts-ignore
+      toyotaContent.style.zIndex = -1;
       // @ts-ignore
       nvidiaContent.style.zIndex = -1;
+      // @ts-ignore
+      tesla2Content.style.zIndex = -1;
+      // @ts-ignore
+      tesla1Content.style.zIndex = -1;
     } else {
       console.error("nvidiaOpenDrawer is undefined");
     }
@@ -231,9 +250,15 @@ import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaC
 
   tesla1CloseDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (nvidiaContent) {
+    if (tesla2Content) {
+      // @ts-ignore
+      toyotaContent.style.zIndex = 0;
       // @ts-ignore
       nvidiaContent.style.zIndex = 0;
+      // @ts-ignore
+      tesla2Content.style.zIndex = 0;
+      // @ts-ignore
+      tesla1Content.style.zIndex = 0;
     } else {
       console.error("tesla1CloseDrawer is undefined");
     }

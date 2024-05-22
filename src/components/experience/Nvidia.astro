@@ -1,14 +1,14 @@
 ---
 import { Image } from "astro:assets";
-import NvidiaLogo from "../../../src/images/experience/nvidia/NvidiaLogo.png"
-import NvidiaCAD from "../../../src/images/experience/nvidia/NvidiaCAD.png"
+import NvidiaLogo from "../../../src/images/experience/nvidia/NvidiaLogo.png";
+import NvidiaCAD from "../../../src/images/experience/nvidia/NvidiaCAD.png";
 ---
-
 
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
+    touch-action: auto!important;
   }
 </style>
 
@@ -31,30 +31,36 @@ import NvidiaCAD from "../../../src/images/experience/nvidia/NvidiaCAD.png"
       for="nvidia-drawer"
       aria-label="close sidebar"
       class="drawer-overlay"></label>
-    <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
       <!-- Sidebar content here -->
-      <div class="my- 2sm:text-2xl text-md">
+      <div class="my-2 sm:text-lg text-md">
         <h1 class="mb-2 font-bold">
           My Adventure at Nvidia: A Summer as a CAD Engineering Intern
         </h1>
         <p class="mb-2">
           I had the amazing opportunity to intern at Nvidia as a Computer-Aided
-          Design (CAD) Engineering Intern. It was a fantastic blend of technical
-          challenges and fun experiences that made the entire journey
+          Design (CAD) Engineering Intern. It was the perfect mix of tackling
+          technical challenges and having fun, making the whole experience
           unforgettable.
         </p>
 
-        <Image src={NvidiaLogo} alt="Nvidia Logo" class="w-full my-2 rounded-lg border-2 border-primary"/>
+        <Image
+          src={NvidiaLogo}
+          alt="Nvidia Logo"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Automating Tasks with C++ Scripts</h1>
         <p class="mb-2">
-          One of the first projects I tackled was developing and implementing
-          C++ scripts to automate tasks within our CAD software. Imagine having
-          a magical wand that could take care of repetitive and mundane tasks
-          for you. That’s what these scripts did! They boosted our efficiency
-          and productivity by a solid 15%, freeing up our time for more exciting
-          and intricate design work. This was also my first experience using C++
-          in the indsutry and it was exhilirating.
+          One of the first projects I jumped into was creating and implementing
+          C++ scripts to automate tasks in our CAD software. It was like having
+          a magic wand to handle all the repetitive, boring stuff. These scripts
+          boosted our efficiency and productivity by about 15%, giving us more
+          time for the cool, detailed design work. Plus, it was my first time
+          implemeting CAD scripting and using C++ in a real-world setting, and
+          it was super exciting.
         </p>
         <h1 class="mb-2 font-bold">Cracking the Code of GD&T</h1>
         <p class="mb-2">
@@ -75,23 +81,27 @@ import NvidiaCAD from "../../../src/images/experience/nvidia/NvidiaCAD.png"
           real-world constraints.
         </p>
 
-        <Image src={NvidiaCAD} alt="Nvidia CAD Image" class="w-full my-2 rounded-lg border-2 border-primary"/>
+        <Image
+          src={NvidiaCAD}
+          alt="Nvidia CAD Image"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Crafting Detailed 3D Models</h1>
         <p class="mb-2">
           One of my favorite tasks was creating detailed 3D models of equipment
           and data center layouts. It was like being an architect in a digital
           world, ensuring every model was precise and aligned with project
-          specifications. I took pride in making sure my models were top-notch,
-          ready to be brought to life in the real world.
+          specifications.
         </p>
         <h1 class="mb-2 font-bold">Mastering CAD Software</h1>
         <p class="mb-2">
-          Throughout my internship, I became quite the CAD software wizard,
-          mastering tools like Creo, Windchill, SolidWorks, and Fusion 360. Each
-          software had its quirks and superpowers, and getting the hang of them
-          was both challenging and exhilarating. It felt like having a toolbox
-          full of gadgets, each perfect for different design adventures.
+          Throughout my internship, I became very familiar with CAD software and
+          practices, mastering tools like Creo, Windchill, SolidWorks, and
+          Fusion 360. Each software had its quirks and superpowers, and getting
+          the hang of them was both challenging and exhilarating. It felt like
+          having a toolbox full of gadgets, each perfect for different design
+          adventures.
         </p>
         <h1 class="mb-2 font-bold">Wrapping Up the Adventure</h1>
         <p class="mb-2">
@@ -99,8 +109,7 @@ import NvidiaCAD from "../../../src/images/experience/nvidia/NvidiaCAD.png"
           automating tasks and perfecting designs to mastering cutting-edge
           software, I learned so much and had a blast doing it. This experience
           not only sharpened my skills but also fueled my passion for
-          engineering design. It’s safe to say that this summer adventure has
-          left a lasting impression, and I’m excited for what the future holds!
+          engineering design.
         </p>
       </div>
     </ul>

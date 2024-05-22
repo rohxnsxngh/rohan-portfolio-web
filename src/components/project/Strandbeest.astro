@@ -11,6 +11,7 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
+    touch-action: auto !important;
   }
 </style>
 
@@ -35,7 +36,7 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
       class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
     >
       <!-- Sidebar content here -->
-      <div class="my-2 sm:text-2xl text-md">
+      <div class="my-2 sm:text-lg text-md">
         <h1 class="mb-2 font-bold">
           StrandBeest: A Detailed Exploration of Kinetic Robotics
         </h1>
@@ -221,11 +222,23 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
     ".graphics-content.drawer-content"
   );
 
+  const strandbeestContent = document.querySelector(
+    ".strandbeest-content.drawer-content"
+  );
+
+  const baseballContent = document.querySelector(
+    ".baseball-content.drawer-content"
+  );
+
   strandbeestOpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
     if (graphicsContent) {
       // @ts-ignore
       graphicsContent.style.zIndex = -1;
+      // @ts-ignore
+      strandbeestContent.style.zIndex = -1;
+      // @ts-ignore
+      baseballContent.style.zIndex = -1;
     } else {
       console.error("nvidiaOpenDrawer is undefined");
     }
@@ -236,6 +249,10 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
     if (graphicsContent) {
       // @ts-ignore
       graphicsContent.style.zIndex = 0;
+      // @ts-ignore
+      strandbeestContent.style.zIndex = 0;
+      // @ts-ignore
+      baseballContent.style.zIndex = 0;
     } else {
       console.error("tesla1CloseDrawer is undefined");
     }

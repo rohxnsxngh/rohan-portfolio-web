@@ -5,17 +5,17 @@ import LexusConceptCar from "../../../src/images/experience/toyota/LexusConceptC
 import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConceptCar.jpeg";
 ---
 
-
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
+    touch-action: auto !important;
   }
 </style>
 
 <div class="drawer drawer-end">
   <input id="toyota-drawer" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content">
+  <div class="toyota-content drawer-content">
     <!-- Page content here -->
     <label
       id="toyota-open-button"
@@ -32,9 +32,11 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
       for="toyota-drawer"
       aria-label="close sidebar"
       class="drawer-overlay"></label>
-    <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
       <!-- Sidebar content here -->
-      <div class="my-2 sm:text-2xl text-md">
+      <div class="my-2 sm:text-lg text-md">
         <h1 class="mb-2 font-bold">
           Software Systems Engineering at Toyota Motors
         </h1>
@@ -48,10 +50,10 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
         </p>
 
         <Image
-        src={ToyotaHeadquarters}
-        alt="Toyota Headquarters"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+          src={ToyotaHeadquarters}
+          alt="Toyota Headquarters"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Driving Autonomous Innovation</h1>
         <p class="mb-2">
@@ -81,10 +83,10 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
         </p>
 
         <Image
-        src={LexusConceptCar}
-        alt="Tesla Roadster"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+          src={LexusConceptCar}
+          alt="Tesla Roadster"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Expanding Horizons and Fueling Ambition</h1>
         <p class="mb-2">
@@ -100,10 +102,10 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
         </p>
 
         <Image
-        src={ToyotaConceptCar}
-        alt="Toyota Concept Car"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+          src={ToyotaConceptCar}
+          alt="Toyota Concept Car"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Conclusion</h1>
         <p class="mb-2">
@@ -126,6 +128,10 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
   const toyotaOpenDrawer = document.getElementById("toyota-open-button");
   const toyotaCloseDrawer = document.getElementById("toyota-close-button");
 
+  const toyotaContent = document.querySelector(
+    ".toyota-content.drawer-content"
+  );
+
   const nvidiaContent = document.querySelector(
     ".nvidia-content.drawer-content"
   );
@@ -142,6 +148,8 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
     // Check if nvidiaOpenDrawer is defined before accessing its style property
     if (nvidiaContent) {
       // @ts-ignore
+      toyotaContent.style.zIndex = -1;
+      // @ts-ignore
       nvidiaContent.style.zIndex = -1;
       // @ts-ignore
       tesla2Content.style.zIndex = -1;
@@ -155,6 +163,8 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
   toyotaCloseDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
     if (nvidiaContent) {
+      // @ts-ignore
+      toyotaContent.style.zIndex = 0;
       // @ts-ignore
       nvidiaContent.style.zIndex = 0;
       // @ts-ignore
