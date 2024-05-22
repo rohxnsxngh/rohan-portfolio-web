@@ -1,3 +1,9 @@
+---
+import { Image } from "astro:assets";
+import Profile from "../../src/images/profile.jpg";
+import RS from "../../src/images/RS.jpg";
+---
+
 <div class="hero min-h-screen bg-base-200">
   <div class="hero-content flex-col lg:flex-row-reverse">
     <label class="swap swap-flip text-9xl">
@@ -5,16 +11,18 @@
       <input type="checkbox" />
 
       <div class="swap-on">
-        <img
-          src="/images/profile.jpg"
-          class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 border border-primary hover:border-4"
-        />
+        <Image
+        src={Profile}
+        alt="Profile"
+        class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 sm:w-96 w-36 border border-primary hover:border-4"
+      />
       </div>
       <div class="swap-off">
-        <img
-          src="/images/RS.jpg"
-          class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 border border-primary hover:border-4"
-        />
+        <Image
+        src={RS}
+        alt="RS Logo"
+        class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 sm:w-96 w-36 border border-primary hover:border-4"
+      />
       </div>
     </label>
     <div>

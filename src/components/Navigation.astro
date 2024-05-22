@@ -1,3 +1,9 @@
+---
+import { Image } from "astro:assets";
+import Profile from "../../src/images/profile.jpg";
+import RS from "../../src/images/RS.jpg";
+---
+
 <div class="drawer">
   <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
   <div class="drawer-content flex flex-col">
@@ -62,11 +68,12 @@
         >
       </label>
       <a href="/">
-        <img
-          src="/images/RS.jpg"
-          class="h-12 rounded-full border border-primary hover:border-4 shadow-2xl"
-        /></a
-      >
+        <Image
+          src={RS}
+          alt="RS Logo"
+          class="h-12 w-12 rounded-full border border-primary hover:border-4 shadow-2xl"
+        />
+      </a>
     </div>
     <!-- Page content here -->
     <slot />
@@ -118,8 +125,11 @@
         }
 
         // Save the theme preference to localStorage
-        console.log(htmlElement.getAttribute("data-theme"))
-        localStorage.setItem("theme", htmlElement.getAttribute("data-theme") || "nord"); // Store the new theme
+        console.log(htmlElement.getAttribute("data-theme"));
+        localStorage.setItem(
+          "theme",
+          htmlElement.getAttribute("data-theme") || "nord"
+        ); // Store the new theme
       });
     }
     // Apply the saved theme when the page loads

@@ -1,3 +1,10 @@
+---
+import { Image } from "astro:assets";
+import NvidiaLogo from "../../../src/images/experience/nvidia/NvidiaLogo.png"
+import NvidiaCAD from "../../../src/images/experience/nvidia/NvidiaCAD.png"
+---
+
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -26,7 +33,7 @@
       class="drawer-overlay"></label>
     <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
       <!-- Sidebar content here -->
-      <div class="">
+      <div class="my- 2sm:text-2xl text-md">
         <h1 class="mb-2 font-bold">
           My Adventure at Nvidia: A Summer as a CAD Engineering Intern
         </h1>
@@ -37,10 +44,7 @@
           unforgettable.
         </p>
 
-        <img
-          src="/images/experience/nvidia/NvidiaLogo.png"
-          class="w-full my-2 rounded-lg border-2 border-primary"
-        />
+        <Image src={NvidiaLogo} alt="Nvidia Logo" class="w-full my-2 rounded-lg border-2 border-primary"/>
 
         <h1 class="mb-2 font-bold">Automating Tasks with C++ Scripts</h1>
         <p class="mb-2">
@@ -71,10 +75,7 @@
           real-world constraints.
         </p>
 
-        <img
-          src="/images/experience/nvidia/NvidiaCAD.png"
-          class="w-full my-2 rounded-lg border-2 border-primary"
-        />
+        <Image src={NvidiaCAD} alt="Nvidia CAD Image" class="w-full my-2 rounded-lg border-2 border-primary"/>
 
         <h1 class="mb-2 font-bold">Crafting Detailed 3D Models</h1>
         <p class="mb-2">

@@ -1,3 +1,11 @@
+---
+import { Image } from "astro:assets";
+import ToyotaHeadquarters from "../../../src/images/experience/toyota/ToyotaHeadquarters.jpg";
+import LexusConceptCar from "../../../src/images/experience/toyota/LexusConceptCar.jpg";
+import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConceptCar.jpeg";
+---
+
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -26,7 +34,7 @@
       class="drawer-overlay"></label>
     <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
       <!-- Sidebar content here -->
-      <div class="my-2">
+      <div class="my-2 sm:text-2xl text-md">
         <h1 class="mb-2 font-bold">
           Software Systems Engineering at Toyota Motors
         </h1>
@@ -38,10 +46,12 @@
           contributed to projects at the forefront of automotive innovation,
           pushing the boundaries of technology in the automotive industry.
         </p>
-        <img
-          src="/images/experience/toyota/ToyotaHeadquarters.jpg"
-          class="w-full my-2 rounded-lg border-2 border-primary"
-        />
+
+        <Image
+        src={ToyotaHeadquarters}
+        alt="Toyota Headquarters"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
 
         <h1 class="mb-2 font-bold">Driving Autonomous Innovation</h1>
         <p class="mb-2">
@@ -69,10 +79,12 @@
           contributed to optimizing overall vehicle performance and reliability,
           driving continuous improvement in Toyota's automotive solutions.
         </p>
-        <img
-          src="/images/experience/toyota/LexusConceptCar.jpg"
-          class="w-full my-2 rounded-lg border-2 border-primary"
-        />
+
+        <Image
+        src={LexusConceptCar}
+        alt="Tesla Roadster"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
 
         <h1 class="mb-2 font-bold">Expanding Horizons and Fueling Ambition</h1>
         <p class="mb-2">
@@ -86,10 +98,12 @@
           for pushing boundaries and shaping the future of mobility at Toyota
           Motors.
         </p>
-        <img
-          src="/images/experience/toyota/ToyotaConceptCar.jpeg"
-          class="w-full my-2 rounded-lg border-2 border-primary"
-        />
+
+        <Image
+        src={ToyotaConceptCar}
+        alt="Toyota Concept Car"
+        class="w-full my-2 rounded-lg border-2 border-primary"
+      />
 
         <h1 class="mb-2 font-bold">Conclusion</h1>
         <p class="mb-2">

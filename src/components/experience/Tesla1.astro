@@ -1,3 +1,16 @@
+---
+import { Image } from "astro:assets";
+import TeslaFlyingY from "../../../src/images/experience/tesla/TeslaFlyingY.jpg";
+import TeslaRevitExtractionServiceArchitecture from "../../../src/images/experience/tesla/TeslaRevitExtractionServiceArchitecture.png";
+import TeslaFDTAesthetic from "../../../src/images/experience/tesla/TeslaFDTAesthetic.png";
+
+import TeslaFDTDataDisplay from "../../../src/images/experience/tesla/TeslaFDTDataDisplay.png";
+import TeslaMoreAesthetic from "../../../src/images/experience/tesla/TeslaMoreAesthetic.png";
+import TeslaRobotics from "../../../src/images/experience/tesla/TeslaRobotics.jpg";
+import TeslaMapWithConversion from "../../../src/images/experience/tesla/TeslaMapWithConversion.png";
+import TeslaExtractionServiceCustomFrontend from "../../../src/images/experience/tesla/TeslaExtractionServiceCustomFrontend.png";
+---
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -24,9 +37,11 @@
       for="tesla1-drawer"
       aria-label="close sidebar"
       class="drawer-overlay"></label>
-    <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
       <!-- Sidebar content here -->
-      <div class="my-2">
+      <div class="my-2 sm:text-2xl text-md">
         <h1 class="mb-2 font-bold">Second Internship Experience at Tesla</h1>
         <p class="mb-2">
           During my second internship at Tesla, I was immersed in a world of
@@ -34,10 +49,13 @@
           and reshaped the future of factory design and operations. Here's a
           detailed look at some of the key projects I worked on.
         </p>
-        <img
-          src="/images/experience/tesla/TeslaFlyingY.jpg"
+
+        <Image
+          src={TeslaFlyingY}
+          alt="Tesla FlyingY"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
+
         <h1 class="mb-2 font-bold">Revolutionizing Revit Model Extraction</h1>
         <p class="mb-2">
           I spearheaded the development of a powerful C# tool aimed at
@@ -52,10 +70,13 @@
           minutes, this extraction service not only streamlined processes but
           also resulted in substantial cost savings.
         </p>
-        <img
-          src="/images/experience/tesla/TeslaRevitExtractionServiceArchitecture.png"
+
+        <Image
+          src={TeslaRevitExtractionServiceArchitecture}
+          alt="Nvidia Logo"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
+
         <h1 class="mb-2 font-bold">Architecting Scalable Solutions</h1>
         <p class="mb-2">
           Architecting the Revit Extraction Service posed intricate challenges,
@@ -69,10 +90,13 @@
           to visualize extraction data and monitor job statuses, ensuring
           flawless execution of critical processes.
         </p>
-        <img
-          src="/images/experience/tesla/TeslaExtractionServiceCustomFrontend.png"
+
+        <Image
+          src={TeslaExtractionServiceCustomFrontend}
+          alt="Tesla Extraction Service Custom Frontend"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
+
         <h1 class="mb-2 font-bold">
           Frontend Development for Data Visualization
         </h1>
@@ -87,18 +111,21 @@
           informed decisions about factory design and layout optimization.
         </p>
 
-        <img
-          src="/images/experience/tesla/TeslaFDTAesthetic.png"
+        <Image
+          src={TeslaFDTAesthetic}
+          alt="Tesla Extraction Service Custom Frontend"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaFDTDataDisplay.png"
+        <Image
+          src={TeslaFDTDataDisplay}
+          alt="Tesla Extraction Service Custom Frontend"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaMoreAesthetic.png"
+        <Image
+          src={TeslaMoreAesthetic}
+          alt="Tesla Extraction Service Custom Frontend"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
@@ -115,13 +142,15 @@
           operational efficiency and pushing technological boundaries.
         </p>
 
-        <img
-          src="/images/experience/tesla/TeslaRobotics.jpg"
+        <Image
+          src={TeslaRobotics}
+          alt="Tesla Extraction Service Custom Frontend"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaMapWithConversion.png"
+        <Image
+          src={TeslaMapWithConversion}
+          alt="Tesla Extraction Service Custom Frontend"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 

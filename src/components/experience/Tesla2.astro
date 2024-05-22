@@ -1,3 +1,17 @@
+---
+import { Image } from "astro:assets";
+import TeslaCyberRodeoScreen from "../../../src/images/experience/tesla/TeslaCyberRodeoScreen.jpg";
+import TeslaCyberRodeo from "../../../src/images/experience/tesla/TeslaCyberRodeo.jpg";
+import TeslaLiDARControlTargets from "../../../src/images/experience/tesla/TeslaLiDARControlTargets.png";
+import TeslaLiDARRainbow from "../../../src/images/experience/tesla/TeslaLiDARRainbow.png";
+import Tesla5kConveyanceDesign from "../../../src/images/experience/tesla/Tesla5kConveyanceDesign.png";
+import TeslaRoadster from "../../../src/images/experience/tesla/TeslaRoadster.jpg";
+import TeslaOptimus from "../../../src/images/experience/tesla/TeslaOptimus.jpg";
+import TeslaCyberTruck from "../../../src/images/experience/tesla/TeslaCyberTruck.jpg";
+import TeslaModelYWrapped from "../../../src/images/experience/tesla/TeslaModelYWrapped.jpg";
+import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaCrashDummySideView.jpg";
+---
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -24,9 +38,11 @@
       for="tesla2-drawer"
       aria-label="close sidebar"
       class="drawer-overlay"></label>
-    <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
       <!-- Sidebar content here -->
-      <div class="my-2">
+      <div class="my-2 sm:text-2xl text-md">
         <h1 class="mb-2 font-bold">
           My Co-Op Journey at Tesla: Exploring Software Engineering in a
           High-Tech Environment
@@ -37,13 +53,15 @@
           enriched my technical skills and provided valuable industry insights.
         </p>
 
-        <img
-          src="/images/experience/tesla/TeslaCyberRodeoScreen.jpg"
+        <Image
+          src={TeslaCyberRodeoScreen}
+          alt="Tesla Cyber Rodeo Screen"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaCyberRodeo.jpg"
+        <Image
+          src={TeslaCyberRodeo}
+          alt="Tesla Cyber Rodeo"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
@@ -96,10 +114,12 @@
           modeling processes.
         </p>
 
-        <img
-          src="/images/experience/tesla/TeslaLiDARControlTargets.png"
+        <Image
+          src={TeslaLiDARControlTargets}
+          alt="Tesla LiDAR Control Targets"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
+
         <h1 class="mb-2 font-bold">
           Leveraging Advanced Technologies for Reality Capture
         </h1>
@@ -114,13 +134,15 @@
           industry.
         </p>
 
-        <img
-          src="/images/experience/tesla/TeslaLiDARRainbow.png"
+        <Image
+          src={TeslaLiDARRainbow}
+          alt="Nvidia CAD Image"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/Tesla5kConveyanceDesign.png"
+        <Image
+          src={Tesla5kConveyanceDesign}
+          alt="Nvidia CAD Image"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
@@ -143,28 +165,33 @@
           the boundaries of innovation in my career.
         </p>
 
-        <img
-          src="/images/experience/tesla/TeslaRoadster.jpg"
+        <Image
+          src={TeslaRoadster}
+          alt="Tesla Roadster"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaOptimus.jpg"
+        <Image
+          src={TeslaOptimus}
+          alt="Tesla Optimus"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaCyberTruck.jpg"
+        <Image
+          src={TeslaCyberTruck}
+          alt="Tesla Cyber Truck"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaModelYWrapped.jpg"
+        <Image
+          src={TeslaModelYWrapped}
+          alt="Tesla ModelY Wrapped"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/experience/tesla/TeslaCrashDummySideView.jpg"
+        <Image
+          src={TeslaCrashDummySideView}
+          alt="Tesla Crash Dummy Side View"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
