@@ -1,3 +1,9 @@
+---
+import { Image } from "astro:assets";
+import ResearchUNET from "../../../src/images/project/ResearchUNET.jpg";
+import ResearchCustomStrats from "../../../src/images/project/ResearchCustomStrats.jpg";
+---
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -53,8 +59,9 @@
           cutting-edge deep learning architectures.
         </p>
 
-        <img
-          src="/images/project/ResearchUNET.jpg"
+        <Image
+          src={ResearchUNET}
+          alt="ResearchUNET"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
@@ -79,8 +86,9 @@
           planning.
         </p>
 
-        <img
-          src="/images/project/ResearchCustomStrats.jpg"
+        <Image
+          src={ResearchCustomStrats}
+          alt="ResearchCustomStrats"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 

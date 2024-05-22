@@ -1,3 +1,10 @@
+---
+import { Image } from "astro:assets";
+import HansAubsHome from "../../../src/images/project/HansAubsHome.png";
+import HansAubsLab from "../../../src/images/project/HansAubsLab.png";
+import HansAubsForge from "../../../src/images/project/HansAubsForge.png";
+---
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -22,7 +29,9 @@
       for="graphics-drawer"
       aria-label="close sidebar"
       class="drawer-overlay"></label>
-    <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
       <!-- Sidebar content here -->
       <div class="my-2 sm:text-2xl text-md">
         <h1 class="mb-2 font-bold">
@@ -37,10 +46,11 @@
           visually striking experience that responds to real-time audio input.
         </p>
 
-        <img
-        src="/images/project/HansAubsHome.png"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+        <Image
+          src={HansAubsHome}
+          alt="HansAubsHome"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Project Foundation</h1>
         <p class="mb-2">
@@ -58,10 +68,12 @@
           realm of endless possibilities for innovation and exploration within
           The Forge.
         </p>
-        <img
-        src="/images/project/HansAubsLab.png"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+
+        <Image
+          src={HansAubsLab}
+          alt="HansAubsLab"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Real-Time Audio Visualization</h1>
         <p class="mb-2">
@@ -89,10 +101,11 @@
           unforgettable journey of exploration and discovery.
         </p>
 
-        <img
-        src="/images/project/HansAubsForge.png"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+        <Image
+          src={HansAubsForge}
+          alt="HansAubsForge"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Shaders and GPU Utilization</h1>
         <p class="mb-2">

@@ -1,3 +1,11 @@
+---
+import { Image } from "astro:assets";
+import MazeBotModel from "../../../src/images/project/MazeBotModel.png";
+import MazeBotGearRatio from "../../../src/images/project/MazeBotGearRatio.png";
+import KinematicsProfilesMazeBot from "../../../src/images/project/KinematicsProfilesMazeBot.png";
+import LiDARMappingMazeBot from "../../../src/images/project/LiDARMappingMazeBot.png";
+---
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -43,10 +51,11 @@
           in navigating intricate mazes.
         </p>
 
-        <img
-        src="/images/project/MazeBotModel.png"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+        <Image
+          src={MazeBotModel}
+          alt="Maze Bot Model"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Hardware Enhancements</h1>
         <p class="mb-2">
@@ -97,10 +106,11 @@
           navigating complex mazes effectively.
         </p>
 
-        <img
-        src="/images/project/MazeBotGearRatio.png"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+        <Image
+          src={MazeBotGearRatio}
+          alt="Maze Bot Gear Ratio"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">Software Development</h1>
         <p class="mb-2">
@@ -124,15 +134,17 @@
           to navigate with precision and efficiency.
         </p>
 
-        <img
-        src="/images/project/KinematicsProfilesMazeBot.png"
-        class="w-full my-2 rounded-lg border-2 border-primary"
-      />
+        <Image
+          src={KinematicsProfilesMazeBot}
+          alt="Kinematics Profiles Maze Bot"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
-      <img
-      src="/images/project/LiDARMappingMazeBot.png"
-      class="w-full my-2 rounded-lg border-2 border-primary"
-    />
+        <Image
+          src={LiDARMappingMazeBot}
+          alt="LiDAR Mapping Maze Bot"
+          class="w-full my-2 rounded-lg border-2 border-primary"
+        />
 
         <h1 class="mb-2 font-bold">
           Advanced Technologies and Future Enhancements

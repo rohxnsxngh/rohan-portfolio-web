@@ -1,3 +1,13 @@
+---
+import { Image } from "astro:assets";
+import MachineLearningBaseball from "../../../src/images/project/MachineLearningBaseball.png";
+import MachineLearningBaseball1 from "../../../src/images/project/MachineLearningBaseball1.png";
+import MachineLearningBaseball2 from "../../../src/images/project/MachineLearningBaseball2.png";
+import MachineLearningBaseballMapping from "../../../src/images/project/MachineLearningBaseballMapping.png";
+import MachineLearningEric from "../../../src/images/project/MachineLearningEric.png";
+import MachineLearningMalachi from "../../../src/images/project/MachineLearningMalachi.png";
+---
+
 <style>
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
@@ -22,7 +32,9 @@
       for="baseball-drawer"
       aria-label="close sidebar"
       class="drawer-overlay"></label>
-    <ul class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content">
+    <ul
+      class="menu p-4 sm:w-8/12 w-11/12 min-h-full bg-base-200 text-base-content"
+    >
       <!-- Sidebar content here -->
       <div class="my-2 sm:text-2xl text-md">
         <h1 class="mb-2 font-bold">
@@ -36,8 +48,9 @@
           umpires decide whether a pitch is a ball or a strike.
         </p>
 
-        <img
-          src="/images/project/MachineLearningBaseball.png"
+        <Image
+          src={MachineLearningBaseball}
+          alt="MachineLearningBaseball"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
@@ -58,13 +71,15 @@
           account for their unique decision-making styles.
         </p>
 
-        <img
-          src="/images/project/MachineLearningBaseball1.png"
+        <Image
+          src={MachineLearningBaseball1}
+          alt="MachineLearningBaseball1"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/project/MachineLearningBaseball2.png"
+        <Image
+          src={MachineLearningBaseball2}
+          alt="MachineLearningBaseball2"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
@@ -95,18 +110,21 @@
           deeper insights into the factors that impact umpire calls.
         </p>
 
-        <img
-          src="/images/project/MachineLearningBaseballMapping.png"
+        <Image
+          src={MachineLearningBaseballMapping}
+          alt="Machine Learning Baseball Mapping"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/project/MachineLearningEric.png"
+        <Image
+          src={MachineLearningEric}
+          alt="Machine Learning Eric"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
-        <img
-          src="/images/project/MachineLearningMalachi.png"
+        <Image
+          src={MachineLearningMalachi}
+          alt="Machine Learning Malachi"
           class="w-full my-2 rounded-lg border-2 border-primary"
         />
 
@@ -136,8 +154,8 @@
           Learning MEEN Project." This repository contains all the code and data
           used, offering a resource for others to build upon and innovate
           further. The project included several visualizations to make our
-          findings more intuitive. This project was a fantastic opportunity to apply
-          machine learning in a real-world context, blending our technical
+          findings more intuitive. This project was a fantastic opportunity to
+          apply machine learning in a real-world context, blending our technical
           skills with a passion for baseball. It not only contributed to the
           field of sports analytics but also served as a testament to the
           transformative power of technology in enhancing traditional practices.
