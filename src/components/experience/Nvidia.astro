@@ -8,20 +8,23 @@ import NvidiaCAD from "../../../src/images/experience/nvidia/NvidiaCAD.png";
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
-    touch-action: auto!important;
+    touch-action: auto !important;
   }
 </style>
 
-<div class="drawer drawer-end">
+<div class="nvidia drawer drawer-end">
   <input id="nvidia-drawer" type="checkbox" class="drawer-toggle" />
   <div class="nvidia-content drawer-content">
     <!-- Page content here -->
-    <label
-      id="nvidia-open-button"
-      for="nvidia-drawer"
-      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-      >Nvidia</label
-    ><span class="text-xs float-right italic font-thin"
+    <div class="flex flex-row mb-2">
+      <p class="font-semibold mt-4 sm:text-xl text-md grow w-50">Computer Aided Design Engineering Intern @ Nvidia</p>
+      <label
+        id="nvidia-open-button"
+        for="nvidia-drawer"
+        class="w-12 btn btn-sm btn-primary-content mt-4 font-bold rounded-full"
+        >🔗</label>
+    </div>
+    <span class="text-xs float-right italic font-thin"
       >May 2021 - August 2021</span
     >
   </div>

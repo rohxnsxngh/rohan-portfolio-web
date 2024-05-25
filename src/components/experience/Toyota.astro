@@ -13,16 +13,22 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
   }
 </style>
 
-<div class="drawer drawer-end">
+<div class="toyota drawer drawer-end">
   <input id="toyota-drawer" type="checkbox" class="drawer-toggle" />
   <div class="toyota-content drawer-content">
     <!-- Page content here -->
-    <label
-      id="toyota-open-button"
-      for="toyota-drawer"
-      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-      >Toyota</label
-    ><span class="text-xs float-right italic font-thin"
+    <div class="flex flex-row mb-2">
+      <p class="font-semibold mt-4 sm:text-xl text-md grow w-50">
+        Software Systems Engineer @ Toyota
+      </p>
+      <label
+        id="toyota-open-button"
+        for="toyota-drawer"
+        class="w-12 btn btn-sm btn-primary-content mt-4 font-bold rounded-full"
+        >🔗</label
+      >
+    </div>
+    <span class="text-xs float-right italic font-thin"
       >August 2023 - Current</span
     >
   </div>
@@ -63,7 +69,7 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
 
   toyotaOpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (nvidiaContent) {
+    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
       // @ts-ignore
       toyotaContent.style.zIndex = -1;
       // @ts-ignore
@@ -79,7 +85,7 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
 
   toyotaCloseDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (nvidiaContent) {
+    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
       // @ts-ignore
       toyotaContent.style.zIndex = 0;
       // @ts-ignore

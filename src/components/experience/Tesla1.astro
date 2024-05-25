@@ -15,20 +15,23 @@ import TeslaExtractionServiceCustomFrontend from "../../../src/images/experience
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
-    touch-action: auto!important;
+    touch-action: auto !important;
   }
 </style>
 
-<div class="drawer drawer-end">
+<div class="tesla1 drawer drawer-end">
   <input id="tesla1-drawer" type="checkbox" class="drawer-toggle" />
   <div class="tesla1-content drawer-content">
     <!-- Page content here -->
-    <label
-      id="tesla1-open-button"
-      for="tesla1-drawer"
-      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-      >Tesla</label
-    ><span class="text-xs float-right italic font-thin"
+    <div class="flex flex-row mb-2">
+      <p class="font-semibold mt-4 sm:text-xl text-md grow w-50">Software Engineering Intern @ Tesla</p>
+      <label
+        id="tesla1-open-button"
+        for="tesla1-drawer"
+        class="w-12 btn btn-sm btn-primary-content mt-4 font-bold rounded-full"
+        >🔗</label>
+    </div>
+    <span class="text-xs float-right italic font-thin"
       >May 2023 - August 2023</span
     >
   </div>
@@ -187,9 +190,9 @@ import TeslaExtractionServiceCustomFrontend from "../../../src/images/experience
 
   tesla1OpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (tesla1Content) {
-      // @ts-ignore
-      toyotaContent.style.zIndex = -1;
+    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
+    // @ts-ignore
+    toyotaContent.style.zIndex = -1;
       // @ts-ignore
       nvidiaContent.style.zIndex = -1;
       // @ts-ignore
@@ -203,7 +206,7 @@ import TeslaExtractionServiceCustomFrontend from "../../../src/images/experience
 
   tesla1CloseDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (tesla1Content) {
+    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
       // @ts-ignore
       toyotaContent.style.zIndex = 0;
       // @ts-ignore

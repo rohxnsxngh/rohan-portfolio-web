@@ -16,20 +16,23 @@ import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaC
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
-    touch-action: auto!important;
+    touch-action: auto !important;
   }
 </style>
 
-<div class="drawer drawer-end">
+<div class="tesla2 drawer drawer-end">
   <input id="tesla2-drawer" type="checkbox" class="drawer-toggle" />
   <div class="tesla2-content drawer-content">
     <!-- Page content here -->
-    <label
-      id="tesla2-open-button"
-      for="tesla2-drawer"
-      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-      >Tesla</label
-    ><span class="text-xs float-right italic font-thin"
+    <div class="flex flex-row mb-2">
+      <p class="font-semibold mt-4 sm:text-xl text-md grow w-50">Software Engineering Intern @ Tesla</p>
+      <label
+        id="tesla2-open-button"
+        for="tesla2-drawer"
+        class="w-12 btn btn-sm btn-primary-content mt-4 font-bold rounded-full"
+        >🔗</label>
+    </div>
+    <span class="text-xs float-right italic font-thin"
       >January 2022 - September 2022</span
     >
   </div>
@@ -234,7 +237,7 @@ import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaC
 
   tesla1OpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (tesla2Content) {
+    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
       // @ts-ignore
       toyotaContent.style.zIndex = -1;
       // @ts-ignore
@@ -250,7 +253,7 @@ import TeslaCrashDummySideView from "../../../src/images/experience/tesla/TeslaC
 
   tesla1CloseDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (tesla2Content) {
+    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
       // @ts-ignore
       toyotaContent.style.zIndex = 0;
       // @ts-ignore
