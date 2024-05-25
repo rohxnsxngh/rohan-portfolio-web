@@ -12,20 +12,25 @@ import MachineLearningMalachi from "../../../src/images/project/MachineLearningM
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
-    touch-action: auto!important;
+    touch-action: auto !important;
   }
 </style>
 
-<div class="drawer drawer-end">
+<div class="baseball drawer drawer-end">
   <input id="baseball-drawer" type="checkbox" class="drawer-toggle" />
   <div class="baseball-content drawer-content">
     <!-- Page content here -->
-    <label
-      id="baseball-open-button"
-      for="baseball-drawer"
-      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-      >Machine Learning Applied to Baseball</label
-    >
+    <div class="flex flex-row mb-2">
+      <p class="font-semibold mt-4 sm:text-xl text-md grow w-50">
+        Machine Learning Applied to Baseball
+      </p>
+      <label
+        id="baseball-open-button"
+        for="baseball-drawer"
+        class="w-12 btn btn-sm btn-primary-content mt-4 font-bold rounded-full"
+        >🔗</label
+      >
+    </div>
   </div>
   <div class="drawer-side">
     <label
@@ -185,15 +190,30 @@ import MachineLearningMalachi from "../../../src/images/project/MachineLearningM
     ".baseball-content.drawer-content"
   );
 
+  const baseballDrawer = document.querySelector(".baseball.drawer.drawer-end");
+  const graphicsDrawer = document.querySelector(".graphics.drawer.drawer-end");
+  const strandbeestDrawer = document.querySelector(
+    ".strandbeest.drawer.drawer-end"
+  );
+  const mazeDrawer = document.querySelector(".maze.drawer.drawer-end");
+
   baseballOpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
     if (graphicsContent && strandbeestContent) {
-     // @ts-ignore
-     graphicsContent.style.zIndex = -1;
+      // @ts-ignore
+      graphicsContent.style.zIndex = -1;
       // @ts-ignore
       strandbeestContent.style.zIndex = -1;
       // @ts-ignore
       baseballContent.style.zIndex = -1;
+      // @ts-ignore
+      baseballDrawer.style.pointerEvents = "none";
+      // @ts-ignore
+      graphicsDrawer.style.pointerEvents = "none";
+      // @ts-ignore
+      strandbeestDrawer.style.pointerEvents = "none";
+      // @ts-ignore
+      mazeDrawer.style.pointerEvents = "none";
     } else {
       console.error("nvidiaOpenDrawer is undefined");
     }
@@ -208,6 +228,14 @@ import MachineLearningMalachi from "../../../src/images/project/MachineLearningM
       strandbeestContent.style.zIndex = 0;
       // @ts-ignore
       baseballContent.style.zIndex = 0;
+      // @ts-ignore
+      baseballDrawer.style.pointerEvents = "auto";
+      // @ts-ignore
+      graphicsDrawer.style.pointerEvents = "auto";
+      // @ts-ignore
+      strandbeestDrawer.style.pointerEvents = "auto";
+      // @ts-ignore
+      mazeDrawer.style.pointerEvents = "auto";
     } else {
       console.error("tesla1CloseDrawer is undefined");
     }

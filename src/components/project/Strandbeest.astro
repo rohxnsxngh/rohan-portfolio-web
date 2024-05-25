@@ -15,16 +15,21 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
   }
 </style>
 
-<div class="drawer drawer-end">
+<div class="strandbeest drawer drawer-end">
   <input id="strandbeest-drawer" type="checkbox" class="drawer-toggle" />
   <div class="strandbeest-content drawer-content">
     <!-- Page content here -->
-    <label
-      id="strandbeest-open-button"
-      for="strandbeest-drawer"
-      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-      >Mechanical Strandbeest Robot</label
-    >
+    <div class="flex flex-row mb-2">
+      <p class="font-semibold mt-4 sm:text-xl text-md grow w-50">
+        Mechanical Strandbeest Robot
+      </p>
+      <label
+        id="strandbeest-open-button"
+        for="strandbeest-drawer"
+        class="w-12 btn btn-sm btn-primary-content mt-4 font-bold rounded-full"
+        >🔗</label
+      >
+    </div>
   </div>
   <div class="drawer-side">
     <label
@@ -230,6 +235,13 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
     ".baseball-content.drawer-content"
   );
 
+  const baseballDrawer = document.querySelector(".baseball.drawer.drawer-end");
+  const graphicsDrawer = document.querySelector(".graphics.drawer.drawer-end");
+  const strandbeestDrawer = document.querySelector(
+    ".strandbeest.drawer.drawer-end"
+  );
+  const mazeDrawer = document.querySelector(".maze.drawer.drawer-end");
+
   strandbeestOpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
     if (graphicsContent) {
@@ -239,6 +251,14 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
       strandbeestContent.style.zIndex = -1;
       // @ts-ignore
       baseballContent.style.zIndex = -1;
+      // @ts-ignore
+      baseballDrawer.style.pointerEvents = "none";
+      // @ts-ignore
+      graphicsDrawer.style.pointerEvents = "none";
+      // @ts-ignore
+      strandbeestDrawer.style.pointerEvents = "none";
+      // @ts-ignore
+      mazeDrawer.style.pointerEvents = "none";
     } else {
       console.error("nvidiaOpenDrawer is undefined");
     }
@@ -253,6 +273,14 @@ import StrandbeestElectronicsDiagram from "../../../src/images/project/Strandbee
       strandbeestContent.style.zIndex = 0;
       // @ts-ignore
       baseballContent.style.zIndex = 0;
+      // @ts-ignore
+      baseballDrawer.style.pointerEvents = "auto";
+      // @ts-ignore
+      graphicsDrawer.style.pointerEvents = "auto";
+      // @ts-ignore
+      strandbeestDrawer.style.pointerEvents = "auto";
+      // @ts-ignore
+      mazeDrawer.style.pointerEvents = "auto";
     } else {
       console.error("tesla1CloseDrawer is undefined");
     }

@@ -9,20 +9,24 @@ import HansAubsForge from "../../../src/images/project/HansAubsForge.png";
   /* Adjust the drawer content to appear above other elements */
   .drawer-content {
     z-index: 0; /* High value to ensure it's above others */
-    touch-action: auto!important;
+    touch-action: auto !important;
   }
 </style>
 
-<div class="drawer drawer-end">
+<div class="graphics drawer drawer-end">
   <input id="graphics-drawer" type="checkbox" class="drawer-toggle" />
   <div class="graphics-content drawer-content">
     <!-- Page content here -->
-    <label
-      id="graphics-open-button"
-      for="graphics-drawer"
-      class="w-full btn sm:btn-lg btn-sm btn-primary-content mt-4 font-bold"
-      >WebGL/ThreeJS Graphics Experiment</label
-    >
+    <div class="flex flex-row mb-2">
+      <p class="font-semibold mt-4 sm:text-xl text-md grow w-50">
+        WebGL/ThreeJS Graphics Experiment
+      </p>
+      <label
+        id="graphics-open-button"
+        for="graphics-drawer"
+        class="w-12 btn btn-sm btn-primary-content mt-4 font-bold rounded-full"
+        >🔗</label>
+    </div>
   </div>
   <div class="drawer-side">
     <label
