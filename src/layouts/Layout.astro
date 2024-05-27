@@ -1,3 +1,9 @@
+---
+import Seo from "../components/Seo.astro";
+
+const { title, description, image, frontmatter, robots } = Astro.props;
+---
+
 <html lang="en" data-theme="nord">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +12,16 @@
       name="viewport"
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
+    <meta
+      name="description"
+      content="Learn about Rohan Singh, a software engineer with a background in mechanical engineering. Explore his projects, skills, and experiences."
+    />
     <title>Rohan Singh</title>
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <Seo {title} {description} url={Astro.url} {image} {frontmatter} {robots} />
   </head>
   <body>
     <slot />
