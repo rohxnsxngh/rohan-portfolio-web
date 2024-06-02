@@ -67,24 +67,24 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
     ".tesla1-content.drawer-content"
   );
 
-  const nvidiaDrawer = document.querySelector(".nvidia.drawer.drawer-end");
+  // const nvidiaDrawer = document.querySelector(".nvidia.drawer.drawer-end");
   const tesla1Drawer = document.querySelector(".tesla1.drawer.drawer-end");
   const tesla2Drawer = document.querySelector(".tesla2.drawer.drawer-end");
   const toyotaDrawer = document.querySelector(".toyota.drawer.drawer-end");
 
   toyotaOpenDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
+    if (tesla1Content && toyotaContent && tesla2Content) {
       // @ts-ignore
       toyotaContent.style.zIndex = -1;
       // @ts-ignore
-      nvidiaContent.style.zIndex = -1;
+      // nvidiaContent.style.zIndex = -1;
       // @ts-ignore
       tesla2Content.style.zIndex = -1;
       // @ts-ignore
       tesla1Content.style.zIndex = -1;
       // @ts-ignore
-      nvidiaDrawer.style.pointerEvents = 'none';
+      // nvidiaDrawer.style.pointerEvents = 'none';
       // @ts-ignore
       tesla1Drawer.style.pointerEvents = 'none';
       // @ts-ignore
@@ -98,17 +98,17 @@ import ToyotaConceptCar from "../../../src/images/experience/toyota/ToyotaConcep
 
   toyotaCloseDrawer?.addEventListener("click", () => {
     // Check if nvidiaOpenDrawer is defined before accessing its style property
-    if (tesla1Content && toyotaContent && nvidiaContent && tesla2Content) {
+    if (tesla1Content && toyotaContent && tesla2Content) {
       // @ts-ignore
       toyotaContent.style.zIndex = 0;
       // @ts-ignore
-      nvidiaContent.style.zIndex = 0;
+      // nvidiaContent.style.zIndex = 0;
       // @ts-ignore
       tesla2Content.style.zIndex = 0;
       // @ts-ignore
       tesla1Content.style.zIndex = 0;
       // @ts-ignore
-      nvidiaDrawer.style.pointerEvents = 'auto';
+      // nvidiaDrawer.style.pointerEvents = 'auto';
       // @ts-ignore
       tesla1Drawer.style.pointerEvents = 'auto';
       // @ts-ignore
