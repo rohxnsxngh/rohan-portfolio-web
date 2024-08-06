@@ -2,13 +2,26 @@
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 ---
 
 <Layout>
   <Navbar>
     <div class="sm:px-20 px-6 py-2">
-      <h1 class="font-semibold sm:text-4xl text-2xl">Blogs</h1>
-
+      <h1 class="font-semibold sm:text-4xl text-2xl tracking-wider">Blogs</h1>
+      <!-- <ul>
+        {
+          allBlogArticles.map((article) => (
+            <li key={article.slug}>
+              <h1 class="text-black">{article.data.title}</h1>
+            </li>
+          ))
+        }
+      </ul> -->
     </div>
   </Navbar>
   <Footer />
