@@ -128,7 +128,14 @@ declare module 'astro:content' {
 		"blog": {
 "week-1.md": {
 	id: "week-1.md";
-  slug: "week-1";
+  slug: "random-blog";
+  body: string;
+  collection: "blog";
+  data: any
+} & { render(): Render[".md"] };
+"week-2.md": {
+	id: "week-2.md";
+  slug: "random-blog-2";
   body: string;
   collection: "blog";
   data: any
