@@ -11,17 +11,29 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 
 <Layout>
   <Navbar>
-    <div class="sm:px-20 px-6 py-2">
-      <h1 class="font-semibold sm:text-4xl text-2xl tracking-wider">Blogs</h1>
-      <!-- <ul>
-        {
-          allBlogArticles.map((article) => (
-            <li key={article.slug}>
-              <h1 class="text-black">{article.data.title}</h1>
-            </li>
-          ))
-        }
-      </ul> -->
+    <div class="sm:px-20 px-6 py-8">
+      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">Technical Chronicles</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {allBlogArticles.map((article) => {
+          const tags: string[] = article.data.tags || [];
+          return (
+            <a href={`/blog/${article.slug}`} class="group">
+              <div class="p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+                <div class="flex flex-col h-full">
+                  <h2 class="text-xl font-bold mb-3 group-hover:text-primary/90 transition-colors">{article.data.title}</h2>
+                  <p class="text-sm text-primary/60 mb-4">{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <p class="text-primary/80 flex-grow">{article.data.description}</p>
+                  <div class="mt-4 flex flex-wrap gap-2">
+                    {tags.map(tag => (
+                      <span class="px-3 py-1 text-xs rounded-full bg-accent/10 text-primary/70">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
     </div>
   </Navbar>
   <Footer />
