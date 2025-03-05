@@ -1,21 +1,73 @@
 ---
-import Navbar from "../layouts/Navigation.astro";
-import Footer from "../layouts/Footer.astro";
-import Layout from "../layouts/Layout.astro";
-import Graphics from "../components/project/Graphics.astro";
-import Strandbeest from "../components/project/Strandbeest.astro";
-import Baseball from "../components/project/Baseball.astro";
-import Maze from "../components/project/Maze.astro";
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../layouts/Navigation.astro';
+import Footer from '../layouts/Footer.astro';
+
+const allProjects: CollectionEntry<'project'>[] = await getCollection('project');
+const sortedProjects = allProjects.sort((a, b) => {
+  // Sort by status (completed first, then in-progress, then coming-soon)
+  const statusOrder = { completed: 0, 'in-progress': 1, 'coming-soon': 2 };
+  return statusOrder[a.data.status] - statusOrder[b.data.status];
+});
 ---
 
 <Layout>
   <Navbar>
-    <div class="sm:px-20 px-6 py-2">
-      <h1 class="font-semibold sm:text-4xl text-2xl tracking-wider">Projects</h1>
-      <Maze />
-      <Baseball />
-      <Strandbeest />
-      <Graphics />
+    <div class="sm:px-20 px-6 py-8">
+      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">Projects & Experiments</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedProjects.map((project) => {
+          const statusColors = {
+            completed: 'bg-green-500/10 text-green-400',
+            'in-progress': 'bg-blue-500/10 text-blue-400',
+            'coming-soon': 'bg-purple-500/10 text-purple-400'
+          };
+          const statusText = {
+            completed: 'Completed',
+            'in-progress': 'In Progress',
+            'coming-soon': 'Coming Soon'
+          };
+          return (
+            <a href={`/project/${project.slug}`} class="group">
+              <div class="p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+                <div class="flex flex-col h-full">
+                  <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl font-bold group-hover:text-primary/90 transition-colors">{project.data.title}</h2>
+                    <span class={`px-2 py-1 text-xs rounded-full ${statusColors[project.data.status]}`}>
+                      {statusText[project.data.status]}
+                    </span>
+                  </div>
+                  <p class="text-sm text-primary/60 mb-4">{new Date(project.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</p>
+                  <p class="text-primary/80 flex-grow">{project.data.description}</p>
+                  <div class="mt-4 flex flex-wrap gap-2">
+                    {project.data.tags.map((tag: string) => (
+                      <span class="px-3 py-1 text-xs rounded-full bg-accent/10 text-primary/70">{tag}</span>
+                    ))}
+                  </div>
+                  {(project.data.github || project.data.demo) && (
+                    <div class="mt-4 pt-4 border-t border-accent/10 flex gap-4">
+                      {project.data.github && (
+                        <a href={project.data.github} target="_blank" rel="noopener noreferrer" 
+                           class="text-sm text-primary/60 hover:text-primary transition-colors">
+                          GitHub →
+                        </a>
+                      )}
+                      {project.data.demo && (
+                        <a href={project.data.demo} target="_blank" rel="noopener noreferrer"
+                           class="text-sm text-primary/60 hover:text-primary transition-colors">
+                          Live Demo →
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
     </div>
   </Navbar>
   <Footer />
