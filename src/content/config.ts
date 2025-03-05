@@ -26,7 +26,22 @@ const projectCollection = defineCollection({
   }),
 });
 
+const researchCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.string(),
+    status: z.enum(['completed', 'in-progress', 'coming-soon']),
+    image: z.string(),
+    description: z.string(),
+    tags: z.array(z.string()),
+    github: z.string().optional(),
+    paper: z.string().optional(),
+  }),
+});
+
 export const collections = {
   'blog': blogCollection,
   'project': projectCollection,
+  'research': researchCollection,
 };

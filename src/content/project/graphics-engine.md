@@ -2,16 +2,18 @@
 title: "Real-time Graphics Engine"
 date: "2024-01-01"
 status: "completed"
-image: "/images/project/GraphicsEngine.png"
+image: "/images/project/HansAubsHome.png"
 description: "A high-performance graphics engine built from scratch, supporting real-time rendering, physics simulation, and advanced visual effects."
 tags: ["graphics", "C++", "OpenGL", "CUDA", "physics simulation"]
 github: "https://github.com/rohan/graphics-engine"
 demo: "https://graphics-engine.demo.com"
 ---
 
-# Real-time Graphics Engine
+# The Forge: A Real-time Graphics Engine
 
-A sophisticated graphics engine built from the ground up, featuring advanced rendering capabilities, physics simulation, and real-time visual effects processing.
+A sophisticated graphics engine built from the ground up, featuring advanced rendering capabilities, physics simulation, and real-time visual effects processing. The project explores the intersection of computer graphics and audio processing, featuring elements such as audio visualizers, shaders, procedural generation, and dynamic textures.
+
+![Home Environment Rendering](/images/project/HansAubsHome.png)
 
 ## Core Features
 
@@ -22,6 +24,8 @@ A sophisticated graphics engine built from the ground up, featuring advanced ren
 - Dynamic lighting system
 - Post-processing effects
 - Particle system integration
+
+![Laboratory Environment](/images/project/HansAubsLab.png)
 
 ### Physics Engine
 - Rigid body dynamics
@@ -40,6 +44,8 @@ A sophisticated graphics engine built from the ground up, featuring advanced ren
 - Ambient occlusion
 - Volumetric lighting
 - Anti-aliasing solutions
+
+![The Forge Environment](/images/project/HansAubsForge.png)
 
 ### Performance Optimizations
 - GPU acceleration

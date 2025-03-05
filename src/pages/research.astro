@@ -1,16 +1,114 @@
 ---
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
-import Layout from "../layouts/Layout.astro";
-import EchocardiagramMLResearch from "../components/research/EchocardiagramMLResearch.astro";
+
+type ResearchStatus = "completed" | "in-progress" | "coming-soon";
+
+interface StatusConfig {
+  color: string;
+  text: string;
+}
+
+const allResearch = await getCollection("research");
+
+// Sort research by status (completed first, then in-progress, then coming-soon)
+const sortedResearch = allResearch.sort((a, b) => {
+  const statusOrder: Record<ResearchStatus, number> = { 
+    completed: 0, 
+    "in-progress": 1, 
+    "coming-soon": 2 
+  };
+  return statusOrder[a.data.status as ResearchStatus] - statusOrder[b.data.status as ResearchStatus];
+});
+
+// Status colors and text
+const statusConfig: Record<ResearchStatus, StatusConfig> = {
+  completed: {
+    color: "text-green-400",
+    text: "Completed",
+  },
+  "in-progress": {
+    color: "text-blue-400",
+    text: "In Progress",
+  },
+  "coming-soon": {
+    color: "text-yellow-400",
+    text: "Coming Soon",
+  },
+};
 ---
 
-<Layout>
+<Layout title="Research">
   <Navbar>
     <div class="sm:px-20 px-6 py-2">
-      <h1 class="font-semibold sm:text-4xl text-2xl tracking-wider">Research</h1>
-      <EchocardiagramMLResearch />
+      <h1 class="font-mono sm:text-4xl text-2xl tracking-wider mb-8">Research & Publications</h1>
+      
+      <div class="grid grid-cols-1 gap-8">
+        {
+          sortedResearch.map((research) => (
+            <a href={`/research/${research.slug}`} class="group">
+              <div class="grid md:grid-cols-2 gap-6 p-4 rounded-lg transition-colors duration-300 hover:bg-base-200">
+                <div>
+                  <div class="flex items-center gap-4 mb-2">
+                    <h2 class="font-mono text-xl">{research.data.title}</h2>
+                    <span class={`text-sm font-mono ${statusConfig[research.data.status as ResearchStatus].color}`}>
+                      {statusConfig[research.data.status as ResearchStatus].text}
+                    </span>
+                  </div>
+
+                  <p class="text-base-content/60 mb-4 font-mono">
+                    {research.data.date}
+                  </p>
+
+                  <p class="text-base-content/80 mb-4">
+                    {research.data.description}
+                  </p>
+
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    {research.data.tags.map((tag: string) => (
+                      <span class="text-sm text-base-content/60 font-mono">{tag}</span>
+                    ))}
+                  </div>
+
+                  <div class="flex gap-4">
+                    {research.data.github && (
+                      <a
+                        href={research.data.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-base-content/60 hover:text-base-content font-mono text-sm"
+                      >
+                        GitHub →
+                      </a>
+                    )}
+                    {research.data.paper && (
+                      <a
+                        href={research.data.paper}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-base-content/60 hover:text-base-content font-mono text-sm"
+                      >
+                        Live Demo →
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
     </div>
   </Navbar>
   <Footer />
 </Layout>
+
+<style>
+  .drawer-content {
+    z-index: 0;
+    touch-action: auto !important;
+  }
+</style>

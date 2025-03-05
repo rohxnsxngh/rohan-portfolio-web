@@ -12,6 +12,8 @@ github: "https://github.com/rohan/maze-bot"
 
 The LiDAR Driven Maze Bot project, undertaken by the Texas A&M University Robotics team under my leadership, aimed to develop an advanced robotic system capable of autonomously navigating complex mazes. This initiative focused on integrating cutting-edge mechanical and software engineering techniques to enhance the robot's capabilities while maintaining a relatively cheap budget for the project.
 
+![Maze Bot Model](/images/project/MazeBotModel.png)
+
 ## Hardware Enhancements
 
 In the maze robot, the integration of motors and encoders plays a crucial role in enhancing its navigational capabilities:
