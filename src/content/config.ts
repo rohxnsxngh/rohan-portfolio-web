@@ -40,8 +40,26 @@ const researchCollection = defineCollection({
   }),
 });
 
+const experienceCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    company: z.string(),
+    description: z.string(),
+    date: z.string(),
+    endDate: z.string().optional(),
+    location: z.string(),
+    tags: z.array(z.string()),
+    images: z.array(z.object({
+      src: z.string(),
+      alt: z.string()
+    })).optional(),
+  }),
+});
+
 export const collections = {
   'blog': blogCollection,
   'project': projectCollection,
   'research': researchCollection,
+  'experience': experienceCollection,
 };
