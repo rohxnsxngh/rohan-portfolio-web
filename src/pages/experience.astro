@@ -28,7 +28,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                     <div>
                       <div class="flex items-center gap-4 mb-2">
                         <h2 class="font-mono text-xl">{experience.data.title}</h2>
-                        <span class="text-sm font-mono text-primary/60">
+                        <span class="text-sm font-mono px-3 py-1 rounded-lg bg-primary/10 text-primary/80 border border-primary/20">
                           {experience.data.company}
                         </span>
                       </div>
@@ -43,7 +43,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
                       <div class="flex flex-wrap gap-2 mb-4">
                         {experience.data.tags.map((tag: string) => (
-                          <span class="text-sm text-base-content/60 font-mono">{tag}</span>
+                          <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">{tag}</span>
                         ))}
                       </div>
                     </div>
