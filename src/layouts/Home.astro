@@ -4,32 +4,72 @@ import Profile from "../../src/images/profile.jpg";
 import RS from "../../src/images/RS.jpg";
 ---
 
-<div class="hero min-h-screen bg-base-200">
-  <div class="hero-content flex-col lg:flex-row-reverse">
-    <label class="swap swap-flip text-9xl">
-      <!-- this hidden checkbox controls the state -->
-      <input type="checkbox" />
+<div class="min-h-screen bg-secondary flex items-center justify-center px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Text Content -->
+      <div class="order-2 lg:order-1 text-center lg:text-left slide-up">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-mono text-primary mb-6 tracking-tight">
+          Hey there! I'm
+          <span class="block mt-2 text-primary/90">Rohan Singh</span>
+        </h1>
+        <p class="text-lg sm:text-xl text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0">
+          Software Engineer with a passion for building elegant solutions to complex problems.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="/about" class="inline-flex items-center justify-center px-6 py-3 border border-primary/20 text-primary/90 hover:bg-primary/10 transition-colors duration-300 font-mono text-sm tracking-wider">
+            About Me
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+          <a href="/project" class="inline-flex items-center justify-center px-6 py-3 bg-primary text-secondary hover:bg-primary/90 transition-colors duration-300 font-mono text-sm tracking-wider">
+            View Projects
+          </a>
+        </div>
+      </div>
 
-      <div class="swap-on">
-        <Image
-        src={Profile}
-        alt="Profile"
-        class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 sm:w-96 w-36 border border-primary hover:border-4"
-      />
+      <!-- Image -->
+      <div class="order-1 lg:order-2 flex justify-center lg:justify-end fade-in">
+        <div class="relative group">
+          <Image
+            src={Profile}
+            alt="Profile"
+            class="rounded-lg w-64 h-64 sm:w-80 sm:h-80 object-cover filter grayscale hover:grayscale-0 transition-all duration-500 ease-out"
+          />
+          <div class="absolute inset-0 border border-primary/20 rounded-lg transform transition-transform duration-300 group-hover:scale-105"></div>
+        </div>
       </div>
-      <div class="swap-off">
-        <Image
-        src={RS}
-        alt="RS Logo"
-        class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 sm:w-96 w-36 border border-primary hover:border-4"
-      />
-      </div>
-    </label>
-    <div>
-      <p class="py-6 px-6 sm:text-2xl text-md">
-        Hey there! I'm
-        <span class="text-primary">Rohan Singh</span>
-      </p>
     </div>
   </div>
 </div>
+
+<style>
+  .slide-up {
+    animation: slideUp 0.8s ease-out;
+  }
+
+  .fade-in {
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>

@@ -4,139 +4,102 @@ import Profile from "../../src/images/profile.jpg";
 import RS from "../../src/images/RS.jpg";
 ---
 
-<div class="drawer">
-  <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
-  <div class="drawer-content flex flex-col">
-    <!-- Navbar -->
-    <div class="w-full navbar bg-base-300">
-      <div class="flex-none lg:hidden">
-        <label
-          for="my-drawer-3"
-          aria-label="open sidebar"
-          class="btn btn-square btn-ghost"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="inline-block w-6 h-6 stroke-current"
-            ><path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"></path></svg
-          >
-        </label>
-      </div>
-      <div class="flex-1 px-2 mx-2 text-primary font-semibold text-lg tracking-wider">
-        Rohan Singh
+<nav class="fixed w-full bg-secondary border-b border-accent/20 backdrop-blur-sm bg-opacity-80 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <div class="flex-shrink-0 flex items-center">
+        <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+          <Image
+            src={RS}
+            alt="RS Logo"
+            class="h-8 w-8 rounded-full border border-primary/20"
+          />
+          <span class="text-primary font-mono text-lg tracking-wider">Rohan Singh</span>
+        </a>
       </div>
 
-      <div class="flex-none hidden lg:block">
-        <ul class="menu menu-horizontal">
-          <!-- Navbar menu content here -->
-          <li><a href="/">Home</a></li>
-          <li><a href="/about/">About</a></li>
-          <li><a href="/experience/">Experience</a></li>
-          <li><a href="/project/">Projects</a></li>
-          <li><a href="/research/">Research</a></li>
-          <li><a href="/blog/">Blog</a></li>
-        </ul>
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/about/" class="nav-link">About</a>
+        <a href="/experience/" class="nav-link">Experience</a>
+        <a href="/project/" class="nav-link">Projects</a>
+        <a href="/research/" class="nav-link">Research</a>
+        <a href="/blog/" class="nav-link">Blog</a>
       </div>
-      <label class="swap swap-rotate mx-2" id="theme-toggle">
-        <!-- this hidden checkbox controls the state -->
-        <input type="checkbox" />
 
-        <!-- sun icon -->
-        <svg
-          class="swap-off fill-current w-8 h-8"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          ><path
-            d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
-          ></path></svg
-        >
-
-        <!-- moon icon -->
-        <svg
-          class="swap-on fill-current w-8 h-8"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          ><path
-            d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"
-          ></path></svg
-        >
-      </label>
-      <a href="/">
-        <Image
-          src={RS}
-          alt="RS Logo"
-          class="h-12 w-12 rounded-full border border-primary hover:border-4 shadow-2xl"
-        />
-      </a>
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button id="mobile-menu-button" class="text-primary hover:text-muted transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
     </div>
-    <!-- Page content here -->
-    <slot />
   </div>
-  <div class="drawer-side">
-    <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"
-    ></label>
-    <ul class="menu p-4 w-80 min-h-full bg-base-200">
-      <!-- Sidebar content here -->
-      <li><a href="/">Home</a></li>
-      <li><a href="/about/">About</a></li>
-      <li><a href="/experience/">Experience</a></li>
-      <li><a href="/project/">Projects</a></li>
-      <li><a href="/research/">Research</a></li>
-      <li><a href="/blog/">Blog</a></li>
-    </ul>
+
+  <!-- Mobile Navigation -->
+  <div id="mobile-menu" class="hidden md:hidden bg-secondary border-t border-accent/20">
+    <div class="px-2 pt-2 pb-3 space-y-1">
+      <a href="/" class="mobile-nav-link">Home</a>
+      <a href="/about/" class="mobile-nav-link">About</a>
+      <a href="/experience/" class="mobile-nav-link">Experience</a>
+      <a href="/project/" class="mobile-nav-link">Projects</a>
+      <a href="/research/" class="mobile-nav-link">Research</a>
+      <a href="/blog/" class="mobile-nav-link">Blog</a>
+    </div>
   </div>
+</nav>
+
+<!-- Main content slot with proper spacing -->
+<div class="pt-16">
+  <slot />
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const themeToggle = document.getElementById("theme-toggle");
-    const htmlElement = document.documentElement;
-    const savedTheme = localStorage.getItem("theme"); // Retrieve saved theme from localStorage
+<style>
+  .nav-link {
+    @apply text-primary/80 hover:text-primary transition-colors duration-200 text-sm font-mono tracking-wider;
+  }
 
-    if (themeToggle) {
-      themeToggle.addEventListener("click", function (e) {
-        e.preventDefault(); // Prevent the default action of the label
-        console.log("theme swap");
-        console.log(htmlElement, themeToggle);
+  .mobile-nav-link {
+    @apply block px-3 py-2 text-primary/80 hover:text-primary hover:bg-accent/10 transition-all duration-200 text-sm font-mono tracking-wider;
+  }
 
-        // Get the checkbox element
-        const checkbox = this.querySelector('input[type="checkbox"]');
+  /* Add slide animation for mobile menu */
+  #mobile-menu {
+    transition: transform 0.3s ease-in-out;
+  }
 
-        // Check if the checkbox element exists
-        // Toggle the data-theme attribute based on the current value
-        const currentTheme = htmlElement.getAttribute("data-theme");
+  #mobile-menu.show {
+    display: block;
+    animation: slideDown 0.3s ease-out forwards;
+  }
 
-        if (checkbox) {
-          if (currentTheme === "nord") {
-            htmlElement.setAttribute("data-theme", "dark");
-            // @ts-ignore
-            checkbox.checked = true; // Update checkbox state for animation
-          } else {
-            htmlElement.setAttribute("data-theme", "nord");
-            // @ts-ignore
-            checkbox.checked = false; // Update checkbox state for animation
-          }
-        }
-
-        // Save the theme preference to localStorage
-        console.log(htmlElement.getAttribute("data-theme"));
-        localStorage.setItem(
-          "theme",
-          htmlElement.getAttribute("data-theme") || "nord"
-        ); // Store the new theme
-      });
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
     }
-    // Apply the saved theme when the page loads
-    if (savedTheme) {
-      htmlElement.setAttribute("data-theme", savedTheme);
-      // Assuming there's a way to update the checkbox state visually without directly interacting with it
-      // This might require additional logic depending on how your UI updates
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('show');
+      });
     }
   });
 </script>

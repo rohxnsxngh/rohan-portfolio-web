@@ -4,7 +4,7 @@ import Seo from "../components/Seo.astro";
 const { title, description, image, frontmatter, robots } = Astro.props;
 ---
 
-<html lang="en" data-theme="nord">
+<html lang="en" class="bg-secondary text-primary">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/RS.jpg" />
@@ -22,8 +22,71 @@ const { title, description, image, frontmatter, robots } = Astro.props;
     <meta name="description" content={description} />
 
     <Seo {title} {description} url={Astro.url} {image} {frontmatter} {robots} />
+    
+    <style is:global>
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        src: url('/src/fonts/IBMPlexMono-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      :root {
+        --transition-speed: 0.3s;
+      }
+
+      * {
+        font-family: 'IBM Plex Mono', monospace;
+      }
+
+      body {
+        background-color: #000000;
+        color: #FFFFFF;
+        line-height: 1.6;
+        letter-spacing: 0.02em;
+      }
+
+      ::selection {
+        background-color: #FFFFFF;
+        color: #000000;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+      }
+
+      .slide-up {
+        animation: slideUp 0.5s ease-out;
+      }
+
+      /* Smooth scrolling */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #000000;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #333333;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #666666;
+      }
+    </style>
   </head>
-  <body>
-    <slot />
+  <body class="min-h-screen">
+    <main class="fade-in">
+      <slot />
+    </main>
   </body>
 </html>
