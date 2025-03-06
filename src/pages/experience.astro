@@ -20,11 +20,11 @@ const sortedExperiences = allExperiences.sort((a, b) => {
         <div class="sm:px-20 px-6 py-2">
           <h1 class="font-mono sm:text-4xl text-2xl tracking-wider mb-8">Experience</h1>
           
-          <div class="grid grid-cols-1 gap-8 mb-8">
+          <div class="">
             {
               sortedExperiences.map((experience) => (
-                <a href={`/experience/${experience.slug}`} class="group">
-                  <div class="grid md:grid-cols-2 gap-6 p-4 rounded-lg transition-colors duration-300 hover:bg-base-200">
+                <a href={`/experience/${experience.slug}`} class="block">
+                  <div class="grid gap-6 p-4 rounded-lg transition-colors duration-300 hover:bg-base-200">
                     <div>
                       <div class="flex items-center gap-4 mb-2">
                         <h2 class="font-mono text-xl">{experience.data.title}</h2>

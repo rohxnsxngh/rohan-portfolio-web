@@ -1,118 +1,164 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-import { Image } from "astro:assets";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 
 type ResearchStatus = "completed" | "in-progress" | "coming-soon";
 
-interface StatusConfig {
-  color: string;
-  text: string;
+// Get all research with error handling
+let allResearch: any[] = [];
+try {
+  allResearch = await getCollection("research");
+  console.log("Total research entries found:", allResearch.length);
+} catch (error) {
+  console.error("Error fetching research:", error);
 }
 
-const allResearch = await getCollection("research");
+// Make sure we have valid research items
+const validResearch = allResearch.filter(research => 
+  research && research.data && research.data.title
+);
+console.log("Valid research after filtering:", validResearch.length);
 
 // Sort research by status (completed first, then in-progress, then coming-soon)
-const sortedResearch = allResearch.sort((a, b) => {
-  const statusOrder: Record<ResearchStatus, number> = { 
+const sortedResearch = [...validResearch].sort((a, b) => {
+  const statusOrder = { 
     completed: 0, 
     "in-progress": 1, 
     "coming-soon": 2 
   };
-  return statusOrder[a.data.status as ResearchStatus] - statusOrder[b.data.status as ResearchStatus];
+  
+  const statusA = a.data?.status || "completed";
+  const statusB = b.data?.status || "completed";
+  
+  const statusCompare = statusOrder[statusA] - statusOrder[statusB];
+  
+  // If same status, sort by date (newest first)
+  if (statusCompare === 0) {
+    const dateA = new Date(a.data?.date || 0).getTime();
+    const dateB = new Date(b.data?.date || 0).getTime();
+    return dateB - dateA;
+  }
+  
+  return statusCompare;
 });
 
+console.log("Research after sorting:", sortedResearch.length);
+
 // Status colors and text
-const statusConfig: Record<ResearchStatus, StatusConfig> = {
-  completed: {
-    color: "text-green-400",
-    text: "Completed",
-  },
-  "in-progress": {
-    color: "text-blue-400",
-    text: "In Progress",
-  },
-  "coming-soon": {
-    color: "text-yellow-400",
-    text: "Coming Soon",
-  },
+const statusColors = {
+  completed: "bg-green-500/10 text-green-400",
+  "in-progress": "bg-blue-500/10 text-blue-400",
+  "coming-soon": "bg-purple-500/10 text-purple-400",
+};
+
+const statusText = {
+  completed: "Completed",
+  "in-progress": "In Progress",
+  "coming-soon": "Coming Soon",
 };
 ---
 
 <Layout title="Research">
-  <div class="min-h-screen flex flex-col">
-    <div class="flex-grow">
-      <Navbar>
-        <div class="sm:px-20 px-6 py-2">
-          <h1 class="font-mono sm:text-4xl text-2xl tracking-wider mb-8">Research & Publications</h1>
-          
-          <div class="grid grid-cols-1 gap-8 mb-8">
-            {
-              sortedResearch.map((research) => (
-                <a href={`/research/${research.slug}`} class="group">
-                  <div class="grid md:grid-cols-2 gap-6 p-4 rounded-lg transition-colors duration-300 hover:bg-base-200">
-                    <div>
-                      <div class="flex items-center gap-4 mb-2">
-                        <h2 class="font-mono text-xl">{research.data.title}</h2>
-                        <span class={`text-sm font-mono ${statusConfig[research.data.status as ResearchStatus].color}`}>
-                          {statusConfig[research.data.status as ResearchStatus].text}
+  <Navbar>
+    <div class="sm:px-20 px-6 py-8">
+      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-4">
+        Research & Publications
+      </h1>
+      
+      <!-- Grid layout matching projects page -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
+        {sortedResearch.length > 0 ? (
+          sortedResearch.map((research) => {
+            try {
+              // Default values for missing data
+              const title = research.data?.title || "Untitled Research";
+              const description = research.data?.description || "No description available";
+              const status = research.data?.status || "completed";
+              const date = research.data?.date || new Date().toISOString();
+              const tags = Array.isArray(research.data?.tags) ? research.data.tags : [];
+              const github = research.data?.github || "";
+              const paper = research.data?.paper || "";
+              
+              // Use default color if status is not recognized
+              const statusColor = statusColors[status] || "bg-gray-500/10 text-gray-400";
+              const statusDisplay = statusText[status] || "Unknown";
+              
+              return (
+                <div class="relative z-10 block h-full bg-opacity-20 bg-black transform transition-all duration-300 hover:-translate-y-1">
+                  <a href={`/research/${research.slug}`} class="block">
+                    <div class="h-full min-h-[200px] p-6 rounded-xl bg-base-200/50 hover:bg-base-200 border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col">
+                      <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-xl font-bold text-white hover:text-primary/90 transition-colors">
+                          {title}
+                        </h2>
+                        <span
+                          class={`px-2 py-1 text-xs rounded-full ${statusColor}`}
+                        >
+                          {statusDisplay}
                         </span>
                       </div>
-
-                      <p class="text-base-content/60 mb-4 font-mono">
-                        {research.data.date}
+                      <p class="text-sm text-white/60 mb-4">
+                        {new Date(date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                        })}
                       </p>
-
-                      <p class="text-base-content/80 mb-4">
-                        {research.data.description}
+                      <p class="text-white/80 flex-grow">
+                        {description}
                       </p>
-
-                      <div class="flex flex-wrap gap-2 mb-4">
-                        {research.data.tags.map((tag: string) => (
-                          <span class="text-sm text-base-content/60 font-mono">{tag}</span>
+                      <div class="mt-4 flex flex-wrap gap-2">
+                        {tags.map((tag: unknown) => (
+                          <span class="text-sm px-3 py-1 rounded-lg bg-accent/20 text-white/90 border border-accent/30 hover:bg-accent/30 transition-colors duration-200">
+                            {tag}
+                          </span>
                         ))}
                       </div>
-
-                      <div class="flex gap-4">
-                        {research.data.github && (
-                          <a
-                            href={research.data.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="text-base-content/60 hover:text-base-content font-mono text-sm"
-                          >
-                            GitHub →
-                          </a>
-                        )}
-                        {research.data.paper && (
-                          <a
-                            href={research.data.paper}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="text-base-content/60 hover:text-base-content font-mono text-sm"
-                          >
-                            Live Demo →
-                          </a>
-                        )}
-                      </div>
+                      {(github || paper) && (
+                        <div class="mt-4 pt-4 border-t border-accent/20 flex gap-4">
+                          {github && (
+                            <a
+                              href={github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-sm text-white/80 hover:text-white transition-colors"
+                            >
+                              GitHub →
+                            </a>
+                          )}
+                          {paper && (
+                            <a
+                              href={paper}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-sm text-white/80 hover:text-white transition-colors"
+                            >
+                              Read Paper →
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </a>
-              ))
+                  </a>
+                </div>
+              );
+            } catch (error) {
+              console.error(`Error rendering research:`, error);
+              return (
+                <div class="bg-red-500/20 p-4 rounded-xl text-white">
+                  Error rendering research item
+                </div>
+              );
             }
+          })
+        ) : (
+          <div class="col-span-3 text-center py-8 bg-base-200/30 rounded-xl">
+            <p class="text-white/80">No research found. Check your content collection.</p>
           </div>
-        </div>
-      </Navbar>
+        )}
+      </div>
     </div>
-    <Footer />
-  </div>
+  </Navbar>
+  <Footer />
 </Layout>
-
-<style>
-  .drawer-content {
-    z-index: 0;
-    touch-action: auto !important;
-  }
-</style>
