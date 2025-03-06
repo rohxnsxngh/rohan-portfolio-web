@@ -14,7 +14,10 @@ import RS from "../../src/images/RS.jpg";
           <span class="block mt-2 text-primary/90">Rohan Singh</span>
         </h1>
         <p class="text-lg sm:text-xl text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0">
-          Software Engineer with a passion for building elegant solutions to complex problems.
+          Keep Building 
+          <span class="emoji text-primary">🏗️</span>
+          <span class="emoji text-primary">🛠️</span>
+          <span class="emoji text-primary">🚧</span>
         </p>
         <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <a href="/about" class="inline-flex items-center justify-center px-6 py-3 border border-primary/20 text-primary/90 hover:bg-primary/10 transition-colors duration-300 font-mono text-sm tracking-wider">
@@ -28,7 +31,7 @@ import RS from "../../src/images/RS.jpg";
           </a>
         </div>
       </div>
-
+      
       <!-- Image -->
       <div class="order-1 lg:order-2 flex justify-center lg:justify-end fade-in">
         <div class="relative group">
@@ -48,11 +51,11 @@ import RS from "../../src/images/RS.jpg";
   .slide-up {
     animation: slideUp 0.8s ease-out;
   }
-
+  
   .fade-in {
     animation: fadeIn 1s ease-in-out;
   }
-
+  
   @keyframes slideUp {
     from {
       opacity: 0;
@@ -63,13 +66,51 @@ import RS from "../../src/images/RS.jpg";
       transform: translateY(0);
     }
   }
-
+  
   @keyframes fadeIn {
     from {
       opacity: 0;
     }
     to {
       opacity: 1;
+    }
+  }
+  
+  /* Emoji ripple effect */
+  .emoji {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: bounceIn 1s forwards;
+  }
+  
+  .emoji:nth-child(1) {
+    animation-delay: 0s;
+  }
+  
+  .emoji:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .emoji:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-10px);
+    }
+    80% {
+      transform: translateY(5px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 </style>

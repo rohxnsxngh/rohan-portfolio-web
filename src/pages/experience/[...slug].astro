@@ -3,6 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../layouts/Navigation.astro';
 import Footer from '../../layouts/Footer.astro';
+import MarkdownContent from '../../components/MarkdownContent.astro';
 import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
@@ -62,9 +63,9 @@ const { Content } = await experience.render();
               </div>
             </header>
             
-            <div class="markdown-content">
+            <MarkdownContent>
               <Content />
-            </div>
+            </MarkdownContent>
 
             {experience.data.images && (
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">

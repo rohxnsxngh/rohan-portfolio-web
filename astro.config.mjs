@@ -15,4 +15,11 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: { enabled: true },
   }),
+  vite: {
+    resolve: {
+      alias: {
+        "@images": "/src/images",
+      },
+    },
+  },
 });
