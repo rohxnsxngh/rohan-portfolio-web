@@ -1,7 +1,10 @@
 ---
 import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../layouts/Navigation.astro";
+import Footer from "../../layouts/Footer.astro";
 import { Image } from "astro:assets";
+import MarkdownContent from '../../components/MarkdownContent.astro';
 
 export async function getStaticPaths() {
   const researchEntries = await getCollection("research");
@@ -42,108 +45,79 @@ const statusConfig: Record<ResearchStatus, StatusConfig> = {
 };
 ---
 
-<Layout title={entry.data.title}>
-  <div class="drawer drawer-end">
-    <input id="research-drawer" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content">
-      <div class="sm:px-20 px-6 py-2">
-        <article class="prose dark:prose-invert lg:prose-xl max-w-none">
-          <div class="mb-8">
-            <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-              <h1 class="m-0">{entry.data.title}</h1>
-              <span
-                class={`px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
-                  statusConfig[entry.data.status as ResearchStatus].color
-                }`}
-              >
-                {statusConfig[entry.data.status as ResearchStatus].text}
-              </span>
-            </div>
+<Layout title={`${entry.data.title} | Rohan Singh`}>
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="sm:px-20 px-6 py-8">
+          <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
+            <header class="mb-8">
+              <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                <h1 class="m-0">{entry.data.title}</h1>
+                <span
+                  class={`px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
+                    statusConfig[entry.data.status as ResearchStatus].color
+                  }`}
+                >
+                  {statusConfig[entry.data.status as ResearchStatus].text}
+                </span>
+              </div>
 
-            <div class="flex flex-wrap gap-2 mb-4">
-              {
-                entry.data.tags.map((tag: string) => (
-                  <span class="badge badge-outline">{tag}</span>
-                ))
-              }
-            </div>
+              <div class="flex flex-wrap gap-2 mt-4">
+                {
+                  entry.data.tags.map((tag: string) => (
+                    <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
+                      {tag}
+                    </span>
+                  ))
+                }
+              </div>
 
-            <div class="flex gap-4 mb-6">
-              {
-                entry.data.github && (
-                  <a
-                    href={entry.data.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-sm btn-outline gap-2"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="currentColor"
-                      class="bi bi-github"
-                      viewBox="0 0 16 16"
+              <div class="flex gap-4 mt-4">
+                {
+                  entry.data.github && (
+                    <a
+                      href={entry.data.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-primary/60 hover:text-primary transition-colors"
                     >
-                      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
-                    </svg>
-                    GitHub Repository
-                  </a>
-                )
-              }
-              {
-                entry.data.paper && (
-                  <a
-                    href={entry.data.paper}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-sm btn-outline gap-2"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-4 h-4"
+                      GitHub →
+                    </a>
+                  )
+                }
+                {
+                  entry.data.paper && (
+                    <a
+                      href={entry.data.paper}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-primary/60 hover:text-primary transition-colors"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                      />
-                    </svg>
-                    Research Paper
-                  </a>
-                )
-              }
-            </div>
+                      Research Paper →
+                    </a>
+                  )
+                }
+              </div>
+            </header>
 
-            <Image
-              src={entry.data.image}
-              alt={entry.data.title}
-              width={800}
-              height={400}
-              class="rounded-lg w-full object-cover mb-8"
-            />
-          </div>
+            {entry.data.image && (
+              <Image
+                src={entry.data.image}
+                alt={entry.data.title}
+                width={800}
+                height={400}
+                class="rounded-lg w-full object-cover mb-8"
+              />
+            )}
 
-          <Content />
-        </article>
-      </div>
+            <MarkdownContent>
+              <Content />
+            </MarkdownContent>
+          </article>
+        </div>
+      </Navbar>
     </div>
+    <Footer />
   </div>
 </Layout>
-
-<style is:global>
-  .prose img {
-    @apply rounded-lg;
-    @apply my-8;
-    @apply mx-auto;
-  }
-
-  .drawer-content {
-    z-index: 0;
-    touch-action: auto !important;
-  }
-</style> 

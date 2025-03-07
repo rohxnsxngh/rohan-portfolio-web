@@ -244,30 +244,9 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "research": {
-"autonomous-robotics.md": {
-	id: "autonomous-robotics.md";
-  slug: "autonomous-robotics";
-  body: string;
-  collection: "research";
-  data: InferEntrySchema<"research">
-} & { render(): Render[".md"] };
-"neuromorphic-computing.md": {
-	id: "neuromorphic-computing.md";
-  slug: "neuromorphic-computing";
-  body: string;
-  collection: "research";
-  data: InferEntrySchema<"research">
-} & { render(): Render[".md"] };
-"quantum-computing.md": {
-	id: "quantum-computing.md";
-  slug: "quantum-computing";
-  body: string;
-  collection: "research";
-  data: InferEntrySchema<"research">
-} & { render(): Render[".md"] };
-"swarm-intelligence.md": {
-	id: "swarm-intelligence.md";
-  slug: "swarm-intelligence";
+"echocardiagram-ml.md": {
+	id: "echocardiagram-ml.md";
+  slug: "echocardiagram-ml";
   body: string;
   collection: "research";
   data: InferEntrySchema<"research">

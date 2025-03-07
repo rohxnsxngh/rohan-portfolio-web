@@ -2,8 +2,8 @@
 title: "Computer-Aided Design Engineering Intern"
 company: "NVIDIA"
 description: "Developed C++ automation scripts for CAD software, implemented GD&T standards, and created detailed 3D models of equipment and data center layouts while mastering CAD tools like Creo, Windchill, SolidWorks, and Fusion 360."
-date: "2021-05-01"
-endDate: "2021-08-01"
+date: "2021-05"
+endDate: "2021-08"
 location: "Santa Clara, CA"
 tags: ["C++", "CAD", "GD&T", "DFM", "Creo", "Windchill", "SolidWorks", "Fusion 360", "3D Modeling"]
 ---

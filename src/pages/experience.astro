@@ -18,17 +18,33 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     <div class="flex-grow">
       <Navbar>
         <div class="sm:px-20 px-6 py-2">
-          <h1 class="font-mono sm:text-4xl text-2xl tracking-wider mb-8">Experience</h1>
-          
+          <h1 class="font-mono sm:text-4xl text-2xl tracking-wider mb-8">
+            Experience
+          </h1>
+
           <div class="">
             {
               sortedExperiences.map((experience) => (
                 <a href={`/experience/${experience.slug}`} class="block">
-                  <div class="grid gap-6 p-4 rounded-lg transition-colors duration-300 hover:bg-base-200">
+                  <div class="grid gap-6 p-4 rounded-xl bg-base-200/50 transition-colors duration-300 hover:bg-base-200 my-4">
                     <div>
                       <div class="flex items-center gap-4 mb-2">
-                        <h2 class="font-mono text-xl">{experience.data.title}</h2>
-                        <span class="text-sm font-mono px-3 py-1 rounded-lg bg-primary/10 text-primary/80 border border-primary/20">
+                        <h2 class="font-mono text-xl">
+                          {experience.data.title}
+                        </h2>
+                        <span
+                          class={`text-sm font-mono px-3 py-1 rounded-lg bg-primary/10 text-primary/80 border ${
+                            experience.data.company
+                              .toLowerCase()
+                              .startsWith("t")
+                              ? "border-red-300/50 shadow-sm shadow-red-200/40"
+                              : experience.data.company
+                                    .toLowerCase()
+                                    .startsWith("n")
+                                ? "border-green-300/50 shadow-sm shadow-green-200/40"
+                                : "border-primary/20"
+                          }`}
+                        >
                           {experience.data.company}
                         </span>
                       </div>
@@ -43,7 +59,9 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
                       <div class="flex flex-wrap gap-2 mb-4">
                         {experience.data.tags.map((tag: string) => (
-                          <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">{tag}</span>
+                          <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">
+                            {tag}
+                          </span>
                         ))}
                       </div>
                     </div>

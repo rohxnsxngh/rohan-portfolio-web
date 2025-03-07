@@ -1,18 +1,11 @@
 ---
 title: "Software Systems Engineer"
-company: "Toyota Motors"
+company: "Toyota Motors North America"
 description: "As a Software Systems Engineer within Toyota Motors' esteemed rotational program, I've explored diverse facets of software development, focusing on robotics and reinforcement learning. Through engaging rotations, I've actively contributed to projects at the forefront of automotive innovation."
-date: "2023-08-01"
-endDate: "2024-10-01"
+date: "2023-08"
+endDate: "2024-10"
 location: "Plano, TX"
 tags: ["Robotics", "Reinforcement Learning", "Autonomous Systems", "Data Analytics", "Machine Learning"]
-# images:
-#   - src: "/images/experience/toyota/ToyotaHeadquarters.jpg"
-#     alt: "Toyota Headquarters"
-#   - src: "/images/experience/toyota/LexusConceptCar.jpg"
-#     alt: "Lexus Concept Car"
-#   - src: "/images/experience/toyota/ToyotaConceptCar.jpg"
-#     alt: "Toyota Concept Car"
 ---
 
 
