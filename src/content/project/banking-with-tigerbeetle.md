@@ -7,9 +7,9 @@ description: "Exploring the cutting-edge technologies revolutionizing core banki
 tags: ["core banking", "fintech", "AI", "knowledge graphs", "Tigerbeetle", "KYC", "graph databases"]
 ---
 
-# Core Banking Reimagined: The Technology Behind the Transformation
-
 In today’s fast-evolving financial landscape, the need for a robust, scalable, and secure banking system has never been greater. Traditional banking infrastructures often struggle to keep up with the growing demands of speed, personalization, and security. To address these challenges, several innovative technologies are emerging, reshaping the way core banking systems operate. This article explores the role of modern technologies such as Tigerbeetle, knowledge graphs, AI-driven insights, and KYC services in transforming the banking sector, providing faster, more secure, and data-driven financial solutions.
+
+![Tigerbeetle Logo](@images/project/BankTigerbeetle.jpg)  
 
 ## Key Innovations in Core Banking Systems
 
@@ -73,3 +73,16 @@ These innovations enable banks to stay ahead of the competition, offering custom
 
 By embracing these technologies, banks can not only meet the demands of today’s digital-first world but also pave the way for a more efficient, transparent, and customer-focused future in banking.
 
+## Implementing Tigerbeetle for High-Speed Transactions
+
+One of the most impressive aspects of my work at a Norwegian Banking firm was integrating Tigerbeetle into their transaction processing system. Traditional banking platforms often struggle with scalability and real-time consistency, but Tigerbeetle's architecture allowed us to build a high-performance transaction engine that could handle millions of transactions per second. The low-latency, distributed nature of Tigerbeetle made it an ideal choice for ensuring transaction accuracy and reliability, which are critical for a financial institution operating at scale.
+
+![Bank Dashboard](@images/project/BankDashboard.jpg)  
+
+![Bank Monitoring](@images/project/BankMonitoring.jpg)  
+
+![Bank Credit](@images/project/BankCredit.jpg)
+
+![Bank Transactions](@images/project/BankTransactions.jpg)
+
+The implementations of this technology are endless. Since transactions are everywhere, tigerbeetle has endless use cases.

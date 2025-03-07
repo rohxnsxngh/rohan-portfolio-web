@@ -200,6 +200,13 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "project": {
+"3d-scaffolding-tool.md": {
+	id: "3d-scaffolding-tool.md";
+  slug: "3d-scaffolding-tool";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
 "banking-with-tigerbeetle.md": {
 	id: "banking-with-tigerbeetle.md";
   slug: "banking-with-tigerbeetle";
@@ -224,13 +231,6 @@ declare module 'astro:content' {
 "lidar-maze-robot.md": {
 	id: "lidar-maze-robot.md";
   slug: "lidar-maze-robot";
-  body: string;
-  collection: "project";
-  data: InferEntrySchema<"project">
-} & { render(): Render[".md"] };
-"quantum-ml-framework.md": {
-	id: "quantum-ml-framework.md";
-  slug: "quantum-ml-framework";
   body: string;
   collection: "project";
   data: InferEntrySchema<"project">
