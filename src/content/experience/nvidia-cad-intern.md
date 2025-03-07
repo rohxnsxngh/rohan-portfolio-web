@@ -1,42 +1,43 @@
 ---
-title: "Computer Aided Design Engineering Intern"
+title: "Computer-Aided Design Engineering Intern"
 company: "NVIDIA"
-description: "Developed C++ automation scripts for CAD software, implemented GD&T standards, and created detailed 3D models of equipment and data center layouts while mastering various CAD tools including Creo, Windchill, SolidWorks, and Fusion 360."
+description: "Developed C++ automation scripts for CAD software, implemented GD&T standards, and created detailed 3D models of equipment and data center layouts while mastering CAD tools like Creo, Windchill, SolidWorks, and Fusion 360."
 date: "2021-05-01"
 endDate: "2021-08-01"
 location: "Santa Clara, CA"
 tags: ["C++", "CAD", "GD&T", "DFM", "Creo", "Windchill", "SolidWorks", "Fusion 360", "3D Modeling"]
-images:
-  - src: "/images/experience/nvidia/NvidiaLogo.png"
-    alt: "Nvidia Logo"
-  - src: "/images/experience/nvidia/NvidiaCAD.png"
-    alt: "Nvidia CAD Image"
 ---
 
-## My Adventure at NVIDIA: A Summer as a CAD Engineering Intern
+## Kicking Off My Engineering Journey: CAD Internship at NVIDIA  
 
-I had the amazing opportunity to intern at NVIDIA as a Computer-Aided Design (CAD) Engineering Intern. It was the perfect mix of tackling technical challenges and having fun, making the whole experience unforgettable.
+My internship at NVIDIA was my first real-world engineering experience after working as a SolidWorks TA, where I taught CAD fundamentals and design principles. While teaching gave me a strong foundation, stepping into NVIDIA's fast-paced environment took my skills to a whole new level.  
 
-## Automating Tasks with C++ Scripts
+![NVIDIA Logo](@images/experience/nvidia/NvidiaLogo.png)  
 
-One of the first projects I jumped into was creating and implementing C++ scripts to automate tasks in our CAD software. It was like having a magic wand to handle all the repetitive, boring stuff. These scripts boosted our efficiency and productivity by about 15%, giving us more time for the cool, detailed design work. Plus, it was my first time implementing CAD scripting and using C++ in a real-world setting, and it was super exciting.
+## Automating CAD Workflows with C++  
 
-## Cracking the Code of GD&T
+One of my key projects involved developing C++ scripts to automate repetitive tasks in our CAD software. This significantly boosted efficiency, reducing manual work by about 15% and allowing engineers to focus on higher-value design tasks. It was my first time applying C++ in a real-world setting, and seeing my code streamline processes was both exciting and rewarding.  
 
-Next, I dived into the world of Geometric Dimensioning and Tolerancing (GD&T). It might sound like a mouthful, but it's all about making sure every little detail in our CAD models is spot-on. I quickly became the go-to person for ensuring our designs were precise and met all the necessary standards. It was like solving a puzzle, ensuring everything fit together perfectly.
+## Mastering GD&T and Precision Engineering  
 
-## Design for Manufacturability (DFM) Magic
+I also gained hands-on experience with Geometric Dimensioning and Tolerancing (GD&T), ensuring that every design met precise manufacturing standards. This was a major shift from my prior academic projects, where tolerances were often an afterthought. At NVIDIA, precision was everything—every component had to be manufacturable at scale, and I became the go-to person for verifying compliance with GD&T standards.  
 
-Incorporating Design for Manufacturability (DFM) principles into our projects was another fascinating aspect of my role. Think of it as designing with a sprinkle of practicality – making sure our creations were not only awesome but also easy and cost-effective to manufacture. It was a bit like playing a strategic game, balancing creativity with real-world constraints.
+## Designing with Manufacturability in Mind  
 
-## Crafting Detailed 3D Models
+Applying Design for Manufacturability (DFM) principles was another major learning experience. I learned to think beyond just creating a perfect CAD model—each design needed to be optimized for cost-effective and scalable production. This aspect of the internship challenged me to balance creativity with real-world constraints, reinforcing the importance of practical engineering design.  
 
-One of my favorite tasks was creating detailed 3D models of equipment and data center layouts. It was like being an architect in a digital world, ensuring every model was precise and aligned with project specifications. This work required attention to detail and a deep understanding of spatial relationships to create accurate representations of complex systems.
+![NVIDIA CAD](@images/experience/nvidia/NvidiaCAD.png)  
 
-## Mastering CAD Software
+## 3D Modeling and Large-Scale Layouts  
 
-Throughout my internship, I became very familiar with CAD software and practices, mastering tools like Creo, Windchill, SolidWorks, and Fusion 360. Each software had its quirks and superpowers, and getting the hang of them was both challenging and exhilarating. It felt like having a toolbox full of gadgets, each perfect for different design adventures.
+A big part of my role involved creating detailed 3D models of equipment and data center layouts. Transitioning from modeling individual parts to designing large-scale systems was eye-opening. It required meticulous attention to detail and a strong understanding of spatial organization to ensure everything fit together seamlessly.  
 
-## Wrapping Up the Adventure
+## Expanding My CAD Toolkit  
 
-Looking back, my internship at NVIDIA was an incredible journey. From automating tasks and perfecting designs to mastering cutting-edge software, I learned so much and had a blast doing it. This experience not only sharpened my skills but also fueled my passion for engineering design. The combination of technical challenges, creative problem-solving, and hands-on experience with industry-standard tools made this internship an invaluable stepping stone in my career development. 
+During this internship, I worked extensively with multiple CAD tools, including Creo, Windchill, SolidWorks, and Fusion 360. While I was already proficient in SolidWorks from my TA experience, mastering new platforms broadened my skill set and deepened my understanding of industry-standard design workflows.  
+
+## Wrapping Up: A Defining First Internship  
+
+Looking back, my time at NVIDIA was an invaluable first step into the engineering world. It bridged the gap between the theoretical knowledge I had as a TA and the practical skills required in a high-tech industry. This experience not only sharpened my technical abilities but also solidified my passion for engineering design, automation, and problem-solving.  
+
+It was the perfect start to my journey—one that would later lead me to robotics, AI, and deeper explorations into intelligent systems.  
