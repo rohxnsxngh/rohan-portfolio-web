@@ -1,8 +1,9 @@
 ---
-import { getCollection, getEntryBySlug } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../layouts/Navigation.astro';
 import Footer from '../../layouts/Footer.astro';
+import MarkdownContent from '../../components/MarkdownContent.astro';
 
 export async function getStaticPaths() {
   const projects = await getCollection('project');
@@ -12,7 +13,14 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const project = await getEntryBySlug('project', slug);
+const project = await getEntry('project', slug);
+console.log(project);
+
+// Add error handling for when project doesn't exist
+if (!project) {
+  return new Response('Project not found', { status: 404 });
+}
+
 const { Content } = await project.render();
 
 const statusColors = {
@@ -29,104 +37,71 @@ const statusText = {
 ---
 
 <Layout title={`${project.data.title} | Rohan Singh`}>
-  <Navbar>
-    <div class="sm:px-20 px-6 py-8">
-      <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
-        <header class="mb-8">
-          <div class="flex items-center justify-between mb-4">
-            <h1 class="text-4xl font-bold m-0">{project.data.title}</h1>
-            <span class={`px-3 py-1 text-sm rounded-full ${statusColors[project.data.status]}`}>
-              {statusText[project.data.status]}
-            </span>
-          </div>
-          <div class="flex items-center gap-4 text-primary/60">
-            <time datetime={project.data.date}>
-              {new Date(project.data.date).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long'
-              })}
-            </time>
-            {(project.data.github || project.data.demo) && (
-              <div class="flex gap-4">
-                {project.data.github && (
-                  <a href={project.data.github} target="_blank" rel="noopener noreferrer" 
-                     class="text-primary/60 hover:text-primary transition-colors">
-                    GitHub →
-                  </a>
-                )}
-                {project.data.demo && (
-                  <a href={project.data.demo} target="_blank" rel="noopener noreferrer"
-                     class="text-primary/60 hover:text-primary transition-colors">
-                    Live Demo →
-                  </a>
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="sm:px-20 px-6 py-8">
+          <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
+            <header class="mb-8">
+              <div class="flex items-center justify-between mb-4">
+                <h1 class="text-4xl font-bold m-0">{project.data.title}</h1>
+                <span class={`px-3 py-1 text-sm rounded-full ${statusColors[project.data.status]}`}>
+                  {statusText[project.data.status]}
+                </span>
+              </div>
+              <div class="flex items-center gap-4 text-primary/60">
+                <time datetime={project.data.date}>
+                  {new Date(project.data.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                  })}
+                </time>
+                {(project.data.github || project.data.demo) && (
+                  <div class="flex gap-4">
+                    {project.data.github && (
+                      <a href={project.data.github} target="_blank" rel="noopener noreferrer"
+                          class="text-primary/60 hover:text-primary transition-colors">
+                        GitHub →
+                      </a>
+                    )}
+                    {project.data.demo && (
+                      <a href={project.data.demo} target="_blank" rel="noopener noreferrer"
+                         class="text-primary/60 hover:text-primary transition-colors">
+                        Live Demo →
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
+              <div class="flex flex-wrap gap-2 mt-4">
+                {project.data.tags.map((tag: string) => (
+                  <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </header>
+            
+            <MarkdownContent>
+              <Content />
+            </MarkdownContent>
+            {/* @ts-ignore */}
+            {project.data.images && (
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                {/* @ts-ignore */}
+                {project.data.images.map((image: { src: string; alt: string }) => (
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    class="w-full rounded-lg border border-primary/20"
+                  />
+                ))}
+              </div>
             )}
-          </div>
-          <div class="flex flex-wrap gap-2 mt-4">
-            {project.data.tags.map((tag: string) => (
-              <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
-                {tag}
-              </span>
-            ))}
-          </div>
-        </header>
-        
-        <div class="markdown-content">
-          <Content />
+          </article>
         </div>
-      </article>
+      </Navbar>
     </div>
-  </Navbar>
-  <Footer />
+    <Footer />
+  </div>
 </Layout>
-
-<style>
-  .markdown-content {
-    @apply text-primary/90;
-  }
-  
-  .markdown-content :global(h1) {
-    @apply text-3xl font-bold mb-6 mt-8;
-  }
-  
-  .markdown-content :global(h2) {
-    @apply text-2xl font-semibold mb-4 mt-6;
-  }
-  
-  .markdown-content :global(h3) {
-    @apply text-xl font-medium mb-3 mt-5;
-  }
-  
-  .markdown-content :global(p) {
-    @apply mb-4 leading-relaxed;
-  }
-  
-  .markdown-content :global(ul) {
-    @apply list-disc list-inside mb-4 ml-4;
-  }
-  
-  .markdown-content :global(ol) {
-    @apply list-decimal list-inside mb-4 ml-4;
-  }
-  
-  .markdown-content :global(li) {
-    @apply mb-2;
-  }
-  
-  .markdown-content :global(a) {
-    @apply text-blue-500 hover:text-blue-600 underline;
-  }
-  
-  .markdown-content :global(blockquote) {
-    @apply border-l-4 border-accent/20 pl-4 italic my-4;
-  }
-  
-  .markdown-content :global(code) {
-    @apply bg-accent/10 rounded px-1 py-0.5;
-  }
-  
-  .markdown-content :global(pre) {
-    @apply bg-accent/10 rounded p-4 mb-4 overflow-x-auto;
-  }
-</style> 

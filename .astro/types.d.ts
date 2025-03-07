@@ -200,23 +200,9 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "project": {
-"ai-powered-code-review.md": {
-	id: "ai-powered-code-review.md";
-  slug: "ai-powered-code-review";
-  body: string;
-  collection: "project";
-  data: InferEntrySchema<"project">
-} & { render(): Render[".md"] };
-"ar-surgical-assistant.md": {
-	id: "ar-surgical-assistant.md";
-  slug: "ar-surgical-assistant";
-  body: string;
-  collection: "project";
-  data: InferEntrySchema<"project">
-} & { render(): Render[".md"] };
-"autonomous-drone-navigation.md": {
-	id: "autonomous-drone-navigation.md";
-  slug: "autonomous-drone-navigation";
+"banking-with-tigerbeetle.md": {
+	id: "banking-with-tigerbeetle.md";
+  slug: "banking-with-tigerbeetle";
   body: string;
   collection: "project";
   data: InferEntrySchema<"project">

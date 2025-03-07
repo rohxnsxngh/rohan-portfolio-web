@@ -4,7 +4,6 @@ import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../layouts/Navigation.astro';
 import Footer from '../../layouts/Footer.astro';
 import MarkdownContent from '../../components/MarkdownContent.astro';
-import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const experiences = await getCollection('experience');

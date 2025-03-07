@@ -1,7 +1,7 @@
 ---
-title: "Quantum Machine Learning Framework"
+title: "3D Platform for Scaffolding"
 date: "2024-04-01"
-status: "coming-soon"
+status: "completed"
 image: "/images/projects/quantum-ml.jpg"
 description: "A next-generation framework for implementing machine learning algorithms on quantum computers, focusing on optimization and cryptography applications."
 tags: ["quantum computing", "machine learning", "Python", "research"]
