@@ -9,81 +9,48 @@ github: "https://github.com/rohan/baseball-analytics"
 demo: "https://baseball-analytics.demo.com"
 ---
 
-# Baseball Analytics Platform: Machine Learning in Baseball
+In the world of baseball, data has always played a critical role in shaping strategies, evaluating players, and even predicting game outcomes. Our **Baseball Analytics Platform** was built with this in mind, blending machine learning, real-time analytics, and visualization tools to bring deeper insights into the sport. Developed as part of **Texas A&M’s MEEN 423 course**, this project wasn’t just about crunching numbers—it was about understanding the nuances of the game through data-driven analysis.
 
-A sophisticated analytics platform that combines advanced statistics, machine learning, and data visualization to provide insights into baseball performance and strategy, with a specific focus on analyzing and predicting umpire calls.
+#### **The Core Idea: Predicting Umpire Calls with ML**  
 
-## Project Overview
+One of the primary focuses of this platform was predicting **umpire calls** using advanced machine learning techniques. Umpire decisions can significantly impact a game, and by analyzing historical data, pitch trajectories, and situational factors, our models were able to anticipate calls with remarkable accuracy. This gave teams and analysts a clearer understanding of decision-making patterns and potential biases, ultimately providing a **competitive edge** in strategizing for games. 
 
-Our team developed this platform at Texas A&M's MEEN 423 course, combining our passion for baseball with machine learning capabilities. The primary focus was on analyzing and predicting baseball umpire calls using advanced machine learning techniques.
+![Machine Learning Baseball Overview](@images/project/MachineLearningBaseball.png)
 
-![Machine Learning Baseball Overview](/images/project/MachineLearningBaseball.png)
+#### **How It Works: The Technology Behind the Platform**  
 
-## Core Features
+The platform integrates **real-time game data**, **historical player statistics**, and **environmental factors** to create an **intelligent analytics engine**. We used Python for data processing, PostgreSQL for managing extensive datasets, and TensorFlow to train machine learning models capable of recognizing trends and predicting outcomes.  
 
-### Data Analysis & Machine Learning
-- Player performance analysis
-- Game outcome prediction
-- Statistical modeling
-- Real-time data processing
-- Interactive visualizations
-- Team strategy optimization
+![Machine Learning Analysis 1](@images/project/MachineLearningBaseball1.png)
 
-![Machine Learning Analysis 1](/images/project/MachineLearningBaseball1.png)
+Our models, including **RandomForestClassifier** and specialized pitch prediction algorithms, were fine-tuned using **cross-validation techniques and hyperparameter optimization**. These models didn’t just predict plays—they provided **decision boundary visualizations** and **feature importance analysis**, helping users understand **why** certain plays were more likely to occur.  
 
-![Machine Learning Analysis 2](/images/project/MachineLearningBaseball2.png)
+![Machine Learning Analysis 2](@images/project/MachineLearningBaseball2.png)
 
-## Technical Implementation
+Additionally, **D3.js-powered interactive visualizations** made complex data insights more accessible, allowing users to explore **team strategies, player performance, and in-game trends** dynamically.  
 
-### Data Collection & Processing
-- Real-time game data integration
-- Historical statistics database
-- Player tracking metrics
-- Weather condition analysis
-- Stadium-specific factors
-- Team performance indicators
+#### **Real-World Results: Accuracy & Strategic Insights**  
 
-### Machine Learning Models
-- RandomForestClassifier implementation
-- Pitch prediction algorithms
-- Decision boundary visualization
-- Cross-validation techniques
-- Hyperparameter optimization
-- Feature importance analysis
+The machine learning models delivered impressive results:  
+- **85% accuracy** in predicting game outcomes.  
+- **30% improvement** in team strategy optimization.  
+- Analysis of **1,000+ games** in real-time.  
+- Enhanced **player performance tracking** and **scouting capabilities**.  
 
-![Baseball Data Mapping](/images/project/MachineLearningBaseballMapping.png)
+![Baseball Data Mapping](@images/project/MachineLearningBaseballMapping.png)
 
-## Results & Validation
+Beyond predictions, the platform helped **optimize team strategies**, identifying key opportunities for **lineup adjustments, defensive formations, and offensive tactics**. Coaches and analysts could use these insights to **make more informed decisions**, ensuring their team stayed ahead of the competition.
 
-Our machine learning models have shown impressive results in predicting umpire decisions and analyzing game patterns:
+![Analysis Results - Eric](@images/project/MachineLearningEric.png)
 
-![Analysis Results - Eric](/images/project/MachineLearningEric.png)
+![Analysis Results - Malachi](@images/project/MachineLearningMalachi.png)
 
-![Analysis Results - Malachi](/images/project/MachineLearningMalachi.png)
+#### **Looking Ahead: The Future of Baseball Analytics**  
 
-## Impact & Results
+While the current platform already offers **valuable insights**, there's plenty of room for growth. Future iterations will focus on **advanced player tracking**, **real-time strategy recommendations**, and even **mobile app development** for broader accessibility. Additionally, we envision integrating **international league data**, allowing for cross-league comparisons and a **global perspective** on baseball analytics.  
 
-- 85% accuracy in game predictions
-- 30% improvement in team strategy optimization
-- Real-time analysis of 1000+ games
-- Comprehensive player performance tracking
-- Data-driven decision support
-- Enhanced scouting capabilities
+#### **Final Thoughts**  
 
-## Technologies Used
+This project was more than just an academic exercise—it was a real-world application of machine learning in sports, blending technical innovation with the excitement of the game. Whether for **coaches, analysts, or baseball enthusiasts**, the Baseball Analytics Platform provides a **data-driven approach** to understanding and enhancing the sport we love.  
 
-- Python for data analysis
-- TensorFlow for ML models
-- PostgreSQL for data storage
-- D3.js for visualizations
-- Flask for API development
-- AWS for cloud infrastructure
-
-## Future Development
-
-- Advanced player tracking
-- Enhanced prediction models
-- Real-time strategy suggestions
-- Mobile app development
-- Team collaboration features
-- International league integration 
+Check out the **[GitHub repository](https://github.com/rohan/baseball-analytics)** for the code and technical details, or explore the **[live demo](https://baseball-analytics.demo.com)** to see it in action!

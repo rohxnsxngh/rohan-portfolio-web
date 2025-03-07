@@ -221,9 +221,9 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
-"graphics-engine.md": {
-	id: "graphics-engine.md";
-  slug: "graphics-engine";
+"forge-engine.md": {
+	id: "forge-engine.md";
+  slug: "forge-engine";
   body: string;
   collection: "project";
   data: InferEntrySchema<"project">
