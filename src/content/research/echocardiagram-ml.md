@@ -2,7 +2,7 @@
 title: "Advancing Echocardiography Segmentation with Machine Learning"
 date: "2023-12-15"
 status: "completed"
-image: "/images/research/EchocardiographyML.jpg"
+image: "images/project/ResearchUNET.jpg"
 description: "A deep learning approach to echocardiography segmentation, focusing on cardiac structure identification, 3D reconstruction, and clinical impact."
 tags: ["machine learning", "medical imaging", "deep learning", "echocardiography", "biomedical engineering"]
 ---
@@ -10,6 +10,8 @@ tags: ["machine learning", "medical imaging", "deep learning", "echocardiography
 # Machine Learning Research: Advancing Echocardiography Segmentation
 
 Under the mentorship of Dr. Iman Borazjani, our research focuses on applying state-of-the-art deep learning techniques to echocardiography segmentation. The goal is to enhance the identification of critical cardiac structures, such as the mitral and aortic valves, left atrium, and left ventricle walls, ultimately improving diagnostic accuracy and efficiency in cardiac imaging.
+
+![Research UNet Structure](@images/project/ResearchUNET.jpg)  
 
 ## Research Overview
 
@@ -30,6 +32,8 @@ We implemented and fine-tuned a U-Net architecture optimized for echocardiograph
 - **Skip Connections**: Prevents information loss during downsampling, preserving spatial details essential for accurate segmentation.
 - **Loss Functions**: A combination of Dice loss and focal loss enhances model robustness against class imbalance, improving segmentation performance on smaller structures.
 - **Transfer Learning**: Pretraining on large medical imaging datasets (e.g., CAMUS dataset) before fine-tuning on echocardiography data significantly boosts accuracy (Leclerc et al., 2019).
+
+![Research Custom Strats](@images/project/ResearchCustomStrats.jpg)  
 
 ### **3D Reconstruction of the Heart**
 To extend beyond 2D segmentation, we are developing methods for 3D cardiac model reconstruction:

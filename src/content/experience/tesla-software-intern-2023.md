@@ -47,3 +47,5 @@ I took part in groundbreaking trials to harness Ericsson's 5G network for monito
 ## Looking Back on my Internship at Tesla
 
 My internship at Tesla was a game-changer. I got to work on projects right at the edge of innovation, from shaking up Revit model extraction to diving into trials with 5G tech. I learned heaps and gained skills that'll definitely shape my future in tech and engineering. Being part of a team with top-notch experts and tackling real-world problems fueled my passion for innovation. It's inspired me to keep pushing boundaries and driving forward in the quest for technological progress. 
+
+---

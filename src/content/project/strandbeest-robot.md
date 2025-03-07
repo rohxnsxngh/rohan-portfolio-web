@@ -56,3 +56,5 @@ While the prototype performed exceptionally well, several improvements are plann
 - **Improved control algorithms** to optimize energy efficiency and motion planning  
 
 This project serves as a foundation for further exploration into **bio-inspired locomotion, robotics control, and material optimization**. The Strandbeest Walking Robot is more than just an engineering challenge—it’s a step toward more **versatile, nature-inspired robotic systems** capable of navigating complex environments with ease. 🚀
+
+---

@@ -32,3 +32,4 @@ During my time with the Data Analytics and Machine Learning team, I developed pr
 
 This experience at Toyota has strengthened my expertise in robotics and AI while deepening my passion for innovation in autonomous systems. The exposure to real-world challenges reinforced my commitment to pushing the boundaries of intelligent mobility. As I continue my journey in AI and robotics, I am excited to apply these learnings to future projects at the intersection of technology and transportation.
 
+---

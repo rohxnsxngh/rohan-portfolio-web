@@ -41,3 +41,5 @@ During this internship, I worked extensively with multiple CAD tools, including 
 Looking back, my time at NVIDIA was an invaluable first step into the engineering world. It bridged the gap between the theoretical knowledge I had as a TA and the practical skills required in a high-tech industry. This experience not only sharpened my technical abilities but also solidified my passion for engineering design, automation, and problem-solving.  
 
 It was the perfect start to my journey—one that would later lead me to robotics, AI, and deeper explorations into intelligent systems.  
+
+---

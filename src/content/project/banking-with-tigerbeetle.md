@@ -1,5 +1,5 @@
 ---
-title: "Core Banking Reimagined: The Technology Behind the Transformation"
+title: "Core Banking Reimagined: Tigerbeetle Database"
 date: "2024-05-01"
 status: "completed"
 image: "/images/projects/core-banking.jpg"

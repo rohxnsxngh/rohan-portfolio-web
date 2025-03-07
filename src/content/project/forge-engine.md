@@ -4,7 +4,7 @@ date: "2024-01-01"
 status: "completed"
 image: "/images/project/HansAubsHome.png"
 description: "A ThreeJS sanbox designed to experiment with shaders, audio visualizations, geometries, and proceddural generation in the browser"
-tags: ["graphics", "C++", "OpenGL", "CUDA", "physics simulation"]
+tags: ["graphics", "C++", "OpenGL", "WebGL", "physics simulation"]
 github: "https://github.com/rohan/graphics-engine"
 demo: "https://graphics-engine.demo.com"
 ---
@@ -41,3 +41,4 @@ To enhance usability, The Forge includes a suite of development tools, such as a
 
 Looking forward, future updates aim to incorporate WebGPU advancements, real-time ray tracing experiments, and AI-driven procedural content generation. Further explorations may include VR/AR compatibility and cloud-based rendering techniques. The Forge remains an evolving playground, fostering innovation in web-based graphics and interactive visual experiences.
 
+---

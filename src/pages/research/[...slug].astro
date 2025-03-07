@@ -1,25 +1,20 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../layouts/Navigation.astro";
 import Footer from "../../layouts/Footer.astro";
-import { Image } from "astro:assets";
-import MarkdownContent from '../../components/MarkdownContent.astro';
+import MarkdownContent from "../../components/MarkdownContent.astro";
 
 export async function getStaticPaths() {
   const researchEntries = await getCollection("research");
-  return researchEntries.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
+  return researchEntries.map((research) => ({
+    params: { slug: research.slug },
   }));
 }
 
-interface Props {
-  entry: CollectionEntry<"research">;
-}
-
-const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { slug } = Astro.params;
+const research = await getEntry("research", slug);
+const { Content } = await research.render();
 
 type ResearchStatus = "completed" | "in-progress" | "coming-soon";
 
@@ -45,7 +40,7 @@ const statusConfig: Record<ResearchStatus, StatusConfig> = {
 };
 ---
 
-<Layout title={`${entry.data.title} | Rohan Singh`}>
+<Layout title={`${research.data.title} | Rohan Singh`}>
   <div class="min-h-screen flex flex-col">
     <div class="flex-grow">
       <Navbar>
@@ -53,19 +48,19 @@ const statusConfig: Record<ResearchStatus, StatusConfig> = {
           <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
             <header class="mb-8">
               <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 class="m-0">{entry.data.title}</h1>
+                <h1 class="m-0">{research.data.title}</h1>
                 <span
                   class={`px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
-                    statusConfig[entry.data.status as ResearchStatus].color
+                    statusConfig[research.data.status as ResearchStatus].color
                   }`}
                 >
-                  {statusConfig[entry.data.status as ResearchStatus].text}
+                  {statusConfig[research.data.status as ResearchStatus].text}
                 </span>
               </div>
 
               <div class="flex flex-wrap gap-2 mt-4">
                 {
-                  entry.data.tags.map((tag: string) => (
+                  research.data.tags.map((tag: string) => (
                     <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
                       {tag}
                     </span>
@@ -75,9 +70,9 @@ const statusConfig: Record<ResearchStatus, StatusConfig> = {
 
               <div class="flex gap-4 mt-4">
                 {
-                  entry.data.github && (
+                  research.data.github && (
                     <a
-                      href={entry.data.github}
+                      href={research.data.github}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="text-primary/60 hover:text-primary transition-colors"
@@ -87,9 +82,9 @@ const statusConfig: Record<ResearchStatus, StatusConfig> = {
                   )
                 }
                 {
-                  entry.data.paper && (
+                  research.data.paper && (
                     <a
-                      href={entry.data.paper}
+                      href={research.data.paper}
                       target="_blank"
                       rel="noopener noreferrer"
                       class="text-primary/60 hover:text-primary transition-colors"
@@ -100,15 +95,18 @@ const statusConfig: Record<ResearchStatus, StatusConfig> = {
                 }
               </div>
             </header>
-
-            {entry.data.image && (
-              <Image
-                src={entry.data.image}
-                alt={entry.data.title}
-                width={800}
-                height={400}
-                class="rounded-lg w-full object-cover mb-8"
-              />
+            {/* @ts-ignore */}
+            {research.data.images && (
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                {/* @ts-ignore */}
+                {research.data.images.map((image: { src: string; alt: string }) => (
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    class="w-full rounded-lg border border-primary/20"
+                  />
+                ))}
+              </div>
             )}
 
             <MarkdownContent>

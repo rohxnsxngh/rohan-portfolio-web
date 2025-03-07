@@ -115,3 +115,5 @@ The application was built using a modern web-based stack:
 This project demonstrates the power of modern web technologies in revolutionizing scaffolding graphics for construction. By combining WebGPU, ifc.js, and real-time optimizations, we have built a scalable and efficient solution for **Stillastorget.no**. Future improvements will continue to enhance its capabilities, ensuring it remains at the forefront of **construction visualization technology**.
 
 ![Scaffold 1](@images/project/Scaffolding6.jpg) 
+
+---

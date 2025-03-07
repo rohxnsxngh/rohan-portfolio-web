@@ -54,3 +54,5 @@ While the current platform already offers **valuable insights**, there's plenty 
 This project was more than just an academic exercise—it was a real-world application of machine learning in sports, blending technical innovation with the excitement of the game. Whether for **coaches, analysts, or baseball enthusiasts**, the Baseball Analytics Platform provides a **data-driven approach** to understanding and enhancing the sport we love.  
 
 Check out the **[GitHub repository](https://github.com/rohan/baseball-analytics)** for the code and technical details, or explore the **[live demo](https://baseball-analytics.demo.com)** to see it in action!
+
+---

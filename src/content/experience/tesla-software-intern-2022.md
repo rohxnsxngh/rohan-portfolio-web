@@ -63,3 +63,5 @@ My internship at Tesla was not just a learning experience but a journey of perso
 Special thanks to my manager Don Rudder, I probably wouldn't be where I am without you.
 
 ![Tesla Cyber Rodeo](@images/experience/tesla/TeslaCrashDummySideView.jpg)  
+
+---

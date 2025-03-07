@@ -46,3 +46,4 @@ While the project successfully achieved its goal of autonomous maze navigation, 
 
 The **LiDAR Driven Maze Bot** is a testament to the potential of robotics in real-world navigation challenges. With ongoing improvements, it stands to become an even more capable autonomous system, pushing the boundaries of robotic intelligence and control.
 
+---
