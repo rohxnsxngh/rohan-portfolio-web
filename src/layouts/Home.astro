@@ -17,16 +17,17 @@ import RS from "../../src/images/RS.jpg";
           Hey there! I'm
           <span class="block mt-1 text-primary/90">Rohan Singh</span>
         </h1>
-        <p
-          class="text-lg px-1 sm:text-sm text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0 tracking-tight"
-        >
-          Keep Building
-        </p>
+
         <span class="animation-container">
           <div id="robot-animation-container" class="model-display-container">
             <div class="loading-container">
               <progress id="progress-bar" value="0" max="100"></progress>
             </div>
+            <p
+              class="text-xs px-1 sm:text-xs text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0 tracking-tight"
+            >
+              Keep Building
+            </p>
           </div>
         </span>
 
@@ -123,26 +124,26 @@ import RS from "../../src/images/RS.jpg";
 
     // Add OrbitControls with specific limitations
     controls = new OrbitControls(camera, renderer.domElement);
-    
+
     // Set initial position
     controls.target = new THREE.Vector3(0, 0, 0);
-    
+
     // Allow full rotation horizontally (around y-axis in Three.js terms)
     controls.enableRotate = true;
     controls.minAzimuthAngle = -Infinity; // No restriction on horizontal rotation
-    controls.maxAzimuthAngle = Infinity;  // No restriction on horizontal rotation
-    
+    controls.maxAzimuthAngle = Infinity; // No restriction on horizontal rotation
+
     // Restrict vertical rotation (around x-axis in Three.js terms)
-    controls.minPolarAngle = Math.PI / 2 - 0.3;  // Limit upward rotation to small amount (about 17 degrees)
-    controls.maxPolarAngle = Math.PI / 2 + 0.3;  // Limit downward rotation to small amount (about 17 degrees)
-    
+    controls.minPolarAngle = Math.PI / 2 - 0.3; // Limit upward rotation to small amount (about 17 degrees)
+    controls.maxPolarAngle = Math.PI / 2 + 0.3; // Limit downward rotation to small amount (about 17 degrees)
+
     // Disable panning
     controls.enablePan = false;
-    
+
     // Optional: Limit zoom if needed
     controls.minDistance = 3.0;
     controls.maxDistance = 6.0;
-    
+
     // Add damping for smoother controls
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -186,8 +187,8 @@ import RS from "../../src/images/RS.jpg";
 
     manager.onLoad = () => {
       if (loadingContainer)
-      //@ts-ignore
-      loadingContainer.style.display = "none";
+        //@ts-ignore
+        loadingContainer.style.display = "none";
     };
 
     // Load robot model
@@ -216,8 +217,8 @@ import RS from "../../src/images/RS.jpg";
         });
 
         // Position and scale the robot - adjust for better visibility
-        _robot.position.set(0, -0.4, 0);
-        _robot.scale.set(1.5, 1.5, 1.5); // Make robot slightly bigger
+        _robot.position.set(0, -0.6, 0);
+        _robot.scale.set(1.6, 1.6, 1.6); // Make robot slightly bigger
         // _robot.rotation.y = Math.PI / 6; // Rotate slightly for better angle
 
         scene.add(_robot);
