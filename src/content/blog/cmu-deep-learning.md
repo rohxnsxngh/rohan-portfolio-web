@@ -1,14 +1,14 @@
 ---
 title: "Carnegie Mellon University: Computer Vision"
-date: "2024-12"
+date: "2025-03"
 author: "Rohan Singh"
 image: "/images/blog/cmu-cv.jpg"
 status: "Coming Soon"
-description: "My journey through CMU's Computer Vision program, exploring cutting-edge techniques in image processing, deep learning, and visual perception."
-tags: ["computer vision", "machine learning", "education", "research"]
+description: "My journey through CMU's world renowned Intro to Deep Learning class, focused on unraveling the black box and exploring a techniques in deep learning, and model training best practices."
+tags: ["model training", "deep learning", "education", "research", "CMU 11-785", "autograd"]
 ---
 
-# Carnegie Mellon University: Computer Vision
+# Carnegie Mellon University: Intro to Deep Learning (11-785)
 
 <!-- My experience at Carnegie Mellon University's Computer Vision program was transformative, offering deep insights into the fascinating world of visual perception and artificial intelligence.
 

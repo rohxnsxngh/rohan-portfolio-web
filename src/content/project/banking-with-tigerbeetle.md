@@ -1,6 +1,6 @@
 ---
 title: "Core Banking Reimagined: Tigerbeetle Database"
-date: "2024-05-01"
+date: "2024-05"
 status: "completed"
 image: "/images/projects/core-banking.jpg"
 description: "Exploring the cutting-edge technologies revolutionizing core banking systems, from high-performance transactions to AI-driven insights."

@@ -1,6 +1,6 @@
 ---
 title: "LiDAR Driven Maze Robot"
-date: "2024-01-15"
+date: "2023-01"
 status: "completed"
 image: "/images/project/MazeBotModel.png"
 description: "An advanced robotic system capable of autonomously navigating complex mazes using LiDAR technology and sophisticated control algorithms."

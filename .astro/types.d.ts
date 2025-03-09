@@ -133,9 +133,9 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"first-time-yc.md": {
-	id: "first-time-yc.md";
-  slug: "first-time-yc";
+"cmu-deep-learning.md": {
+	id: "cmu-deep-learning.md";
+  slug: "cmu-deep-learning";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">

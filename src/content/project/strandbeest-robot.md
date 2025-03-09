@@ -1,6 +1,6 @@
 ---
 title: "Strandbeest Walking Robot"
-date: "2024-01-05"
+date: "2023-04"
 status: "completed"
 image: "/images/project/StrandbeestPrototype.png"
 description: "A bio-inspired walking robot based on Theo Jansen's Strandbeest mechanism, featuring advanced control systems and autonomous capabilities."

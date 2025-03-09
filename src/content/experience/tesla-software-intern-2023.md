@@ -14,19 +14,19 @@ During my second internship at Tesla, I worked as a software engineering intern 
 
 ![Tesla Flying Y](@images/experience/tesla/TeslaFlyingY.jpg)
 
-## Revolutionizing Revit Model Extraction
+### Revolutionizing Revit Model Extraction
 
 I led the development of a powerful C# tool that transformed the Revit model extraction process. This tool improved how Revit and Tesla's in-house software worked together, making it easier to extract Revit element metadata for various tools across the company. This metadata was crucial for Tesla's material flow team, helping them calculate operational and automation costs, track Key Performance Indicators (KPIs), and optimize layout iterations. By cutting manual efforts from 12 hours down to just minutes, this extraction service streamlined processes and saved a ton of money.
 
 ![Tesla Revit Extraction Service Architecture](@images/experience/tesla/TeslaRevitExtractionServiceArchitecture.png)
 
-## Architecting Scalable Solutions
+### Architecting Scalable Solutions
 
 Building the Revit Extraction Service was pretty challenging. I had to come up with a smart strategy to handle the Revit API's complexities and optimize how it interacted with the BIM cloud. I designed a self-sustaining architecture for real-time extraction, using parallel processing to handle the large-scale models used in Tesla's factories. Scalability was key, so I added extensive error logging to quickly resolve issues and analyze them later. I also created a detailed frontend to visualize extraction data and monitor job statuses, ensuring everything ran smoothly.
 
 ![Tesla Extraction Service Custom Frontend](@images/experience/tesla/TeslaExtractionServiceCustomFrontend.png)
 
-## Frontend Development for Data Visualization
+### Frontend Development for Data Visualization
 
 My design skills were crucial in developing an advanced front-end tool to complement the automated Revit model extraction process. Using frameworks like ReactJS and Deck.gl, I helped create dynamic data visualizations that improved user interaction and enabled insightful analyses. By mastering Deck.gl, I turned extracted data into visually compelling 3D representations, helping stakeholders make informed decisions about factory design and layout optimization.
 
@@ -36,7 +36,7 @@ My design skills were crucial in developing an advanced front-end tool to comple
 
 ![Tesla FDT Aesthetic](@images/experience/tesla/TeslaFDTAesthetic.png)
 
-## Pioneering 5G Ericsson Positioning Trial
+### Pioneering 5G Ericsson Positioning Trial
 
 I took part in groundbreaking trials to harness Ericsson's 5G network for monitoring and optimizing real-time asset movements within Tesla's facilities. Working closely with the development team, I designed and implemented advanced algorithms to convert geographical coordinates into pixel values on graphical interfaces. This innovative trial demonstrated the potential of 5G for real-time asset monitoring, offering valuable insights into operational efficiency and pushing technological boundaries.
 
@@ -44,7 +44,7 @@ I took part in groundbreaking trials to harness Ericsson's 5G network for monito
 
 ![Tesla Map With Conversion](@images/experience/tesla/TeslaMapWithConversion.png)
 
-## Looking Back on my Internship at Tesla
+### Looking Back on my Internship at Tesla
 
 My internship at Tesla was a game-changer. I got to work on projects right at the edge of innovation, from shaking up Revit model extraction to diving into trials with 5G tech. I learned heaps and gained skills that'll definitely shape my future in tech and engineering. Being part of a team with top-notch experts and tackling real-world problems fueled my passion for innovation. It's inspired me to keep pushing boundaries and driving forward in the quest for technological progress. 
 

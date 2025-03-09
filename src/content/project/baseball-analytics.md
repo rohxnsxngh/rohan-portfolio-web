@@ -1,6 +1,6 @@
 ---
 title: "Baseball Analytics Platform"
-date: "2024-01-10"
+date: "2023-12"
 status: "completed"
 image: "/images/project/MachineLearningBaseball.png"
 description: "A comprehensive baseball analytics platform that uses machine learning to analyze player performance and predict game outcomes."

@@ -1,6 +1,6 @@
 ---
 title: "3D Platform for Scaffolding"
-date: "2024-04-01"
+date: "2024-04"
 status: "completed"
 image: "/images/projects/quantum-ml.jpg"
 description: "A high-performance 3D application for scaffolding graphics, utilizing WebGPU and ifc.js for real-time visualization and automated Bill of Materials (BOM) generation."

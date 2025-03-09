@@ -1,6 +1,6 @@
 ---
 title: "The Forge: ThreeJS Sandbox"
-date: "2024-01-01"
+date: "2022-07"
 status: "completed"
 image: "/images/project/HansAubsHome.png"
 description: "A ThreeJS sanbox designed to experiment with shaders, audio visualizations, geometries, and proceddural generation in the browser"

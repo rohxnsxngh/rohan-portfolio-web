@@ -3,13 +3,14 @@ title: "Why Software Rotational Programs are a Political Stunt"
 date: "2024-03-02"
 author: "Rohan Singh"
 image: "/images/blog/rotational-programs.jpg"
+status: "Coming Soon"
 description: "A critical analysis of software engineering rotational programs and why they often serve more political purposes than developmental ones."
 tags: ["career", "software engineering", "corporate culture", "professional development"]
 ---
 
 # Why Software Rotational Programs are a Political Stunt
 
-After experiencing and observing various software engineering rotational programs, I've come to a controversial conclusion: many of these programs serve more political purposes than actual engineering development. Here's my analysis.
+<!-- After experiencing and observing various software engineering rotational programs, I've come to a controversial conclusion: many of these programs serve more political purposes than actual engineering development. Here's my analysis.
 
 ## The Promise vs. Reality
 
@@ -157,4 +158,4 @@ After experiencing and observing various software engineering rotational program
 
 ## Conclusion
 
-While rotational programs might seem attractive on paper, they often prioritize political optics over genuine engineering development. Engineers early in their careers should carefully evaluate these programs and consider alternatives that provide real technical growth and meaningful project experience. Companies would better serve their engineering talent by focusing on authentic development opportunities rather than politically motivated rotation schemes. 
+While rotational programs might seem attractive on paper, they often prioritize political optics over genuine engineering development. Engineers early in their careers should carefully evaluate these programs and consider alternatives that provide real technical growth and meaningful project experience. Companies would better serve their engineering talent by focusing on authentic development opportunities rather than politically motivated rotation schemes.  -->

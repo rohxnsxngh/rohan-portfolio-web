@@ -1,177 +1,105 @@
 ---
 title: "How I started freelancing and made an additional $50,000 (Q1 & Q2 2024)"
-date: "2024-03-01"
+date: "2024-07"
 author: "Rohan Singh"
 image: "/images/blog/freelancing.jpg"
+status: "Complete"
 description: "A detailed breakdown of how I started my freelancing journey and successfully earned $50,000 in additional income during the first half of 2024."
 tags: ["freelancing", "entrepreneurship", "software development", "career"]
 ---
 
-# How I started freelancing and made an additional $50,000 (Q1 & Q2 2024)
+After I finished my internship at Tesla, I became really interested in graphics development. Whether it was OpenGL/WebGL or using Three.js, I genuinely enjoyed it. There was something about making and refining a vision that fascinated me. Naturally, this led me to experiment with game development.
 
-In the first half of 2024, I managed to generate an additional $50,000 through freelancing while maintaining my full-time job. Here's a comprehensive breakdown of how I did it.
+Like any developer (pre-ChatGPT), I often ran into obscure bugs and would scour the internet looking for solutions. During these deep dives, I frequently stumbled upon niche blogs and Reddit threads where people shared their troubleshooting experiences. One day, on a whim, I decided to start contributing my own insights. I posted some of my projects and solutions on the same Reddit threads I had been using for answers. I enjoyed the feedback and critiques from like-minded individuals who were also passionate about building in this space.
 
-## Getting Started
+## Landing My First Freelance Client
 
-### 1. Initial Setup
-- Created profiles on key platforms
-  - Upwork
-  - Toptal
-  - LinkedIn
-- Built a professional portfolio website
-- Set up business banking and accounting
-- Established LLC for tax benefits
+One thing led to another, and eventually, I received a direct message from someone asking if I’d be open to helping them build a specific web-based tool for 3D modeling and simulation. I had never considered freelancing before, but the idea intrigued me. It felt like a natural extension of the work I was already passionate about.
 
-### 2. Positioning Strategy
-- Focused on specialized skills
-  - Machine Learning Engineering
-  - Computer Vision
-  - Full-stack Development
-- Set competitive but premium rates
-- Crafted compelling profile descriptions
-- Highlighted unique value proposition
+I had no idea how to structure this kind of work. Do I charge hourly? Do I need a contract? How do I protect myself legally? I reached out to some experienced freelancers, and they gave me invaluable advice:
 
-## Finding First Clients
+- **Set up an LLC** for liability protection and tax benefits.
+- **Use contract templates** to define scope, timelines, and payment terms.
+- **Track work hours** and use milestone-based billing for security.
 
-### 1. Platform Strategy
-- Started with smaller projects
-- Maintained 100% job success rate
-- Gathered positive reviews
-- Built platform reputation
-- Gradually increased rates
+I took their advice, founded **Quaternion Studios**, and officially kicked off my freelancing journey.
 
-### 2. Client Acquisition
-- Targeted specific niches
-- Wrote personalized proposals
-- Demonstrated relevant expertise
-- Provided quick response times
-- Offered initial consultations
+## The Six-Month Project That Changed Everything
 
-## Project Management
+This first project ended up spanning six months. The client wanted a web-based tool that allowed users to manipulate 3D models in real time for the purpose of construction materials procurement and tracking. While I had experience in WebGL, this was my first time applying it to a structured, client-driven project.
 
-### 1. Time Management
-- Worked 20 hours/week on freelance
-- Structured schedule around full-time job
-- Used time tracking tools
-- Set clear boundaries
-- Maintained work-life balance
+### **Phase 1: Understanding Client Needs**
 
-### 2. Project Selection
-- Focused on high-value projects
-- Avoided time-intensive clients
-- Selected projects matching expertise
-- Maintained reasonable deadlines
-- Prioritized long-term relationships
+The initial stage involved several in-depth meetings to nail down the specifications. The client had an idea but wasn’t sure how to implement it. I quickly realized that freelancing wasn’t just about writing code—it was about understanding and translating client needs into technical solutions.
 
-## Financial Breakdown
+- I created wireframes and mockups to visualize the UI.
+- We set clear deliverables and milestones.
+- I proposed a **phased approach**, breaking the project into smaller, testable parts.
 
-### 1. Revenue Streams
-- Machine Learning Projects: $20,000
-- Web Development: $15,000
-- Computer Vision: $10,000
-- Consulting: $5,000
+### **Phase 2: Development & Iteration**
 
-### 2. Project Types
-- Fixed-price projects: 60%
-- Hourly contracts: 30%
-- Consulting sessions: 10%
+This was the most intense part. I spent evenings and weekends developing the core functionality while balancing my full-time job. Some key takeaways from this phase:
 
-## Key Success Factors
+- **Time Management:** I dedicated 20 hours per week to freelancing, using tools like Trello for task management and Clockify for time tracking.
+- **Client Communication:** Weekly check-ins via Zoom ensured we stayed aligned.
+- **Version Control & Deployment:** I used GitHub for collaboration and Vercel for quick previews.
+- **Problem Solving:** Some unexpected challenges (like optimizing rendering performance) forced me to learn new techniques on the fly.
 
-### 1. Technical Excellence
-- Delivered high-quality work
-- Met all deadlines
-- Provided detailed documentation
-- Offered post-project support
-- Maintained code quality
+### **Phase 3: Delivery & Refinement**
 
-### 2. Communication
-- Regular project updates
-- Clear expectation setting
-- Professional communication
-- Quick response times
-- Detailed proposals
+As we approached the final stretch, the project started coming together. I delivered an MVP that exceeded the client’s expectations, and we spent another month refining the UX/UI based on user feedback.
 
-## Challenges Faced
+One of the biggest lessons I learned was **managing scope creep**. Initially, the project had a defined scope, but as we progressed, new feature requests kept coming in. I had to carefully negotiate which features were part of the original contract and which required additional payment.
 
-### 1. Time Management
-- Balancing full-time work
-- Meeting project deadlines
-- Managing multiple clients
-- Handling time zones
-- Maintaining energy levels
+## Expanding My Freelance Business
 
-### 2. Client Relations
-- Scope creep management
-- Payment negotiations
-- Communication barriers
-- Expectation alignment
-- Contract discussions
+After completing this project, I had something invaluable: **a proven track record**. My client was thrilled and referred me to two other companies looking for similar tools. Suddenly, freelancing wasn’t just a side experiment—it was a viable income stream.
 
-## Tools and Resources
+### **How I Scaled Up in the Next 3 Months**
 
-### 1. Project Management
-- Jira for tracking
-- GitHub for version control
-- Slack for communication
-- Zoom for meetings
-- Notion for documentation
+- **Increased my rates**: I started charging premium rates based on the value I delivered.
+- **Targeted high-value clients**: Focused on industries like simulation, robotics, and AI-driven applications.
+- **Refined my sales strategy**: Improved my proposal writing and client outreach.
+- **Automated business processes**: Used Stripe for payments, QuickBooks for accounting, and Docusign for contracts.
 
-### 2. Financial Management
-- QuickBooks for accounting
-- Stripe for payments
-- Wave for invoicing
-- Excel for tracking
-- Banking apps
+By the end of Q2 2024, I had completed multiple projects and made an additional **$50,000 in revenue**, broken down as follows:
+
+- **Machine Learning Projects:** $20,000
+- **Web Development (Three.js, WebGL):** $15,000
+- **Computer Vision Applications:** $10,000
+- **Consulting & Advisory Work:** $5,000
 
 ## Lessons Learned
 
-### 1. Business Development
-- Value of specialization
-- Importance of positioning
-- Power of referrals
-- Rate negotiation strategies
-- Long-term client value
+### **1. Business Acumen Matters as Much as Technical Skills**
+Freelancing isn’t just about being good at coding—it’s about negotiation, communication, and understanding business needs. Learning how to set expectations, price my work, and handle contracts was crucial.
 
-### 2. Personal Growth
-- Time management skills
-- Communication improvement
-- Technical skill growth
-- Business acumen
-- Work-life balance
+### **2. Portfolio & Online Presence Are Everything**
+A well-structured portfolio and active engagement on platforms like Reddit, LinkedIn, and GitHub played a massive role in getting noticed.
 
-## Future Strategy
+### **3. Time Management is the Key to Avoiding Burnout**
+Balancing freelancing with a full-time job is possible but requires strict time management. Having **dedicated work hours**, avoiding low-value clients, and setting clear boundaries helped me maintain work-life balance.
 
-### 1. Growth Plans
-- Increase rates gradually
-- Focus on premium clients
-- Develop passive income
-- Create product offerings
-- Build agency model
+## The Future: Scaling Beyond Solo Freelancing
 
-### 2. Skill Development
-- Stay technically current
-- Expand service offerings
-- Improve business skills
-- Network building
-- Personal branding
+Now that I’ve built momentum, I’m thinking bigger:
 
-## Tips for Others
+- **Increasing rates further and working with premium clients.**
+- **Exploring passive income streams (e.g., digital products, online courses).**
+- **Potentially transitioning Quaternion Studios into a small agency model.**
+- **Expanding into AI-driven simulation tools and high-end consulting.**
 
-### 1. Getting Started
-- Start with your strength
-- Build portfolio gradually
-- Focus on quality
-- Network actively
-- Be patient
+## Advice for Aspiring Freelancers
 
-### 2. Scaling Up
-- Increase rates strategically
-- Build systems early
-- Automate processes
-- Maintain quality
-- Invest in relationships
+If you’re considering freelancing, here’s what worked for me:
+
+- **Start by sharing your work online.** You never know who’s watching.
+- **Be open to opportunities.** My first project found me, not the other way around.
+- **Set up your business correctly.** Get an LLC, use contracts, and protect yourself.
+- **Don’t undersell yourself.** Price based on value, not just time.
+- **Prioritize relationships.** Good clients lead to more work.
 
 ## Conclusion
 
-Freelancing has been an incredible journey of professional and personal growth. The additional income is significant, but the real value lies in the skills developed, relationships built, and the foundation laid for future opportunities. With strategic planning, consistent effort, and focus on value delivery, freelancing can be a lucrative addition to your career. 
+Freelancing started as an experiment but quickly turned into a major income source and an exciting career path. The additional income is great, but the real reward has been the skills I developed, the people I met, and the business acumen I gained. If you’re thinking about freelancing, there’s never been a better time to start. Put yourself out there, learn as you go, and embrace the process!
+

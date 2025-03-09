@@ -1,193 +1,62 @@
 ---
 title: "Getting Interviewed twice in a YC Batch (S24)"
-date: "2024-02-29"
+date: "2024-09"
 author: "Rohan Singh"
 image: "/images/blog/yc-interview.jpg"
+status: "Complete"
 description: "A unique experience of being interviewed twice by Y Combinator in the same batch (S24), with different startups and different outcomes."
 tags: ["startups", "Y Combinator", "entrepreneurship", "interviews"]
 ---
 
-# Getting Interviewed twice in a YC Batch (S24)
+My journey toward applying to Y Combinator (YC) didn’t start with a grand vision of building a venture-backed startup. It actually started with freelancing. Freelancing gave me the first taste of building something of my own—solving problems, delivering value, and getting paid for it. There was something exhilarating about owning a project, setting my rates, and being directly responsible for success or failure.
 
-In an unusual turn of events, I had the unique experience of being interviewed twice by Y Combinator during the S24 batch. Here's the story of how it happened and what I learned.
+That realization planted a seed: I could take ownership of problems and create solutions that had tangible impact. Eventually, I started thinking beyond individual projects—what if I built something scalable? That’s when the idea of starting my own company became more than just a passing thought.
 
-## The Unusual Situation
+## The Birth of an Idea: Construction Industry Pain Points
 
-### First Interview
-- Applied with Startup A
-- AI/ML focus
-- B2B SaaS product
-- Strong technical team
-- Early market validation
+I’ve always known that the construction industry was incredibly fragmented. Through customer discovery, I found a compelling problem space: the inefficiencies in the bidding and change request processes. The bidding process is how general contracting firms win new business, requiring detailed cost estimations and precise documentation. Mistakes, inconsistencies, and inefficiencies in this process often lead to financial losses and operational setbacks.
 
-### Second Interview
-- Applied with Startup B
-- Developer tools
-- Open source foundation
-- Different co-founders
-- Different market approach
+We believed that AI could streamline and improve this process, offering contractors a smarter, faster way to bid on projects. With that goal in mind, I teamed up with two incredibly smart friends, Dominic and Prathik, to start building a prototype. Prathik, always the go-getter, even secured our first beta user by striking up a conversation with a general contractor on a live construction site. We quickly built a demo and began outreach efforts to validate our idea.
 
-## How It Happened
+## Applying to YC: First Startup, First Interview
 
-### Timeline
-1. Applied with Startup A in early application
-2. Got interview invitation
-3. Conducted first interview
-4. Applied with Startup B in regular round
-5. Unexpectedly got second interview
-6. Completed both processes
+Although we were still early in our journey, we decided to apply to YC. This was a first for me—I wasn’t deeply familiar with YC until Prathik explained its significance. We submitted our application, detailing our problem, solution, and progress.
 
-### Unique Circumstances
-- Different co-founding teams
-- Distinct market segments
-- Separate application processes
-- No conflict of interest
-- Full transparency with YC
+To our surprise, we got an interview invite.
 
-## Key Differences Between Interviews
+The first interview was nerve-wracking. YC interviews are notoriously fast-paced—10 minutes to convince some of the sharpest investors in the world that your startup has the potential to be a billion-dollar company. Our interview focused heavily on technical questions, our AI approach, and the market size. The partners wanted to understand how big this opportunity was and why we were the right team to tackle it.
 
-### 1. First Interview Experience
-- More technical questions
-- Focus on AI/ML market
-- Team dynamics discussion
-- Market size analysis
-- Growth strategy emphasis
+Two days later, we received an unexpected email—YC wanted a second interview.
 
-### 2. Second Interview Experience
-- Developer adoption focus
-- Open source strategy
-- Monetization plans
-- Community building
-- Technical architecture
+## The Second Interview: A Rare Occurrence
 
-## Interview Preparation
+As far as I know, being invited to a second interview within the same batch isn’t common. It meant YC saw potential but had unresolved questions. In hindsight, this was due to our failure to clearly articulate the problem and the exact value we could provide. The second interview dove into our pricing model, customer acquisition strategy, and go-to-market approach. We hadn’t adequately prepared for these aspects, and it showed.
 
-### 1. Technical Preparation
-- Detailed product demos
-- Architecture explanations
-- Scalability plans
-- Technical challenges
-- Future roadmap
+Ultimately, we got rejected.
 
-### 2. Business Preparation
-- Market analysis
-- Competition research
-- Financial projections
-- Growth strategies
-- Customer validation
+## Reflections: Why We Didn’t Get In
 
-## Key Learnings
+The biggest lesson I took from this experience was the importance of storytelling. YC’s interviewers are incredibly sharp, but they still need to be convinced—quickly and clearly. We had an interesting problem and a potentially valuable solution, but we didn’t explain it well enough. If you can’t hook someone’s attention within the first 2-3 minutes, you’ve already lost them.
 
-### 1. YC's Focus Areas
-- Problem significance
-- Team capabilities
-- Market opportunity
-- Growth potential
-- Execution ability
+I also realized that strong technical skills alone aren’t enough. You need a deep understanding of your market, a clear business strategy, and an ability to communicate your vision succinctly. Our lack of preparation in these areas likely contributed to our rejection.
 
-### 2. Interview Dynamics
-- Quick decision making
-- Clear communication
-- Team alignment
-- Problem understanding
-- Solution clarity
+## The Bigger Takeaway: From Freelancer to Founder
 
-## Comparative Insights
+Despite the rejection, this experience solidified my belief that I wanted to build something of my own. Freelancing had taught me that solving problems and providing value were tangible skills I could own and design. The YC process reinforced that lesson on a larger scale—beyond just earning money, I wanted to create something impactful and lasting.
 
-### 1. Common Elements
-- Focus on growth
-- Team dynamics
-- Market understanding
-- Technical depth
-- Business model clarity
+The rejection wasn’t the end. It was a stepping stone.
 
-### 2. Different Approaches
-- Market sizing methods
-- Technical evaluation
-- Team assessment
-- Risk analysis
-- Growth expectations
+## Advice for Others Applying to YC
 
-## Strategic Insights
+1. **Clearly articulate your problem and solution.** If an intelligent outsider doesn’t understand what you do in 30 seconds, you need to refine your pitch.
+2. **Be prepared to answer tough business questions.** Know your market size, pricing strategy, and customer acquisition model inside and out.
+3. **Tell a compelling story.** Investors aren’t just evaluating your idea; they’re evaluating your ability to communicate it effectively.
+4. **Show traction, even if it’s early.** Customers, users, and beta testers matter more than just an idea.
+5. **Be concise.** YC interviews are only 10 minutes long. Every second counts.
 
-### 1. Application Strategy
-- Clear problem statement
-- Strong team presentation
-- Compelling metrics
-- Market validation
-- Growth potential
+## What’s Next?
 
-### 2. Interview Strategy
-- Concise responses
-- Team coordination
-- Demo preparation
-- Data readiness
-- Story consistency
+This experience wasn’t a failure—it was a masterclass in pitching, business strategy, and startup storytelling. While that particular idea didn’t make it into YC, the lessons I learned will undoubtedly shape my future endeavors. I left the process with a better understanding of what it takes to build and pitch a startup, and I know this won’t be my last attempt.
 
-## Preparation Differences
+YC or not, the journey of building and creating is just beginning.
 
-### 1. First Interview
-- Heavy technical focus
-- AI market research
-- Enterprise sales strategy
-- Team background emphasis
-- Product maturity
-
-### 2. Second Interview
-- Community focus
-- Open source strategy
-- Developer adoption
-- Monetization plan
-- Technical architecture
-
-## Key Takeaways
-
-### 1. Process Insights
-- Consistent evaluation
-- Different emphases
-- Team dynamics importance
-- Market understanding
-- Technical depth
-
-### 2. Personal Growth
-- Interview skills
-- Pitch refinement
-- Quick thinking
-- Team coordination
-- Story articulation
-
-## Advice for Others
-
-### 1. Application Process
-- Be transparent
-- Focus on strengths
-- Show growth potential
-- Demonstrate traction
-- Present clear vision
-
-### 2. Interview Preparation
-- Practice extensively
-- Prepare team well
-- Know metrics cold
-- Have demos ready
-- Anticipate questions
-
-## Impact on Future
-
-### 1. Professional Growth
-- Enhanced pitch skills
-- Better understanding of VC
-- Stronger network
-- Clearer startup vision
-- Improved team dynamics
-
-### 2. Business Development
-- Refined business models
-- Better market understanding
-- Stronger value propositions
-- Clearer growth strategies
-- Enhanced team alignment
-
-## Conclusion
-
-Being interviewed twice in the same YC batch was an extraordinary learning experience. It provided unique insights into YC's evaluation process and highlighted the importance of team, market, and execution in startup success. The experience has been invaluable for both my professional growth and understanding of the startup ecosystem. 
