@@ -121,7 +121,31 @@ import RS from "../../src/images/RS.jpg";
     // Camera position - moved back for better view in larger container
     camera.position.set(0, 0.5, 4.5);
 
-    // Removed OrbitControls as per request
+    // Add OrbitControls with specific limitations
+    controls = new OrbitControls(camera, renderer.domElement);
+    
+    // Set initial position
+    controls.target = new THREE.Vector3(0, 0, 0);
+    
+    // Allow full rotation horizontally (around y-axis in Three.js terms)
+    controls.enableRotate = true;
+    controls.minAzimuthAngle = -Infinity; // No restriction on horizontal rotation
+    controls.maxAzimuthAngle = Infinity;  // No restriction on horizontal rotation
+    
+    // Restrict vertical rotation (around x-axis in Three.js terms)
+    controls.minPolarAngle = Math.PI / 2 - 0.3;  // Limit upward rotation to small amount (about 17 degrees)
+    controls.maxPolarAngle = Math.PI / 2 + 0.3;  // Limit downward rotation to small amount (about 17 degrees)
+    
+    // Disable panning
+    controls.enablePan = false;
+    
+    // Optional: Limit zoom if needed
+    controls.minDistance = 3.0;
+    controls.maxDistance = 6.0;
+    
+    // Add damping for smoother controls
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
 
     // Dramatic lighting setup for off-white robot against black background
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Lower ambient light for more dramatic shadows
@@ -224,10 +248,10 @@ import RS from "../../src/images/RS.jpg";
         _mixerRobot.update(delta);
       }
 
-      // Add a continuous slow rotation to the robot
-      // if (_robot) {
-      //   _robot.rotation.y += 0.005;
-      // }
+      // Update controls (for smoother movement)
+      if (controls) {
+        controls.update();
+      }
 
       // Standard rendering
       renderer.render(scene, camera);
