@@ -1,0 +1,315 @@
+---
+// RobotModelViewer.astro
+// Props for customization
+interface Props {
+  width?: number;  // Container width in pixels
+  height?: number; // Container height in pixels
+  modelPath?: string; // Path to the 3D model
+  backgroundColor?: string; // Background color for the scene
+  robotColor?: string; // Color of the robot
+  robotEmissive?: string; // Emissive color of the robot
+  robotSpecular?: string; // Specular color of the robot
+  className?: string; // Additional CSS classes
+}
+
+// Default values for props
+const {
+  width = 240,
+  height = 180,
+  modelPath = "/src/models/robot_playground.glb",
+  backgroundColor = "#000000",
+  robotColor = "#000000",
+  robotEmissive = "#000000",
+  robotSpecular = "#ffffff",
+  className = "",
+} = Astro.props;
+
+// Calculate aspect ratio for camera
+const aspectRatio = width / height;
+---
+
+<div class={`robot-model-viewer-container group ${className}`} style={`--width: ${width}px; --height: ${height}px;`}>
+  <div id="robot-animation-container" class="model-display-container">
+    <div class="loading-container">
+      <progress id="progress-bar" value="0" max="100"></progress>
+    </div>
+  </div>
+</div>
+
+<!-- Use client:only to ensure this script runs only in the browser -->
+<script type="module">
+  // Use proper import paths with the full URL path from node_modules
+  import * as THREE from "/node_modules/three/build/three.module.js";
+  import { GLTFLoader } from "/node_modules/three/examples/jsm/loaders/GLTFLoader.js";
+  import { OrbitControls } from "/node_modules/three/examples/jsm/controls/OrbitControls.js";
+
+  // Get the props from data attributes
+  const container = document.querySelector('.robot-model-viewer-container');
+  const width = Number(getComputedStyle(container).getPropertyValue('--width').replace('px', '')) || 240;
+  const height = Number(getComputedStyle(container).getPropertyValue('--height').replace('px', '')) || 180;
+  const aspectRatio = width / height;
+  const modelPath = container.dataset.modelPath || "/src/models/robot_playground.glb";
+  const backgroundColor = "#000000";
+  const robotColor = "#000000";
+  const robotEmissive = "#000000";
+  const robotSpecular = "#ffffff";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // DOM elements
+    const container = document.getElementById("robot-animation-container");
+    const progressBar = document.getElementById("progress-bar");
+    const loadingContainer = document.querySelector("div.loading-container");
+
+    // Variables
+    let _robot;
+    let _mixerRobot;
+    let controls;
+    let clock = new THREE.Clock();
+
+    // Convert hex color to THREE.js color
+    const bgColor = new THREE.Color(backgroundColor);
+
+    // Simple scene setup
+    const scene = new THREE.Scene();
+    scene.background = bgColor;
+
+    const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance",
+      precision: "highp",
+    });
+
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    if (container) {
+      container.appendChild(renderer.domElement);
+    }
+
+    // Camera position
+    camera.position.set(0, 0.5, 4.5);
+
+    // Add OrbitControls with specific limitations
+    controls = new OrbitControls(camera, renderer.domElement);
+    
+    // Set initial position
+    controls.target = new THREE.Vector3(0, 0, 0);
+    
+    // Allow full rotation horizontally (around y-axis)
+    controls.enableRotate = true;
+    controls.minAzimuthAngle = -Infinity;
+    controls.maxAzimuthAngle = Infinity;
+    
+    // Restrict vertical rotation (around x-axis)
+    controls.minPolarAngle = Math.PI / 2 - 0.3;  // About 17 degrees up
+    controls.maxPolarAngle = Math.PI / 2 + 0.3;  // About 17 degrees down
+    
+    // Disable panning
+    controls.enablePan = false;
+    
+    // Optional: Limit zoom if needed
+    controls.minDistance = 3.0;
+    controls.maxDistance = 6.0;
+    
+    // Add damping for smoother controls
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Lighting setup
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    scene.add(ambientLight);
+
+    // Main directional light
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    mainLight.position.set(2, 4, 3);
+    mainLight.castShadow = true;
+    mainLight.shadow.mapSize.width = 1024;
+    mainLight.shadow.mapSize.height = 1024;
+    mainLight.shadow.bias = -0.001;
+    mainLight.shadow.camera.near = 0.5;
+    mainLight.shadow.camera.far = 20;
+    mainLight.shadow.camera.left = -5;
+    mainLight.shadow.camera.right = 5;
+    mainLight.shadow.camera.top = 5;
+    mainLight.shadow.camera.bottom = -5;
+    scene.add(mainLight);
+
+    // Blue accent light
+    const accentLight = new THREE.DirectionalLight(0x4466ff, 0.7);
+    accentLight.position.set(-3, 2, -3);
+    scene.add(accentLight);
+
+    // Rim light
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    rimLight.position.set(0, 3, -4);
+    scene.add(rimLight);
+
+    // Loading manager for tracking progress
+    const manager = new THREE.LoadingManager();
+
+    manager.onProgress = (url, loaded, total) => {
+      if (progressBar) progressBar.value = (loaded / total) * 100;
+    };
+
+    manager.onLoad = () => {
+      if (loadingContainer) loadingContainer.style.display = "none";
+    };
+
+    // Load robot model
+    const loader = new GLTFLoader(manager);
+    loader.load(
+      modelPath,
+      async (glb) => {
+        _robot = glb.scene;
+
+        // Create material with customized properties
+        const newMaterial = new THREE.MeshPhongMaterial({
+          color: new THREE.Color(robotColor),
+          emissive: new THREE.Color(robotEmissive),
+          specular: new THREE.Color(robotSpecular),
+          shininess: 15,
+          flatShading: true,
+        });
+
+        // Apply material to all meshes in the model
+        _robot.traverse((o) => {
+          if (o.isMesh) {
+            o.material = newMaterial;
+            o.castShadow = true;
+            o.receiveShadow = true;
+          }
+        });
+
+        // Position and scale the robot
+        _robot.position.set(0, -0.4, 0);
+        _robot.scale.set(1.5, 1.5, 1.5);
+
+        scene.add(_robot);
+
+        // Set up animation
+        _mixerRobot = new THREE.AnimationMixer(_robot);
+        _mixerRobot.timeScale = 1;
+
+        if (glb.animations.length > 0) {
+          _mixerRobot.clipAction(glb.animations[0]).play();
+        }
+      },
+      // Progress callback
+      (xhr) => {
+        const progress = (xhr.loaded / xhr.total) * 100;
+        console.log(`${progress}% loaded`);
+      },
+      // Error callback
+      (error) => {
+        console.error("An error happened while loading the model:", error);
+      }
+    );
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Update animation mixer
+      const delta = clock.getDelta();
+      if (_mixerRobot) {
+        _mixerRobot.update(delta);
+      }
+
+      // Update controls
+      if (controls) {
+        controls.update();
+      }
+
+      // Render
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+      renderer.render(scene, camera);
+    });
+  });
+</script>
+
+<style>
+  .robot-model-viewer-container {
+    display: inline-flex;
+    vertical-align: middle;
+    height: var(--height, 180px);
+    width: var(--width, 240px);
+    position: relative;
+    transition: transform 0.3s ease-out;
+  }
+
+  .robot-model-viewer-container:hover {
+    transform: translateY(-4px);
+  }
+
+  #robot-animation-container {
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+
+  .model-display-container {
+    border: 1px solid rgba(var(--color-accent, 0, 0, 0), 0.2);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.95);
+    transition: all 0.3s ease-out;
+    z-index: 10;
+  }
+
+  .model-display-container:hover {
+    background-color: rgba(var(--color-accent, 0, 0, 0), 0.05);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .robot-model-viewer-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(var(--color-primary, 0, 0, 0), 0.2);
+    border-radius: 0.75rem;
+    transform: scale(1);
+    transition: all 0.3s ease-out;
+    z-index: 0;
+  }
+
+  .robot-model-viewer-container:hover::after {
+    transform: scale(1.05);
+    border-color: rgba(var(--color-primary, 0, 0, 0), 0.4);
+  }
+
+  .loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+  }
+
+  #progress-bar {
+    width: 80%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  #progress-bar::-webkit-progress-bar {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  #progress-bar::-webkit-progress-value {
+    background-color: rgba(var(--color-primary, 75, 85, 99), 0.8);
+  }
+</style>
