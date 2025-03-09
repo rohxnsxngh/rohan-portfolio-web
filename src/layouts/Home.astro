@@ -13,12 +13,17 @@ import RS from "../../src/images/RS.jpg";
           Hey there! I'm
           <span class="block mt-2 text-primary/90">Rohan Singh</span>
         </h1>
+        <span class="animation-container">
+          <div id="robot-animation-container">
+            <div class="loading-container">
+              <progress id="progress-bar" value="0" max="100"></progress>
+            </div>
+          </div>
+        </span>
         <p class="text-lg sm:text-xl text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0">
-          Keep Building 
-          <span class="emoji text-primary">🏗️</span>
-          <span class="emoji text-primary">🛠️</span>
-          <span class="emoji text-primary">🚧</span>
+          Keep Building
         </p>
+        
         <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <a href="/about" class="inline-flex items-center justify-center px-6 py-3 border border-primary/20 text-primary/90 hover:bg-primary/10 transition-colors duration-300 font-mono text-sm tracking-wider">
             About Me
@@ -46,6 +51,153 @@ import RS from "../../src/images/RS.jpg";
     </div>
   </div>
 </div>
+
+<script>
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // DOM elements
+    const container = document.getElementById('robot-animation-container');
+    const progressBar = document.getElementById('progress-bar');
+    const loadingContainer = document.querySelector('div.loading-container');
+    
+    // Variables
+    let _robot: any;
+    let _mixerRobot: any;
+    let clock = new THREE.Clock();
+    
+    // Simple scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, 240 / 180, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ 
+      alpha: true, 
+      antialias: true,
+      powerPreference: 'high-performance',
+      precision: 'highp'
+    });
+    
+    renderer.setSize(240, 180);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x000000, 0);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if (container) {
+      container.appendChild(renderer.domElement);
+    }
+    
+    // Camera position - moved back for better view in larger container
+    camera.position.set(0, 0.5, 4.5);
+    
+    // Simplified but effective lighting setup
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambientLight);
+    
+    // Main directional light
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    mainLight.position.set(3, 5, 5);
+    mainLight.castShadow = true;
+    mainLight.shadow.mapSize.width = 512; // Good shadow quality without being excessive
+    mainLight.shadow.mapSize.height = 512;
+    scene.add(mainLight);
+    
+    // Secondary fill light for reducing harsh shadows
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    fillLight.position.set(-3, 2, -3);
+    scene.add(fillLight);
+    
+    // Loading manager for tracking progress
+    const manager = new THREE.LoadingManager();
+    
+    manager.onProgress = (url: any, loaded: any, total: any) => {
+      if (progressBar)
+      progressBar.value = (loaded / total) * 100;
+    };
+    
+    manager.onLoad = () => {
+      loadingContainer.style.display = "none";
+    };
+    
+    // Load robot model
+    const loader = new GLTFLoader(manager);
+    loader.load(
+      "/src/models/robot_playground.glb",
+      async (glb: any) => {
+        _robot = glb.scene;
+        
+        // Simplified dark metallic material
+        const newMaterial = new THREE.MeshStandardMaterial({
+          color: 0x202020,          // Dark base color
+          emissive: 0x080808,       // Very subtle emissive
+          metalness: 0.8,           // Metallic look
+          roughness: 0.3,           // Moderately smooth for good reflections
+          flatShading: false        // Smooth shading for realistic look
+        });
+        
+        // Apply material to all meshes in the model
+        _robot.traverse((o) => {
+          if (o.isMesh) {
+            o.material = newMaterial;
+            o.castShadow = true;
+            o.receiveShadow = true;
+          }
+        });
+        
+        // Position and scale the robot - adjust for better visibility in larger container
+        _robot.position.set(0, -0.5, 0);
+        _robot.scale.set(1.5, 1.5, 1.5);
+        _robot.rotation.y = Math.PI / 5; // Rotate slightly for better angle
+        
+        scene.add(_robot);
+        
+        // Set up animation
+        _mixerRobot = new THREE.AnimationMixer(_robot);
+        _mixerRobot.timeScale = 1;
+        
+        if (glb.animations.length > 0) {
+          _mixerRobot.clipAction(glb.animations[0]).play();
+        }
+      },
+      // Progress callback
+      (xhr) => {
+        const progress = (xhr.loaded / xhr.total) * 100;
+        console.log(`${progress}% loaded`);
+      },
+      // Error callback
+      (error) => {
+        console.error('An error happened while loading the model:', error);
+      }
+    );
+    
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      // Update animation mixer
+      const delta = clock.getDelta();
+      if (_mixerRobot) {
+        _mixerRobot.update(delta);
+      }
+      
+      // Add a slight rotation to the robot if it exists
+      if (_robot) {
+        _robot.rotation.y += 0.005;
+      }
+      
+      // Standard rendering
+      renderer.render(scene, camera);
+    }
+    
+    animate();
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      // For this small viewport, we don't need to adjust much
+      renderer.render(scene, camera);
+    });
+  });
+</script>
 
 <style>
   .slide-up {
@@ -76,41 +228,44 @@ import RS from "../../src/images/RS.jpg";
     }
   }
   
-  /* Emoji ripple effect */
-  .emoji {
+  /* Animation container styling */
+  .animation-container {
+    display: inline-flex;
+    vertical-align: middle;
+    height: 180px;
+    width: 240px;
+    margin-left: 8px;
+  }
+  
+  #robot-animation-container {
     display: inline-block;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: bounceIn 1s forwards;
+    vertical-align: middle;
+    height: 180px;
+    width: 240px;
+    position: relative;
   }
   
-  .emoji:nth-child(1) {
-    animation-delay: 0s;
+  .loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
   }
   
-  .emoji:nth-child(2) {
-    animation-delay: 0.2s;
+  #progress-bar {
+    width: 80%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
   }
   
-  .emoji:nth-child(3) {
-    animation-delay: 0.4s;
+  #progress-bar::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.2);
   }
   
-  @keyframes bounceIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    60% {
-      opacity: 1;
-      transform: translateY(-10px);
-    }
-    80% {
-      transform: translateY(5px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  #progress-bar::-webkit-progress-value {
+    background-color: rgba(255, 255, 255, 0.8);
   }
 </style>
