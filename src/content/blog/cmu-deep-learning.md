@@ -1,5 +1,5 @@
 ---
-title: "Carnegie Mellon University: Computer Vision"
+title: "Carnegie Mellon University: Intro to Deep Learning"
 date: "2025-03"
 author: "Rohan Singh"
 image: "/images/blog/cmu-cv.jpg"

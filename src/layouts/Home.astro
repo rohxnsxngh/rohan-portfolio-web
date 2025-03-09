@@ -15,21 +15,17 @@ import RS from "../../src/images/RS.jpg";
           class="text-3xl sm:text-4xl lg:text-5xl font-mono text-primary mb-6 tracking-tight"
         >
           Hey there! I'm
-          <span class="block mt-1 text-primary/90">Rohan Singh</span>
+          <span class="block mt-2 text-primary/90">Rohan Singh</span>
         </h1>
 
-        <span class="animation-container">
-          <div id="robot-animation-container" class="model-display-container">
-            <div class="loading-container">
-              <progress id="progress-bar" value="0" max="100"></progress>
-            </div>
-            <p
-              class="text-xs px-1 sm:text-xs text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0 tracking-tight"
-            >
-              Keep Building
-            </p>
-          </div>
-        </span>
+        <p
+          class="text-lg px-1 my-2 sm:text-lg text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0 tracking-tight"
+        >
+          Keep Building
+          <span class="emoji text-primary">🏗️</span>
+          <span class="emoji text-primary">🛠️</span>
+          <span class="emoji text-primary">🚧</span>
+        </p>
 
         <div
           class="mt-2 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
@@ -82,275 +78,41 @@ import RS from "../../src/images/RS.jpg";
   </div>
 </div>
 
-<script>
-  import * as THREE from "three";
-  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-
-  document.addEventListener("DOMContentLoaded", () => {
-    // DOM elements
-    const container = document.getElementById("robot-animation-container");
-    const progressBar = document.getElementById("progress-bar");
-    const loadingContainer = document.querySelector("div.loading-container");
-
-    // Variables
-    let _robot: any;
-    let _mixerRobot: any;
-    let controls: any;
-    let clock = new THREE.Clock();
-
-    // Simple scene setup
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000); // Black background color
-
-    const camera = new THREE.PerspectiveCamera(75, 240 / 180, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      powerPreference: "high-performance",
-      precision: "highp",
-    });
-
-    renderer.setSize(240, 180);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    if (container) {
-      container.appendChild(renderer.domElement);
-    }
-
-    // Camera position - moved back for better view in larger container
-    camera.position.set(0, 0.5, 4.5);
-
-    // Add OrbitControls with specific limitations
-    controls = new OrbitControls(camera, renderer.domElement);
-
-    // Set initial position
-    controls.target = new THREE.Vector3(0, 0, 0);
-
-    // Allow full rotation horizontally (around y-axis in Three.js terms)
-    controls.enableRotate = true;
-    controls.minAzimuthAngle = -Infinity; // No restriction on horizontal rotation
-    controls.maxAzimuthAngle = Infinity; // No restriction on horizontal rotation
-
-    // Restrict vertical rotation (around x-axis in Three.js terms)
-    controls.minPolarAngle = Math.PI / 2 - 0.3; // Limit upward rotation to small amount (about 17 degrees)
-    controls.maxPolarAngle = Math.PI / 2 + 0.3; // Limit downward rotation to small amount (about 17 degrees)
-
-    // Disable panning
-    controls.enablePan = false;
-
-    // Optional: Limit zoom if needed
-    controls.minDistance = 3.0;
-    controls.maxDistance = 6.0;
-
-    // Add damping for smoother controls
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-
-    // Dramatic lighting setup for off-white robot against black background
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2); // Lower ambient light for more dramatic shadows
-    scene.add(ambientLight);
-
-    // Main directional light - creates primary shadows
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    mainLight.position.set(2, 4, 3);
-    mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 1024; // Higher resolution shadows
-    mainLight.shadow.mapSize.height = 1024;
-    mainLight.shadow.bias = -0.001; // Reduce shadow acne
-    mainLight.shadow.camera.near = 0.5;
-    mainLight.shadow.camera.far = 20;
-    mainLight.shadow.camera.left = -5;
-    mainLight.shadow.camera.right = 5;
-    mainLight.shadow.camera.top = 5;
-    mainLight.shadow.camera.bottom = -5;
-    scene.add(mainLight);
-
-    // Blue accent light for personality
-    const accentLight = new THREE.DirectionalLight(0x4466ff, 0.7);
-    accentLight.position.set(-3, 2, -3);
-    scene.add(accentLight);
-
-    // Rim light to create edge highlights
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    rimLight.position.set(0, 3, -4);
-    scene.add(rimLight);
-
-    // Loading manager for tracking progress
-    const manager = new THREE.LoadingManager();
-
-    manager.onProgress = (url: any, loaded: any, total: any) => {
-      //@ts-ignore
-      if (progressBar) progressBar.value = (loaded / total) * 100;
-    };
-
-    manager.onLoad = () => {
-      if (loadingContainer)
-        //@ts-ignore
-        loadingContainer.style.display = "none";
-    };
-
-    // Load robot model
-    const loader = new GLTFLoader(manager);
-    loader.load(
-      "/src/models/robot_playground.glb",
-      async (glb: any) => {
-        _robot = glb.scene;
-
-        // Off-white material with personality
-        const newMaterial = new THREE.MeshPhongMaterial({
-          color: 0x000000,
-          emissive: 0x000000, //change color
-          specular: 0xffffff, //0xEB00D5
-          shininess: 15,
-          flatShading: true,
-        });
-
-        // Apply material to all meshes in the model
-        _robot.traverse((o: any) => {
-          if (o.isMesh) {
-            o.material = newMaterial;
-            o.castShadow = true;
-            o.receiveShadow = true;
-          }
-        });
-
-        // Position and scale the robot - adjust for better visibility
-        _robot.position.set(0, -0.6, 0);
-        _robot.scale.set(1.6, 1.6, 1.6); // Make robot slightly bigger
-        // _robot.rotation.y = Math.PI / 6; // Rotate slightly for better angle
-
-        scene.add(_robot);
-
-        // Set up animation
-        _mixerRobot = new THREE.AnimationMixer(_robot);
-        _mixerRobot.timeScale = 1;
-
-        if (glb.animations.length > 0) {
-          _mixerRobot.clipAction(glb.animations[0]).play();
-        }
-      },
-      // Progress callback
-      (xhr: any) => {
-        const progress = (xhr.loaded / xhr.total) * 100;
-        console.log(`${progress}% loaded`);
-      },
-      // Error callback
-      (error: any) => {
-        console.error("An error happened while loading the model:", error);
-      }
-    );
-
-    // Animation loop
-    function animate() {
-      requestAnimationFrame(animate);
-
-      // Update animation mixer
-      const delta = clock.getDelta();
-      if (_mixerRobot) {
-        _mixerRobot.update(delta);
-      }
-
-      // Update controls (for smoother movement)
-      if (controls) {
-        controls.update();
-      }
-
-      // Standard rendering
-      renderer.render(scene, camera);
-    }
-
-    animate();
-
-    // Handle window resize
-    window.addEventListener("resize", () => {
-      // For this small viewport, we don't need to adjust much
-      renderer.render(scene, camera);
-    });
-  });
-</script>
-
 <style>
-  .slide-up {
-    animation: slideUp 0.8s ease-out;
+  /* Emoji ripple effect */
+  .emoji {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: bounceIn 1s forwards;
   }
 
-  .fade-in {
-    animation: fadeIn 1s ease-in-out;
+  .emoji:nth-child(1) {
+    animation-delay: 0s;
   }
 
-  @keyframes slideUp {
-    from {
+  .emoji:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .emoji:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes bounceIn {
+    0% {
       opacity: 0;
       transform: translateY(20px);
     }
-    to {
+    60% {
+      opacity: 1;
+      transform: translateY(-10px);
+    }
+    80% {
+      transform: translateY(5px);
+    }
+    100% {
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  /* Animation container styling */
-  .animation-container {
-    display: inline-flex;
-    vertical-align: middle;
-    height: 180px;
-    width: 240px;
-    margin-left: 8px;
-  }
-
-  #robot-animation-container {
-    display: inline-block;
-    vertical-align: middle;
-    height: 180px;
-    width: 240px;
-    position: relative;
-  }
-
-  /* New container styling with border matching the button */
-  .model-display-container {
-    border: 1px solid rgba(var(--color-primary), 0.3);
-    border-radius: 0.5rem;
-    overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.95);
-    transition: transform 0.3s ease-out;
-  }
-
-  .model-display-container:hover {
-    transform: scale(1.03);
-  }
-
-  .loading-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    text-align: center;
-  }
-
-  #progress-bar {
-    width: 80%;
-    height: 8px;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  #progress-bar::-webkit-progress-bar {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-
-  #progress-bar::-webkit-progress-value {
-    background-color: rgba(var(--color-primary), 0.8);
   }
 </style>
