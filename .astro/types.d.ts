@@ -170,6 +170,13 @@ declare module 'astro:content' {
 } & { render(): Render[".md"] };
 };
 "experience": {
+"asml-robotics-intern.md": {
+	id: "asml-robotics-intern.md";
+  slug: "asml-robotics-intern";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
 "nvidia-cad-intern.md": {
 	id: "nvidia-cad-intern.md";
   slug: "nvidia-cad-intern";

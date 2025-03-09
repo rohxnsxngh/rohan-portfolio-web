@@ -18,56 +18,61 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     <div class="flex-grow">
       <Navbar>
         <div class="sm:px-20 px-6 py-2">
-          <h1 class="font-mono sm:text-4xl text-2xl tracking-wider mb-8">
+          <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-4">
             Experience
           </h1>
-
+          
           <div class="">
             {
-              sortedExperiences.map((experience) => (
-                <a href={`/experience/${experience.slug}`} class="block">
-                  <div class="grid gap-6 p-4 rounded-xl bg-base-200/50 transition-colors duration-300 hover:bg-base-200 my-4">
-                    <div>
-                      <div class="flex items-center gap-4 mb-2">
-                        <h2 class="font-mono text-xl">
-                          {experience.data.title}
-                        </h2>
-                        <span
-                          class={`text-sm font-mono px-3 py-1 rounded-lg bg-primary/10 text-primary/80 border ${
-                            experience.data.company
-                              .toLowerCase()
-                              .startsWith("t")
-                              ? "border-red-300/50 shadow-sm shadow-red-200/40"
-                              : experience.data.company
-                                    .toLowerCase()
-                                    .startsWith("n")
-                                ? "border-green-300/50 shadow-sm shadow-green-200/40"
-                                : "border-primary/20"
-                          }`}
-                        >
-                          {experience.data.company}
-                        </span>
-                      </div>
-
-                      <p class="text-base-content/60 mb-4 font-mono">
-                        {experience.data.date}
-                      </p>
-
-                      <p class="text-base-content/80 mb-4">
-                        {experience.data.description}
-                      </p>
-
-                      <div class="flex flex-wrap gap-2 mb-4">
-                        {experience.data.tags.map((tag: string) => (
-                          <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">
-                            {tag}
+              sortedExperiences.map((experience) => {
+                const companyFirstLetter = experience.data.company.toLowerCase().charAt(0);
+                const borderClass =
+                   companyFirstLetter === 't'
+                     ? "border-red-300/50 shadow-sm shadow-red-200/40"
+                    : companyFirstLetter === 'n'
+                      ? "border-green-300/50 shadow-sm shadow-green-200/40"
+                       : companyFirstLetter === 'a'
+                        ? "border-blue-300/50 shadow-sm shadow-blue-200/40"
+                        : "border-primary/20";
+                        
+                        
+                return (
+                  <div class="relative z-10 experience-card group my-4">
+                    <div class="grid gap-6 p-4 rounded-xl bg-black transition-colors duration-300 relative z-10">
+                      <div>
+                        <div class="flex items-center gap-4 mb-2">
+                          <h2 class="font-mono text-xl">
+                            {experience.data.title}
+                          </h2>
+                          <span
+                            class={`text-sm font-mono px-3 py-1 rounded-lg bg-primary/10 text-primary/80 border ${borderClass}`}
+                          >
+                            {experience.data.company}
                           </span>
-                        ))}
+                        </div>
+                        
+                        <p class="text-base-content/60 mb-4 font-mono">
+                          {experience.data.date}
+                        </p>
+                        
+                        <p class="text-base-content/80 mb-4">
+                          {experience.data.description}
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-4">
+                          {experience.data.tags.map((tag: string) => (
+                            <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
+                    <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
+                    <a href={`/experience/${experience.slug}`} class="absolute inset-0 z-20" aria-hidden="true"></a>
                   </div>
-                </a>
-              ))
+                );
+              })
             }
           </div>
         </div>
@@ -78,8 +83,20 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 </Layout>
 
 <style>
-  .drawer-content {
-    z-index: 0;
-    touch-action: auto !important;
+  /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Project card hover animation */
+  .experience-card {
+    transition: transform 0.3s ease-out;
+  }
+  
+  .experience-card:hover {
+    transform: translateY(-4px);
   }
 </style>

@@ -1,7 +1,7 @@
 ---
 title: "Software Systems Engineer"
 company: "Toyota Motors North America"
-description: "As a Software Systems Engineer within Toyota Motors' esteemed rotational program, I've explored diverse facets of software development, focusing on robotics and reinforcement learning. Through engaging rotations, I've actively contributed to projects at the forefront of automotive innovation."
+description: "As a Software Systems Engineer within Toyota Motors' esteemed rotational program, I've explored diverse facets of software development, focusing on vehicle software, telematics modules and software development. Through engaging rotations, I've actively contributed to projects at the forefront of automotive innovation."
 date: "2023-08"
 endDate: "2024-10"
 location: "Plano, TX"
