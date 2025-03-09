@@ -20,6 +20,7 @@
     "typescript": "^5.4.2"
   },
   "devDependencies": {
+    "@types/three": "^0.174.0",
     "daisyui": "^4.7.3"
   }
 }

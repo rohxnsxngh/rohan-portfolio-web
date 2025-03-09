@@ -180,10 +180,13 @@ import RS from "../../src/images/RS.jpg";
     const manager = new THREE.LoadingManager();
 
     manager.onProgress = (url: any, loaded: any, total: any) => {
+      //@ts-ignore
       if (progressBar) progressBar.value = (loaded / total) * 100;
     };
 
     manager.onLoad = () => {
+      if (loadingContainer)
+      //@ts-ignore
       loadingContainer.style.display = "none";
     };
 
@@ -204,7 +207,7 @@ import RS from "../../src/images/RS.jpg";
         });
 
         // Apply material to all meshes in the model
-        _robot.traverse((o) => {
+        _robot.traverse((o: any) => {
           if (o.isMesh) {
             o.material = newMaterial;
             o.castShadow = true;
@@ -228,12 +231,12 @@ import RS from "../../src/images/RS.jpg";
         }
       },
       // Progress callback
-      (xhr) => {
+      (xhr: any) => {
         const progress = (xhr.loaded / xhr.total) * 100;
         console.log(`${progress}% loaded`);
       },
       // Error callback
-      (error) => {
+      (error: any) => {
         console.error("An error happened while loading the model:", error);
       }
     );
