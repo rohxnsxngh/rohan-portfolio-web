@@ -2,8 +2,8 @@
 // RobotModelViewer.astro
 // Props for customization
 interface Props {
-  width?: number;  // Container width in pixels
-  height?: number; // Container height in pixels
+  width?: string;  // Container width as CSS value (can use % or other units)
+  height?: string; // Container height as CSS value (can use % or other units)
   modelPath?: string; // Path to the 3D model
   backgroundColor?: string; // Background color for the scene
   robotColor?: string; // Color of the robot
@@ -14,8 +14,8 @@ interface Props {
 
 // Default values for props
 const {
-  width = 240,
-  height = 180,
+  width = "100%",
+  height = "100%",
   modelPath = "/src/models/robot_playground.glb",
   backgroundColor = "#000000",
   robotColor = "#000000",
@@ -23,12 +23,9 @@ const {
   robotSpecular = "#ffffff",
   className = "",
 } = Astro.props;
-
-// Calculate aspect ratio for camera
-const aspectRatio = width / height;
 ---
 
-<div class={`robot-model-viewer-container group ${className}`} style={`--width: ${width}px; --height: ${height}px;`}>
+<div class={`robot-model-viewer-container group ${className}`} style={`--width: ${width}; --height: ${height};`}>
   <div id="robot-animation-container" class="model-display-container">
     <div class="loading-container">
       <progress id="progress-bar" value="0" max="100"></progress>
@@ -43,38 +40,50 @@ const aspectRatio = width / height;
   import { GLTFLoader } from "/node_modules/three/examples/jsm/loaders/GLTFLoader.js";
   import { OrbitControls } from "/node_modules/three/examples/jsm/controls/OrbitControls.js";
 
-  // Get the props from data attributes
+  // DOM elements
   const container = document.querySelector('.robot-model-viewer-container');
-  const width = Number(getComputedStyle(container).getPropertyValue('--width').replace('px', '')) || 240;
-  const height = Number(getComputedStyle(container).getPropertyValue('--height').replace('px', '')) || 180;
-  const aspectRatio = width / height;
+  const modelContainer = document.getElementById("robot-animation-container");
+  const progressBar = document.getElementById("progress-bar");
+  const loadingContainer = document.querySelector("div.loading-container");
+
+  // Get container dimensions
+  const getContainerSize = () => {
+    const rect = container.getBoundingClientRect();
+    return {
+      width: rect.width,
+      height: rect.height,
+      aspectRatio: rect.width / rect.height
+    };
+  };
+
+  // Get container properties
+  let { width, height, aspectRatio } = getContainerSize();
   const modelPath = container.dataset.modelPath || "/src/models/robot_playground.glb";
   const backgroundColor = "#000000";
   const robotColor = "#000000";
   const robotEmissive = "#000000";
   const robotSpecular = "#ffffff";
 
-  document.addEventListener("DOMContentLoaded", () => {
-    // DOM elements
-    const container = document.getElementById("robot-animation-container");
-    const progressBar = document.getElementById("progress-bar");
-    const loadingContainer = document.querySelector("div.loading-container");
+  // Variables
+  let _robot;
+  let _mixerRobot;
+  let controls;
+  let camera;
+  let renderer;
+  let scene;
+  let clock = new THREE.Clock();
 
-    // Variables
-    let _robot;
-    let _mixerRobot;
-    let controls;
-    let clock = new THREE.Clock();
-
+  // Initialize scene
+  function initScene() {
     // Convert hex color to THREE.js color
     const bgColor = new THREE.Color(backgroundColor);
 
     // Simple scene setup
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
     scene.background = bgColor;
 
-    const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({
+    camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: "high-performance",
       precision: "highp",
@@ -85,8 +94,13 @@ const aspectRatio = width / height;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    if (container) {
-      container.appendChild(renderer.domElement);
+    if (modelContainer) {
+      // Remove any existing canvas
+      const existingCanvas = modelContainer.querySelector('canvas');
+      if (existingCanvas) {
+        modelContainer.removeChild(existingCanvas);
+      }
+      modelContainer.appendChild(renderer.domElement);
     }
 
     // Camera position
@@ -146,6 +160,32 @@ const aspectRatio = width / height;
     const rimLight = new THREE.DirectionalLight(0xffffff, 0.8);
     rimLight.position.set(0, 3, -4);
     scene.add(rimLight);
+  }
+
+  // Handle window resize
+  function handleResize() {
+    const { width: newWidth, height: newHeight, aspectRatio: newAspectRatio } = getContainerSize();
+    
+    // Update variables
+    width = newWidth;
+    height = newHeight;
+    aspectRatio = newAspectRatio;
+    
+    // Update camera
+    camera.aspect = aspectRatio;
+    camera.updateProjectionMatrix();
+    
+    // Update renderer
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    
+    // Render scene
+    renderer.render(scene, camera);
+  }
+
+  // Initialize everything when DOM is loaded
+  function init() {
+    initScene();
 
     // Loading manager for tracking progress
     const manager = new THREE.LoadingManager();
@@ -229,19 +269,31 @@ const aspectRatio = width / height;
 
     animate();
 
-    // Handle window resize
-    window.addEventListener("resize", () => {
-      renderer.render(scene, camera);
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+    
+    // Create a ResizeObserver to watch for container size changes
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
     });
-  });
+    
+    // Start observing the container
+    resizeObserver.observe(container);
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 </script>
 
 <style>
   .robot-model-viewer-container {
-    display: inline-flex;
-    vertical-align: middle;
-    height: var(--height, 180px);
-    width: var(--width, 240px);
+    display: flex;
+    height: var(--height, 100%);
+    width: var(--width, 100%);
     position: relative;
     transition: transform 0.3s ease-out;
   }
@@ -251,11 +303,15 @@ const aspectRatio = width / height;
   }
 
   #robot-animation-container {
-    display: inline-block;
-    vertical-align: middle;
-    height: 100%;
     width: 100%;
+    height: 100%;
     position: relative;
+  }
+  
+  #robot-animation-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
   }
 
   .model-display-container {
@@ -265,6 +321,8 @@ const aspectRatio = width / height;
     background-color: rgba(0, 0, 0, 0.95);
     transition: all 0.3s ease-out;
     z-index: 10;
+    width: 100%;
+    height: 100%;
   }
 
   .model-display-container:hover {
