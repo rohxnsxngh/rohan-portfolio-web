@@ -2,7 +2,7 @@
 // RobotModelViewer.astro
 // Props for customization
 interface Props {
-  width?: string;  // Container width as CSS value (can use % or other units)
+  width?: string; // Container width as CSS value (can use % or other units)
   height?: string; // Container height as CSS value (can use % or other units)
   modelPath?: string; // Path to the 3D model
   backgroundColor?: string; // Background color for the scene
@@ -16,16 +16,19 @@ interface Props {
 const {
   width = "100%",
   height = "100%",
-  modelPath = "/src/models/robot_playground.glb",
-  backgroundColor = "#000000",
-  robotColor = "#000000",
-  robotEmissive = "#000000",
-  robotSpecular = "#ffffff",
+  // modelPath = "models/robot_playground.glb",
+  // backgroundColor = "#000000",
+  // robotColor = "#000000",
+  // robotEmissive = "#000000",
+  // robotSpecular = "#ffffff",
   className = "",
 } = Astro.props;
 ---
 
-<div class={`robot-model-viewer-container group ${className}`} style={`--width: ${width}; --height: ${height};`}>
+<div
+  class={`robot-model-viewer-container group ${className}`}
+  style={`--width: ${width}; --height: ${height};`}
+>
   <div id="robot-animation-container" class="model-display-container">
     <div class="loading-container">
       <progress id="progress-bar" value="0" max="100"></progress>
@@ -34,43 +37,51 @@ const {
 </div>
 
 <!-- Use client:only to ensure this script runs only in the browser -->
-<script type="module">
-  // Use proper import paths with the full URL path from node_modules
-  import * as THREE from "/node_modules/three/build/three.module.js";
-  import { GLTFLoader } from "/node_modules/three/examples/jsm/loaders/GLTFLoader.js";
-  import { OrbitControls } from "/node_modules/three/examples/jsm/controls/OrbitControls.js";
+<script>
+  // Import Three.js properly using ES modules
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
   // DOM elements
-  const container = document.querySelector('.robot-model-viewer-container');
+  const container = document.querySelector(".robot-model-viewer-container");
   const modelContainer = document.getElementById("robot-animation-container");
   const progressBar = document.getElementById("progress-bar");
   const loadingContainer = document.querySelector("div.loading-container");
 
   // Get container dimensions
   const getContainerSize = () => {
+    if (!container) {
+      throw new Error("Container not found");
+    }
     const rect = container.getBoundingClientRect();
+    if (!rect) {
+      throw new Error("Container not found");
+    }
     return {
       width: rect.width,
       height: rect.height,
-      aspectRatio: rect.width / rect.height
+      aspectRatio: rect.width / rect.height,
     };
   };
 
   // Get container properties
   let { width, height, aspectRatio } = getContainerSize();
-  const modelPath = container.dataset.modelPath || "/src/models/robot_playground.glb";
+  if (!width || !height || !aspectRatio) {
+    throw new Error("Container size not found");
+  }
   const backgroundColor = "#000000";
   const robotColor = "#000000";
   const robotEmissive = "#000000";
   const robotSpecular = "#ffffff";
 
   // Variables
-  let _robot;
-  let _mixerRobot;
-  let controls;
-  let camera;
-  let renderer;
-  let scene;
+  let _robot: THREE.Group;
+  let _mixerRobot: THREE.AnimationMixer;
+  let controls: OrbitControls;
+  let camera: THREE.PerspectiveCamera;
+  let renderer: THREE.WebGLRenderer;
+  let scene: THREE.Scene;
   let clock = new THREE.Clock();
 
   // Initialize scene
@@ -96,7 +107,7 @@ const {
 
     if (modelContainer) {
       // Remove any existing canvas
-      const existingCanvas = modelContainer.querySelector('canvas');
+      const existingCanvas = modelContainer.querySelector("canvas");
       if (existingCanvas) {
         modelContainer.removeChild(existingCanvas);
       }
@@ -108,26 +119,26 @@ const {
 
     // Add OrbitControls with specific limitations
     controls = new OrbitControls(camera, renderer.domElement);
-    
+
     // Set initial position
     controls.target = new THREE.Vector3(0, 0, 0);
-    
+
     // Allow full rotation horizontally (around y-axis)
     controls.enableRotate = true;
     controls.minAzimuthAngle = -Infinity;
     controls.maxAzimuthAngle = Infinity;
-    
+
     // Restrict vertical rotation (around x-axis)
-    controls.minPolarAngle = Math.PI / 2 - 0.3;  // About 17 degrees up
-    controls.maxPolarAngle = Math.PI / 2 + 0.3;  // About 17 degrees down
-    
+    controls.minPolarAngle = Math.PI / 2 - 0.3; // About 17 degrees up
+    controls.maxPolarAngle = Math.PI / 2 + 0.3; // About 17 degrees down
+
     // Disable panning
     controls.enablePan = false;
-    
+
     // Optional: Limit zoom if needed
     controls.minDistance = 3.0;
     controls.maxDistance = 6.0;
-    
+
     // Add damping for smoother controls
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -152,33 +163,37 @@ const {
     scene.add(mainLight);
 
     // Blue accent light
-    const accentLight = new THREE.DirectionalLight(0xFFC107, 0.7);
+    const accentLight = new THREE.DirectionalLight(0xffc107, 0.7);
     accentLight.position.set(-3, 2, -3);
     scene.add(accentLight);
 
     // Rim light
-    const rimLight = new THREE.DirectionalLight(0xFFDDBB, 0.8);
+    const rimLight = new THREE.DirectionalLight(0xffddbb, 0.8);
     rimLight.position.set(0, 3, -4);
     scene.add(rimLight);
   }
 
   // Handle window resize
   function handleResize() {
-    const { width: newWidth, height: newHeight, aspectRatio: newAspectRatio } = getContainerSize();
-    
+    const {
+      width: newWidth,
+      height: newHeight,
+      aspectRatio: newAspectRatio,
+    } = getContainerSize();
+
     // Update variables
     width = newWidth;
     height = newHeight;
     aspectRatio = newAspectRatio;
-    
+
     // Update camera
     camera.aspect = aspectRatio;
     camera.updateProjectionMatrix();
-    
+
     // Update renderer
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
-    
+
     // Render scene
     renderer.render(scene, camera);
   }
@@ -191,17 +206,19 @@ const {
     const manager = new THREE.LoadingManager();
 
     manager.onProgress = (url, loaded, total) => {
-      if (progressBar) progressBar.value = (loaded / total) * 100;
+      if (progressBar instanceof HTMLProgressElement) {
+        progressBar.value = (loaded / total) * 100;
+      }
     };
 
-    manager.onLoad = () => {
-      if (loadingContainer) loadingContainer.style.display = "none";
-    };
+    if (loadingContainer instanceof HTMLElement) {
+      loadingContainer.style.display = "none";
+    }
 
     // Load robot model
     const loader = new GLTFLoader(manager);
     loader.load(
-      modelPath,
+      "/src/models/robot_playground.glb",
       async (glb) => {
         _robot = glb.scene;
 
@@ -216,7 +233,7 @@ const {
 
         // Apply material to all meshes in the model
         _robot.traverse((o) => {
-          if (o.isMesh) {
+          if (o instanceof THREE.Mesh) {
             o.material = newMaterial;
             o.castShadow = true;
             o.receiveShadow = true;
@@ -271,14 +288,16 @@ const {
 
     // Add resize event listener
     window.addEventListener("resize", handleResize);
-    
+
     // Create a ResizeObserver to watch for container size changes
     const resizeObserver = new ResizeObserver(() => {
       handleResize();
     });
-    
+
     // Start observing the container
-    resizeObserver.observe(container);
+    if (container) {
+      resizeObserver.observe(container);
+    }
   }
 
   // Initialize when DOM is loaded
@@ -307,7 +326,7 @@ const {
     height: 100%;
     position: relative;
   }
-  
+
   #robot-animation-container canvas {
     width: 100% !important;
     height: 100% !important;
@@ -327,7 +346,9 @@ const {
 
   .model-display-container:hover {
     background-color: rgba(var(--color-accent, 0, 0, 0), 0.05);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
 
   .robot-model-viewer-container::after {

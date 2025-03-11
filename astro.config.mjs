@@ -19,7 +19,17 @@ export default defineConfig({
     resolve: {
       alias: {
         "@images": "/src/images",
+        "@models": "/src/models",
+        "three": "three",
       },
     },
+    optimizeDeps: {
+      include: ['three']
+    },
+    build: {
+      commonjsOptions: {
+        include: [/three/, /three\/examples\/jsm\/*/]
+      }
+    }
   },
 });
