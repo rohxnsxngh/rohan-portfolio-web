@@ -2,34 +2,213 @@
 import { Image } from "astro:assets";
 import Profile from "../../src/images/profile.jpg";
 import RS from "../../src/images/RS.jpg";
+import RobotModelViewer from "../components/RobotModelViewer.astro";
 ---
 
-<div class="hero min-h-screen bg-base-200">
-  <div class="hero-content flex-col lg:flex-row-reverse">
-    <label class="swap swap-flip text-9xl">
-      <!-- this hidden checkbox controls the state -->
-      <input type="checkbox" />
+<div
+  class="min-h-screen bg-secondary flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden relative"
+>
+  <div class="max-w-7xl w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Text Content -->
+      <div class="order-2 lg:order-1 text-center lg:text-left slide-up">
+        <h1
+          class="text-3xl sm:text-4xl lg:text-5xl font-mono text-primary mb-6 tracking-tight"
+        >
+          Hey there! I'm
+          <span class="block mt-2 text-primary/90">Rohan Singh</span>
+        </h1>
 
-      <div class="swap-on">
-        <Image
-        src={Profile}
-        alt="Profile"
-        class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 sm:w-96 w-36 border border-primary hover:border-4"
-      />
+        <p
+          class="text-lg px-1 my-2 sm:text-lg text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0 tracking-tight"
+        >
+          Keep Building
+        </p>
+        
+        <!-- Robot Viewer centered on mobile, next to text on larger screens -->
+        <div class="flex justify-center lg:justify-start my-6 relative z-10 cursor-pointer">
+          <div class="robot-frame relative w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64">
+            <div class="w-full h-full transition-all duration-500 robot-viewer">
+              <RobotModelViewer />
+            </div>
+            <button 
+              class="expand-robot absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full flex items-center justify-center m-2 text-primary/80 z-20 hover:bg-primary/30 transition-colors"
+              aria-label="Expand robot view"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="mt-2 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+        >
+          <a
+            href="/about"
+            class="inline-flex items-center justify-center px-6 py-3 border border-primary/20 text-primary/90 hover:bg-primary/10 transition-colors duration-300 font-mono text-sm tracking-wider"
+          >
+            About Me
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 ml-2"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+          <a
+            href="/project"
+            class="inline-flex items-center justify-center px-6 py-3 bg-primary text-secondary hover:bg-primary/90 transition-colors duration-300 font-mono text-sm tracking-wider"
+          >
+            View Projects
+          </a>
+        </div>
       </div>
-      <div class="swap-off">
-        <Image
-        src={RS}
-        alt="RS Logo"
-        class="max-w-sm rounded-full shadow-2xl sm:h-96 h-36 sm:w-96 w-36 border border-primary hover:border-4"
-      />
+
+      <!-- Image -->
+      <div
+        class="order-1 lg:order-2 flex justify-center lg:justify-end fade-in"
+      >
+        <div class="relative group">
+          <Image
+            src={Profile}
+            alt="Profile"
+            class="rounded-lg w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] xl:w-[32rem] xl:h-[32rem] object-cover filter grayscale hover:grayscale-0 transition-all duration-500 ease-out"
+          />
+          <div
+            class="absolute inset-0 border border-primary/20 rounded-lg transform transition-transform duration-300 group-hover:scale-105"
+          >
+          </div>
+        </div>
       </div>
-    </label>
-    <div>
-      <p class="py-6 px-6 sm:text-2xl text-md">
-        Hey there! I'm
-        <span class="text-primary">Rohan Singh</span>
-      </p>
     </div>
   </div>
 </div>
+
+<style>
+  /* Emoji ripple effect */
+  .emoji {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: bounceIn 1s forwards;
+  }
+
+  .emoji:nth-child(1) {
+    animation-delay: 0s;
+  }
+
+  .emoji:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .emoji:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  /* Robot expanded view */
+  .robot-frame {
+    will-change: transform;
+    transform-origin: center;
+  }
+  
+  .robot-frame.expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw !important;
+    height: 90vw !important;
+    max-width: 600px !important;
+    max-height: 600px !important;
+    z-index: 100;
+  }
+  
+  .robot-frame.expanded::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: -1;
+  }
+  
+  .robot-frame.expanded .expand-robot {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .robot-frame.expanded .expand-robot svg {
+    transform: rotate(180deg);
+  }
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-10px);
+    }
+    80% {
+      transform: translateY(5px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<!-- Script for toggle expand functionality -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const robotFrame = document.querySelector('.robot-frame');
+    const expandButton = document.querySelector('.expand-robot');
+    
+    if (robotFrame && expandButton) {
+      // Toggle expanded view
+      expandButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent event from bubbling to model controls
+        robotFrame.classList.toggle('expanded');
+        
+        // Update aria-label based on state
+        if (robotFrame.classList.contains('expanded')) {
+          expandButton.setAttribute('aria-label', 'Collapse robot view');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling when expanded
+        } else {
+          expandButton.setAttribute('aria-label', 'Expand robot view');
+          document.body.style.overflow = ''; // Restore scrolling
+        }
+      });
+      
+      // Allow clicking outside to close expanded view
+      document.addEventListener('click', (e: any) => {
+        if (robotFrame.classList.contains('expanded') && 
+            !robotFrame.contains(e.target)) {
+          robotFrame.classList.remove('expanded');
+          expandButton.setAttribute('aria-label', 'Expand robot view');
+          document.body.style.overflow = '';
+        }
+      });
+      
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && robotFrame.classList.contains('expanded')) {
+          robotFrame.classList.remove('expanded');
+          expandButton.setAttribute('aria-label', 'Expand robot view');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  });
+</script>

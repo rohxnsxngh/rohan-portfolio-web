@@ -11,18 +11,64 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 
 <Layout>
   <Navbar>
-    <div class="sm:px-20 px-6 py-2">
-      <h1 class="font-semibold sm:text-4xl text-2xl tracking-wider">Blogs</h1>
-      <!-- <ul>
-        {
-          allBlogArticles.map((article) => (
-            <li key={article.slug}>
-              <h1 class="text-black">{article.data.title}</h1>
-            </li>
-          ))
-        }
-      </ul> -->
+    <div class="sm:px-20 px-6 py-8">
+      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">Technical Chronicles</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {allBlogArticles.map((article) => {
+          const tags: string[] = article.data.tags || [];
+          
+          // Set a default status if undefined 
+          const defaultStatus = "Coming Soon";
+          const actualStatus = article.data.status || defaultStatus;
+          
+          // Determine if the article is complete or not
+          const isComplete = actualStatus === "Complete";
+          const statusDisplay = isComplete ? "Complete" : defaultStatus;
+          
+          return (
+            <a href={`/blog/${article.slug}`} class="group h-full relative blog-card">
+              <div class="p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col relative z-10">
+                <div class="flex flex-col h-full">
+                  <div class="flex justify-between items-start mb-3">
+                    <h2 class="text-xl font-bold group-hover:text-primary/90 transition-colors">{article.data.title}</h2>
+                    <span class={`px-2 py-0.5 ml-2 rounded-full text-xs whitespace-nowrap flex-shrink-0 ${isComplete ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'}`}>
+                      {statusDisplay}
+                    </span>
+                  </div>
+                  <p class="text-sm text-primary/60 mb-4">{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <p class="text-primary/80 flex-grow line-clamp-3">{article.data.description}</p>
+                  <div class="mt-4 flex flex-wrap gap-2">
+                    {tags.map(tag => (
+                      <span class="px-3 py-1 text-xs rounded-full bg-accent/10 text-primary/70">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
+            </a>
+          );
+        })}
+      </div>
     </div>
   </Navbar>
   <Footer />
 </Layout>
+
+<style>
+  /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Border animation styles */
+  .blog-card {
+    transition: transform 0.3s ease-out;
+  }
+  
+  .blog-card:hover {
+    transform: translateY(-4px);
+  }
+</style>

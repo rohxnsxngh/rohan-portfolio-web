@@ -1,0 +1,121 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../layouts/Navigation.astro";
+import Footer from "../../layouts/Footer.astro";
+import MarkdownContent from "../../components/MarkdownContent.astro";
+
+export async function getStaticPaths() {
+  const researchEntries = await getCollection("research");
+  return researchEntries.map((research) => ({
+    params: { slug: research.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const research = await getEntry("research", slug);
+const { Content } = await research.render();
+
+type ResearchStatus = "completed" | "in-progress" | "coming-soon";
+
+interface StatusConfig {
+  color: string;
+  text: string;
+}
+
+// Status colors and text
+const statusConfig: Record<ResearchStatus, StatusConfig> = {
+  completed: {
+    color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+    text: "Completed",
+  },
+  "in-progress": {
+    color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+    text: "In Progress",
+  },
+  "coming-soon": {
+    color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+    text: "Coming Soon",
+  },
+};
+---
+
+<Layout title={`${research.data.title} | Rohan Singh`}>
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="sm:px-20 px-6 py-8">
+          <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
+            <header class="mb-8">
+              <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                <h1 class="m-0">{research.data.title}</h1>
+                <span
+                  class={`px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
+                    statusConfig[research.data.status as ResearchStatus].color
+                  }`}
+                >
+                  {statusConfig[research.data.status as ResearchStatus].text}
+                </span>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mt-4">
+                {
+                  research.data.tags.map((tag: string) => (
+                    <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
+                      {tag}
+                    </span>
+                  ))
+                }
+              </div>
+
+              <div class="flex gap-4 mt-4">
+                {
+                  research.data.github && (
+                    <a
+                      href={research.data.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-primary/60 hover:text-primary transition-colors"
+                    >
+                      GitHub →
+                    </a>
+                  )
+                }
+                {
+                  research.data.paper && (
+                    <a
+                      href={research.data.paper}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-primary/60 hover:text-primary transition-colors"
+                    >
+                      Research Paper →
+                    </a>
+                  )
+                }
+              </div>
+            </header>
+            {/* @ts-ignore */}
+            {research.data.images && (
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                {/* @ts-ignore */}
+                {research.data.images.map((image: { src: string; alt: string }) => (
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    class="w-full rounded-lg border border-primary/20"
+                  />
+                ))}
+              </div>
+            )}
+
+            <MarkdownContent>
+              <Content />
+            </MarkdownContent>
+          </article>
+        </div>
+      </Navbar>
+    </div>
+    <Footer />
+  </div>
+</Layout>

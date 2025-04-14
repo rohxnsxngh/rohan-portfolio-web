@@ -1,16 +1,177 @@
 ---
+import { getCollection } from "astro:content";
+import Layout from "../layouts/Layout.astro";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
-import Layout from "../layouts/Layout.astro";
-import EchocardiagramMLResearch from "../components/research/EchocardiagramMLResearch.astro";
+
+// Get all research with error handling
+let allResearch: any[] = [];
+try {
+  allResearch = await getCollection("research");
+  console.log("Total research entries found:", allResearch.length);
+} catch (error) {
+  console.error("Error fetching research:", error);
+}
+
+// Make sure we have valid research items
+const validResearch = allResearch.filter(research => 
+  research && research.data && research.data.title
+);
+console.log("Valid research after filtering:", validResearch.length);
+
+// Sort research by status (completed first, then in-progress, then coming-soon)
+const sortedResearch = [...validResearch].sort((a, b) => {
+  const statusOrder = { 
+    completed: 0, 
+    "in-progress": 1, 
+    "coming-soon": 2 
+  };
+  
+  const statusA = a.data?.status || "completed";
+  const statusB = b.data?.status || "completed";
+  
+  //@ts-ignore
+  const statusCompare = statusOrder[statusA] - statusOrder[statusB];
+  
+  // If same status, sort by date (newest first)
+  if (statusCompare === 0) {
+    const dateA = new Date(a.data?.date || 0).getTime();
+    const dateB = new Date(b.data?.date || 0).getTime();
+    return dateB - dateA;
+  }
+  
+  return statusCompare;
+});
+
+console.log("Research after sorting:", sortedResearch.length);
+
+// Status colors and text
+const statusColors = {
+  completed: "bg-green-500/10 text-green-400",
+  "in-progress": "bg-blue-500/10 text-blue-400",
+  "coming-soon": "bg-purple-500/10 text-purple-400",
+};
+
+const statusText = {
+  completed: "Completed",
+  "in-progress": "In Progress",
+  "coming-soon": "Coming Soon",
+};
 ---
 
-<Layout>
+<Layout title="Research">
   <Navbar>
-    <div class="sm:px-20 px-6 py-2">
-      <h1 class="font-semibold sm:text-4xl text-2xl tracking-wider">Research</h1>
-      <EchocardiagramMLResearch />
+    <div class="sm:px-20 px-6 py-8">
+      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-4">
+        Research & Publications
+      </h1>
+      
+      <!-- Grid layout matching projects page -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mt-8">
+        {sortedResearch.length > 0 ? (
+          sortedResearch.map((research) => {
+            try {
+              // Default values for missing data
+              const title = research.data?.title || "Untitled Research";
+              const description = research.data?.description || "No description available";
+              const status = research.data?.status || "completed";
+              const date = research.data?.date || new Date().toISOString();
+              const tags = Array.isArray(research.data?.tags) ? research.data.tags : [];
+              const github = research.data?.github || "";
+              const paper = research.data?.paper || "";
+              
+              // Use default color if status is not recognized
+              //@ts-ignore
+              const statusColor = statusColors[status] || "bg-gray-500/10 text-gray-400";
+
+              //@ts-ignore
+              const statusDisplay = statusText[status] || "Unknown";
+              
+              return (
+                <div class="relative z-10 research-card group">
+                  <div class="h-full min-h-[200px] p-6 rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10">
+                    <div class="flex items-center justify-between mb-3">
+                      <a href={`/research/${research.slug}`} class="text-xl font-bold text-white hover:text-primary/90 transition-colors">
+                        {title}
+                      </a>
+                      <span
+                        class={`px-2 py-1 text-xs rounded-full ${statusColor}`}
+                      >
+                        {statusDisplay}
+                      </span>
+                    </div>
+                    <p class="text-sm text-white/60 mb-4">
+                      {new Date(date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      })}
+                    </p>
+                    <p class="text-white/80 flex-grow">
+                      {description}
+                    </p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      {tags.map((tag: unknown) => (
+                        <span class="text-sm px-3 py-1 rounded-lg bg-accent/20 text-white/90 border border-accent/30 hover:bg-accent/30 transition-colors duration-200">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    {(github || paper) && (
+                      <div class="mt-4 pt-4 border-t border-accent/20 flex gap-4">
+                        {github && (
+                          <a
+                            href={github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-sm text-white/80 hover:text-white transition-colors external-link"
+                          >
+                            GitHub →
+                          </a>
+                        )}
+                        {paper && (
+                          <a
+                            href={paper}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-sm text-white/80 hover:text-white transition-colors external-link"
+                          >
+                            Read Paper →
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
+                  <a href={`/research/${research.slug}`} class="absolute inset-0 z-20" aria-hidden="true"></a>
+                </div>
+              );
+            } catch (error) {
+              console.error(`Error rendering research:`, error);
+              return (
+                <div class="bg-red-500/20 p-4 rounded-xl text-white">
+                  Error rendering research item
+                </div>
+              );
+            }
+          })
+        ) : (
+          <div class="col-span-3 text-center py-8 bg-base-200/30 rounded-xl">
+            <p class="text-white/80">No research found. Check your content collection.</p>
+          </div>
+        )}
+      </div>
     </div>
   </Navbar>
   <Footer />
 </Layout>
+
+<style>
+  /* Research card hover animation */
+  .research-card {
+    transition: transform 0.3s ease-out;
+  }
+  
+  .research-card:hover {
+    transform: translateY(-4px);
+  }
+</style>

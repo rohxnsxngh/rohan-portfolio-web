@@ -1,0 +1,112 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../layouts/Navigation.astro";
+import Footer from "../../layouts/Footer.astro";
+import MarkdownContent from "../../components/MarkdownContent.astro";
+
+export async function getStaticPaths() {
+  const experiences = await getCollection("experience");
+  return experiences.map((experience) => ({
+    params: { slug: experience.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const experience = await getEntry("experience", slug);
+const { Content } = await experience.render();
+
+function formatYearMonth(dateString: string) {
+  if (!dateString) return "";
+
+  try {
+    // Parse YYYY-MM format
+    const [year, month] = dateString.split("-").map((num) => parseInt(num, 10));
+
+    // Create date (months are 0-indexed in JavaScript)
+    const date = new Date(year, month - 1);
+
+    // Format date to "Month Year"
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+    });
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return dateString; // Return original string as fallback
+  }
+}
+---
+
+<Layout title={`${experience.data.title} | Rohan Singh`}>
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="sm:px-20 px-6 py-8">
+          <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
+            <header class="mb-8">
+              <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                <h1 class="m-0">{experience.data.title}</h1>
+                <span
+                  class="text-primary/60 font-mono px-3 py-1 rounded-lg bg-primary/10 border border-primary/20"
+                >
+                  {experience.data.company}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-4 text-primary/60 font-mono">
+                <time datetime={experience.data.date}>
+                  {formatYearMonth(experience.data.date)}
+                </time>
+                {
+                  experience.data.endDate && (
+                    <>
+                      <span>→</span>
+                      <time datetime={experience.data.endDate}>
+                        {formatYearMonth(experience.data.endDate)}
+                      </time>
+                    </>
+                  )
+                }
+                <span>•</span>
+                <span>{experience.data.location}</span>
+              </div>
+
+              <div class="flex flex-wrap gap-2 mt-4">
+                {
+                  experience.data.tags.map((tag: string) => (
+                    <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
+                      {tag}
+                    </span>
+                  ))
+                }
+              </div>
+            </header>
+
+            <MarkdownContent>
+              <Content />
+            </MarkdownContent>
+
+            {
+              experience.data.images && (
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                  {experience.data.images.map(
+                    (image: { src: string; alt: string }) => (
+                      <img
+                        src={image.src}
+                        alt={image.alt}
+                        class="w-full rounded-lg border border-primary/20"
+                      />
+                    )
+                  )}
+                </div>
+              )
+            }
+          </article>
+        </div>
+      </Navbar>
+    </div>
+    <Footer />
+  </div>
+</Layout>
+

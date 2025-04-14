@@ -1,22 +1,181 @@
 ---
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
-import Layout from "../layouts/Layout.astro";
-import Graphics from "../components/project/Graphics.astro";
-import Strandbeest from "../components/project/Strandbeest.astro";
-import Baseball from "../components/project/Baseball.astro";
-import Maze from "../components/project/Maze.astro";
+
+// Get all projects with error handling
+let allProjects: CollectionEntry<"project">[] = [];
+try {
+  allProjects = await getCollection("project");
+  console.log("Total projects found:", allProjects.length);
+} catch (error) {
+  console.error("Error fetching projects:", error);
+}
+
+// Make sure we have valid projects by removing any undefined entries
+const validProjects = allProjects.filter(project => 
+  project && project.data && project.data.title
+);
+console.log("Valid projects after filtering:", validProjects.length);
+
+// Sort projects by status with fallback values
+const sortedProjects = [...validProjects].sort((a, b) => {
+  // Default status if missing
+  const statusA = a.data?.status || "completed";
+  const statusB = b.data?.status || "completed";
+  
+  // Sort by status (completed first, then in-progress, then coming-soon)
+  const statusOrder = { completed: 0, "in-progress": 1, "coming-soon": 2 };
+  const statusCompare = (statusOrder[statusA] || 0) - (statusOrder[statusB] || 0);
+  
+  // If same status, sort by date (newest first)
+  if (statusCompare === 0) {
+    const dateA = new Date(a.data?.date || 0).getTime();
+    const dateB = new Date(b.data?.date || 0).getTime();
+    return dateB - dateA;
+  }
+  
+  return statusCompare;
+});
+
+console.log("Projects after sorting:", sortedProjects.length);
 ---
 
 <Layout>
   <Navbar>
-    <div class="sm:px-20 px-6 py-2">
-      <h1 class="font-semibold sm:text-4xl text-2xl tracking-wider">Projects</h1>
-      <Maze />
-      <Baseball />
-      <Strandbeest />
-      <Graphics />
+    <div class="sm:px-20 px-6 py-8">
+      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-4">
+        Projects & Experiments
+      </h1>
+      
+      <!-- Simple 3-column grid layout -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        {sortedProjects.length > 0 ? (
+          sortedProjects.map((project) => {
+            try {
+              // Default values for missing data
+              const title = project.data?.title || "Untitled Project";
+              const description = project.data?.description || "No description available";
+              const status = project.data?.status || "completed";
+              const date = project.data?.date || new Date().toISOString();
+              const tags = Array.isArray(project.data?.tags) ? project.data.tags : [];
+              const github = project.data?.github || "";
+              const demo = project.data?.demo || "";
+              
+              const statusColors = {
+                completed: "bg-green-500/10 text-green-400",
+                "in-progress": "bg-blue-500/10 text-blue-400",
+                "coming-soon": "bg-purple-500/10 text-purple-400",
+              };
+              
+              const statusText = {
+                completed: "Completed",
+                "in-progress": "In Progress",
+                "coming-soon": "Coming Soon",
+              };
+              
+              // Use default color if status is not recognized
+              const statusColor = statusColors[status] || "bg-gray-500/10 text-gray-400";
+              const statusDisplay = statusText[status] || "Unknown";
+              
+              return (
+              <!-- Modified project card structure -->
+<div class="relative z-10 project-card group">
+  <div class="h-full min-h-[200px] p-6 rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10">
+    <div class="flex items-center justify-between mb-3">
+      <a href={`/project/${project.slug}`} class="text-xl font-bold text-white hover:text-primary/90 transition-colors">
+        {title}
+      </a>
+      <span
+        class={`px-2 py-1 text-xs rounded-full flex-shrink-0 ${statusColor}`}
+      >
+        {statusDisplay}
+      </span>
+    </div>
+    <p class="text-sm text-white/60 mb-4">
+      {new Date(date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+      })}
+    </p>
+    <p class="text-white/80 flex-grow">
+      {description}
+    </p>
+    <div class="mt-4 flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <span class="text-sm px-3 py-1 rounded-lg bg-accent/20 text-white/90 border border-accent/30 hover:bg-accent/30 transition-colors duration-200">
+          {tag}
+        </span>
+      ))}
+    </div>
+    {(github || demo) && (
+      <div class="mt-4 pt-4 flex gap-4">
+        {github && (
+          <a
+            href={github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm text-white/80 hover:text-white transition-colors"
+            onclick="(e => { e.stopPropagation(); })(event)"
+          >
+            GitHub →
+          </a>
+        )}
+        {demo && (
+          <a
+            href={demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm text-white/80 hover:text-white transition-colors ml-4"
+            onclick="(e => { e.stopPropagation(); })(event)"
+          >
+            Live Demo →
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+  <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
+  <a href={`/project/${project.slug}`} class="absolute inset-0 z-20" aria-hidden="true"></a>
+</div>
+              );
+            } catch (error) {
+              console.error(`Error rendering project:`, error);
+              return (
+                <div class="bg-red-500/20 p-4 rounded-xl text-white">
+                  Error rendering project
+                </div>
+              );
+            }
+          })
+        ) : (
+          <div class="col-span-3 text-center py-8 bg-base-200/30 rounded-xl">
+            <p class="text-white/80">No projects found. Check your content collection.</p>
+          </div>
+        )}
+      </div>
     </div>
   </Navbar>
   <Footer />
 </Layout>
+
+<style>
+  /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Project card hover animation */
+  .project-card {
+    transition: transform 0.3s ease-out;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-4px);
+  }
+</style>
