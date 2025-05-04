@@ -131,72 +131,65 @@ declare module 'astro:content' {
   slug: "cmu-computer-vision";
   body: string;
   collection: "blog";
-  data: InferEntrySchema<"blog">
+  data: any
 } & { render(): Render[".md"] };
 "cmu-deep-learning.md": {
 	id: "cmu-deep-learning.md";
   slug: "cmu-deep-learning";
   body: string;
   collection: "blog";
-  data: InferEntrySchema<"blog">
+  data: any
 } & { render(): Render[".md"] };
 "freelancing-journey.md": {
 	id: "freelancing-journey.md";
   slug: "freelancing-journey";
   body: string;
   collection: "blog";
-  data: InferEntrySchema<"blog">
+  data: any
 } & { render(): Render[".md"] };
 "mechanical-to-swe-internship.md": {
 	id: "mechanical-to-swe-internship.md";
   slug: "mechanical-to-swe-internship";
   body: string;
   collection: "blog";
-  data: InferEntrySchema<"blog">
+  data: any
 } & { render(): Render[".md"] };
 "software-rotational-programs.md": {
 	id: "software-rotational-programs.md";
   slug: "software-rotational-programs";
   body: string;
   collection: "blog";
-  data: InferEntrySchema<"blog">
+  data: any
 } & { render(): Render[".md"] };
 "yc-double-interview.md": {
 	id: "yc-double-interview.md";
   slug: "yc-double-interview";
   body: string;
   collection: "blog";
-  data: InferEntrySchema<"blog">
+  data: any
 } & { render(): Render[".md"] };
 };
 "experience": {
-"asml-robotics-intern.md": {
-	id: "asml-robotics-intern.md";
-  slug: "asml-robotics-intern";
-  body: string;
-  collection: "experience";
-  data: InferEntrySchema<"experience">
-} & { render(): Render[".md"] };
 "tesla-software-intern-2022.md": {
 	id: "tesla-software-intern-2022.md";
   slug: "tesla-software-intern-2022";
   body: string;
   collection: "experience";
-  data: InferEntrySchema<"experience">
+  data: any
 } & { render(): Render[".md"] };
 "tesla-software-intern-2023.md": {
 	id: "tesla-software-intern-2023.md";
   slug: "tesla-software-intern-2023";
   body: string;
   collection: "experience";
-  data: InferEntrySchema<"experience">
+  data: any
 } & { render(): Render[".md"] };
 "toyota.md": {
 	id: "toyota.md";
   slug: "toyota";
   body: string;
   collection: "experience";
-  data: InferEntrySchema<"experience">
+  data: any
 } & { render(): Render[".md"] };
 };
 "project": {
@@ -205,42 +198,42 @@ declare module 'astro:content' {
   slug: "3d-scaffolding-tool";
   body: string;
   collection: "project";
-  data: InferEntrySchema<"project">
+  data: any
 } & { render(): Render[".md"] };
 "banking-with-tigerbeetle.md": {
 	id: "banking-with-tigerbeetle.md";
   slug: "banking-with-tigerbeetle";
   body: string;
   collection: "project";
-  data: InferEntrySchema<"project">
+  data: any
 } & { render(): Render[".md"] };
 "baseball-analytics.md": {
 	id: "baseball-analytics.md";
   slug: "baseball-analytics";
   body: string;
   collection: "project";
-  data: InferEntrySchema<"project">
+  data: any
 } & { render(): Render[".md"] };
 "forge-engine.md": {
 	id: "forge-engine.md";
   slug: "forge-engine";
   body: string;
   collection: "project";
-  data: InferEntrySchema<"project">
+  data: any
 } & { render(): Render[".md"] };
 "lidar-maze-robot.md": {
 	id: "lidar-maze-robot.md";
   slug: "lidar-maze-robot";
   body: string;
   collection: "project";
-  data: InferEntrySchema<"project">
+  data: any
 } & { render(): Render[".md"] };
 "strandbeest-robot.md": {
 	id: "strandbeest-robot.md";
   slug: "strandbeest-robot";
   body: string;
   collection: "project";
-  data: InferEntrySchema<"project">
+  data: any
 } & { render(): Render[".md"] };
 };
 "research": {
@@ -249,7 +242,7 @@ declare module 'astro:content' {
   slug: "echocardiagram-ml";
   body: string;
   collection: "research";
-  data: InferEntrySchema<"research">
+  data: any
 } & { render(): Render[".md"] };
 };
 
@@ -261,5 +254,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	export type ContentConfig = typeof import("./../src/content/config.js");
+	export type ContentConfig = never;
 }
