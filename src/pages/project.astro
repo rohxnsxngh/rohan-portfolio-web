@@ -4,6 +4,7 @@ import type { CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
+import ProjectImage from "../components/ProjectImage.astro";
 
 // Get all projects with error handling
 let allProjects: CollectionEntry<"project">[] = [];
@@ -63,6 +64,7 @@ console.log("Projects after sorting:", sortedProjects.length);
               const tags = Array.isArray(project.data?.tags) ? project.data.tags : [];
               const github = project.data?.github || "";
               const demo = project.data?.demo || "";
+              const image = project.data?.image || "";
               
               const statusColors = {
                 completed: "bg-green-500/10 text-green-400",
@@ -81,65 +83,78 @@ console.log("Projects after sorting:", sortedProjects.length);
               const statusDisplay = statusText[status] || "Unknown";
               
               return (
-              <!-- Modified project card structure -->
-<div class="relative z-10 project-card group">
-  <div class="h-full min-h-[200px] p-6 rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10">
-    <div class="flex items-center justify-between mb-3">
-      <a href={`/project/${project.slug}`} class="text-xl font-bold text-white hover:text-primary/90 transition-colors">
-        {title}
-      </a>
-      <span
-        class={`px-2 py-1 text-xs rounded-full flex-shrink-0 ${statusColor}`}
-      >
-        {statusDisplay}
-      </span>
-    </div>
-    <p class="text-sm text-white/60 mb-4">
-      {new Date(date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-      })}
-    </p>
-    <p class="text-white/80 flex-grow">
-      {description}
-    </p>
-    <div class="mt-4 flex flex-wrap gap-2">
-      {tags.map((tag) => (
-        <span class="text-sm px-3 py-1 rounded-lg bg-accent/20 text-white/90 border border-accent/30 hover:bg-accent/30 transition-colors duration-200">
-          {tag}
-        </span>
-      ))}
-    </div>
-    {(github || demo) && (
-      <div class="mt-4 pt-4 flex gap-4">
-        {github && (
-          <a
-            href={github}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-white/80 hover:text-white transition-colors"
-            onclick="(e => { e.stopPropagation(); })(event)"
-          >
-            GitHub →
-          </a>
-        )}
-        {demo && (
-          <a
-            href={demo}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-sm text-white/80 hover:text-white transition-colors ml-4"
-            onclick="(e => { e.stopPropagation(); })(event)"
-          >
-            Live Demo →
-          </a>
-        )}
-      </div>
-    )}
-  </div>
-  <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
-  <a href={`/project/${project.slug}`} class="absolute inset-0 z-20" aria-hidden="true"></a>
-</div>
+                <div class="relative z-10 project-card group">
+                  <div class="h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10 overflow-hidden">
+                    {/* Project Image at the top */}
+                    <ProjectImage 
+                      image={image} 
+                      title={title} 
+                      tags={tags}
+                    />
+                    
+                    <div class="p-6">
+                      <div class="flex items-center justify-between mb-3">
+                        <a href={`/project/${project.slug}`} class="text-xl font-bold text-white hover:text-primary/90 transition-colors">
+                          {title}
+                        </a>
+                        <span
+                          class={`px-2 py-1 text-xs rounded-full flex-shrink-0 ${statusColor}`}
+                        >
+                          {statusDisplay}
+                        </span>
+                      </div>
+                      <p class="text-sm text-white/60 mb-4">
+                        {new Date(date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                        })}
+                      </p>
+                      <p class="text-white/80 flex-grow line-clamp-3">
+                        {description}
+                      </p>
+                      <div class="mt-4 flex flex-wrap gap-2">
+                        {tags.slice(0, 3).map((tag) => (
+                          <span class="text-sm px-3 py-1 rounded-lg bg-accent/20 text-white/90 border border-accent/30 hover:bg-accent/30 transition-colors duration-200">
+                            {tag}
+                          </span>
+                        ))}
+                        {tags.length > 3 && (
+                          <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-white/70">
+                            +{tags.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                      {(github || demo) && (
+                        <div class="mt-4 pt-4 flex gap-4 border-t border-accent/10">
+                          {github && (
+                            <a
+                              href={github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-sm text-white/80 hover:text-white transition-colors"
+                              onclick="(e => { e.stopPropagation(); })(event)"
+                            >
+                              GitHub →
+                            </a>
+                          )}
+                          {demo && (
+                            <a
+                              href={demo}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-sm text-white/80 hover:text-white transition-colors ml-4"
+                              onclick="(e => { e.stopPropagation(); })(event)"
+                            >
+                              Live Demo →
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
+                  <a href={`/project/${project.slug}`} class="absolute inset-0 z-20" aria-hidden="true"></a>
+                </div>
               );
             } catch (error) {
               console.error(`Error rendering project:`, error);

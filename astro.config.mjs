@@ -1,10 +1,15 @@
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
 import tailwind from "@astrojs/tailwind";
+import image from '@astrojs/image';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind()],
+  integrations: [tailwind(),
+    image({
+      serviceEntryPoint: '@astrojs/image/sharp'
+    }),
+  ],
   content: {
     collections: {
       blogs: "src/content/blogs",

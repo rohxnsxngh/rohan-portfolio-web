@@ -22,24 +22,29 @@ const sortedExperiences = allExperiences.sort((a, b) => {
             Experience
           </h1>
 
-          <h1 class="sm:text-sm text-xs tracking-wider mb-4 px-2">
-            TLDR: ASML → Toyota → Tesla → Tesla → Nvidia
-          </h1>
-          
+          <div class="sm:text-sm text-xs tracking-wider mb-4 px-2">
+            TLDR: <span class="text-cyan-500/50">ASML</span> → <span
+              class="text-red-300/80">Toyota</span
+            > → <span class="text-red-500/90">Tesla</span> → <span
+              class="text-red-500/90">Tesla</span
+            > → <span class="text-lime-500/90">Nvidia</span>
+          </div>
+
           <div class="">
             {
               sortedExperiences.map((experience) => {
-                const companyFirstLetter = experience.data.company.toLowerCase().charAt(0);
+                const companyFirstLetter = experience.data.company
+                  .toLowerCase()
+                  .charAt(0);
                 const borderClass =
-                   companyFirstLetter === 't'
-                     ? "border-red-300/50 shadow-sm shadow-red-200/40"
-                    : companyFirstLetter === 'n'
+                  companyFirstLetter === "t"
+                    ? "border-red-300/50 shadow-sm shadow-red-200/40"
+                    : companyFirstLetter === "n"
                       ? "border-green-300/50 shadow-sm shadow-green-200/40"
-                       : companyFirstLetter === 'a'
+                      : companyFirstLetter === "a"
                         ? "border-blue-300/50 shadow-sm shadow-blue-200/40"
                         : "border-primary/20";
-                        
-                        
+
                 return (
                   <div class="relative z-10 experience-card group my-4">
                     <div class="grid gap-6 p-4 rounded-xl bg-black transition-colors duration-300 relative z-10">
@@ -54,15 +59,15 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                             {experience.data.company}
                           </span>
                         </div>
-                        
+
                         <p class="text-base-content/60 mb-4 font-mono">
                           {experience.data.date}
                         </p>
-                        
+
                         <p class="text-base-content/80 mb-4">
                           {experience.data.description}
                         </p>
-                        
+
                         <div class="flex flex-wrap gap-2 mb-4">
                           {experience.data.tags.map((tag: string) => (
                             <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">
@@ -72,8 +77,12 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                         </div>
                       </div>
                     </div>
-                    <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
-                    <a href={`/experience/${experience.slug}`} class="absolute inset-0 z-20" aria-hidden="true"></a>
+                    <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40" />
+                    <a
+                      href={`/experience/${experience.slug}`}
+                      class="absolute inset-0 z-20"
+                      aria-hidden="true"
+                    />
                   </div>
                 );
               })
@@ -94,12 +103,12 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
+
   /* Project card hover animation */
   .experience-card {
     transition: transform 0.3s ease-out;
   }
-  
+
   .experience-card:hover {
     transform: translateY(-4px);
   }

@@ -1,0 +1,54 @@
+---
+// ProjectImage.astro
+// A component that displays either a real project image or generates a dynamic placeholder
+
+interface Props {
+  image?: string;
+  title: string;
+  tags?: string[];
+  bgColor?: string;
+}
+
+const { 
+  image, 
+  title, 
+  tags = [], 
+  bgColor = "#1a1a2e" 
+} = Astro.props;
+
+// Determine if we need to render a dynamic placeholder
+const hasRealImage = !!image;
+
+// Generate a dynamic text color that contrasts with the background
+const textColor = bgColor.toLowerCase() === "#1a1a2e" ? "#e0e0e0" : "#ffffff";
+
+// Extract initials or first character from title for the placeholder
+const initials = title
+  .split(' ')
+  .map(word => word[0])
+  .join('')
+  .substring(0, 2)
+  .toUpperCase();
+
+// Choose a tag for display in the placeholder
+const mainTag = tags.length > 0 ? tags[0] : "";
+---
+
+{hasRealImage ? (
+  <div class="w-full h-48 overflow-hidden rounded-lg">
+    <img 
+      src={image} 
+      alt={title}
+      class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+    />
+  </div>
+) : (
+  <div 
+    class="w-full h-48 rounded-lg flex flex-col items-center justify-center text-center p-4"
+    style={`background-color: ${bgColor}; color: ${textColor};`}
+  >
+    <div class="text-3xl font-bold mb-2">{initials}</div>
+    <div class="text-sm opacity-80">{mainTag}</div>
+    <div class="text-xs mt-4 opacity-60">{title}</div>
+  </div>
+)}
