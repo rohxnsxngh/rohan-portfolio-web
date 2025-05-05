@@ -1,14 +1,13 @@
 import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
 import tailwind from "@astrojs/tailwind";
-import image from '@astrojs/image';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(),
-    image({
-      serviceEntryPoint: '@astrojs/image/sharp'
-    }),
+    // image({
+    //   serviceEntryPoint: '@astrojs/image/sharp'
+    // }),
   ],
   content: {
     collections: {
@@ -23,7 +22,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        "@images": "/src/images",
+        "@images": "/public/images",
         "@models": "/src/models",
         "three": "three",
       },

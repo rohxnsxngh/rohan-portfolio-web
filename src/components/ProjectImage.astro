@@ -1,6 +1,5 @@
 ---
-// ProjectImage.astro
-// A component that displays either a real project image or generates a dynamic placeholder
+// src/components/ProjectImage.astro - With path correction logic
 
 interface Props {
   image?: string;
@@ -19,10 +18,7 @@ const {
 // Determine if we need to render a dynamic placeholder
 const hasRealImage = !!image;
 
-// Generate a dynamic text color that contrasts with the background
-const textColor = bgColor.toLowerCase() === "#1a1a2e" ? "#e0e0e0" : "#ffffff";
-
-// Extract initials or first character from title for the placeholder
+// Extract initials for placeholder
 const initials = title
   .split(' ')
   .map(word => word[0])
@@ -32,23 +28,105 @@ const initials = title
 
 // Choose a tag for display in the placeholder
 const mainTag = tags.length > 0 ? tags[0] : "";
+
+// Generate a unique ID for this component instance
+const uniqueId = `image-${Math.random().toString(36).substring(2, 10)}`;
+
+// Fix the image path with more intelligent path handling
+const getImagePath = (path) => {
+  if (!path) return '';
+  
+  // For paths that look like @images/project/image.jpg
+  if (path.startsWith('@images/')) {
+    // Convert to /images/project/image.jpg
+    return path.replace('@images/', '/images/');
+  }
+  
+  // If the path doesn't start with / or http, add /
+  if (!path.startsWith('/') && !path.startsWith('http')) {
+    return `/${path}`;
+  }
+  
+  return path;
+};
+
+const imagePath = getImagePath(image);
+
+// Log the image path transformation for debugging
+console.log(`Original path: ${image} → Transformed: ${imagePath}`);
 ---
 
 {hasRealImage ? (
-  <div class="w-full h-48 overflow-hidden rounded-lg">
+  <div class="w-full h-48 overflow-hidden rounded-lg image-container" id={uniqueId}>
+    {/* Primary image attempt - with the fixed path */}
     <img 
-      src={image} 
+      src={imagePath} 
       alt={title}
-      class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+      class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 real-image"
+      onerror={`
+        // First attempt failed, try with project directory instead of projects
+        const img = this;
+        const container = document.getElementById('${uniqueId}');
+        let altPath = '';
+        
+        // Try to fix common path issues
+        if (img.src.includes('/projects/')) {
+          // Try project directory instead
+          altPath = img.src.replace('/projects/', '/project/');
+          console.log('Trying alternate path: ' + altPath);
+          img.src = altPath;
+        } 
+        else if (img.src.includes('/project/')) {
+          // Try projects directory instead
+          altPath = img.src.replace('/project/', '/projects/');
+          console.log('Trying alternate path: ' + altPath);
+          img.src = altPath;
+        }
+        else {
+          // If we can't fix the path, show fallback
+          img.onerror = null;
+          img.style.display = 'none';
+          container.querySelector('.fallback').style.display = 'flex';
+        }
+        
+        // Set a final error handler for the last attempt
+        img.onerror = function() {
+          this.onerror = null;
+          this.style.display = 'none';
+          container.querySelector('.fallback').style.display = 'flex';
+        };
+      `}
     />
+    <div 
+      class="fallback w-full h-full flex-col items-center justify-center text-center p-4"
+      style={`background-color: ${bgColor}; color: #e0e0e0; display: none;`}
+    >
+      <div class="text-3xl font-bold mb-2">{initials}</div>
+      <div class="text-sm opacity-80">{mainTag}</div>
+      <div class="text-xs mt-4 opacity-60">{title}</div>
+    </div>
   </div>
 ) : (
   <div 
     class="w-full h-48 rounded-lg flex flex-col items-center justify-center text-center p-4"
-    style={`background-color: ${bgColor}; color: ${textColor};`}
+    style={`background-color: ${bgColor}; color: #e0e0e0;`}
   >
     <div class="text-3xl font-bold mb-2">{initials}</div>
     <div class="text-sm opacity-80">{mainTag}</div>
     <div class="text-xs mt-4 opacity-60">{title}</div>
   </div>
 )}
+
+<style>
+  .image-container img {
+    transition: transform 0.4s ease-out;
+  }
+  
+  .project-card:hover .image-container img {
+    transform: scale(1.05);
+  }
+  
+  .fallback {
+    background: linear-gradient(135deg, #1a1a2a 0%, #2a2a3a 100%);
+  }
+</style>

@@ -2,7 +2,7 @@
 title: "Baseball Analytics Platform"
 date: "2023-12"
 status: "completed"
-image: "/images/project/MachineLearningBaseball.png"
+image: "/images/project/MachineLearningEric.png"
 description: "A comprehensive baseball analytics platform that uses machine learning to analyze player performance and predict game outcomes."
 tags: ["machine learning", "sports analytics", "Python", "data science", "visualization"]
 github: "https://github.com/rohan/baseball-analytics"
