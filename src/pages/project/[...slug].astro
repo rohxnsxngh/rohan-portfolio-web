@@ -29,7 +29,7 @@ const statusColors = {
   'coming-soon': 'bg-purple-500/10 text-purple-400'
 };
 
-const statusText = {
+const statusText: Record<'completed' | 'in-progress' | 'coming-soon', string> = {
   completed: 'Completed',
   'in-progress': 'In Progress',
   'coming-soon': 'Coming Soon'
@@ -48,8 +48,8 @@ const imageId = `project-image-${Math.random().toString(36).substring(2, 10)}`;
             <header class="mb-8">
               <div class="flex items-center justify-between mb-4">
                 <h1 class="text-4xl font-bold m-0">{project.data.title}</h1>
-                <span class={`px-3 py-1 text-sm rounded-full ${statusColors[project.data.status]}`}>
-                  {statusText[project.data.status]}
+                <span class={`px-3 py-1 text-sm rounded-full ${statusColors[project.data.status as 'completed' | 'in-progress' | 'coming-soon']}`}>
+                  {statusText[project.data.status as 'completed' | 'in-progress' | 'coming-soon']}
                 </span>
               </div>
               <div class="flex items-center gap-4 text-primary/60">
@@ -98,7 +98,7 @@ const imageId = `project-image-${Math.random().toString(36).substring(2, 10)}`;
                     style="display: none;"
                   >
                     <div class="text-5xl font-bold mb-4">
-                      {project.data.title.split(' ').map(word => word[0]).join('').substring(0, 2).toUpperCase()}
+                      {project.data.title.split(' ').map((word: any[]) => word[0]).join('').substring(0, 2).toUpperCase()}
                     </div>
                     <div class="text-xl opacity-80">{project.data.tags[0] || "Project"}</div>
                   </div>

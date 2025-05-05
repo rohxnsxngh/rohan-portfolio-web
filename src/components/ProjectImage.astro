@@ -33,7 +33,7 @@ const mainTag = tags.length > 0 ? tags[0] : "";
 const uniqueId = `image-${Math.random().toString(36).substring(2, 10)}`;
 
 // Fix the image path with more intelligent path handling
-const getImagePath = (path) => {
+const getImagePath = (path: string | undefined) => {
   if (!path) return '';
   
   // For paths that look like @images/project/image.jpg
