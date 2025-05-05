@@ -1,6 +1,6 @@
 ---
 title: "Bio-inspired Fish Locomotion Through Variable Undulation"
-date: "2025-05"
+date: "2025-06"
 status: "completed"
 image: "/images/project/BiobotRender.jpg"
 description: "A robotic fish platform that investigates the optimization of aquatic propulsion through bio-inspired fishtail locomotion, featuring modular tail segments and controllable swimming patterns."

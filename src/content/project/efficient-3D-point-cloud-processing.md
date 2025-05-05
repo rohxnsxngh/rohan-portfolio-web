@@ -1,6 +1,6 @@
 ---
 title: "TinyPointNeXt: Efficient 3D Point Cloud Processing"
-date: "2025-04"
+date: "2025-05"
 status: "completed"
 image: "/images/project/PointnextCustomDataset.jpg"
 description: "A lightweight architecture for dynamic object segmentation in 3D point clouds, optimizing for human detection with reduced model parameters while maintaining high accuracy."

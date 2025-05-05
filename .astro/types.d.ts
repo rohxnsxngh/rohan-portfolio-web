@@ -214,6 +214,13 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
+"attention-mechanisms-and-memory-networks.md": {
+	id: "attention-mechanisms-and-memory-networks.md";
+  slug: "attention-mechanisms-and-memory-networks";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
 "baseball-analytics.md": {
 	id: "baseball-analytics.md";
   slug: "baseball-analytics";
@@ -228,9 +235,23 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
+"connectionist-temporal-classification.md": {
+	id: "connectionist-temporal-classification.md";
+  slug: "connectionist-temporal-classification";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
 "efficient-3D-point-cloud-processing.md": {
 	id: "efficient-3D-point-cloud-processing.md";
   slug: "efficient-3d-point-cloud-processing";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
+"face-recognition-and verification.md": {
+	id: "face-recognition-and verification.md";
+  slug: "face-recognition-and-verification";
   body: string;
   collection: "project";
   data: InferEntrySchema<"project">
@@ -245,6 +266,13 @@ declare module 'astro:content' {
 "lidar-maze-robot.md": {
 	id: "lidar-maze-robot.md";
   slug: "lidar-maze-robot";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
+"phoneme-recognition.md": {
+	id: "phoneme-recognition.md";
+  slug: "phoneme-recognition";
   body: string;
   collection: "project";
   data: InferEntrySchema<"project">
