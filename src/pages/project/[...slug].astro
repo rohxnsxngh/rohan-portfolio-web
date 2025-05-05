@@ -87,12 +87,12 @@ const imageId = `project-image-${Math.random().toString(36).substring(2, 10)}`;
               {/* Display the project image with fallback */}
               {project.data.image && (
                 <div class="mt-6 mb-8 relative" id={imageId}>
-                  <img 
+                  {/* <img 
                     src={project.data.image} 
                     alt={project.data.title}
                     class="w-full rounded-lg border border-primary/20 shadow-lg project-main-image"
                     onerror={`document.getElementById('${imageId}').querySelector('.fallback-image').style.display = 'flex'; this.style.display = 'none';`}
-                  />
+                  /> */}
                   <div 
                     class="fallback-image w-full h-64 rounded-lg border border-primary/20 shadow-lg hidden flex-col items-center justify-center bg-gray-800 text-white/80"
                     style="display: none;"
