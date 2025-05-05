@@ -1,19 +1,17 @@
 ---
 title: "Neural Language Models with RNNs and Attention Mechanisms"
-date: "2024-02"
+date: "2025-04"
 status: "completed"
-image: "/images/projects/neural-language-model.jpg"
+image: "/images/project/IDLHW4TransformerSublayers.jpg"
 description: "Development of advanced sequence models using recurrent neural networks for text generation on WikiText-2 and speech-to-text transcription systems with attention mechanisms on the LibriSpeech corpus."
 tags: ["deep learning", "natural language processing", "recurrent neural networks", "attention mechanisms", "speech recognition", "text generation", "LSTM", "GRU", "sequence modeling"]
 github: "https://github.com/yourusername/neural-language-models"
 kaggle: "https://www.kaggle.com/competitions/11-785-s24-hw3p2"
 ---
 
-# Neural Language Models with RNNs and Attention Mechanisms
-
 This project explores the implementation of state-of-the-art neural sequence modeling techniques across two challenging domains: word-level language modeling for text generation and end-to-end speech recognition with attention mechanisms. Both components showcase the power and versatility of recurrent architectures for complex sequential data.
 
-![Neural Language Model Architecture](/images/projects/neural-language-architecture.jpg)
+![Neural Language Model Architecture](/images/project/IDLHW4FullTransformer.jpg)
 
 ## Project Overview
 
@@ -27,6 +25,10 @@ I developed sophisticated recurrent neural networks to model statistical pattern
 - Implementing multiple recurrent architectures (LSTM, GRU) with various configurations
 - Exploring regularization techniques specifically designed for recurrent networks
 - Evaluating models using perplexity metrics and qualitative text generation
+
+![Neural Language Model Architecture](/images/project/IDLHW4TransformerSublayers.jpg)
+
+![Neural Language Model Architecture](/images/project/IDLHW4TransformerLayers.jpg)
 
 ### Part 2: Speech-to-Text Transcription with Attention
 

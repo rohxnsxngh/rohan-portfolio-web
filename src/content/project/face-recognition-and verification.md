@@ -2,15 +2,13 @@
 title: "CNN Face Recognition and Verification: Building a Robust Identity System"
 date: "2025-02"
 status: "completed"
-image: "/images/projects/face-recognition-header.jpg"
+image: "/images/project/IDLHW2FaceClassificationArchitecture.jpg"
 description: "A deep learning model to extract discriminative facial features"
 tags: ["deep learning", "face recognition", "neural networks", "pytorch", "CNNs", "machine learning"]
 github: "https://github.com/yourusername/face-recognition"
 ---
 
-# CNN Face Recognition and Verification: Building a Robust Identity System
-
-![Face recognition verification system visualization](/images/projects/face-recognition-header.jpg)
+![Face recognition verification system visualization](/images/project/IDLHW2FaceVerificationArchitecture.jpg)
 
 ## Project Overview
 
@@ -54,7 +52,7 @@ Network Architecture:
 
 The inclusion of residual connections was crucial for training deeper networks effectively, helping to mitigate the vanishing gradient problem that typically plagues deep CNNs.
 
-![CNN architecture diagram](/images/projects/face-cnn-architecture.jpg)
+![CNN architecture diagram](/images/project/IDLHW2CNN.jpg)
 
 ### Key Architectural Components
 
@@ -173,7 +171,7 @@ Through systematic experimentation tracked with Weights & Biases, I evaluated di
 
 The best-performing model achieved an Equal Error Rate (EER) of 3.1%, demonstrating strong verification capabilities even on previously unseen identities.
 
-![Learning curves showing training progress](/images/projects/face-training-curves.jpg)
+<!-- ![Learning curves showing training progress](/images/projects/face-training-curves.jpg) -->
 
 ### Key Findings
 

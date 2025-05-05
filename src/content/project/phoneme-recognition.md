@@ -2,17 +2,15 @@
 title: "Phoneme Recognition: Neural Networks for Speech Classification"
 date: "2025-02"
 status: "completed"
-image: "/images/projects/phoneme-spectrogram.jpg"
+image: "/images/projects/IDLHW1Spectogram2.jpg"
 description: "A deep learning system that recognizes phoneme states from speech recordings, implementing advanced neural network architectures and achieving 86% accuracy on frame-level speech classification."
 tags: ["deep learning", "speech recognition", "neural networks", "pytorch", "signal processing", "machine learning"]
 github: "https://github.com/yourusername/phoneme-recognition"
 ---
 
-# Phoneme Recognition: Neural Networks for Speech Classification
-
 This project focused on building a high-performance deep learning system for frame-level phoneme recognition, part of the CMU 11-785 Introduction to Deep Learning coursework. By applying multilayer perceptron (MLP) architectures to speech recordings from the Wall Street Journal dataset, I achieved 86% accuracy in classifying audio frames into their corresponding phoneme states.
 
-![Mel-spectrogram of speech with frame highlighting](/images/projects/phoneme-spectrogram.jpg)
+![Mel-spectrogram of speech with frame highlighting](/images/project/IDLHW1Spectogram3.jpg)
 
 ## Project Challenge
 
@@ -35,7 +33,7 @@ At the core of this project was understanding how speech is represented computat
 
 This process yielded matrices of shape (T, 28) for each utterance, where T represents the duration in frames (100 frames per second of speech). Each frame required classification into one of 40 phoneme states.
 
-![Visualization of feature extraction process](/images/projects/feature-extraction.jpg)
+<!-- ![Visualization of feature extraction process](/images/projects/feature-extraction.jpg) -->
 
 ### Model Architecture Evolution
 
@@ -141,7 +139,9 @@ def collate_fn(self, batch):
 
 Fine-tuning these augmentation parameters through grid search (frequency_mask_param=4, time_mask_param=8) yielded a 3.5% accuracy improvement.
 
-![Spectrogram visualization with time and frequency masking](/images/projects/spectrogram-augmentation.jpg)
+![Spectrogram visualization with time and frequency masking](/images/project/IDLHW1Spectogram.jpg)
+
+![Spectrogram visualization with time and frequency masking](/images/project/IDLHW1Spectogram2.jpg)
 
 ### Training Optimizations
 
@@ -214,7 +214,7 @@ The diamond architecture consistently outperformed other structures, with contex
 
 The final model achieved 86% accuracy on the validation set after 172 epochs, with the learning curve showing continued improvement potential with more training time:
 
-![Learning curve showing training and validation accuracy over 172 epochs](/images/projects/learning-curve.jpg)
+<!-- ![Learning curve showing training and validation accuracy over 172 epochs](/images/projects/learning-curve.jpg) -->
 
 ## Technical Challenges and Solutions
 
@@ -255,7 +255,7 @@ Key lessons from this project include:
 
 The diamond architecture with large context windows represents an effective approach for frame-level phoneme classification, demonstrating how classical neural network designs can be optimized for complex sequence processing tasks.
 
-![Complete model architecture diagram](/images/projects/model-architecture.jpg)
+<!-- ![Complete model architecture diagram](/images/projects/model-architecture.jpg) -->
 
 ## Future Improvements
 
