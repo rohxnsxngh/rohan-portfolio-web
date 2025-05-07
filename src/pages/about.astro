@@ -10,7 +10,7 @@ import Layout from "../layouts/Layout.astro";
       <h1 class="font-semibold sm:text-5xl text-3xl py-4 tracking-wider">
         About <span class="text-primary">Me</span>
       </h1>
-
+      
       <div class="divider"></div>
       
       <div class="mt-6 sm:text-lg text-md relative text-left">
@@ -21,36 +21,67 @@ import Layout from "../layouts/Layout.astro";
           countless hours into them, eventually walking onto Texas A&M's
           Division 1 tennis team before COVID changed everything. That shift
           pushed me to channel my competitive drive into something else:
-          <span class="underline decoration-primary decoration-2 underline-offset-4">engineering</span>. 
+          <span class="underline decoration-primary decoration-2 underline-offset-4">engineering</span>.
           Whether it was coding, designing, or breaking things
           apart just to understand how they worked, I found the same thrill in
-          building that I once did in sports.
+          building that I once did in sports <span class="italic text-slate-500/90">(here are some videos of me as a retired athlete somewhere in jamaica).</span>
         </p>
       </div>
+
+            <!-- Tennis Videos Section -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 fade-in">
+              <div class="relative group">
+                <video 
+                  src="/videos/tennis_01.mov" 
+                  autoplay 
+                  loop 
+                  muted 
+                  playsinline
+                  class="rounded-lg w-full h-auto object-cover filter grayscale hover:grayscale-0 transition-all duration-500 ease-out"
+                ></video>
+                <div
+                  class="absolute inset-0 border border-primary/20 rounded-lg transform transition-transform duration-300 group-hover:scale-105"
+                ></div>
+              </div>
+              
+              <div class="relative group">
+                <video 
+                  src="/videos/tennis_02.mov" 
+                  autoplay 
+                  loop 
+                  muted 
+                  playsinline
+                  class="rounded-lg w-full h-auto object-cover filter grayscale hover:grayscale-0 transition-all duration-500 ease-out"
+                ></video>
+                <div
+                  class="absolute inset-0 border border-primary/20 rounded-lg transform transition-transform duration-300 group-hover:scale-105"
+                ></div>
+              </div>
+            </div>
       
       <p class="mt-6 sm:text-lg text-md text-left">
         That passion led me to <span class="font-medium">Texas A&M</span>, where I earned a B.S. in Mechanical Engineering
         with minors in Applied Mathematics and Statistics. My journey through tech has been diverse and 
         exciting—from developing robotics projects at my University clubs as well as 
-        working at industry giants like <span class="text-blue-500 underline decoration-2 underline-offset-4">ASML</span>, 
-        <span class="text-red-300 underline decoration-2 underline-offset-4">Toyota</span>, 
-        <span class="text-red-500 underline decoration-2 underline-offset-4">Tesla</span>, and 
-        <span class="text-lime-500 underline decoration-2 underline-offset-4">Nvidia</span>. 
-        Now, I'm pursuing my passion at <span class="font-medium">Carnegie Mellon University</span>, 
-        diving deep into AI, robotics, and control systems—exploring how machines can learn 
+        working at industry giants like <span class="text-blue-500 underline decoration-2 underline-offset-4">ASML</span>,
+        <span class="text-red-300 underline decoration-2 underline-offset-4">Toyota</span>,
+        <span class="text-red-500 underline decoration-2 underline-offset-4">Tesla</span>, and
+        <span class="text-lime-500 underline decoration-2 underline-offset-4">Nvidia</span>.
+        Now, I'm pursuing my passion at <span class="font-medium">Carnegie Mellon University</span>,
+        diving deep into AI, robotics, and control systems—exploring how machines can learn
         and adapt in dynamic environments.
       </p>
       
       <p class="mt-6 sm:text-lg text-md text-left">
         Beyond my formal roles, I'm a <span class="font-bold text-primary">startup enthusiast</span> and 
-        founder of <span class="text-slate-400 hover:underline decoration-2 underline-offset-4"><a href="https://www.quaternionstudios.com/">Quaternion Studios<a/></span>. I'm deeply passionate about 
-        <span class="italic">building companies in the hardware space</span> that contribute to a truly 
-        abundant future. My goal is to bridge cutting-edge AI with practical engineering solutions 
-        that solve real-world problems. When I'm not working on projects, you'll find me playing 
-        pickup basketball, exploring new breweries, or just creating—whether it's software, 
+        founder of <span class="text-slate-400 hover:underline decoration-2 underline-offset-4"><a href="https://www.quaternionstudios.com/">Quaternion Studios</a></span>. I'm deeply passionate about
+        <span class="italic">building companies in the hardware space</span> that contribute to a truly
+        abundant future. My goal is to bridge cutting-edge AI with practical engineering solutions
+        that solve real-world problems. When I'm not working on projects, you'll find me playing
+        pickup basketball, exploring new breweries, or just creating—whether it's software,
         hardware prototypes, or something completely unexpected.
       </p>
-
+      
       <div class="divider"></div>
       
       <div class="p-6 mt-6 pt-8">
@@ -65,3 +96,30 @@ import Layout from "../layouts/Layout.astro";
   </Navbar>
   <Footer />
 </Layout>
+
+<style>
+  .divider {
+    height: 1px;
+    width: 100%;
+    background-color: rgba(var(--color-primary-rgb), 0.2);
+    margin: 1rem 0;
+  }
+  
+  /* Fade-in animation for videos */
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    animation-delay: 0.3s;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
