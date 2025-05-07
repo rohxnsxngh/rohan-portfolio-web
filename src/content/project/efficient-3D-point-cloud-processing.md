@@ -5,7 +5,7 @@ status: "completed"
 image: "/images/project/PointnextCustomDataset.jpg"
 description: "A lightweight architecture for dynamic object segmentation in 3D point clouds, optimizing for human detection with reduced model parameters while maintaining high accuracy."
 tags: ["3D point clouds", "computer vision", "deep learning", "model optimization", "real-time inference", "point cloud segmentation"]
-github: "https://github.com/rohansi2/tinypointnext"
+github: "https://github.com/rohansi2-cmu/tinypointnext"
 ---
 
 # TinyPointNeXt: Efficient Point Cloud Processing for Human Detection

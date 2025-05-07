@@ -6,6 +6,7 @@ image: "/images/projects/IDLHW1Spectogram2.jpg"
 description: "A deep learning system that recognizes phoneme states from speech recordings, implementing advanced neural network architectures and achieving 86% accuracy on frame-level speech classification."
 tags: ["deep learning", "speech recognition", "neural networks", "pytorch", "signal processing", "machine learning"]
 github: "https://github.com/yourusername/phoneme-recognition"
+kaggle: "https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2"
 ---
 
 This project focused on building a high-performance deep learning system for frame-level phoneme recognition, part of the CMU 11-785 Introduction to Deep Learning coursework. By applying multilayer perceptron (MLP) architectures to speech recordings from the Wall Street Journal dataset, I achieved 86% accuracy in classifying audio frames into their corresponding phoneme states.
@@ -268,4 +269,4 @@ With additional computational resources, several promising directions emerge:
 
 ## Links
 - [GitHub Repository](https://github.com/yourusername/phoneme-recognition)
-- [Kaggle Competition](https://www.kaggle.com/competitions/frame-level-speech-recognition)
+- [Kaggle Competition](https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2)

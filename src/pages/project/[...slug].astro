@@ -59,7 +59,7 @@ const imageId = `project-image-${Math.random().toString(36).substring(2, 10)}`;
                     month: 'long'
                   })}
                 </time>
-                {(project.data.github || project.data.demo) && (
+                {(project.data.github || project.data.demo || project.data.kaggle) && (
                   <div class="flex gap-4">
                     {project.data.github && (
                       <a href={project.data.github} target="_blank" rel="noopener noreferrer"
@@ -71,6 +71,12 @@ const imageId = `project-image-${Math.random().toString(36).substring(2, 10)}`;
                       <a href={project.data.demo} target="_blank" rel="noopener noreferrer"
                          class="text-primary/60 hover:text-primary transition-colors">
                         Live Demo →
+                      </a>
+                    )}
+                    {project.data.kaggle && (
+                      <a href={project.data.kaggle} target="_blank" rel="noopener noreferrer"
+                         class="text-primary/60 hover:text-primary transition-colors">
+                        Kaggle Challenge →
                       </a>
                     )}
                   </div>
@@ -98,7 +104,7 @@ const imageId = `project-image-${Math.random().toString(36).substring(2, 10)}`;
                     style="display: none;"
                   >
                     <div class="text-5xl font-bold mb-4">
-                      {project.data.title.split(' ').map((word: any[]) => word[0]).join('').substring(0, 2).toUpperCase()}
+                      {project.data.title.split(' ').map((word: string) => word[0]).join('').substring(0, 2).toUpperCase()}
                     </div>
                     <div class="text-xl opacity-80">{project.data.tags[0] || "Project"}</div>
                   </div>

@@ -5,8 +5,8 @@ status: "completed"
 image: "/images/project/HansAubsHome.png"
 description: "A ThreeJS sanbox designed to experiment with shaders, audio visualizations, geometries, and proceddural generation in the browser"
 tags: ["graphics", "C++", "OpenGL", "WebGL", "physics simulation"]
-github: "https://github.com/rohan/graphics-engine"
-demo: "https://graphics-engine.demo.com"
+github: "https://github.com/rohxnsxngh/hans-aubs"
+# demo: "https://graphics-engine.demo.com"
 ---
 
 The Forge is an experimental sandbox designed to explore real-time rendering, shaders, and procedural generation within the browser. Built using ThreeJS, WebGL, and WebGPU, this project serves as a creative playground for experimenting with advanced graphics techniques, audio visualizations, and interactive simulations.

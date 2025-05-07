@@ -5,7 +5,8 @@ status: "completed"
 image: "/images/project/BiobotRender.jpg"
 description: "A robotic fish platform that investigates the optimization of aquatic propulsion through bio-inspired fishtail locomotion, featuring modular tail segments and controllable swimming patterns."
 tags: ["robotics", "bio-inspired", "aquatic locomotion", "computational fluid dynamics", "control systems", "mechanical design"]
-github: "https://github.com/rohan/fish-locomotion-robot"
+github: "https://github.com/rohxnsxngh/biorobotics"
+demo: "https://biorobotics-custom-sim.vercel.app/"
 ---
 
 # Bio-inspired Fish Locomotion Through Variable Undulation

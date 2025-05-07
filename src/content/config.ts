@@ -24,6 +24,7 @@ const projectCollection = defineCollection({
     tags: z.array(z.string()),
     github: z.string().optional(),
     demo: z.string().optional(),
+    kaggle: z.string().optional(),
   }),
 });
 

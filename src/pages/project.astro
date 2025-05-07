@@ -64,6 +64,7 @@ console.log("Projects after sorting:", sortedProjects.length);
               const tags = Array.isArray(project.data?.tags) ? project.data.tags : [];
               const github = project.data?.github || "";
               const demo = project.data?.demo || "";
+              const kaggle = project.data?.kaggle || "";
               const image = project.data?.image || "";
               
               const statusColors = {
@@ -124,7 +125,7 @@ console.log("Projects after sorting:", sortedProjects.length);
                           </span>
                         )}
                       </div>
-                      {(github || demo) && (
+                      {(github || demo || kaggle) && (
                         <div class="mt-4 pt-4 flex gap-4 border-t border-accent/10">
                           {github && (
                             <a
@@ -146,6 +147,17 @@ console.log("Projects after sorting:", sortedProjects.length);
                               onclick="(e => { e.stopPropagation(); })(event)"
                             >
                               Live Demo →
+                            </a>
+                          )}
+                            {kaggle && (
+                            <a
+                              href={kaggle}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="text-sm text-white/80 hover:text-white transition-colors ml-4"
+                              onclick="(e => { e.stopPropagation(); })(event)"
+                            >
+                              Kaggle Challenge →
                             </a>
                           )}
                         </div>
