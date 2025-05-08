@@ -1,0 +1,481 @@
+---
+// HeavyRobotModelViewer.astro
+// Props for customization
+interface Props {
+  width?: string; // Container width as CSS value (can use % or other units)
+  height?: string; // Container height as CSS value (can use % or other units)
+  modelPath?: string; // Path to the 3D model
+  backgroundColor?: string; // Background color for the scene
+  robotColor?: string; // Color of the robot
+  robotEmissive?: string; // Emissive color of the robot
+  robotSpecular?: string; // Specular color of the robot
+  className?: string; // Additional CSS classes
+  animationIndex?: number; // Index of animation to play (if model has multiple animations)
+}
+
+// Default values for props
+const {
+  width = "100%",
+  height = "100%",
+  modelPath = "/models/kuma_heavy_robot.glb", // Default path to the heavy robot model
+  backgroundColor = "#000000",
+  robotColor = "#444444", // Slightly darker color for heavy robot
+  robotEmissive = "#111111",
+  robotSpecular = "#aaaaaa",
+  className = "",
+  animationIndex = 0, // Default to first animation
+} = Astro.props;
+---
+
+<div
+  class={`heavy-robot-model-viewer-container group ${className}`}
+  style={`--width: ${width}; --height: ${height};`}
+>
+  <div id="heavy-robot-animation-container" class="model-display-container">
+    <div class="loading-container">
+      <progress id="heavy-progress-bar" value="0" max="100"></progress>
+    </div>
+  </div>
+</div>
+
+<!-- Use client:only to ensure this script runs only in the browser -->
+<script>
+  // Import Three.js properly using ES modules
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+  // DOM elements
+  const container = document.querySelector(
+    ".heavy-robot-model-viewer-container"
+  );
+  const modelContainer = document.getElementById(
+    "heavy-robot-animation-container"
+  );
+  const progressBar = document.getElementById("heavy-progress-bar");
+  const loadingContainer = modelContainer?.querySelector(".loading-container");
+
+  // Get container dimensions
+  const getContainerSize = () => {
+    if (!container) {
+      throw new Error("Container not found");
+    }
+    const rect = container.getBoundingClientRect();
+    if (!rect) {
+      throw new Error("Container not found");
+    }
+    return {
+      width: rect.width,
+      height: rect.height,
+      aspectRatio: rect.width / rect.height,
+    };
+  };
+
+  // Get container properties
+  let { width, height, aspectRatio } = getContainerSize();
+  if (!width || !height || !aspectRatio) {
+    throw new Error("Container size not found");
+  }
+  const backgroundColor = "#000000";
+  const robotColor = "#444444";
+  const robotEmissive = "#111111";
+  const robotSpecular = "#aaaaaa";
+
+  // Variables
+  let _robot: THREE.Group;
+  let _mixerRobot: THREE.AnimationMixer;
+  let controls: OrbitControls;
+  let camera: THREE.PerspectiveCamera;
+  let renderer: THREE.WebGLRenderer;
+  let scene: THREE.Scene;
+  let clock = new THREE.Clock();
+
+  // Initialize scene
+  function initScene() {
+    // Convert hex color to THREE.js color
+    const bgColor = new THREE.Color(backgroundColor);
+
+    // Simple scene setup
+    scene = new THREE.Scene();
+    scene.background = bgColor;
+
+    camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance",
+      precision: "highp",
+    });
+
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    if (modelContainer) {
+      // Remove any existing canvas
+      const existingCanvas = modelContainer.querySelector("canvas");
+      if (existingCanvas) {
+        modelContainer.removeChild(existingCanvas);
+      }
+      modelContainer.appendChild(renderer.domElement);
+    }
+
+    // Camera position adjusted to match the new robot position
+    camera.position.set(0, 0, 10); // Positioned on Z-axis to look at robot
+
+    // Add OrbitControls with specific limitations
+    controls = new OrbitControls(camera, renderer.domElement);
+
+    // Set target position to match the new robot position
+    // The robot is at (0, -0.5, -75) with scale 0.025, so we need to focus there
+    controls.target = new THREE.Vector3(0, -0.5, -75);
+
+    // Allow full rotation horizontally (around y-axis)
+    controls.enableRotate = true;
+    controls.minAzimuthAngle = -Infinity;
+    controls.maxAzimuthAngle = Infinity;
+
+    // Restrict vertical rotation (around x-axis)
+    controls.minPolarAngle = Math.PI / 4; // Allow more up-down rotation
+    controls.maxPolarAngle = (3 * Math.PI) / 4;
+
+    // Allow more zooming range to accommodate the distant position
+    controls.minDistance = 50; // Minimum zoom distance
+    controls.maxDistance = 100; // Maximum zoom distance
+
+    // Add damping for smoother controls
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Force an initial update to apply these settings
+    // controls.update();
+
+    // Enhanced lighting setup for the heavy robot
+    // Ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+    scene.add(ambientLight);
+
+    // Main directional light
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    mainLight.position.set(2, 4, 3);
+    mainLight.castShadow = true;
+    mainLight.shadow.mapSize.width = 1024;
+    mainLight.shadow.mapSize.height = 1024;
+    mainLight.shadow.bias = -0.001;
+    mainLight.shadow.camera.near = 0.5;
+    mainLight.shadow.camera.far = 20;
+    mainLight.shadow.camera.left = -5;
+    mainLight.shadow.camera.right = 5;
+    mainLight.shadow.camera.top = 5;
+    mainLight.shadow.camera.bottom = -5;
+    scene.add(mainLight);
+
+    // Orange accent light - gives mechanical/industrial feeling
+    const accentLight = new THREE.DirectionalLight(0xff7700, 0.6);
+    accentLight.position.set(-3, 2, -3);
+    scene.add(accentLight);
+
+    // Blue rim light for contrast and tech feel
+    const rimLight = new THREE.DirectionalLight(0x0077ff, 0.5);
+    rimLight.position.set(0, 3, -4);
+    scene.add(rimLight);
+
+    // Add a spotlight to highlight details
+    const spotLight = new THREE.SpotLight(0xffffff, 0.8);
+    spotLight.position.set(0, 5, 2);
+    spotLight.angle = Math.PI / 6;
+    spotLight.penumbra = 0.2;
+    spotLight.decay = 2;
+    spotLight.distance = 20;
+    spotLight.castShadow = true;
+    spotLight.shadow.mapSize.width = 512;
+    spotLight.shadow.mapSize.height = 512;
+    scene.add(spotLight);
+  }
+
+  // Handle window resize
+  function handleResize() {
+    const {
+      width: newWidth,
+      height: newHeight,
+      aspectRatio: newAspectRatio,
+    } = getContainerSize();
+
+    // Update variables
+    width = newWidth;
+    height = newHeight;
+    aspectRatio = newAspectRatio;
+
+    // Update camera
+    camera.aspect = aspectRatio;
+    camera.updateProjectionMatrix();
+
+    // Update renderer
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Render scene
+    renderer.render(scene, camera);
+  }
+
+  // Initialize everything when DOM is loaded
+  function init() {
+    initScene();
+
+    // Loading manager for tracking progress
+    const manager = new THREE.LoadingManager();
+
+    manager.onProgress = (url, loaded, total) => {
+      if (progressBar instanceof HTMLProgressElement) {
+        progressBar.value = (loaded / total) * 100;
+      }
+    };
+
+    manager.onLoad = () => {
+      if (loadingContainer instanceof HTMLElement) {
+        loadingContainer.style.display = "none";
+      }
+    };
+
+    // Load robot model
+    const loader = new GLTFLoader(manager);
+    loader.load(
+      "/models/kuma_heavy_robot.glb", // Make sure this path is correct
+      async (glb) => {
+        _robot = glb.scene;
+
+        // Create material with customized properties
+        const newMaterial = new THREE.MeshPhongMaterial({
+          color: new THREE.Color(robotColor),
+          emissive: new THREE.Color(robotEmissive),
+          specular: new THREE.Color(robotSpecular),
+          shininess: 20, // Higher shininess for a metallic look
+          flatShading: false, // Smooth shading for a more polished appearance
+        });
+
+        // Apply material to all meshes in the model
+        _robot.traverse((o) => {
+          if (o instanceof THREE.Mesh) {
+            // Override the material
+            o.material = newMaterial;
+            o.castShadow = true;
+            o.receiveShadow = true;
+          }
+        });
+
+        // Position and scale the robot
+        // These values may need adjustment based on the actual model
+        _robot.position.set(0, -0.5, -75);
+        _robot.rotation.set(0, Math.PI / 2, 0); // Rotate to face the camera
+        _robot.scale.set(0.025, 0.025, 0.025);
+
+        scene.add(_robot);
+
+        // Set up animation
+        if (glb.animations.length > 0) {
+          _mixerRobot = new THREE.AnimationMixer(_robot);
+          _mixerRobot.timeScale = 1.2; // Slightly faster animation for a heavier feel
+
+          // Use the specified animation or default to the first one
+          const animIndex = Math.min(glb.animations.length - 1, 0);
+          const clip = glb.animations[animIndex];
+
+          if (clip) {
+            // Create and play the animation action
+            const action = _mixerRobot.clipAction(clip);
+            action.play();
+
+            // Optional: Create a smoother loop
+            action.loop = THREE.LoopRepeat;
+            action.clampWhenFinished = false;
+            action.zeroSlopeAtStart = true;
+            action.zeroSlopeAtEnd = true;
+          }
+        }
+      },
+      // Progress callback
+      (xhr) => {
+        const progress = (xhr.loaded / xhr.total) * 100;
+        console.log(`${progress}% loaded`);
+      },
+      // Error callback
+      (error) => {
+        console.error(
+          "An error happened while loading the heavy robot model:",
+          error
+        );
+      }
+    );
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Update animation mixer
+      const delta = clock.getDelta();
+      if (_mixerRobot) {
+        _mixerRobot.update(delta);
+      }
+
+      // Update controls
+      if (controls) {
+        controls.update();
+      }
+
+      // Add subtle rotation to robot if not being actively controlled
+      if (_robot && !controls.enableDamping) {
+        _robot.rotation.y += 0.003; // Very slow automatic rotation
+      }
+
+      // Render
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Create a ResizeObserver to watch for container size changes
+    const resizeObserver = new ResizeObserver(() => {
+      handleResize();
+    });
+
+    // Start observing the container
+    if (container) {
+      resizeObserver.observe(container);
+    }
+
+    // Listen for expanded state to enhance controls
+    document.addEventListener("heavyRobotViewerStateChange", (e: any) => {
+      if (e.detail && e.detail.expanded) {
+        // When expanded, allow more camera movement
+        if (controls) {
+          controls.minDistance = 2.5;
+          controls.maxDistance = 8.0;
+          controls.minPolarAngle = Math.PI / 2 - 0.6; // More vertical rotation
+          controls.maxPolarAngle = Math.PI / 2 + 0.6; // More vertical rotation
+        }
+      } else {
+        // Reset to original constraints
+        if (controls) {
+          controls.minDistance = 3.5;
+          controls.maxDistance = 7.0;
+          controls.minPolarAngle = Math.PI / 2 - 0.4;
+          controls.maxPolarAngle = Math.PI / 2 + 0.4;
+        }
+      }
+    });
+  }
+
+  // Initialize when DOM is loaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>
+
+<style>
+  .heavy-robot-model-viewer-container {
+    display: flex;
+    height: var(--height, 100%);
+    width: var(--width, 100%);
+    position: relative;
+    transition: transform 0.3s ease-out;
+  }
+
+  .heavy-robot-model-viewer-container:hover {
+    transform: translateY(-4px);
+  }
+
+  #heavy-robot-animation-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  #heavy-robot-animation-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+
+  .model-display-container {
+    border: 1px solid rgba(var(--color-accent, 0, 0, 0), 0.2);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.95);
+    transition: all 0.4s ease-out;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+  }
+
+  .model-display-container:hover {
+    background-color: rgba(var(--color-accent, 0, 0, 0), 0.05);
+    box-shadow:
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Enhanced styles for expanded state */
+  :global(.expanded) .model-display-container {
+    background-color: rgba(0, 0, 0, 0.98);
+    border-color: rgba(var(--color-primary, 255, 255, 255), 0.4);
+    border-width: 2px;
+    box-shadow:
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(var(--color-primary, 255, 255, 255), 0.2);
+  }
+
+  .heavy-robot-model-viewer-container::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(var(--color-primary, 0, 0, 0), 0.2);
+    border-radius: 0.75rem;
+    transform: scale(1);
+    transition: all 0.3s ease-out;
+    z-index: 0;
+  }
+
+  .heavy-robot-model-viewer-container:hover::after {
+    transform: scale(1.05);
+    border-color: rgba(var(--color-primary, 0, 0, 0), 0.4);
+  }
+
+  .loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+  }
+
+  #heavy-progress-bar {
+    width: 80%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  #heavy-progress-bar::-webkit-progress-bar {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  #heavy-progress-bar::-webkit-progress-value {
+    background-color: rgba(var(--color-primary, 75, 85, 99), 0.8);
+  }
+
+  /* Style for expanded container */
+  :global(.expanded) .heavy-robot-model-viewer-container {
+    transform: none;
+  }
+
+  :global(.expanded) .heavy-robot-model-viewer-container::after {
+    opacity: 0;
+  }
+</style>

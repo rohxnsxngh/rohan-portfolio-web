@@ -5,6 +5,7 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import ProjectImage from "../components/ProjectImage.astro";
+import HeavyRobotModelViewer from "../components/HeavyRobotModelViewer.astro";
 
 // Get all projects with error handling
 let allProjects: CollectionEntry<"project">[] = [];
@@ -47,11 +48,36 @@ console.log("Projects after sorting:", sortedProjects.length);
 <Layout>
   <Navbar>
     <div class="sm:px-20 px-6 py-8">
-      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-4">
+      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">
         Projects & Experiments
       </h1>
+
+      <div class="divider"></div>
       
-      <!-- Simple 3-column grid layout -->
+      <!-- Full-width Heavy Robot Model Viewer -->
+      <div class="w-full mb-12 relative z-1">
+        <div class="robot-showcase relative w-full h-64 sm:h-72 md:h-80 lg:h-96 rounded-xl overflow-hidden border border-accent/20 transition-all duration-300 hover:shadow-lg">
+          <HeavyRobotModelViewer />
+          <button 
+            class="expand-heavy-robot absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-2 hover:bg-primary/30 transition-colors"
+            aria-label="Expand robot view"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6" />
+            </svg>
+          </button>
+          
+          <!-- Optional caption or info about the robot -->
+          <div class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm p-4 transform translate-y-full opacity-0 transition-all duration-300 robot-info">
+            <h3 class="text-lg font-semibold text-white">Welcome to my Projects & Experiments Page</h3>
+            <p class="text-white/80 text-sm">This page mostly contains software and robotics projects, feel free to reach out if you find anything interesting!</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      
+      <!-- Project grid layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
         {sortedProjects.length > 0 ? (
           sortedProjects.map((project) => {
@@ -84,8 +110,8 @@ console.log("Projects after sorting:", sortedProjects.length);
               const statusDisplay = statusText[status] || "Unknown";
               
               return (
-                <div class="relative z-10 project-card group">
-                  <div class="h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10 overflow-hidden">
+                <div class="relative z-1 project-card group">
+                  <div class="h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-1 overflow-hidden">
                     {/* Add the ProjectImage component here */}
                     <ProjectImage 
                       image={image} 
@@ -149,7 +175,7 @@ console.log("Projects after sorting:", sortedProjects.length);
                               Live Demo →
                             </a>
                           )}
-                            {kaggle && (
+                          {kaggle && (
                             <a
                               href={kaggle}
                               target="_blank"
@@ -165,7 +191,7 @@ console.log("Projects after sorting:", sortedProjects.length);
                     </div>
                   </div>
                   <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
-                  <a href={`/project/${project.slug}`} class="absolute inset-0 z-20" aria-hidden="true"></a>
+                  <a href={`/project/${project.slug}`} class="absolute inset-0 z-2" aria-hidden="true"></a>
                 </div>
               );
             } catch (error) {
@@ -188,6 +214,9 @@ console.log("Projects after sorting:", sortedProjects.length);
   <Footer />
 </Layout>
 
+<!-- Backdrop overlay for blur effect -->
+<div id="backdrop-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-md z-5 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
 <style>
   /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
   .line-clamp-3 {
@@ -205,4 +234,113 @@ console.log("Projects after sorting:", sortedProjects.length);
   .project-card:hover {
     transform: translateY(-4px);
   }
+  
+  /* Robot showcase hover effect */
+  .robot-showcase {
+    transition: all 0.4s ease-out;
+  }
+  
+  .robot-showcase:hover .robot-info {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  /* Backdrop visible class */
+  .backdrop-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Expanded robot viewer styling */
+  .robot-showcase.expanded {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90vw;
+    height: 90vw;
+    max-width: 800px;
+    max-height: 800px;
+    z-index: 60;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(var(--color-primary, 255, 255, 255), 0.4);
+  }
+  
+  .robot-showcase.expanded .robot-info {
+    transform: translateY(0);
+    opacity: 1;
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const robotShowcase = document.querySelector('.robot-showcase');
+    const expandButton = document.querySelector('.expand-heavy-robot');
+    const backdropOverlay = document.getElementById('backdrop-overlay');
+    
+    if (robotShowcase && expandButton && backdropOverlay) {
+      // Toggle expanded view
+      expandButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent event from bubbling
+        e.preventDefault(); // Prevent navigation
+        toggleExpandedView();
+      });
+      
+      // Allow clicking on backdrop to close expanded view
+      backdropOverlay.addEventListener('click', () => {
+        if (robotShowcase.classList.contains('expanded')) {
+          toggleExpandedView(false);
+        }
+      });
+      
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && robotShowcase.classList.contains('expanded')) {
+          toggleExpandedView(false);
+        }
+      });
+
+      // Function to toggle the expanded view state
+      function toggleExpandedView(expand = null) {
+        const shouldExpand = expand !== null ? expand : !robotShowcase.classList.contains('expanded');
+        
+        if (shouldExpand) {
+          // Expand the view
+          robotShowcase.classList.add('expanded');
+          backdropOverlay.classList.add('backdrop-visible');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling
+          expandButton.setAttribute('aria-label', 'Collapse robot view');
+          
+          // Update SVG in button
+          const svg = expandButton.querySelector('svg');
+          if (svg) {
+            svg.style.transform = 'rotate(180deg)';
+          }
+          
+          // Dispatch custom event for the robot viewer to adjust its controls
+          document.dispatchEvent(new CustomEvent('heavyRobotViewerStateChange', {
+            detail: { expanded: true }
+          }));
+        } else {
+          // Collapse the view
+          robotShowcase.classList.remove('expanded');
+          backdropOverlay.classList.remove('backdrop-visible');
+          document.body.style.overflow = ''; // Restore scrolling
+          expandButton.setAttribute('aria-label', 'Expand robot view');
+          
+          // Reset SVG in button
+          const svg = expandButton.querySelector('svg');
+          if (svg) {
+            svg.style.transform = '';
+          }
+          
+          // Dispatch custom event for the robot viewer to adjust its controls
+          document.dispatchEvent(new CustomEvent('heavyRobotViewerStateChange', {
+            detail: { expanded: false }
+          }));
+        }
+      }
+    }
+  });
+</script>
