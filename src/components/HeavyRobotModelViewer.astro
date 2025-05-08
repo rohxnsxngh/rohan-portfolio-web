@@ -121,14 +121,14 @@ const {
     }
 
     // Camera position adjusted to match the new robot position
-    camera.position.set(0, 0, 10); // Positioned on Z-axis to look at robot
+    camera.position.set(-20, -40, 10); // Positioned on Z-axis to look at robot
 
     // Add OrbitControls with specific limitations
     controls = new OrbitControls(camera, renderer.domElement);
 
     // Set target position to match the new robot position
     // The robot is at (0, -0.5, -75) with scale 0.025, so we need to focus there
-    controls.target = new THREE.Vector3(0, -0.5, -75);
+    controls.target = new THREE.Vector3(0, 5, -75);
 
     // Allow full rotation horizontally (around y-axis)
     controls.enableRotate = true;
@@ -274,7 +274,7 @@ const {
         // Set up animation
         if (glb.animations.length > 0) {
           _mixerRobot = new THREE.AnimationMixer(_robot);
-          _mixerRobot.timeScale = 1.2; // Slightly faster animation for a heavier feel
+          _mixerRobot.timeScale = 1.5; // Slightly faster animation for a heavier feel
 
           // Use the specified animation or default to the first one
           const animIndex = Math.min(glb.animations.length - 1, 0);
