@@ -54,28 +54,48 @@ console.log("Projects after sorting:", sortedProjects.length);
 
       <div class="divider"></div>
       
-      <!-- Full-width Heavy Robot Model Viewer -->
+      <!-- Side-by-side Robot Model Viewer and Info (stacked on mobile) -->
       <div class="w-full mb-12 relative z-1">
-        <div class="robot-showcase relative w-full h-64 sm:h-72 md:h-80 lg:h-96 rounded-xl overflow-hidden border border-accent/20 transition-all duration-300 hover:shadow-lg">
-          <HeavyRobotModelViewer />
-          <button 
-            class="expand-heavy-robot absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-2 hover:bg-primary/30 transition-colors"
-            aria-label="Expand robot view"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6" />
-            </svg>
-          </button>
+        <div class="flex flex-col md:flex-row md:items-center gap-6">
+          <!-- Robot Viewer - Full-width on mobile, partial width on desktop -->
+          <div class="robot-showcase flex-1 relative w-full h-64 sm:h-72 md:h-80 lg:h-96 rounded-xl overflow-hidden border border-accent/20 transition-all duration-300 hover:shadow-lg">
+            <HeavyRobotModelViewer />
+            <button 
+              class="expand-heavy-robot absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-2 hover:bg-primary/30 transition-colors"
+              aria-label="Expand robot view"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6" />
+              </svg>
+            </button>
+          </div>
           
-          <!-- Optional caption or info about the robot -->
-          <div class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm p-4 transform translate-y-full opacity-0 transition-all duration-300 robot-info">
-            <h3 class="text-lg font-semibold text-white">Welcome to my Projects & Experiments Page</h3>
-            <p class="text-white/80 text-sm">This page mostly contains software and robotics projects, feel free to reach out if you find anything interesting!</p>
+          <!-- Info Card - Separate card on desktop, full width on mobile -->
+          <div class="robot-info-card flex-1 md:flex-1 md:max-w-md p-6 rounded-xl bg-black/70 backdrop-blur-sm border border-accent/20">
+            <h3 class="text-xl font-semibold text-white mb-3">Welcome to my Projects & Experiments Page</h3>
+            <p class="text-white/80">This page mostly contains software and robotics projects, feel free to reach out if you find anything interesting!</p>
+            <div class="mt-4 flex justify-start">
+              <a href="#projects-section" class="inline-flex items-center text-primary/90 hover:text-primary transition-colors">
+                <span class="mr-2">View Projects</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 bounce-arrow-inline">
+                  <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Centered bounce arrow for mobile & desktop -->
+        <div class="flex justify-center mt-6 md:mt-8">
+          <div class="bounce-arrow w-10 h-10 flex items-center justify-center text-primary/80 cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8">
+              <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
           </div>
         </div>
       </div>
 
-      <div class="divider"></div>
+      <div id="projects-section" class="divider"></div>
       
       <!-- Project grid layout -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
@@ -235,14 +255,42 @@ console.log("Projects after sorting:", sortedProjects.length);
     transform: translateY(-4px);
   }
   
-  /* Robot showcase hover effect */
+  /* Robot showcase transition effect */
   .robot-showcase {
     transition: all 0.4s ease-out;
   }
   
-  .robot-showcase:hover .robot-info {
-    transform: translateY(0);
-    opacity: 1;
+  /* Robot info card styling */
+  .robot-info-card {
+    transition: all 0.3s ease-out;
+  }
+  
+  @media (max-width: 767px) {
+    .robot-info-card {
+      margin-top: 1rem;
+    }
+  }
+  
+  /* Bounce animation for the arrow */
+  .bounce-arrow {
+    animation: bounce 2s infinite;
+  }
+  
+  .bounce-arrow-inline {
+    animation: bounce 2s infinite;
+    display: inline-block;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
   }
   
   /* Backdrop visible class */
@@ -278,6 +326,15 @@ console.log("Projects after sorting:", sortedProjects.length);
     const robotShowcase = document.querySelector('.robot-showcase');
     const expandButton = document.querySelector('.expand-heavy-robot');
     const backdropOverlay = document.getElementById('backdrop-overlay');
+    const bounceArrow = document.querySelector('.bounce-arrow');
+    const projectsSection = document.getElementById('projects-section');
+    
+    // Smooth scroll to projects section when clicking the arrow
+    if (bounceArrow && projectsSection) {
+      bounceArrow.addEventListener('click', () => {
+        projectsSection.scrollIntoView({ behavior: 'smooth' });
+      });
+    }
     
     if (robotShowcase && expandButton && backdropOverlay) {
       // Toggle expanded view
