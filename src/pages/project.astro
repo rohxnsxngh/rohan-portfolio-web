@@ -302,18 +302,24 @@ console.log("Projects after sorting:", sortedProjects.length);
       });
 
       // Function to toggle the expanded view state
-      function toggleExpandedView(expand = null) {
-        const shouldExpand = expand !== null ? expand : !robotShowcase.classList.contains('expanded');
+      function toggleExpandedView(expand: boolean | null = null) {
+        const shouldExpand = expand !== null ? expand : (robotShowcase && !robotShowcase.classList.contains('expanded'));
         
         if (shouldExpand) {
           // Expand the view
-          robotShowcase.classList.add('expanded');
-          backdropOverlay.classList.add('backdrop-visible');
+          if (robotShowcase) {
+            robotShowcase.classList.add('expanded');
+          }
+          if (backdropOverlay) {
+            backdropOverlay.classList.add('backdrop-visible');
+          }
           document.body.style.overflow = 'hidden'; // Prevent scrolling
-          expandButton.setAttribute('aria-label', 'Collapse robot view');
+          if (expandButton) {
+            expandButton.setAttribute('aria-label', 'Collapse robot view');
+          }
           
           // Update SVG in button
-          const svg = expandButton.querySelector('svg');
+          const svg = expandButton ? expandButton.querySelector('svg') : null;
           if (svg) {
             svg.style.transform = 'rotate(180deg)';
           }
@@ -324,13 +330,19 @@ console.log("Projects after sorting:", sortedProjects.length);
           }));
         } else {
           // Collapse the view
-          robotShowcase.classList.remove('expanded');
-          backdropOverlay.classList.remove('backdrop-visible');
+          if (robotShowcase) {
+            robotShowcase.classList.remove('expanded');
+          }
+          if (backdropOverlay) {
+            backdropOverlay.classList.remove('backdrop-visible');
+          }
           document.body.style.overflow = ''; // Restore scrolling
-          expandButton.setAttribute('aria-label', 'Expand robot view');
+          if (expandButton) {
+            expandButton.setAttribute('aria-label', 'Expand robot view');
+          }
           
           // Reset SVG in button
-          const svg = expandButton.querySelector('svg');
+          const svg = expandButton ? expandButton.querySelector('svg') : null;
           if (svg) {
             svg.style.transform = '';
           }

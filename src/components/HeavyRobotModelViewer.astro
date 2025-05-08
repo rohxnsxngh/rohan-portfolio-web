@@ -345,27 +345,6 @@ const {
     if (container) {
       resizeObserver.observe(container);
     }
-
-    // Listen for expanded state to enhance controls
-    document.addEventListener("heavyRobotViewerStateChange", (e: any) => {
-      if (e.detail && e.detail.expanded) {
-        // When expanded, allow more camera movement
-        if (controls) {
-          controls.minDistance = 2.5;
-          controls.maxDistance = 8.0;
-          controls.minPolarAngle = Math.PI / 2 - 0.6; // More vertical rotation
-          controls.maxPolarAngle = Math.PI / 2 + 0.6; // More vertical rotation
-        }
-      } else {
-        // Reset to original constraints
-        if (controls) {
-          controls.minDistance = 3.5;
-          controls.maxDistance = 7.0;
-          controls.minPolarAngle = Math.PI / 2 - 0.4;
-          controls.maxPolarAngle = Math.PI / 2 + 0.4;
-        }
-      }
-    });
   }
 
   // Initialize when DOM is loaded
