@@ -23,12 +23,13 @@ const sortedExperiences = allExperiences.sort((a, b) => {
           </h1>
 
           <div class="sm:text-sm text-xs tracking-wider mb-4 px-2">
-            TLDR: <span class="text-slate-500/90 hover:underline">ASML</span> → <span
-              class="text-slate-500/90 hover:underline">Toyota</span
-            > → <span class="text-slate-500/90 hover:underline">Tesla</span> → <span
-              class="text-slate-500/90 hover:underline">Tesla</span
-            > → <span class="text-slate-500/90 hover:underline">NVIDIA</span>
+            TLDR: <span class="text-slate-500/90 hover:underline hover:text-cyan-500/90 decoration-2 underline-offset-4">ASML</span> → <span
+              class="text-slate-500/90 hover:underline hover:text-red-300/90 decoration-2 underline-offset-4">Toyota</span
+            > → <span class="text-slate-500/90 hover:underline hover:text-red-500/90 decoration-2 underline-offset-4">Tesla</span> → <span
+              class="text-slate-500/90 hover:underline hover:text-red-500/90 decoration-2 underline-offset-4">Tesla</span
+            > → <span class="text-slate-500/90 hover:underline hover:text-lime-500/90 decoration-2 underline-offset-4">NVIDIA</span>
           </div>
+          <div class="divider"></div>
 
           <div class="">
             {
@@ -84,6 +85,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                       aria-hidden="true"
                     />
                   </div>
+                  <div class="divider"></div>
                 );
               })
             }
