@@ -4,7 +4,11 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [tailwind()],
+  integrations: [tailwind(),
+    // image({
+    //   serviceEntryPoint: '@astrojs/image/sharp'
+    // }),
+  ],
   content: {
     collections: {
       blogs: "src/content/blogs",
@@ -18,7 +22,7 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        "@images": "/src/images",
+        "@images": "/public/images",
         "@models": "/src/models",
         "three": "three",
       },

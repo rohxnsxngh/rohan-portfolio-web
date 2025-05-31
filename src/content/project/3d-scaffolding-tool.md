@@ -2,9 +2,11 @@
 title: "3D Platform for Scaffolding"
 date: "2024-04"
 status: "completed"
-image: "/images/projects/quantum-ml.jpg"
+image: "/images/projects/Scaffolding5.jpg"
 description: "A high-performance 3D application for scaffolding graphics, utilizing WebGPU and ifc.js for real-time visualization and automated Bill of Materials (BOM) generation."
 tags: ["3D graphics", "WebGPU", "BIM", "construction technology", "real-time rendering"]
+# github: "https://github.com/rohxnsxngh/hans-aubs"
+demo: "https://0477ecc2-5847-48e4-bdb9-32403bc35367.vercel.app/model"
 ---
 
 ## Scaffolding Graphics: Building Interactive and High-Performance 3D Applications
@@ -113,6 +115,8 @@ The application was built using a modern web-based stack:
 
 ## **Conclusion**
 This project demonstrates the power of modern web technologies in revolutionizing scaffolding graphics for construction. By combining WebGPU, ifc.js, and real-time optimizations, we have built a scalable and efficient solution for **Stillastorget.no**. Future improvements will continue to enhance its capabilities, ensuring it remains at the forefront of **construction visualization technology**.
+
+**[live demo](https://0477ecc2-5847-48e4-bdb9-32403bc35367.vercel.app/model)**
 
 ![Scaffold 1](@images/project/Scaffolding6.jpg) 
 

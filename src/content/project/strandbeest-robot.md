@@ -5,7 +5,7 @@ status: "completed"
 image: "/images/project/StrandbeestPrototype.png"
 description: "A bio-inspired walking robot based on Theo Jansen's Strandbeest mechanism, featuring advanced control systems and autonomous capabilities."
 tags: ["robotics", "mechanical design", "bio-inspired", "control systems", "CAD"]
-github: "https://github.com/rohan/strandbeest-robot"
+# github: "https://github.com/rohan/strandbeest-robot"
 ---
 
 Inspired by Theo Jansen’s iconic **Strandbeest** kinetic sculptures, this project brought the fusion of **biomechanics and engineering** into the realm of robotics. The goal was to design and build a **walking robot** that not only replicated the mesmerizing gait of Jansen’s creatures but also incorporated **advanced control systems** for autonomous movement.

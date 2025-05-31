@@ -29,11 +29,14 @@ const statusColors = {
   'coming-soon': 'bg-purple-500/10 text-purple-400'
 };
 
-const statusText = {
+const statusText: Record<'completed' | 'in-progress' | 'coming-soon', string> = {
   completed: 'Completed',
   'in-progress': 'In Progress',
   'coming-soon': 'Coming Soon'
 };
+
+// Generate a unique ID for the image element
+const imageId = `project-image-${Math.random().toString(36).substring(2, 10)}`;
 ---
 
 <Layout title={`${project.data.title} | Rohan Singh`}>
@@ -45,8 +48,8 @@ const statusText = {
             <header class="mb-8">
               <div class="flex items-center justify-between mb-4">
                 <h1 class="text-4xl font-bold m-0">{project.data.title}</h1>
-                <span class={`px-3 py-1 text-sm rounded-full ${statusColors[project.data.status]}`}>
-                  {statusText[project.data.status]}
+                <span class={`px-3 py-1 text-sm rounded-full ${statusColors[project.data.status as 'completed' | 'in-progress' | 'coming-soon']}`}>
+                  {statusText[project.data.status as 'completed' | 'in-progress' | 'coming-soon']}
                 </span>
               </div>
               <div class="flex items-center gap-4 text-primary/60">
@@ -56,7 +59,7 @@ const statusText = {
                     month: 'long'
                   })}
                 </time>
-                {(project.data.github || project.data.demo) && (
+                {(project.data.github || project.data.demo || project.data.kaggle) && (
                   <div class="flex gap-4">
                     {project.data.github && (
                       <a href={project.data.github} target="_blank" rel="noopener noreferrer"
@@ -70,6 +73,12 @@ const statusText = {
                         Live Demo →
                       </a>
                     )}
+                    {project.data.kaggle && (
+                      <a href={project.data.kaggle} target="_blank" rel="noopener noreferrer"
+                         class="text-primary/60 hover:text-primary transition-colors">
+                        Kaggle Challenge →
+                      </a>
+                    )}
                   </div>
                 )}
               </div>
@@ -80,11 +89,33 @@ const statusText = {
                   </span>
                 ))}
               </div>
+              
+              {/* Display the project image with fallback */}
+              {project.data.image && (
+                <div class="mt-6 mb-8 relative" id={imageId}>
+                  {/* <img 
+                    src={project.data.image} 
+                    alt={project.data.title}
+                    class="w-full rounded-lg border border-primary/20 shadow-lg project-main-image"
+                    onerror={`document.getElementById('${imageId}').querySelector('.fallback-image').style.display = 'flex'; this.style.display = 'none';`}
+                  /> */}
+                  <div 
+                    class="fallback-image w-full h-64 rounded-lg border border-primary/20 shadow-lg hidden flex-col items-center justify-center bg-gray-800 text-white/80"
+                    style="display: none;"
+                  >
+                    <div class="text-5xl font-bold mb-4">
+                      {project.data.title.split(' ').map((word: string) => word[0]).join('').substring(0, 2).toUpperCase()}
+                    </div>
+                    <div class="text-xl opacity-80">{project.data.tags[0] || "Project"}</div>
+                  </div>
+                </div>
+              )}
             </header>
             
             <MarkdownContent>
               <Content />
             </MarkdownContent>
+            
             {/* @ts-ignore */}
             {project.data.images && (
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
@@ -94,6 +125,7 @@ const statusText = {
                     src={image.src}
                     alt={image.alt}
                     class="w-full rounded-lg border border-primary/20"
+                    onerror="this.style.display='none'"
                   />
                 ))}
               </div>

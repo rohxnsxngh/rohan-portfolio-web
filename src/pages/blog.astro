@@ -13,11 +13,34 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
   <Navbar>
     <div class="sm:px-20 px-6 py-8">
       <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">Technical Chronicles</h1>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+      <!-- Search Bar -->
+      <div class="mb-8 relative">
+        <div class="relative">
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search articles..." 
+            class="w-full p-3 pl-10 rounded-lg border border-accent/30 bg-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
+          />
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <div id="searchStatus" class="text-sm mt-2 text-primary/60 hidden"></div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
         {allBlogArticles.map((article) => {
           const tags: string[] = article.data.tags || [];
           
-          // Set a default status if undefined 
+          // Set a default status if undefined
           const defaultStatus = "Coming Soon";
           const actualStatus = article.data.status || defaultStatus;
           
@@ -72,3 +95,89 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     transform: translateY(-4px);
   }
 </style>
+
+<script>
+// Client-side search functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const blogCards = document.querySelectorAll<HTMLElement>('.blog-card');
+  const blogGrid = document.getElementById('blogGrid') as HTMLElement;
+  const searchStatus = document.getElementById('searchStatus') as HTMLElement;
+  
+  if (!searchInput || !blogGrid || !searchStatus) {
+    console.error('Required DOM elements not found');
+    return;
+  }
+  
+  searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    let matchCount = 0;
+    
+    blogCards.forEach((card: HTMLElement) => {
+      const titleElement = card.querySelector('h2');
+      const descriptionElement = card.querySelector('p.text-primary\\/80');
+      const tagElements = card.querySelectorAll('.mt-4 span');
+      
+      if (!titleElement || !descriptionElement) {
+        console.warn('Blog card is missing required elements', card);
+        return;
+      }
+      
+      const title = titleElement.textContent?.toLowerCase() || '';
+      const description = descriptionElement.textContent?.toLowerCase() || '';
+      const tags = Array.from(tagElements).map(tag => tag.textContent?.toLowerCase() || '');
+      
+      // Check if the search term is found in title, description, or tags
+      const matchesSearch = 
+        title.includes(searchTerm) || 
+        description.includes(searchTerm) || 
+        tags.some(tag => tag.includes(searchTerm));
+      
+      // Toggle visibility based on search match
+      if (matchesSearch || searchTerm === '') {
+        card.classList.remove('hidden');
+        matchCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+    
+    // Show search status message
+    if (searchTerm !== '') {
+      searchStatus.classList.remove('hidden');
+      searchStatus.textContent = `Found ${matchCount} article${matchCount !== 1 ? 's' : ''}`;
+    } else {
+      searchStatus.classList.add('hidden');
+    }
+    
+    // Add empty state message if no results
+    const emptyStateEl = document.getElementById('emptyState');
+    if (matchCount === 0 && searchTerm !== '') {
+      if (!emptyStateEl) {
+        const emptyState = document.createElement('div');
+        emptyState.id = 'emptyState';
+        emptyState.className = 'col-span-1 sm:col-span-2 lg:col-span-3 text-center py-12';
+        emptyState.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="mt-4 text-lg text-primary/70">No articles found matching "${searchTerm}"</p>
+          <button id="clearSearch" class="mt-2 text-primary hover:text-primary/80 underline">Clear search</button>
+        `;
+        blogGrid.appendChild(emptyState);
+        
+        // Add event listener to the clear button
+        const clearButton = document.getElementById('clearSearch');
+        if (clearButton) {
+          clearButton.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+          });
+        }
+      }
+    } else if (emptyStateEl) {
+      emptyStateEl.remove();
+    }
+  });
+});
+</script>

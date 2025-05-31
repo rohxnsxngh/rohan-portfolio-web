@@ -1,5 +1,5 @@
 ---
-// RobotModelViewer.astro
+// RobotModelViewer.astro with enhanced styles for expanded view
 // Props for customization
 interface Props {
   width?: string; // Container width as CSS value (can use % or other units)
@@ -298,6 +298,27 @@ const {
     if (container) {
       resizeObserver.observe(container);
     }
+
+    // Listen for expanded state to enhance controls
+    document.addEventListener('robotViewerStateChange', (e: any) => {
+      if (e.detail && e.detail.expanded) {
+        // When expanded, allow more camera movement
+        if (controls) {
+          controls.minDistance = 2.0;
+          controls.maxDistance = 8.0;
+          controls.minPolarAngle = Math.PI / 2 - 0.5; // More vertical rotation
+          controls.maxPolarAngle = Math.PI / 2 + 0.5; // More vertical rotation
+        }
+      } else {
+        // Reset to original constraints
+        if (controls) {
+          controls.minDistance = 3.0;
+          controls.maxDistance = 6.0;
+          controls.minPolarAngle = Math.PI / 2 - 0.3;
+          controls.maxPolarAngle = Math.PI / 2 + 0.3;
+        }
+      }
+    });
   }
 
   // Initialize when DOM is loaded
@@ -338,7 +359,7 @@ const {
     border-radius: 0.75rem;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.95);
-    transition: all 0.3s ease-out;
+    transition: all 0.4s ease-out;
     z-index: 10;
     width: 100%;
     height: 100%;
@@ -349,6 +370,16 @@ const {
     box-shadow:
       0 20px 25px -5px rgba(0, 0, 0, 0.1),
       0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Enhanced styles for expanded state */
+  :global(.expanded) .model-display-container {
+    background-color: rgba(0, 0, 0, 0.98);
+    border-color: rgba(var(--color-primary, 255, 255, 255), 0.4);
+    border-width: 2px;
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(var(--color-primary, 255, 255, 255), 0.2);
   }
 
   .robot-model-viewer-container::after {
@@ -390,5 +421,14 @@ const {
 
   #progress-bar::-webkit-progress-value {
     background-color: rgba(var(--color-primary, 75, 85, 99), 0.8);
+  }
+  
+  /* Style for expanded container */
+  :global(.expanded) .robot-model-viewer-container {
+    transform: none;
+  }
+  
+  :global(.expanded) .robot-model-viewer-container::after {
+    opacity: 0;
   }
 </style>

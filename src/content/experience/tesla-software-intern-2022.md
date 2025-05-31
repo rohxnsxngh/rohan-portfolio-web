@@ -1,7 +1,7 @@
 ---
 title: "Software Engineering Intern"
 company: "Tesla"
-description: "Developed project tracking systems, created data visualization dashboards, and worked with BIM and LiDAR technologies at GigaTexas. Managed over 30,000 project scopes worth $300M+ and implemented efficiency improvements across various systems."
+description: "Building Information Modeling (BIM), Factory Engineering, Data Science"
 date: "2022-01"
 endDate: "2022-09"
 location: "Austin, TX"

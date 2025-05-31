@@ -1,12 +1,12 @@
 ---
 import { Image } from "astro:assets";
-import Profile from "../../src/images/profile.jpg";
-import RS from "../../src/images/RS.jpg";
+import Profile from "@images/profile.jpg";
 import RobotModelViewer from "../components/RobotModelViewer.astro";
 ---
 
 <div
-  class="min-h-screen bg-secondary flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden relative"
+  class="min-h-screen bg-secondary flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden relative mb-12"
+  id="main-content"
 >
   <div class="max-w-7xl w-full">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -20,23 +20,37 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
         </h1>
 
         <p
-          class="text-lg px-1 my-2 sm:text-lg text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0 tracking-tight"
+          class="text-lg px-1 my-2 italic text-sm sm:text-md text-primary/70 font-mono leading-relaxed max-w-2xl mx-auto lg:mx-0 tracking-tight"
         >
           Keep Building
         </p>
-        
+
         <!-- Robot Viewer centered on mobile, next to text on larger screens -->
-        <div class="flex justify-center lg:justify-start my-6 relative z-10 cursor-pointer">
-          <div class="robot-frame relative w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64">
+        <div
+          class="flex justify-center lg:justify-start my-6 relative z-10 cursor-pointer"
+        >
+          <div
+            class="robot-frame relative w-72 h-72 sm:w-64 sm:h-64 lg:w-64 lg:h-64 xl:w-72 xl:h-72"
+          >
             <div class="w-full h-full transition-all duration-500 robot-viewer">
               <RobotModelViewer />
             </div>
-            <button 
+            <button
               class="expand-robot absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full flex items-center justify-center m-2 text-primary/80 z-20 hover:bg-primary/30 transition-colors"
               aria-label="Expand robot view"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-4 h-4">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                class="w-4 h-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
               </svg>
             </button>
           </div>
@@ -93,6 +107,13 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   </div>
 </div>
 
+<!-- Backdrop overlay for blur effect - separate from the robot -->
+<div
+  id="backdrop-overlay"
+  class="fixed inset-0 bg-black/50 backdrop-blur-md z-5 opacity-0 pointer-events-none transition-opacity duration-300"
+>
+</div>
+
 <style>
   /* Emoji ripple effect */
   .emoji {
@@ -117,8 +138,9 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   .robot-frame {
     will-change: transform;
     transform-origin: center;
+    transition: all 0.4s ease-out;
   }
-  
+
   .robot-frame.expanded {
     position: fixed;
     top: 50%;
@@ -128,26 +150,33 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     height: 90vw !important;
     max-width: 600px !important;
     max-height: 600px !important;
-    z-index: 100;
+    z-index: 60; /* Higher than the backdrop overlay */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    overflow: hidden;
   }
-  
-  .robot-frame.expanded::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: -1;
+
+  .backdrop-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
-  
+
   .robot-frame.expanded .expand-robot {
     background-color: rgba(255, 255, 255, 0.3);
   }
-  
+
   .robot-frame.expanded .expand-robot svg {
     transform: rotate(180deg);
+  }
+
+  .model-display-container {
+    transition: all 0.3s ease-out;
+  }
+
+  .robot-frame.expanded .model-display-container {
+    border-radius: 12px;
+    border-width: 2px;
+    border-color: rgba(var(--color-primary, 255, 255, 255), 0.4);
   }
 
   @keyframes bounceIn {
@@ -171,44 +200,80 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
 <!-- Script for toggle expand functionality -->
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const robotFrame = document.querySelector('.robot-frame');
-    const expandButton = document.querySelector('.expand-robot');
-    
-    if (robotFrame && expandButton) {
+  document.addEventListener("DOMContentLoaded", () => {
+    const robotFrame = document.querySelector(".robot-frame");
+    const expandButton = document.querySelector(".expand-robot");
+    const backdropOverlay = document.getElementById("backdrop-overlay");
+    const mainContent = document.getElementById("main-content");
+
+    if (robotFrame && expandButton && backdropOverlay) {
       // Toggle expanded view
-      expandButton.addEventListener('click', (e) => {
+      expandButton.addEventListener("click", (e) => {
         e.stopPropagation(); // Prevent event from bubbling to model controls
-        robotFrame.classList.toggle('expanded');
-        
-        // Update aria-label based on state
-        if (robotFrame.classList.contains('expanded')) {
-          expandButton.setAttribute('aria-label', 'Collapse robot view');
-          document.body.style.overflow = 'hidden'; // Prevent scrolling when expanded
-        } else {
-          expandButton.setAttribute('aria-label', 'Expand robot view');
-          document.body.style.overflow = ''; // Restore scrolling
+        toggleExpandedView();
+      });
+
+      // Allow clicking on backdrop to close expanded view
+      backdropOverlay.addEventListener("click", () => {
+        if (robotFrame.classList.contains("expanded")) {
+          toggleExpandedView(false);
         }
       });
-      
-      // Allow clicking outside to close expanded view
-      document.addEventListener('click', (e: any) => {
-        if (robotFrame.classList.contains('expanded') && 
-            !robotFrame.contains(e.target)) {
-          robotFrame.classList.remove('expanded');
-          expandButton.setAttribute('aria-label', 'Expand robot view');
-          document.body.style.overflow = '';
-        }
-      });
-      
+
       // Close on escape key
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && robotFrame.classList.contains('expanded')) {
-          robotFrame.classList.remove('expanded');
-          expandButton.setAttribute('aria-label', 'Expand robot view');
-          document.body.style.overflow = '';
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && robotFrame.classList.contains("expanded")) {
+          toggleExpandedView(false);
         }
       });
+
+      // Function to toggle the expanded view state
+      function toggleExpandedView(expand: boolean | null = null) {
+        const shouldExpand =
+          expand !== null
+            ? expand
+            : robotFrame && !robotFrame.classList.contains("expanded");
+
+        if (shouldExpand) {
+          // Expand the view
+          if (robotFrame) {
+            robotFrame.classList.add("expanded");
+          }
+          if (backdropOverlay) {
+            backdropOverlay.classList.add("backdrop-visible");
+          }
+          document.body.style.overflow = "hidden"; // Prevent scrolling
+          if (expandButton) {
+            expandButton.setAttribute("aria-label", "Collapse robot view");
+          }
+
+          // Dispatch custom event for the robot viewer to adjust its controls
+          document.dispatchEvent(
+            new CustomEvent("robotViewerStateChange", {
+              detail: { expanded: true },
+            })
+          );
+        } else {
+          // Collapse the view
+          if (robotFrame) {
+            robotFrame.classList.remove("expanded");
+          }
+          if (backdropOverlay) {
+            backdropOverlay.classList.remove("backdrop-visible");
+          }
+          document.body.style.overflow = ""; // Restore scrolling
+          if (expandButton) {
+            expandButton.setAttribute("aria-label", "Expand robot view");
+          }
+
+          // Dispatch custom event for the robot viewer to adjust its controls
+          document.dispatchEvent(
+            new CustomEvent("robotViewerStateChange", {
+              detail: { expanded: false },
+            })
+          );
+        }
+      }
     }
   });
 </script>

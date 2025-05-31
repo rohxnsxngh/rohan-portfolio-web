@@ -1,7 +1,7 @@
 ---
 title: "Software Engineering Intern"
 company: "Tesla"
-description: "Led development of a C# tool for Revit model extraction, created data visualization tools with ReactJS and Deck.gl, and participated in 5G Ericsson positioning trials for real-time asset tracking."
+description: "Mobile Robotics, Automation, Factory Design Engineering"
 date: "2023-05"
 endDate: "2023-08"
 location: "Austin, TX"
