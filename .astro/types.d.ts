@@ -177,13 +177,6 @@ declare module 'astro:content' {
   collection: "experience";
   data: InferEntrySchema<"experience">
 } & { render(): Render[".md"] };
-"nvidia-cad-intern.md": {
-	id: "nvidia-cad-intern.md";
-  slug: "nvidia-cad-intern";
-  body: string;
-  collection: "experience";
-  data: InferEntrySchema<"experience">
-} & { render(): Render[".md"] };
 "tesla-software-intern-2022.md": {
 	id: "tesla-software-intern-2022.md";
   slug: "tesla-software-intern-2022";
@@ -303,5 +296,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	export type ContentConfig = typeof import("./../src/content/config.js");
+	export type ContentConfig = typeof import("../src/content/config.js");
 }
