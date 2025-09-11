@@ -177,6 +177,27 @@ declare module 'astro:content' {
   collection: "experience";
   data: InferEntrySchema<"experience">
 } & { render(): Render[".md"] };
+"bcg-associate.md": {
+	id: "bcg-associate.md";
+  slug: "bcg-associate";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
+"nvidia-cad-intern.md": {
+	id: "nvidia-cad-intern.md";
+  slug: "nvidia-cad-intern";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
+"octapulse-cto.md": {
+	id: "octapulse-cto.md";
+  slug: "octapulse-cto";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
 "tesla-software-intern-2022.md": {
 	id: "tesla-software-intern-2022.md";
   slug: "tesla-software-intern-2022";
