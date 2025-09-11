@@ -1,0 +1,188 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../layouts/Navigation.astro";
+import Footer from "../layouts/Footer.astro";
+---
+
+<Layout title="The Forge - ThreeJS Experiments" description="Interactive ThreeJS experiments and visualizations">
+  <Navbar>
+    <div class="min-h-screen bg-secondary">
+      <!-- Hero Section -->
+      <div class="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-16 fade-in">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-mono text-primary mb-6 tracking-tight">
+              The Forge
+            </h1>
+            <p class="text-xl text-primary/70 font-mono max-w-3xl mx-auto leading-relaxed">
+              Interactive ThreeJS experiments and visualizations
+            </p>
+          </div>
+
+          <!-- Experiment Windows -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Experiment 1 -->
+            <a href="/forge/experiment-1" class="group">
+              <div class="experiment-window slide-up">
+                <div class="experiment-preview">
+                  <div class="cube-container">
+                    <div class="cube"></div>
+                  </div>
+                </div>
+                <div class="experiment-info">
+                  <h3 class="text-xl font-mono text-primary mb-2">Basic Geometry</h3>
+                  <p class="text-primary/70 font-mono text-sm">Simple cube rotation and lighting</p>
+                </div>
+                <div class="experiment-overlay">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <!-- Experiment 2 -->
+            <a href="/forge/experiment-2" class="group">
+              <div class="experiment-window slide-up">
+                <div class="experiment-preview">
+                  <div class="cube-container">
+                    <div class="cube cube-2"></div>
+                  </div>
+                </div>
+                <div class="experiment-info">
+                  <h3 class="text-xl font-mono text-primary mb-2">Advanced Shaders</h3>
+                  <p class="text-primary/70 font-mono text-sm">Custom materials and effects</p>
+                </div>
+                <div class="experiment-overlay">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <!-- Experiment 3 -->
+            <!-- <a href="/forge/experiment-3" class="group">
+              <div class="experiment-window slide-up">
+                <div class="experiment-preview">
+                  <div class="cube-container">
+                    <div class="cube cube-3"></div>
+                  </div>
+                </div>
+                <div class="experiment-info">
+                  <h3 class="text-xl font-mono text-primary mb-2">Particle Systems</h3>
+                  <p class="text-primary/70 font-mono text-sm">Dynamic particles and physics</p>
+                </div>
+                <div class="experiment-overlay">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </div>
+              </div>
+            </a> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </Navbar>
+  <Footer />
+</Layout>
+
+<style>
+  .slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+
+  .slide-up:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .slide-up:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .slide-up:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .slide-up:nth-child(5) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes slideUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Experiment Window Styles */
+  .experiment-window {
+    @apply relative bg-secondary border border-primary/20 rounded-lg overflow-hidden transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10;
+    height: 300px;
+  }
+
+  .experiment-window:hover {
+    transform: translateY(-4px);
+  }
+
+  .experiment-preview {
+    @apply w-full h-48 bg-black/50 flex items-center justify-center relative overflow-hidden;
+  }
+
+  .cube-container {
+    @apply w-24 h-24 relative;
+    perspective: 200px;
+  }
+
+  .cube {
+    @apply w-full h-full relative;
+    transform-style: preserve-3d;
+    animation: rotate 4s infinite linear;
+  }
+
+  .cube-2 {
+    animation: rotate 3s infinite linear reverse;
+  }
+
+  .cube-3 {
+    animation: rotate 2s infinite linear;
+  }
+
+  .cube::before,
+  .cube::after {
+    content: '';
+    @apply absolute inset-0 border-2 border-primary/60;
+  }
+
+  .cube::before {
+    transform: rotateY(45deg) rotateX(45deg);
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+  }
+
+  .cube::after {
+    transform: rotateY(-45deg) rotateX(45deg);
+    background: linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+  }
+
+  .experiment-info {
+    @apply p-4;
+  }
+
+  .experiment-overlay {
+    @apply absolute top-4 right-4 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300;
+  }
+
+  .experiment-overlay svg {
+    @apply text-primary/80;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg); }
+  }
+</style>
