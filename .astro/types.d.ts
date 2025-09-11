@@ -147,6 +147,13 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"mbb-first-try.md": {
+	id: "mbb-first-try.md";
+  slug: "mbb-first-try";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "mechanical-to-swe-internship.md": {
 	id: "mechanical-to-swe-internship.md";
   slug: "mechanical-to-swe-internship";
