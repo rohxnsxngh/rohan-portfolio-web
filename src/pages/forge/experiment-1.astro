@@ -4,7 +4,7 @@ import Navbar from "../../layouts/Navigation.astro";
 import Footer from "../../layouts/Footer.astro";
 ---
 
-<Layout title="Basic Geometry - The Forge" description="Simple cube rotation and lighting experiment">
+<Layout title="Instanced Cube Grid - The Forge" description="Dynamic 3D grid with noise-based animation and procedural colors">
   <Navbar>
     <div class="min-h-screen bg-secondary">
       <!-- Header -->
@@ -18,8 +18,8 @@ import Footer from "../../layouts/Footer.astro";
                 </svg>
                 Back to Forge
               </a>
-              <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Basic Geometry</h1>
-              <p class="text-primary/70 font-mono">Simple cube rotation and lighting</p>
+              <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Instanced Cube Grid</h1>
+              <p class="text-primary/70 font-mono">Dynamic 3D grid with noise-based animation</p>
             </div>
             <div class="hidden sm:flex items-center space-x-4">
               <button id="play-pause" class="px-4 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
@@ -27,6 +27,9 @@ import Footer from "../../layouts/Footer.astro";
               </button>
               <button id="reset-camera" class="px-4 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
                 Reset View
+              </button>
+              <button id="wireframe-toggle" class="px-4 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+                Wireframe
               </button>
             </div>
           </div>
@@ -36,26 +39,44 @@ import Footer from "../../layouts/Footer.astro";
       <!-- ThreeJS Container -->
       <div class="px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-          <div id="threejs-container" class="w-full h-96 border border-primary/20 rounded-lg overflow-hidden bg-black/50">
+          <div id="threejs-container" class="w-full h-[600px] border border-primary/20 rounded-lg overflow-hidden bg-black/50">
             <div class="loading-container">
               <div class="loading-spinner"></div>
-              <p class="text-primary/60 font-mono text-sm mt-4">Loading ThreeJS scene...</p>
+              <p class="text-primary/60 font-mono text-sm mt-4">Loading instanced mesh scene...</p>
             </div>
           </div>
           
           <!-- Controls Info -->
           <div class="mt-6 p-4 border border-primary/10 rounded-lg bg-primary/5">
-            <h3 class="text-lg font-mono text-primary mb-2">Controls</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-mono text-primary/70">
+            <h3 class="text-lg font-mono text-primary mb-2">Controls & Features</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-mono text-primary/70">
               <div>
-                <p><strong>Mouse:</strong> Rotate camera around the cube</p>
+                <p><strong>Mouse:</strong> Rotate camera</p>
                 <p><strong>Scroll:</strong> Zoom in/out</p>
+                <p><strong>Space:</strong> Toggle animation</p>
               </div>
               <div>
-                <p><strong>Space:</strong> Toggle animation</p>
-                <p><strong>R:</strong> Reset camera position</p>
+                <p><strong>R:</strong> Reset camera</p>
+                <p><strong>W:</strong> Toggle wireframe</p>
+                <p><strong>Performance:</strong> 8000 instances</p>
+              </div>
+              <div>
+                <p><strong>Features:</strong> Perlin noise scaling</p>
+                <p><strong>Colors:</strong> Procedural HSL</p>
+                <p><strong>Rendering:</strong> Hardware instancing</p>
               </div>
             </div>
+          </div>
+
+          <!-- Technical Details -->
+          <div class="mt-4 p-4 border border-primary/10 rounded-lg bg-primary/5">
+            <h3 class="text-lg font-mono text-primary mb-2">Technical Implementation</h3>
+            <p class="text-sm font-mono text-primary/70 leading-relaxed">
+              This demo showcases hardware instancing with THREE.InstancedMesh, rendering 8000 individual cubes efficiently. 
+              Each cube's scale is modulated by 3D Perlin noise, creating organic wave-like motion through the grid. 
+              Colors are procedurally generated using HSL color space, creating a dynamic rainbow effect that follows the noise patterns.
+              The entire grid rotates slowly while individual cubes pulse and change color based on their noise values.
+            </p>
           </div>
         </div>
       </div>
@@ -68,14 +89,96 @@ import Footer from "../../layouts/Footer.astro";
   import * as THREE from "three";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+  // Simple Perlin noise implementation (simplified version)
+  class SimpleNoise {
+    constructor() {
+      this.perm = this.generatePermutation();
+    }
+
+    generatePermutation() {
+      const p = [];
+      for (let i = 0; i < 256; i++) p[i] = i;
+      
+      // Fisher-Yates shuffle
+      for (let i = 255; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [p[i], p[j]] = [p[j], p[i]];
+      }
+      
+      // Duplicate the array
+      return [...p, ...p];
+    }
+
+    fade(t) {
+      return t * t * t * (t * (t * 6 - 15) + 10);
+    }
+
+    lerp(t, a, b) {
+      return a + t * (b - a);
+    }
+
+    grad(hash, x, y, z) {
+      const h = hash & 15;
+      const u = h < 8 ? x : y;
+      const v = h < 4 ? y : h === 12 || h === 14 ? x : z;
+      return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+    }
+
+    noise(x, y, z) {
+      const X = Math.floor(x) & 255;
+      const Y = Math.floor(y) & 255;
+      const Z = Math.floor(z) & 255;
+
+      x -= Math.floor(x);
+      y -= Math.floor(y);
+      z -= Math.floor(z);
+
+      const u = this.fade(x);
+      const v = this.fade(y);
+      const w = this.fade(z);
+
+      const A = this.perm[X] + Y;
+      const AA = this.perm[A] + Z;
+      const AB = this.perm[A + 1] + Z;
+      const B = this.perm[X + 1] + Y;
+      const BA = this.perm[B] + Z;
+      const BB = this.perm[B + 1] + Z;
+
+      return this.lerp(w,
+        this.lerp(v,
+          this.lerp(u, this.grad(this.perm[AA], x, y, z),
+                      this.grad(this.perm[BA], x - 1, y, z)),
+          this.lerp(u, this.grad(this.perm[AB], x, y - 1, z),
+                      this.grad(this.perm[BB], x - 1, y - 1, z))),
+        this.lerp(v,
+          this.lerp(u, this.grad(this.perm[AA + 1], x, y, z - 1),
+                      this.grad(this.perm[BA + 1], x - 1, y, z - 1)),
+          this.lerp(u, this.grad(this.perm[AB + 1], x, y - 1, z - 1),
+                      this.grad(this.perm[BB + 1], x - 1, y - 1, z - 1))));
+    }
+  }
+
   // Scene variables
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
-  let cube: THREE.Mesh;
   let controls: OrbitControls;
+  let mesh: THREE.InstancedMesh;
   let animationId: number;
   let isAnimating = true;
+  let wireframeMode = false;
+
+  // Animation variables
+  const amount = 20; // 20x20x20 = 8000 cubes
+  const count = Math.pow(amount, 3);
+  const dummy = new THREE.Object3D();
+  const noise = new SimpleNoise();
+  const color = new THREE.Color();
+
+  // Noise parameters
+  const noisseAmplitude = 0.1;
+  const noiseScale = 3;
+  const offset = (amount - 1) / 2;
 
   // Initialize ThreeJS scene
   function initThreeJS() {
@@ -90,56 +193,36 @@ import Footer from "../../layouts/Footer.astro";
     scene.background = new THREE.Color(0x000000);
 
     // Camera setup
-    camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(3, 3, 3);
+    camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.z = amount * 1.8;
 
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     container.appendChild(renderer.domElement);
 
-    // Create cube
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshPhongMaterial({ 
+    // Create instanced mesh
+    const size = 0.5;
+    const geometry = new THREE.BoxGeometry(size, size, size);
+    const material = new THREE.MeshBasicMaterial({ 
       color: 0xffffff,
-      shininess: 100,
-      specular: 0x222222
+      transparent: true,
+      opacity: 0.8
     });
-    cube = new THREE.Mesh(geometry, material);
-    cube.castShadow = true;
-    cube.receiveShadow = true;
-    scene.add(cube);
 
-    // Lighting setup
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 5, 5);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 1024;
-    directionalLight.shadow.mapSize.height = 1024;
-    scene.add(directionalLight);
-
-    // Add some colored lights for visual interest
-    const light1 = new THREE.PointLight(0xff6b6b, 0.5, 10);
-    light1.position.set(2, 2, 2);
-    scene.add(light1);
-
-    const light2 = new THREE.PointLight(0x4ecdc4, 0.5, 10);
-    light2.position.set(-2, -2, 2);
-    scene.add(light2);
+    mesh = new THREE.InstancedMesh(geometry, material, count);
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    mesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3);
+    scene.add(mesh);
 
     // Controls setup
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enableZoom = true;
-    controls.enablePan = false;
+    controls.enablePan = true;
 
     // Start animation loop
     animate();
@@ -148,13 +231,63 @@ import Footer from "../../layouts/Footer.astro";
     setupEventListeners();
   }
 
+  // Update cube instances
+  function updateInstances(time: number) {
+    let i = 0;
+    
+    for (let x = 0; x < amount; x++) {
+      for (let y = 0; y < amount; y++) {
+        for (let z = 0; z < amount; z++) {
+          // Position
+          dummy.position.set(offset - x, offset - y, offset - z);
+          
+          // Noise-based scaling
+          const noiseValue = noise.noise(
+            time + x * noisseAmplitude, 
+            time + y * noisseAmplitude, 
+            time + z * noisseAmplitude
+          ) * noiseScale;
+          
+          const scale = Math.max(0.1, 1 + noiseValue);
+          dummy.scale.setScalar(scale);
+          
+          // Procedural color based on noise
+          const hue = 0.6 + noiseValue * 0.3; // Cycle through colors
+          const saturation = 1.0;
+          const lightness = 0.3 + Math.abs(noiseValue) * 0.4;
+          
+          color.setHSL(hue, saturation, lightness);
+          mesh.setColorAt(i, color);
+          
+          // Optional rotation (uncomment for extra animation)
+          // dummy.rotation.y = Math.sin(x * 0.25 + time) + Math.sin(y * 0.25 + time) + Math.sin(z * 0.25 + time);
+          // dummy.rotation.z = dummy.rotation.y * 2;
+          
+          dummy.updateMatrix();
+          mesh.setMatrixAt(i, dummy.matrix);
+          
+          i++;
+        }
+      }
+    }
+    
+    mesh.instanceMatrix.needsUpdate = true;
+    mesh.instanceColor.needsUpdate = true;
+  }
+
   // Animation loop
   function animate() {
     animationId = requestAnimationFrame(animate);
 
-    if (isAnimating && cube) {
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+    if (isAnimating) {
+      const time = performance.now() * 0.0003;
+      
+      // Rotate the entire mesh slowly
+      mesh.rotation.x = Math.sin(time * 0.25);
+      mesh.rotation.y = Math.sin(time * 0.2);
+      
+      // Update individual instances
+      updateInstances(time);
     }
 
     if (controls) {
@@ -182,10 +315,22 @@ import Footer from "../../layouts/Footer.astro";
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
         if (camera && controls) {
-          camera.position.set(3, 3, 3);
+          camera.position.set(0, 0, amount * 1.8);
           controls.target.set(0, 0, 0);
           controls.update();
         }
+      });
+    }
+
+    // Wireframe toggle button
+    const wireframeBtn = document.getElementById('wireframe-toggle');
+    if (wireframeBtn) {
+      wireframeBtn.addEventListener('click', () => {
+        wireframeMode = !wireframeMode;
+        if (mesh && mesh.material) {
+          (mesh.material as THREE.MeshBasicMaterial).wireframe = wireframeMode;
+        }
+        wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
       });
     }
 
@@ -201,9 +346,18 @@ import Footer from "../../layouts/Footer.astro";
           break;
         case 'KeyR':
           if (camera && controls) {
-            camera.position.set(3, 3, 3);
+            camera.position.set(0, 0, amount * 1.8);
             controls.target.set(0, 0, 0);
             controls.update();
+          }
+          break;
+        case 'KeyW':
+          wireframeMode = !wireframeMode;
+          if (mesh && mesh.material) {
+            (mesh.material as THREE.MeshBasicMaterial).wireframe = wireframeMode;
+          }
+          if (wireframeBtn) {
+            wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
           }
           break;
       }
