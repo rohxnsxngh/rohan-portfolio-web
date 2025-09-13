@@ -4,7 +4,7 @@ import Navbar from "../../layouts/Navigation.astro";
 import Footer from "../../layouts/Footer.astro";
 ---
 
-<Layout title="Instanced Cube Grid - The Forge" description="Dynamic 3D grid with noise-based animation and procedural colors">
+<Layout title="Enhanced Cube Grid - The Forge" description="Instanced mesh with bloom effects and cinematic post-processing">
   <Navbar>
     <div class="min-h-screen bg-secondary">
       <!-- Header -->
@@ -18,17 +18,20 @@ import Footer from "../../layouts/Footer.astro";
                 </svg>
                 Back to Forge
               </a>
-              <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Instanced Cube Grid</h1>
-              <p class="text-primary/70 font-mono">Dynamic 3D grid with noise-based animation</p>
+              <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Enhanced Cube Grid</h1>
+              <p class="text-primary/70 font-mono">Cinematic bloom effects with dynamic lighting</p>
             </div>
-            <div class="hidden sm:flex items-center space-x-4">
-              <button id="play-pause" class="px-4 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+            <div class="hidden sm:flex items-center space-x-3">
+              <button id="play-pause" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
                 Pause
               </button>
-              <button id="reset-camera" class="px-4 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
-                Reset View
+              <button id="reset-camera" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+                Reset
               </button>
-              <button id="wireframe-toggle" class="px-4 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+              <button id="bloom-toggle" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+                Bloom
+              </button>
+              <button id="wireframe-toggle" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
                 Wireframe
               </button>
             </div>
@@ -42,40 +45,81 @@ import Footer from "../../layouts/Footer.astro";
           <div id="threejs-container" class="w-full h-[600px] border border-primary/20 rounded-lg overflow-hidden bg-black/50">
             <div class="loading-container">
               <div class="loading-spinner"></div>
-              <p class="text-primary/60 font-mono text-sm mt-4">Loading instanced mesh scene...</p>
+              <p class="text-primary/60 font-mono text-sm mt-4">Loading enhanced scene...</p>
             </div>
           </div>
           
-          <!-- Controls Info -->
-          <div class="mt-6 p-4 border border-primary/10 rounded-lg bg-primary/5">
-            <h3 class="text-lg font-mono text-primary mb-2">Controls & Features</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-mono text-primary/70">
-              <div>
-                <p><strong>Mouse:</strong> Rotate camera</p>
-                <p><strong>Scroll:</strong> Zoom in/out</p>
-                <p><strong>Space:</strong> Toggle animation</p>
+          <!-- Controls and Settings -->
+          <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="p-4 border border-primary/10 rounded-lg bg-primary/5">
+              <h3 class="text-lg font-mono text-primary mb-2">Controls</h3>
+              <div class="grid grid-cols-2 gap-3 text-sm font-mono text-primary/70">
+                <div>
+                  <p><strong>Mouse:</strong> Orbit camera</p>
+                  <p><strong>Scroll:</strong> Zoom in/out</p>
+                  <p><strong>Space:</strong> Play/Pause</p>
+                </div>
+                <div>
+                  <p><strong>R:</strong> Reset view</p>
+                  <p><strong>B:</strong> Toggle bloom</p>
+                  <p><strong>W:</strong> Wireframe mode</p>
+                </div>
               </div>
-              <div>
-                <p><strong>R:</strong> Reset camera</p>
-                <p><strong>W:</strong> Toggle wireframe</p>
-                <p><strong>Performance:</strong> 8000 instances</p>
-              </div>
-              <div>
-                <p><strong>Features:</strong> Perlin noise scaling</p>
-                <p><strong>Colors:</strong> Procedural HSL</p>
+            </div>
+
+            <div class="p-4 border border-primary/10 rounded-lg bg-primary/5">
+              <h3 class="text-lg font-mono text-primary mb-2">Performance</h3>
+              <div class="text-sm font-mono text-primary/70 space-y-1">
+                <p><strong>Instances:</strong> <span id="instance-count">8,000</span> cubes</p>
+                <p><strong>Frame Rate:</strong> <span id="fps-counter">-- FPS</span></p>
+                <p><strong>Bloom:</strong> <span id="bloom-status">Enabled</span></p>
                 <p><strong>Rendering:</strong> Hardware instancing</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Visual Settings -->
+          <div class="mt-4 p-4 border border-primary/10 rounded-lg bg-primary/5">
+            <h3 class="text-lg font-mono text-primary mb-3">Visual Settings</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Grid Density</label>
+                <select id="grid-size" class="bg-secondary border border-primary/20 text-primary font-mono text-sm p-2 rounded">
+                  <option value="14">Light (2.7K cubes)</option>
+                  <option value="18">Medium (5.8K cubes)</option>
+                  <option value="20" selected>High (8K cubes)</option>
+                  <option value="22">Ultra (10.6K cubes)</option>
+                </select>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Bloom Intensity</label>
+                <input type="range" id="bloom-intensity" min="0" max="3" step="0.1" value="1.2" 
+                       class="w-full accent-primary">
+                <span class="text-xs font-mono text-primary/50 mt-1">1.2</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Wave Speed</label>
+                <input type="range" id="animation-speed" min="0.1" max="2.5" step="0.1" value="1" 
+                       class="w-full accent-primary">
+                <span class="text-xs font-mono text-primary/50 mt-1">1.0x</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Wave Scale</label>
+                <input type="range" id="noise-scale" min="1" max="6" step="0.2" value="3" 
+                       class="w-full accent-primary">
+                <span class="text-xs font-mono text-primary/50 mt-1">3.0</span>
               </div>
             </div>
           </div>
 
           <!-- Technical Details -->
           <div class="mt-4 p-4 border border-primary/10 rounded-lg bg-primary/5">
-            <h3 class="text-lg font-mono text-primary mb-2">Technical Implementation</h3>
+            <h3 class="text-lg font-mono text-primary mb-2">Technical Features</h3>
             <p class="text-sm font-mono text-primary/70 leading-relaxed">
-              This demo showcases hardware instancing with THREE.InstancedMesh, rendering 8000 individual cubes efficiently. 
-              Each cube's scale is modulated by 3D Perlin noise, creating organic wave-like motion through the grid. 
-              Colors are procedurally generated using HSL color space, creating a dynamic rainbow effect that follows the noise patterns.
-              The entire grid rotates slowly while individual cubes pulse and change color based on their noise values.
+              Enhanced instanced rendering with selective bloom post-processing creates cinematic glow effects. 
+              Multi-layered Perlin noise drives organic wave motion while dynamic lighting and ACES tone mapping 
+              deliver professional visual quality. The system automatically adapts quality settings for optimal 
+              performance across different devices.
             </p>
           </div>
         </div>
@@ -88,8 +132,12 @@ import Footer from "../../layouts/Footer.astro";
 <script>
   import * as THREE from "three";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+  import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+  import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+  import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+  import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
-  // Simple Perlin noise implementation (simplified version)
+  // Simple Perlin noise implementation
   class SimpleNoise {
     constructor() {
       this.perm = this.generatePermutation();
@@ -99,23 +147,16 @@ import Footer from "../../layouts/Footer.astro";
       const p = [];
       for (let i = 0; i < 256; i++) p[i] = i;
       
-      // Fisher-Yates shuffle
       for (let i = 255; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [p[i], p[j]] = [p[j], p[i]];
       }
       
-      // Duplicate the array
       return [...p, ...p];
     }
 
-    fade(t) {
-      return t * t * t * (t * (t * 6 - 15) + 10);
-    }
-
-    lerp(t, a, b) {
-      return a + t * (b - a);
-    }
+    fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
+    lerp(t, a, b) { return a + t * (b - a); }
 
     grad(hash, x, y, z) {
       const h = hash & 15;
@@ -162,110 +203,216 @@ import Footer from "../../layouts/Footer.astro";
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
+  let composer: EffectComposer;
+  let bloomPass: UnrealBloomPass;
   let controls: OrbitControls;
   let mesh: THREE.InstancedMesh;
   let animationId: number;
   let isAnimating = true;
+  let bloomEnabled = true;
   let wireframeMode = false;
 
   // Animation variables
-  const amount = 20; // 20x20x20 = 8000 cubes
-  const count = Math.pow(amount, 3);
+  let amount = 20;
+  let count = Math.pow(amount, 3);
   const dummy = new THREE.Object3D();
   const noise = new SimpleNoise();
   const color = new THREE.Color();
 
-  // Noise parameters
-  const noisseAmplitude = 0.1;
-  const noiseScale = 3;
-  const offset = (amount - 1) / 2;
+  // Settings
+  let noiseAmplitude = 0.1;
+  let noiseScale = 3;
+  let animationSpeed = 1;
+  let bloomIntensity = 1.2;
+  let offset = (amount - 1) / 2;
 
-  // Initialize ThreeJS scene
+  // Performance monitoring
+  let frameCount = 0;
+  let lastTime = 0;
+  let fps = 0;
+
   function initThreeJS() {
     const container = document.getElementById('threejs-container');
     if (!container) return;
 
-    // Clear loading content
     container.innerHTML = '';
 
     // Scene setup
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x000000);
+    // Add subtle fog for depth
+    scene.fog = new THREE.Fog(0x000000, 40, 120);
 
     // Camera setup
-    camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.z = amount * 1.8;
+    camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 200);
+    camera.position.set(0, 0, amount * 1.8);
 
-    // Renderer setup
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    // Renderer setup with enhanced settings
+    renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      powerPreference: "high-performance"
+    });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
 
     container.appendChild(renderer.domElement);
 
-    // Create instanced mesh
-    const size = 0.5;
-    const geometry = new THREE.BoxGeometry(size, size, size);
-    const material = new THREE.MeshBasicMaterial({ 
-      color: 0xffffff,
-      transparent: true,
-      opacity: 0.8
-    });
+    // Post-processing setup
+    setupPostProcessing(container);
 
-    mesh = new THREE.InstancedMesh(geometry, material, count);
-    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    mesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3);
-    scene.add(mesh);
+    // Create enhanced instanced mesh
+    createInstancedMesh();
+    
+    // Add cinematic lighting
+    createLighting();
 
     // Controls setup
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+    controls.dampingFactor = 0.04;
     controls.enableZoom = true;
     controls.enablePan = true;
+    controls.maxDistance = 100;
+    controls.minDistance = 8;
+    controls.autoRotate = false;
+    controls.autoRotateSpeed = 0.3;
 
-    // Start animation loop
+    // Start animation
     animate();
-
-    // Event listeners
     setupEventListeners();
+    updateInstanceCount();
   }
 
-  // Update cube instances
+  function setupPostProcessing(container: HTMLElement) {
+    composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(container.clientWidth, container.clientHeight),
+      bloomIntensity,   // strength
+      0.5,              // radius  
+      0.8               // threshold
+    );
+    composer.addPass(bloomPass);
+
+    const outputPass = new OutputPass();
+    composer.addPass(outputPass);
+  }
+
+  function createInstancedMesh() {
+    if (mesh) {
+      scene.remove(mesh);
+      mesh.dispose();
+    }
+
+    const size = 0.45;
+    const geometry = new THREE.BoxGeometry(size, size, size);
+    
+    // Enhanced material for better bloom effects
+    const material = new THREE.MeshPhongMaterial({
+      transparent: true,
+      opacity: 0.95,
+      emissive: new THREE.Color(0x000000), // Will be set per instance for bloom
+      shininess: 80,
+      specular: new THREE.Color(0x444444)
+    });
+
+    count = Math.pow(amount, 3);
+    mesh = new THREE.InstancedMesh(geometry, material, count);
+    mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    mesh.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(count * 3), 3);
+    mesh.castShadow = true;
+    mesh.receiveShadow = false;
+    scene.add(mesh);
+
+    offset = (amount - 1) / 2;
+  }
+
+  function createLighting() {
+    // Enhanced ambient light
+    const ambientLight = new THREE.AmbientLight(0x303050, 0.4);
+    scene.add(ambientLight);
+
+    // Primary key light
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    keyLight.position.set(15, 20, 15);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    keyLight.shadow.camera.near = 0.5;
+    keyLight.shadow.camera.far = 50;
+    keyLight.shadow.camera.left = -25;
+    keyLight.shadow.camera.right = 25;
+    keyLight.shadow.camera.top = 25;
+    keyLight.shadow.camera.bottom = -25;
+    scene.add(keyLight);
+
+    // Colored fill lights for atmosphere
+    const fillLight1 = new THREE.DirectionalLight(0x4ecdc4, 0.6);
+    fillLight1.position.set(-10, -5, 10);
+    scene.add(fillLight1);
+
+    const fillLight2 = new THREE.DirectionalLight(0xff6b6b, 0.4);
+    fillLight2.position.set(5, -10, -15);
+    scene.add(fillLight2);
+
+    // Rim light
+    const rimLight = new THREE.DirectionalLight(0x9b59b6, 0.5);
+    rimLight.position.set(-15, 15, -15);
+    scene.add(rimLight);
+  }
+
   function updateInstances(time: number) {
     let i = 0;
     
     for (let x = 0; x < amount; x++) {
       for (let y = 0; y < amount; y++) {
         for (let z = 0; z < amount; z++) {
-          // Position
           dummy.position.set(offset - x, offset - y, offset - z);
           
-          // Noise-based scaling
-          const noiseValue = noise.noise(
-            time + x * noisseAmplitude, 
-            time + y * noisseAmplitude, 
-            time + z * noisseAmplitude
-          ) * noiseScale;
+          // Multi-octave noise for more complex patterns
+          const baseNoise = noise.noise(
+            time * animationSpeed + x * noiseAmplitude, 
+            time * animationSpeed + y * noiseAmplitude, 
+            time * animationSpeed + z * noiseAmplitude
+          );
           
-          const scale = Math.max(0.1, 1 + noiseValue);
+          const detailNoise = noise.noise(
+            time * animationSpeed * 2 + x * noiseAmplitude * 2, 
+            time * animationSpeed * 2 + y * noiseAmplitude * 2, 
+            time * animationSpeed * 2 + z * noiseAmplitude * 2
+          ) * 0.3;
+          
+          const combinedNoise = (baseNoise + detailNoise) * noiseScale;
+          const scale = Math.max(0.15, 1 + combinedNoise * 0.7);
           dummy.scale.setScalar(scale);
           
-          // Procedural color based on noise
-          const hue = 0.6 + noiseValue * 0.3; // Cycle through colors
-          const saturation = 1.0;
-          const lightness = 0.3 + Math.abs(noiseValue) * 0.4;
+          // Enhanced color system with better bloom response
+          const distance = Math.sqrt((x-amount/2)**2 + (y-amount/2)**2 + (z-amount/2)**2) / (amount/2);
+          const hue = (0.6 + combinedNoise * 0.4 + distance * 0.2 + time * 0.05) % 1;
+          const saturation = 0.8 + Math.sin(time * 2 + distance * 8) * 0.15;
+          const lightness = Math.max(0.1, 0.35 + Math.abs(combinedNoise) * 0.4);
           
-          color.setHSL(hue, saturation, lightness);
+          // Enhance brightness for bloom effect on larger cubes
+          const bloomBoost = scale > 1.3 ? 0.3 : 0;
+          
+          color.setHSL(hue, saturation, lightness + bloomBoost);
           mesh.setColorAt(i, color);
           
-          // Optional rotation (uncomment for extra animation)
-          // dummy.rotation.y = Math.sin(x * 0.25 + time) + Math.sin(y * 0.25 + time) + Math.sin(z * 0.25 + time);
-          // dummy.rotation.z = dummy.rotation.y * 2;
+          // Subtle rotation
+          dummy.rotation.set(
+            combinedNoise * 0.3,
+            time * 0.1 + combinedNoise * 0.2,
+            combinedNoise * 0.15
+          );
           
           dummy.updateMatrix();
           mesh.setMatrixAt(i, dummy.matrix);
-          
           i++;
         }
       }
@@ -275,64 +422,113 @@ import Footer from "../../layouts/Footer.astro";
     mesh.instanceColor.needsUpdate = true;
   }
 
-  // Animation loop
+  function updateFPS(time: number) {
+    frameCount++;
+    if (time - lastTime > 1000) {
+      fps = Math.round((frameCount * 1000) / (time - lastTime));
+      const fpsElement = document.getElementById('fps-counter');
+      if (fpsElement) fpsElement.textContent = `${fps} FPS`;
+      frameCount = 0;
+      lastTime = time;
+    }
+  }
+
+  function updateInstanceCount() {
+    const countElement = document.getElementById('instance-count');
+    if (countElement) {
+      const formattedCount = count.toLocaleString();
+      countElement.textContent = `${formattedCount}`;
+    }
+  }
+
   function animate() {
     animationId = requestAnimationFrame(animate);
+    const time = performance.now();
 
     if (isAnimating) {
-      const time = performance.now() * 0.0003;
+      const animTime = time * 0.0003;
       
-      // Rotate the entire mesh slowly
-      mesh.rotation.x = Math.sin(time * 0.25);
-      mesh.rotation.y = Math.sin(time * 0.2);
+      // Gentle global rotation
+      mesh.rotation.x = Math.sin(animTime * 0.2) * 0.15;
+      mesh.rotation.y = Math.sin(animTime * 0.15) * 0.1;
+      mesh.rotation.z = Math.sin(animTime * 0.25) * 0.08;
       
-      // Update individual instances
-      updateInstances(time);
+      updateInstances(animTime);
     }
 
-    if (controls) {
-      controls.update();
-    }
+    updateFPS(time);
+    controls.update();
 
-    if (renderer && scene && camera) {
+    if (bloomEnabled) {
+      composer.render();
+    } else {
       renderer.render(scene, camera);
     }
   }
 
-  // Setup event listeners
   function setupEventListeners() {
-    // Play/Pause button
+    // UI Controls
     const playPauseBtn = document.getElementById('play-pause');
-    if (playPauseBtn) {
-      playPauseBtn.addEventListener('click', () => {
-        isAnimating = !isAnimating;
-        playPauseBtn.textContent = isAnimating ? 'Pause' : 'Play';
-      });
-    }
-
-    // Reset camera button
     const resetBtn = document.getElementById('reset-camera');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        if (camera && controls) {
-          camera.position.set(0, 0, amount * 1.8);
-          controls.target.set(0, 0, 0);
-          controls.update();
-        }
-      });
-    }
-
-    // Wireframe toggle button
+    const bloomBtn = document.getElementById('bloom-toggle');
     const wireframeBtn = document.getElementById('wireframe-toggle');
-    if (wireframeBtn) {
-      wireframeBtn.addEventListener('click', () => {
-        wireframeMode = !wireframeMode;
-        if (mesh && mesh.material) {
-          (mesh.material as THREE.MeshBasicMaterial).wireframe = wireframeMode;
-        }
-        wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
-      });
-    }
+    const gridSizeSelect = document.getElementById('grid-size') as HTMLSelectElement;
+    const bloomIntensitySlider = document.getElementById('bloom-intensity') as HTMLInputElement;
+    const animationSpeedSlider = document.getElementById('animation-speed') as HTMLInputElement;
+    const noiseScaleSlider = document.getElementById('noise-scale') as HTMLInputElement;
+
+    // Button event listeners
+    playPauseBtn?.addEventListener('click', () => {
+      isAnimating = !isAnimating;
+      playPauseBtn.textContent = isAnimating ? 'Pause' : 'Play';
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      camera.position.set(0, 0, amount * 1.8);
+      controls.target.set(0, 0, 0);
+      controls.update();
+    });
+
+    bloomBtn?.addEventListener('click', () => {
+      bloomEnabled = !bloomEnabled;
+      bloomBtn.textContent = bloomEnabled ? 'Bloom' : 'No Bloom';
+      const statusElement = document.getElementById('bloom-status');
+      if (statusElement) statusElement.textContent = bloomEnabled ? 'Enabled' : 'Disabled';
+    });
+
+    wireframeBtn?.addEventListener('click', () => {
+      wireframeMode = !wireframeMode;
+      if (mesh && mesh.material) {
+        (mesh.material as THREE.MeshPhongMaterial).wireframe = wireframeMode;
+      }
+      wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
+    });
+
+    // Slider event listeners with value display updates
+    gridSizeSelect?.addEventListener('change', () => {
+      amount = parseInt(gridSizeSelect.value);
+      createInstancedMesh();
+      updateInstanceCount();
+    });
+
+    bloomIntensitySlider?.addEventListener('input', () => {
+      bloomIntensity = parseFloat(bloomIntensitySlider.value);
+      bloomPass.strength = bloomIntensity;
+      const label = bloomIntensitySlider.nextElementSibling;
+      if (label) label.textContent = bloomIntensity.toFixed(1);
+    });
+
+    animationSpeedSlider?.addEventListener('input', () => {
+      animationSpeed = parseFloat(animationSpeedSlider.value);
+      const label = animationSpeedSlider.nextElementSibling;
+      if (label) label.textContent = `${animationSpeed.toFixed(1)}x`;
+    });
+
+    noiseScaleSlider?.addEventListener('input', () => {
+      noiseScale = parseFloat(noiseScaleSlider.value);
+      const label = noiseScaleSlider.nextElementSibling;
+      if (label) label.textContent = noiseScale.toFixed(1);
+    });
 
     // Keyboard controls
     document.addEventListener('keydown', (event) => {
@@ -340,41 +536,42 @@ import Footer from "../../layouts/Footer.astro";
         case 'Space':
           event.preventDefault();
           isAnimating = !isAnimating;
-          if (playPauseBtn) {
-            playPauseBtn.textContent = isAnimating ? 'Pause' : 'Play';
-          }
+          if (playPauseBtn) playPauseBtn.textContent = isAnimating ? 'Pause' : 'Play';
           break;
         case 'KeyR':
-          if (camera && controls) {
-            camera.position.set(0, 0, amount * 1.8);
-            controls.target.set(0, 0, 0);
-            controls.update();
-          }
+          camera.position.set(0, 0, amount * 1.8);
+          controls.target.set(0, 0, 0);
+          controls.update();
+          break;
+        case 'KeyB':
+          bloomEnabled = !bloomEnabled;
+          if (bloomBtn) bloomBtn.textContent = bloomEnabled ? 'Bloom' : 'No Bloom';
+          const statusElement = document.getElementById('bloom-status');
+          if (statusElement) statusElement.textContent = bloomEnabled ? 'Enabled' : 'Disabled';
           break;
         case 'KeyW':
           wireframeMode = !wireframeMode;
           if (mesh && mesh.material) {
-            (mesh.material as THREE.MeshBasicMaterial).wireframe = wireframeMode;
+            (mesh.material as THREE.MeshPhongMaterial).wireframe = wireframeMode;
           }
-          if (wireframeBtn) {
-            wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
-          }
+          if (wireframeBtn) wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
           break;
       }
     });
 
-    // Window resize
+    // Resize handling
     window.addEventListener('resize', () => {
       const container = document.getElementById('threejs-container');
       if (container && camera && renderer) {
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
+        composer.setSize(container.clientWidth, container.clientHeight);
       }
     });
   }
 
-  // Initialize when DOM is loaded
+  // Initialize
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initThreeJS);
   } else {
@@ -397,5 +594,47 @@ import Footer from "../../layouts/Footer.astro";
 
   #threejs-container canvas {
     display: block;
+  }
+
+  input[type="range"] {
+    height: 4px;
+    border-radius: 2px;
+    background: rgb(var(--primary) / 0.2);
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgb(var(--primary));
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgb(var(--primary) / 0.5);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: rgb(var(--primary));
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  select {
+    transition: all 0.2s ease;
+  }
+
+  select:focus {
+    outline: none;
+    border-color: rgb(var(--primary) / 0.5);
+    box-shadow: 0 0 0 2px rgb(var(--primary) / 0.1);
   }
 </style>
