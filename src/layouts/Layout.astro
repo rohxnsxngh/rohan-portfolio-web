@@ -1,5 +1,6 @@
 ---
 import Seo from "../components/Seo.astro";
+import CustomCursor from "../components/CustomCursor.astro";
 
 const { title, description, image, frontmatter, robots } = Astro.props;
 ---
@@ -85,6 +86,7 @@ const { title, description, image, frontmatter, robots } = Astro.props;
     </style>
   </head>
   <body class="min-h-screen">
+    <CustomCursor />
     <main class="fade-in">
       <slot />
     </main>

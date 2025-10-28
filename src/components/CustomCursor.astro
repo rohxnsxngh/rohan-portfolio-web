@@ -1,0 +1,390 @@
+---
+// Custom Cursor Component with Pixelated Hieroglyphic Trail Effect
+---
+
+<div id="custom-cursor">
+  <div id="cursor-dot"></div>
+  <div id="cursor-outline"></div>
+  <canvas id="cursor-canvas"></canvas>
+  <div id="glyph-container"></div>
+</div>
+
+<style>
+  #custom-cursor {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+  }
+
+  #cursor-dot {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background-color: #FFFFFF;
+    transform: translate(-50%, -50%);
+    z-index: 10001;
+    transition: width 0.2s ease, height 0.2s ease;
+    mix-blend-mode: difference;
+  }
+
+  #cursor-outline {
+    position: fixed;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%) rotate(45deg);
+    z-index: 10000;
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    mix-blend-mode: difference;
+  }
+
+  #cursor-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  #glyph-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: bold;
+  }
+
+  .glyph {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    pointer-events: none;
+    user-select: none;
+    transform: translate(-50%, -50%);
+    animation: glyphFade 1.5s ease-out forwards;
+    text-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+  }
+
+  @keyframes glyphFade {
+    0% {
+      opacity: 0.9;
+      transform: translate(-50%, -50%) scale(0.8) rotate(0deg);
+    }
+    50% {
+      opacity: 0.6;
+      transform: translate(-50%, -50%) scale(1) rotate(5deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.2) rotate(-5deg);
+    }
+  }
+
+  /* Hide default cursor */
+  body {
+    cursor: none !important;
+  }
+
+  body * {
+    cursor: none !important;
+  }
+
+  /* States */
+  body.cursor-hover #cursor-outline {
+    width: 48px;
+    height: 48px;
+    border-color: rgba(255, 255, 255, 0.7);
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.1);
+  }
+
+  body.cursor-hover #cursor-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  body.cursor-click #cursor-outline {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0.9);
+  }
+
+  body.cursor-click #cursor-dot {
+    width: 8px;
+    height: 8px;
+  }
+</style>
+
+<script>
+  // Cursor state
+  let mouseX = 0;
+  let mouseY = 0;
+  let cursorX = 0;
+  let cursorY = 0;
+  let outlineX = 0;
+  let outlineY = 0;
+
+  const dot = document.getElementById('cursor-dot');
+  const outline = document.getElementById('cursor-outline');
+  const canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+  const glyphContainer = document.getElementById('glyph-container');
+
+  // Hieroglyphic symbols and tech characters for the trail
+  const glyphSets = {
+    hieroglyphic: ['◐', '◑', '◒', '◓', '◔', '◕', '◖', '◗', '☰', '☱', '☲', '☳', '☴', '☵', '☶', '☷', '⚊', '⚋'],
+    geometric: ['▀', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█', '▉', '▊', '▋', '▌', '▍', '▎', '▏', '▐', '░', '▒', '▓'],
+    tech: ['⟨', '⟩', '⟪', '⟫', '⦗', '⦘', '⌈', '⌉', '⌊', '⌋', '◢', '◣', '◤', '◥', '◬', '◭', '◮'],
+    binary: ['0', '1', '0', '1', '0', '1'],
+    symbols: ['※', '⁂', '⁕', '⁜', '⁂', '◆', '◇', '◈', '◊', '○', '◎', '●', '◐', '◑', '◒', '◓']
+  };
+
+  const allGlyphs = [...glyphSets.hieroglyphic, ...glyphSets.geometric, ...glyphSets.tech, ...glyphSets.binary, ...glyphSets.symbols];
+
+  // Pixelated block system
+  interface PixelBlock {
+    x: number;
+    y: number;
+    size: number;
+    life: number;
+    maxLife: number;
+    type: 'solid' | 'hollow' | 'dot';
+  }
+
+  const pixelBlocks: PixelBlock[] = [];
+  let lastGlyphTime = 0;
+  let lastPixelTime = 0;
+  let velocity = { x: 0, y: 0 };
+  let lastMouseX = 0;
+  let lastMouseY = 0;
+
+  // Setup canvas
+  function resizeCanvas() {
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // Create glyph element
+  function createGlyph(x: number, y: number) {
+    if (!glyphContainer) return;
+
+    const glyph = document.createElement('div');
+    glyph.className = 'glyph';
+    glyph.textContent = allGlyphs[Math.floor(Math.random() * allGlyphs.length)];
+
+    // Randomize position slightly for organic feel
+    const offsetX = (Math.random() - 0.5) * 20;
+    const offsetY = (Math.random() - 0.5) * 20;
+
+    glyph.style.left = `${x + offsetX}px`;
+    glyph.style.top = `${y + offsetY}px`;
+    glyph.style.fontSize = `${12 + Math.random() * 12}px`;
+
+    glyphContainer.appendChild(glyph);
+
+    // Remove after animation
+    setTimeout(() => {
+      if (glyph.parentNode) {
+        glyph.parentNode.removeChild(glyph);
+      }
+    }, 1500);
+  }
+
+  // Add pixelated block
+  function addPixelBlock(x: number, y: number) {
+    const types: Array<'solid' | 'hollow' | 'dot'> = ['solid', 'hollow', 'dot'];
+    pixelBlocks.push({
+      x: x + (Math.random() - 0.5) * 30,
+      y: y + (Math.random() - 0.5) * 30,
+      size: 4 + Math.floor(Math.random() * 4) * 2, // Pixelated sizes: 4, 6, 8, 10
+      life: 1,
+      maxLife: 1,
+      type: types[Math.floor(Math.random() * types.length)]
+    });
+
+    // Limit blocks
+    if (pixelBlocks.length > 60) {
+      pixelBlocks.shift();
+    }
+  }
+
+  // Mouse movement
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    // Calculate velocity
+    velocity.x = mouseX - lastMouseX;
+    velocity.y = mouseY - lastMouseY;
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+
+    const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+    const now = Date.now();
+
+    // Spawn glyphs when moving
+    if (speed > 1 && now - lastGlyphTime > 80) {
+      createGlyph(mouseX, mouseY);
+      lastGlyphTime = now;
+    }
+
+    // Add pixel blocks
+    if (speed > 2 && now - lastPixelTime > 30) {
+      addPixelBlock(mouseX, mouseY);
+      lastPixelTime = now;
+    }
+
+    // On fast movement, spawn more glyphs
+    if (speed > 15) {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => createGlyph(mouseX, mouseY), i * 50);
+      }
+    }
+  });
+
+  // Interactive elements
+  const interactiveElements = 'a, button, [role="button"], input, textarea, select, .cursor-hover';
+
+  document.addEventListener('mouseover', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest(interactiveElements)) {
+      document.body.classList.add('cursor-hover');
+    }
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest(interactiveElements)) {
+      document.body.classList.remove('cursor-hover');
+    }
+  });
+
+  document.addEventListener('mousedown', () => {
+    document.body.classList.add('cursor-click');
+
+    // Burst of glyphs in a circle
+    for (let i = 0; i < 12; i++) {
+      const angle = (Math.PI * 2 * i) / 12;
+      const distance = 40;
+      setTimeout(() => {
+        createGlyph(
+          mouseX + Math.cos(angle) * distance,
+          mouseY + Math.sin(angle) * distance
+        );
+      }, i * 30);
+    }
+
+    // Add pixel blocks burst
+    for (let i = 0; i < 8; i++) {
+      setTimeout(() => addPixelBlock(mouseX, mouseY), i * 20);
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    document.body.classList.remove('cursor-click');
+  });
+
+  // Animation loop
+  function animate() {
+    // Smooth cursor movement with easing
+    const ease = 0.15;
+    cursorX += (mouseX - cursorX) * ease;
+    cursorY += (mouseY - cursorY) * ease;
+
+    const outlineEase = 0.1;
+    outlineX += (mouseX - outlineX) * outlineEase;
+    outlineY += (mouseY - outlineY) * outlineEase;
+
+    // Update DOM positions
+    if (dot) {
+      dot.style.left = `${cursorX}px`;
+      dot.style.top = `${cursorY}px`;
+    }
+
+    if (outline) {
+      outline.style.left = `${outlineX}px`;
+      outline.style.top = `${outlineY}px`;
+    }
+
+    // Draw canvas effects (pixelated blocks)
+    if (ctx && canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw pixelated blocks
+      pixelBlocks.forEach((block, index) => {
+        block.life -= 0.015;
+
+        if (block.life <= 0) {
+          pixelBlocks.splice(index, 1);
+          return;
+        }
+
+        const alpha = block.life * 0.7;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1;
+
+        // Draw different block types
+        if (block.type === 'solid') {
+          ctx.fillRect(
+            Math.floor(block.x / block.size) * block.size,
+            Math.floor(block.y / block.size) * block.size,
+            block.size,
+            block.size
+          );
+        } else if (block.type === 'hollow') {
+          ctx.strokeRect(
+            Math.floor(block.x / block.size) * block.size,
+            Math.floor(block.y / block.size) * block.size,
+            block.size,
+            block.size
+          );
+        } else if (block.type === 'dot') {
+          const centerX = Math.floor(block.x / block.size) * block.size + block.size / 2;
+          const centerY = Math.floor(block.y / block.size) * block.size + block.size / 2;
+          ctx.fillRect(centerX - 1, centerY - 1, 2, 2);
+        }
+      });
+
+      ctx.globalAlpha = 1;
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // Start animation
+  animate();
+
+  // Handle page visibility
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      pixelBlocks.length = 0;
+      if (glyphContainer) {
+        glyphContainer.innerHTML = '';
+      }
+    }
+  });
+
+  // Show cursor after load
+  setTimeout(() => {
+    if (dot) dot.style.opacity = '1';
+    if (outline) outline.style.opacity = '1';
+  }, 100);
+</script>
