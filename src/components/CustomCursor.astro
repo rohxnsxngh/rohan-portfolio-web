@@ -37,8 +37,9 @@
     border: 1px solid rgba(255, 255, 255, 0.4);
     transform: translate(-50%, -50%) rotate(45deg);
     z-index: 10000;
-    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease, border-width 0.3s ease;
     mix-blend-mode: difference;
+    opacity: 1;
   }
 
   #cursor-canvas {
@@ -63,15 +64,19 @@
 
   /* States */
   body.cursor-hover #cursor-outline {
-    width: 48px;
-    height: 48px;
-    border-color: rgba(255, 255, 255, 0.7);
-    transform: translate(-50%, -50%) rotate(45deg) scale(1.1);
+    width: 64px;
+    height: 64px;
+    border-color: rgba(255, 255, 255, 0.9);
+    border-width: 2px;
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.15);
+    opacity: 0.5;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
   }
 
   body.cursor-hover #cursor-dot {
     width: 6px;
     height: 6px;
+    opacity: 0.8;
   }
 
   body.cursor-click #cursor-outline {
