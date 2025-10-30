@@ -29,26 +29,6 @@ const {
   class={`robot-model-viewer-container group ${className}`}
   style={`--width: ${width}; --height: ${height};`}
 >
-  <!-- Corner accent marks -->
-  <div class="corner-accent corner-tl"></div>
-  <div class="corner-accent corner-tr"></div>
-  <div class="corner-accent corner-bl"></div>
-  <div class="corner-accent corner-br"></div>
-
-  <!-- Animated gradient border -->
-  <div class="gradient-border"></div>
-
-  <!-- Grid overlay -->
-  <div class="grid-overlay"></div>
-
-  <!-- Floating badge -->
-  <div class="model-badge">
-    <svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-    </svg>
-    <span>Keep Building</span>
-  </div>
-
   <div id="robot-animation-container" class="model-display-container">
     <div class="loading-container">
       <progress id="progress-bar" value="0" max="100"></progress>
@@ -104,6 +84,8 @@ const {
   let scene: THREE.Scene;
   let clock = new THREE.Clock();
   let animatedLights: any;
+  let mouseSphere: THREE.Mesh | null = null;
+  let mousePointLight: THREE.PointLight | null = null;
 
   // Initialize scene
   function initScene() {
@@ -214,11 +196,37 @@ const {
     spotlight.castShadow = true;
     scene.add(spotlight);
 
+    // GLOWING SPHERE THAT FOLLOWS MOUSE
+    // Create sphere geometry
+    const sphereGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+
+    // Create emissive material that glows
+    const sphereMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: 0xffffff,
+      emissiveIntensity: 0, // Start at 0, will ramp up
+      metalness: 0.8,
+      roughness: 0.2,
+      transparent: true,
+      opacity: 0 // Start invisible
+    });
+
+    mouseSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    mouseSphere.position.set(0, 5, 5);
+    scene.add(mouseSphere);
+
+    // Add a point light attached to the sphere for illumination
+    mousePointLight = new THREE.PointLight(0xffffff, 0, 15, 2);
+    mousePointLight.position.copy(mouseSphere.position);
+    scene.add(mousePointLight);
+
     // Store lights for animation
     animatedLights = {
       spotlight,
       cyanAccent,
-      magentaAccent
+      magentaAccent,
+      mouseSphere,
+      mousePointLight
     };
   }
 
@@ -364,24 +372,99 @@ const {
       resizeObserver.observe(container);
     }
 
-    // Listen for expanded state to enhance controls
-    document.addEventListener('robotViewerStateChange', (e: any) => {
-      if (e.detail && e.detail.expanded) {
-        // When expanded, allow more camera movement
-        if (controls) {
-          controls.minDistance = 2.0;
-          controls.maxDistance = 8.0;
-          controls.minPolarAngle = Math.PI / 2 - 0.5; // More vertical rotation
-          controls.maxPolarAngle = Math.PI / 2 + 0.5; // More vertical rotation
+    // ===== GLOWING SPHERE TRACKING SYSTEM =====
+    // Listen for mouse movement events from Home.astro
+    document.addEventListener('robotMouseMove', (e: any) => {
+      if (e.detail && mouseSphere && mousePointLight) {
+        const { x, y } = e.detail; // Normalized 0-1 coordinates
+
+        // Convert normalized coordinates to 3D position
+        // X: -6 to 6 (left to right, wider range)
+        // Y: 3 to 1 (top to middle based on mouse Y)
+        // Z: 6 to 0 (front to center based on vertical mouse position)
+        const sphereX = (x - 0.5) * 12; // -6 to 6
+        const sphereY = 3 - (y * 2); // 3 to 1
+        const sphereZ = 6 - (y * 6); // 6 to 0
+
+        // Smoothly interpolate sphere position
+        mouseSphere.position.lerp(
+          new THREE.Vector3(sphereX, sphereY, sphereZ),
+          0.15
+        );
+
+        // Point light follows sphere
+        mousePointLight.position.copy(mouseSphere.position);
+
+        // Ramp up glow intensity
+        const material = mouseSphere.material as THREE.MeshStandardMaterial;
+        if (material.emissiveIntensity < 2.5) {
+          material.emissiveIntensity += 0.15;
         }
-      } else {
-        // Reset to original constraints
-        if (controls) {
-          controls.minDistance = 3.0;
-          controls.maxDistance = 6.0;
-          controls.minPolarAngle = Math.PI / 2 - 0.3;
-          controls.maxPolarAngle = Math.PI / 2 + 0.3;
+        if (material.opacity < 0.9) {
+          material.opacity += 0.08;
         }
+
+        // Increase point light intensity
+        if (mousePointLight.intensity < 8.0) {
+          mousePointLight.intensity += 0.4;
+        }
+      }
+    });
+
+    // Slowly fade out sphere when mouse becomes inactive (slow for admiration)
+    document.addEventListener('robotMouseInactive', () => {
+      if (mouseSphere && mousePointLight) {
+        const fadeOut = () => {
+          if (mouseSphere && mousePointLight) {
+            const material = mouseSphere.material as THREE.MeshStandardMaterial;
+
+            // Slower fade for psychology - let user admire
+            if (material.emissiveIntensity > 0.05 || material.opacity > 0.05 || mousePointLight.intensity > 0.1) {
+              material.emissiveIntensity *= 0.95; // Slower fade
+              material.opacity *= 0.95;
+              mousePointLight.intensity *= 0.93;
+              requestAnimationFrame(fadeOut);
+            } else {
+              material.emissiveIntensity = 0;
+              material.opacity = 0;
+              mousePointLight.intensity = 0;
+            }
+          }
+        };
+        fadeOut();
+      }
+    });
+
+    // Fade out when mouse leaves (slightly faster than inactive)
+    document.addEventListener('robotMouseLeave', () => {
+      if (mouseSphere && mousePointLight) {
+        const fadeOut = () => {
+          if (mouseSphere && mousePointLight) {
+            const material = mouseSphere.material as THREE.MeshStandardMaterial;
+
+            if (material.emissiveIntensity > 0.03 || material.opacity > 0.03 || mousePointLight.intensity > 0.05) {
+              material.emissiveIntensity *= 0.92;
+              material.opacity *= 0.92;
+              mousePointLight.intensity *= 0.9;
+              requestAnimationFrame(fadeOut);
+            } else {
+              material.emissiveIntensity = 0;
+              material.opacity = 0;
+              mousePointLight.intensity = 0;
+            }
+          }
+        };
+        fadeOut();
+      }
+    });
+
+    // Reset sphere when mouse enters
+    document.addEventListener('robotMouseEnter', () => {
+      if (mouseSphere && mousePointLight) {
+        const material = mouseSphere.material as THREE.MeshStandardMaterial;
+        material.emissiveIntensity = 0;
+        material.opacity = 0;
+        mousePointLight.intensity = 0;
       }
     });
   }
@@ -400,190 +483,6 @@ const {
     height: var(--height, 100%);
     width: var(--width, 100%);
     position: relative;
-    transition: transform 0.3s ease-out;
-  }
-
-  .robot-model-viewer-container:hover {
-    transform: translateY(-4px);
-  }
-
-  /* Corner accent marks */
-  .corner-accent {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    z-index: 15;
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-
-  .corner-tl {
-    top: -1px;
-    left: -1px;
-    border-right: none;
-    border-bottom: none;
-    border-radius: 12px 0 0 0;
-  }
-
-  .corner-tr {
-    top: -1px;
-    right: -1px;
-    border-left: none;
-    border-bottom: none;
-    border-radius: 0 12px 0 0;
-  }
-
-  .corner-bl {
-    bottom: -1px;
-    left: -1px;
-    border-right: none;
-    border-top: none;
-    border-radius: 0 0 0 12px;
-  }
-
-  .corner-br {
-    bottom: -1px;
-    right: -1px;
-    border-left: none;
-    border-top: none;
-    border-radius: 0 0 12px 0;
-  }
-
-  .robot-model-viewer-container:hover .corner-accent {
-    width: 30px;
-    height: 30px;
-    border-color: rgba(255, 255, 255, 0.8);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
-  }
-
-  /* Animated gradient border */
-  .gradient-border {
-    position: absolute;
-    inset: -2px;
-    border-radius: 0.75rem;
-    padding: 2px;
-    background: linear-gradient(
-      45deg,
-      transparent,
-      rgba(0, 255, 255, 0.3),
-      transparent,
-      rgba(255, 0, 255, 0.3),
-      transparent
-    );
-    background-size: 200% 200%;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: borderGlow 4s linear infinite;
-    opacity: 0.6;
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  @keyframes borderGlow {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  .robot-model-viewer-container:hover .gradient-border {
-    opacity: 1;
-    animation-duration: 2s;
-  }
-
-  /* Grid overlay */
-  .grid-overlay {
-    position: absolute;
-    inset: 0;
-    border-radius: 0.75rem;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
-    z-index: 11;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .robot-model-viewer-container:hover .grid-overlay {
-    opacity: 1;
-  }
-
-  /* Floating badge */
-  .model-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.9);
-    z-index: 15;
-    pointer-events: none;
-    animation: badgePulse 3s ease-in-out infinite;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  @keyframes badgePulse {
-    0%, 100% {
-      transform: scale(1);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    50% {
-      transform: scale(1.05);
-      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.3);
-    }
-  }
-
-  .badge-icon {
-    width: 14px;
-    height: 14px;
-    animation: badgeRotate 8s linear infinite;
-  }
-
-  @keyframes badgeRotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .model-badge {
-      font-size: 9px;
-      padding: 4px 8px;
-    }
-
-    .badge-icon {
-      width: 12px;
-      height: 12px;
-    }
-
-    .corner-accent {
-      width: 15px;
-      height: 15px;
-    }
-
-    .robot-model-viewer-container:hover .corner-accent {
-      width: 20px;
-      height: 20px;
-    }
   }
 
   #robot-animation-container {
@@ -599,52 +498,11 @@ const {
   }
 
   .model-display-container {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 0.75rem;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(20, 20, 20, 0.95) 100%);
-    transition: all 0.4s ease-out;
+    background: #000000;
     z-index: 10;
     width: 100%;
     height: 100%;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      0 10px 30px rgba(0, 0, 0, 0.5);
-  }
-
-  .model-display-container:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 20px 40px rgba(0, 0, 0, 0.6),
-      0 0 40px rgba(0, 255, 255, 0.1),
-      0 0 80px rgba(255, 0, 255, 0.1);
-  }
-
-  /* Enhanced styles for expanded state */
-  :global(.expanded) .model-display-container {
-    background-color: rgba(0, 0, 0, 0.98);
-    border-color: rgba(var(--color-primary, 255, 255, 255), 0.4);
-    border-width: 2px;
-    box-shadow: 
-      0 25px 50px -12px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(var(--color-primary, 255, 255, 255), 0.2);
-  }
-
-  .robot-model-viewer-container::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(var(--color-primary, 0, 0, 0), 0.2);
-    border-radius: 0.75rem;
-    transform: scale(1);
-    transition: all 0.3s ease-out;
-    z-index: 0;
-  }
-
-  .robot-model-viewer-container:hover::after {
-    transform: scale(1.05);
-    border-color: rgba(var(--color-primary, 0, 0, 0), 0.4);
   }
 
   .loading-container {
@@ -670,14 +528,5 @@ const {
 
   #progress-bar::-webkit-progress-value {
     background-color: rgba(var(--color-primary, 75, 85, 99), 0.8);
-  }
-  
-  /* Style for expanded container */
-  :global(.expanded) .robot-model-viewer-container {
-    transform: none;
-  }
-  
-  :global(.expanded) .robot-model-viewer-container::after {
-    opacity: 0;
   }
 </style>

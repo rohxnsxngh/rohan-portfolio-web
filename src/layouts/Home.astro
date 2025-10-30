@@ -6,39 +6,23 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
   id="main-content"
 >
-  <!-- Tech grid background -->
-  <div class="absolute inset-0 tech-grid opacity-20"></div>
-  <div class="absolute inset-0 gradient-overlay"></div>
-
-  <!-- Robot positioned as accent - bottom right corner -->
-  <div class="robot-accent fixed bottom-0 right-0 w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 z-0 opacity-30 hover:opacity-50 transition-opacity duration-700">
-    <div class="robot-frame w-full h-full cursor-pointer" data-robot-accent="true">
-      <div class="w-full h-full robot-viewer">
+  <!-- FULL PAGE ROBOT BACKGROUND -->
+  <div class="robot-background-container absolute inset-0 z-0" id="robot-container">
+    <div class="robot-frame-fullscreen w-full h-full">
+      <div class="w-full h-full robot-viewer" id="robot-viewer">
         <RobotModelViewer />
       </div>
-      <button
-        class="expand-robot absolute top-4 right-4 w-10 h-10 bg-primary/10 backdrop-blur-sm rounded-full flex items-center justify-center text-primary/80 z-20 hover:bg-primary/30 transition-all duration-300 hover:scale-110"
-        aria-label="Expand robot view"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          class="w-5 h-5"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
-        </svg>
-      </button>
     </div>
+
+    <!-- Dark overlay to dim robot heavily by default (almost invisible) -->
+    <div class="robot-overlay absolute inset-0 bg-black/95 pointer-events-none transition-all duration-500" id="robot-dim"></div>
   </div>
 
-  <!-- Main content - centered -->
-  <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8">
+  <!-- Tech grid overlay for texture -->
+  <div class="absolute inset-0 tech-grid opacity-10 z-[5] pointer-events-none"></div>
+
+  <!-- Main content - layered on top with semi-transparent effect -->
+  <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
     <div class="max-w-7xl mx-auto">
 
       <!-- Small intro label -->
@@ -70,7 +54,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       </div>
 
       <!-- CTA Section -->
-      <div class="cta-section flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
+      <div class="cta-section flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center pointer-events-auto">
         <a
           href="/project"
           class="cta-primary group relative inline-flex items-center justify-center px-10 py-5 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
@@ -139,13 +123,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       <div class="w-1 h-2 bg-primary/50 rounded-full animate-scroll-dot"></div>
     </div>
   </div>
-</div>
-
-<!-- Backdrop overlay for blur effect - separate from the robot -->
-<div
-  id="backdrop-overlay"
-  class="fixed inset-0 bg-black/50 backdrop-blur-md z-5 opacity-0 pointer-events-none transition-opacity duration-300"
->
 </div>
 
 <style>
@@ -336,43 +313,62 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   .info-item:nth-child(2) { animation-delay: 1.4s; }
   .info-item:nth-child(3) { animation-delay: 1.5s; }
 
-  /* Robot accent */
-  .robot-accent {
-    filter: blur(1px) opacity(0.3);
-    transition: all 0.7s ease;
+  /* ===== ROBOT AS FULL BACKGROUND ===== */
+
+  .robot-background-container {
+    opacity: 1;
   }
 
-  .robot-accent:hover {
-    filter: blur(0px) opacity(0.5);
+  .robot-frame-fullscreen {
+    position: absolute;
+    inset: 0;
   }
 
-  /* Robot expanded view */
-  .robot-frame.expanded {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 90vw !important;
-    height: 90vw !important;
-    max-width: 700px !important;
-    max-height: 700px !important;
-    z-index: 60 !important;
-    opacity: 1 !important;
-    filter: none !important;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  /* Robot overlay - dims the robot heavily, lightens on hover */
+  .robot-overlay {
+    z-index: 1;
+    transition: background 0.6s ease-out;
   }
 
-  .backdrop-visible {
-    opacity: 1 !important;
-    pointer-events: auto !important;
+  /* Hero content with slower fade transitions for psychology */
+  .hero-content {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
   }
 
-  .robot-frame.expanded .expand-robot {
-    background-color: rgba(255, 255, 255, 0.3);
+  /* Typography with enhanced text shadow for better readability */
+  .hero-name {
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7),
+      0 0 80px rgba(0, 0, 0, 0.5);
   }
 
-  .robot-frame.expanded .expand-robot svg {
-    transform: rotate(180deg);
+  .statement-text,
+  .label-intro span,
+  .info-bar {
+    text-shadow:
+      0 2px 15px rgba(0, 0, 0, 0.95),
+      0 4px 25px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Mouse interaction states - slower transitions */
+  .hero-section.mouse-active .hero-content {
+    opacity: 0.25;
+    transition: opacity 0.6s ease-out;
+  }
+
+  .hero-section.mouse-active .robot-overlay {
+    background: rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* When mouse becomes inactive, fade back slowly to let user admire */
+  .hero-section:not(.mouse-active) .hero-content {
+    transition: opacity 2s ease-in-out;
+  }
+
+  .hero-section:not(.mouse-active) .robot-overlay {
+    transition: background 2.5s ease-in-out;
   }
 
   /* Scroll indicator */
@@ -421,14 +417,13 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       font-size: clamp(0.9rem, 3vw, 1.25rem);
     }
 
-    .robot-accent {
-      width: 12rem;
-      height: 12rem;
-      opacity: 0.2;
-    }
-
     .info-bar {
       margin-top: 3rem;
+    }
+
+    /* Less aggressive hover effect on tablet */
+    .hero-section.mouse-active .hero-content {
+      opacity: 0.5;
     }
   }
 
@@ -438,10 +433,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       letter-spacing: -0.02em;
     }
 
-    .robot-accent {
-      display: none;
-    }
-
     .label-intro span {
       font-size: 0.65rem;
       letter-spacing: 0.2em;
@@ -449,6 +440,20 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
     .cta-primary {
       width: 100%;
+    }
+
+    /* Slightly more visible robot on mobile - but still dim */
+    .robot-overlay {
+      background: rgba(0, 0, 0, 0.85) !important;
+    }
+
+    /* Disable hover effect on mobile */
+    .hero-section.mouse-active .hero-content {
+      opacity: 1;
+    }
+
+    .hero-section.mouse-active .robot-overlay {
+      background: rgba(0, 0, 0, 0.85) !important;
     }
   }
 
@@ -461,62 +466,90 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const robotFrame = document.querySelector(".robot-frame");
-    const expandButton = document.querySelector(".expand-robot");
-    const backdropOverlay = document.getElementById("backdrop-overlay");
+    const heroSection = document.getElementById("main-content");
+    const robotContainer = document.getElementById("robot-container");
 
-    // Robot expansion functionality
-    if (robotFrame && expandButton && backdropOverlay) {
-      expandButton.addEventListener("click", (e) => {
-        e.stopPropagation();
-        toggleExpandedView();
-      });
+    let mouseActive = false;
+    let mouseTimeout: number | null = null;
 
-      backdropOverlay.addEventListener("click", () => {
-        if (robotFrame.classList.contains("expanded")) {
-          toggleExpandedView(false);
+    // ===== DUAL HOVER ANIMATION =====
+    // Track mouse movement and dispatch to THREE.js scene
+    if (heroSection && robotContainer) {
+      heroSection.addEventListener("mousemove", (e) => {
+        const rect = heroSection.getBoundingClientRect();
+
+        // Calculate mouse position (0 to 1 normalized coordinates)
+        const mouseX = (e.clientX - rect.left) / rect.width;
+        const mouseY = (e.clientY - rect.top) / rect.height;
+
+        // Activate hover state (fade typography, lighten robot overlay)
+        if (!mouseActive) {
+          heroSection.classList.add('mouse-active');
+          mouseActive = true;
         }
-      });
 
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && robotFrame.classList.contains("expanded")) {
-          toggleExpandedView(false);
+        // Clear existing timeout
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
         }
-      });
 
-      function toggleExpandedView(expand: boolean | null = null) {
-        const shouldExpand =
-          expand !== null
-            ? expand
-            : robotFrame && !robotFrame.classList.contains("expanded");
+        // Dispatch mouse position to THREE.js robot viewer
+        // This will be caught by the RobotModelViewer component to add dynamic lighting
+        document.dispatchEvent(
+          new CustomEvent("robotMouseMove", {
+            detail: {
+              x: mouseX,
+              y: mouseY,
+              clientX: e.clientX,
+              clientY: e.clientY
+            },
+          })
+        );
 
-        if (shouldExpand) {
-          robotFrame.classList.add("expanded");
-          backdropOverlay.classList.add("backdrop-visible");
-          document.body.style.overflow = "hidden";
-          expandButton.setAttribute("aria-label", "Collapse robot view");
+        // Reset to inactive state after mouse stops moving (longer delay for admiration)
+        mouseTimeout = window.setTimeout(() => {
+          heroSection.classList.remove('mouse-active');
+          mouseActive = false;
 
+          // Notify robot viewer that mouse is inactive
           document.dispatchEvent(
-            new CustomEvent("robotViewerStateChange", {
-              detail: { expanded: true },
+            new CustomEvent("robotMouseInactive", {
+              detail: { inactive: true },
             })
           );
-        } else {
-          robotFrame.classList.remove("expanded");
-          backdropOverlay.classList.remove("backdrop-visible");
-          document.body.style.overflow = "";
-          expandButton.setAttribute("aria-label", "Expand robot view");
+        }, 800); // Increased from 150ms to 800ms for user to admire robot
+      });
 
-          document.dispatchEvent(
-            new CustomEvent("robotViewerStateChange", {
-              detail: { expanded: false },
-            })
-          );
+      // Remove active state when mouse leaves
+      heroSection.addEventListener("mouseleave", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
         }
-      }
+
+        // Notify robot viewer that mouse left
+        document.dispatchEvent(
+          new CustomEvent("robotMouseLeave", {
+            detail: { left: true },
+          })
+        );
+      });
+
+      // Reactivate on mouse enter
+      heroSection.addEventListener("mouseenter", () => {
+        // Notify robot viewer that mouse entered
+        document.dispatchEvent(
+          new CustomEvent("robotMouseEnter", {
+            detail: { entered: true },
+          })
+        );
+      });
     }
 
-    // Smooth scroll for scroll indicator
+    // ===== SMOOTH SCROLL FOR SCROLL INDICATOR =====
     const scrollIndicator = document.querySelector(".scroll-indicator-minimal");
     if (scrollIndicator) {
       scrollIndicator.addEventListener("click", () => {
@@ -527,26 +560,19 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       });
     }
 
-    // Parallax effect on scroll
+    // ===== PARALLAX EFFECT ON SCROLL =====
     let ticking = false;
     window.addEventListener("scroll", () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const scrolled = window.pageYOffset;
           const heroContent = document.querySelector(".hero-content");
-          const robotAccent = document.querySelector(".robot-accent");
 
           if (heroContent && scrolled < window.innerHeight) {
-            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.8));
+            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.7));
             const translateY = scrolled * 0.3;
             (heroContent as HTMLElement).style.opacity = opacity.toString();
             (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
-          }
-
-          // Move robot slightly on scroll
-          if (robotAccent && scrolled < window.innerHeight) {
-            const translateY = scrolled * 0.15;
-            (robotAccent as HTMLElement).style.transform = `translateY(${translateY}px)`;
           }
 
           ticking = false;
