@@ -391,8 +391,8 @@ const {
           const intersectPoint = intersects[0].point;
           const distanceToIntersect = camera.position.distanceTo(intersectPoint);
 
-          // Position light further in front of robot (50% of the way)
-          distance = distanceToIntersect * 0.5;
+          // Position light much further from robot (30% of the way from camera)
+          distance = distanceToIntersect * 0.3;
 
           // Check distance from intersection point to robot center
           const distanceFromCenter = intersectPoint.distanceTo(robotCenter);

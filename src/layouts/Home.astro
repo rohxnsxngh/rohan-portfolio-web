@@ -129,11 +129,13 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
   /* ===== MASSIVE TYPOGRAPHY ===== */
   .hero-name {
-    font-size: clamp(4rem, 18vw, 18rem);
-    line-height: 0.85;
-    letter-spacing: -0.08em;
+    font-size: clamp(5rem, 22vw, 24rem);
+    line-height: 0.8;
+    letter-spacing: -0.1em;
     color: #ffffff;
     text-transform: uppercase;
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
   }
 
   .hero-name .name-line {
@@ -334,7 +336,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
   /* Mouse interaction states - slower transitions */
   .hero-section.mouse-active .hero-content {
-    opacity: 0.25;
+    opacity: 0.05;
     transition: opacity 0.6s ease-out;
   }
 
@@ -377,8 +379,8 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
   @media (max-width: 1024px) {
     .hero-name {
-      font-size: clamp(3.5rem, 15vw, 14rem);
-      letter-spacing: -0.06em;
+      font-size: clamp(4.5rem, 20vw, 18rem);
+      letter-spacing: -0.08em;
     }
 
     .robot-accent {
@@ -389,8 +391,8 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
   @media (max-width: 768px) {
     .hero-name {
-      font-size: clamp(3rem, 18vw, 10rem);
-      letter-spacing: -0.04em;
+      font-size: clamp(4rem, 22vw, 14rem);
+      letter-spacing: -0.06em;
     }
 
     .statement-text {
@@ -403,14 +405,14 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
     /* Less aggressive hover effect on tablet */
     .hero-section.mouse-active .hero-content {
-      opacity: 0.5;
+      opacity: 0.08;
     }
   }
 
   @media (max-width: 640px) {
     .hero-name {
-      font-size: clamp(2.5rem, 20vw, 8rem);
-      letter-spacing: -0.02em;
+      font-size: clamp(3.5rem, 24vw, 11rem);
+      letter-spacing: -0.04em;
     }
 
     .label-intro span {
