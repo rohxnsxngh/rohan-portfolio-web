@@ -53,13 +53,41 @@
     image-rendering: crisp-edges;
   }
 
-  /* Hide default cursor */
-  body {
+  /* Hide default cursor completely - override all cursor styles */
+  *,
+  *::before,
+  *::after,
+  body,
+  body *,
+  a,
+  a *,
+  button,
+  button *,
+  [role="button"],
+  input,
+  textarea,
+  select,
+  *:hover,
+  *:active,
+  *:focus,
+  *:link,
+  *:visited {
     cursor: none !important;
   }
 
-  body * {
-    cursor: none !important;
+  /* Hide on mobile */
+  @media (hover: none) and (pointer: coarse) {
+    #custom-cursor {
+      display: none !important;
+    }
+
+    body,
+    body *,
+    body *:hover,
+    body *:active,
+    body *:focus {
+      cursor: auto !important;
+    }
   }
 
   /* States */
@@ -93,18 +121,50 @@
 </style>
 
 <script>
-  // Cursor state
-  let mouseX = 0;
-  let mouseY = 0;
-  let cursorX = 0;
-  let cursorY = 0;
-  let outlineX = 0;
-  let outlineY = 0;
+  // Check if device is mobile
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
 
-  const dot = document.getElementById('cursor-dot');
-  const outline = document.getElementById('cursor-outline');
-  const canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement;
-  const ctx = canvas?.getContext('2d');
+  // Exit early if mobile
+  if (isMobile) {
+    const customCursor = document.getElementById('custom-cursor');
+    if (customCursor) {
+      customCursor.style.display = 'none';
+    }
+  } else {
+    // Force cursor: none on all elements via JavaScript
+    const enforceCursorNone = () => {
+      document.body.style.cursor = 'none';
+      const allElements = document.querySelectorAll('*');
+      allElements.forEach((el) => {
+        (el as HTMLElement).style.cursor = 'none';
+      });
+    };
+
+    // Enforce on load
+    enforceCursorNone();
+
+    // Re-enforce when DOM changes (for dynamically added elements)
+    const observer = new MutationObserver(() => {
+      enforceCursorNone();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    // Cursor state
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    let outlineX = 0;
+    let outlineY = 0;
+
+    const dot = document.getElementById('cursor-dot');
+    const outline = document.getElementById('cursor-outline');
+    const canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement;
+    const ctx = canvas?.getContext('2d');
 
   // Pixelated block system
   interface PixelBlock {
@@ -137,16 +197,16 @@
   function addPixelBlock(x: number, y: number) {
     const types: Array<'solid' | 'hollow' | 'dot'> = ['solid', 'hollow', 'dot'];
     pixelBlocks.push({
-      x: x + (Math.random() - 0.5) * 30,
-      y: y + (Math.random() - 0.5) * 30,
-      size: 4 + Math.floor(Math.random() * 4) * 2, // Pixelated sizes: 4, 6, 8, 10
+      x: x + (Math.random() - 0.5) * 20,
+      y: y + (Math.random() - 0.5) * 20,
+      size: 4 + Math.floor(Math.random() * 2) * 2, // Pixelated sizes: 4, 6
       life: 1,
       maxLife: 1,
       type: types[Math.floor(Math.random() * types.length)]
     });
 
     // Limit blocks
-    if (pixelBlocks.length > 60) {
+    if (pixelBlocks.length > 25) {
       pixelBlocks.shift();
     }
   }
@@ -166,14 +226,14 @@
     const now = Date.now();
 
     // Add pixel blocks
-    if (speed > 1 && now - lastPixelTime > 25) {
+    if (speed > 2 && now - lastPixelTime > 50) {
       addPixelBlock(mouseX, mouseY);
       lastPixelTime = now;
     }
 
     // On fast movement, spawn more pixel blocks
-    if (speed > 15) {
-      for (let i = 0; i < 5; i++) {
+    if (speed > 20) {
+      for (let i = 0; i < 2; i++) {
         addPixelBlock(mouseX, mouseY);
       }
     }
@@ -200,7 +260,7 @@
     document.body.classList.add('cursor-click');
 
     // Add pixel blocks burst
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 6; i++) {
       setTimeout(() => addPixelBlock(mouseX, mouseY), i * 15);
     }
   });
@@ -237,14 +297,14 @@
 
       // Draw pixelated blocks
       pixelBlocks.forEach((block, index) => {
-        block.life -= 0.015;
+        block.life -= 0.025;
 
         if (block.life <= 0) {
           pixelBlocks.splice(index, 1);
           return;
         }
 
-        const alpha = block.life * 0.7;
+        const alpha = block.life * 0.35;
         ctx.globalAlpha = alpha;
         ctx.fillStyle = '#FFFFFF';
         ctx.strokeStyle = '#FFFFFF';
@@ -293,4 +353,5 @@
     if (dot) dot.style.opacity = '1';
     if (outline) outline.style.opacity = '1';
   }, 100);
+  }
 </script>

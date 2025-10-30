@@ -36,9 +36,12 @@ const sortedExperiences = allExperiences.sort((a, b) => {
           </div>
           <div class="divider"></div>
 
-          <div class="">
+          <div class="timeline-container relative max-w-5xl mx-auto mt-12">
+            <!-- Timeline vertical line -->
+            <div class="timeline-line absolute left-[20px] sm:left-[40px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary/20 to-transparent"></div>
+
             {
-              sortedExperiences.map((experience) => {
+              sortedExperiences.map((experience, index) => {
                 const companyFirstLetter = experience.data.company
                   .toLowerCase()
                   .charAt(0);
@@ -52,45 +55,53 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                         : "border-primary/20";
 
                 return (
-                  <div class="relative z-10 experience-card group my-4">
-                    <div class="grid gap-6 p-4 rounded-xl bg-black transition-colors duration-300 relative z-10">
-                      <div>
-                        <div class="flex items-center gap-4 mb-2">
-                          <h2 class="font-mono text-xl">
-                            {experience.data.title}
-                          </h2>
-                          <span
-                            class={`text-sm font-mono px-3 py-1 rounded-lg bg-primary/10 text-primary/80 border ${borderClass}`}
-                          >
-                            {experience.data.company}
-                          </span>
-                        </div>
+                  <div class="timeline-item relative pl-[60px] sm:pl-[100px] pb-12 group">
+                    <!-- Timeline dot -->
+                    <div class="timeline-dot absolute left-[11px] sm:left-[31px] top-[8px] w-[20px] h-[20px] rounded-full bg-black border-2 border-primary/60 z-10 transition-all duration-300 group-hover:border-primary group-hover:scale-125 group-hover:shadow-lg group-hover:shadow-primary/30"></div>
 
-                        <p class="text-base-content/60 mb-4 font-mono">
-                          {experience.data.date}
-                        </p>
+                    <!-- Comet Card -->
+                    <div class="comet-card relative experience-card">
+                      <div class="comet-card-inner relative p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-primary/20 overflow-hidden transition-all duration-300 group-hover:border-primary/40">
+                        <!-- Comet effect overlay -->
+                        <div class="comet-overlay absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                        <p class="text-base-content/80 mb-4">
-                          {experience.data.description}
-                        </p>
-
-                        <div class="flex flex-wrap gap-2 mb-4">
-                          {experience.data.tags.map((tag: string) => (
-                            <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">
-                              {tag}
+                        <div class="relative z-10">
+                          <div class="flex sm:flex-row flex-col sm:items-center sm:justify-between gap-3 mb-3">
+                            <h2 class="font-mono text-xl text-white/90">
+                              {experience.data.title}
+                            </h2>
+                            <span
+                              class={`text-xs font-mono px-3 py-1.5 rounded-lg bg-primary/10 text-primary/80 border ${borderClass} whitespace-nowrap w-fit`}
+                            >
+                              {experience.data.company}
                             </span>
-                          ))}
+                          </div>
+
+                          <p class="text-base-content/50 mb-4 font-mono text-sm">
+                            {experience.data.date}
+                          </p>
+
+                          <p class="text-base-content/70 mb-4 text-sm leading-relaxed">
+                            {experience.data.description}
+                          </p>
+
+                          <div class="flex flex-wrap gap-2">
+                            {experience.data.tags.map((tag: string) => (
+                              <span class="text-xs px-2.5 py-1 rounded-md bg-accent/5 text-primary/60 border border-accent/10 hover:bg-accent/10 transition-colors duration-200">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
+
+                      <a
+                        href={`/experience/${experience.slug}`}
+                        class="absolute inset-0 z-20"
+                        aria-label={`View details for ${experience.data.title} at ${experience.data.company}`}
+                      />
                     </div>
-                    <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40" />
-                    <a
-                      href={`/experience/${experience.slug}`}
-                      class="absolute inset-0 z-20"
-                      aria-hidden="true"
-                    />
                   </div>
-                  <div class="divider"></div>
                 );
               })
             }
@@ -103,20 +114,79 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 </Layout>
 
 <style>
-  /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  /* Timeline animations */
+  .timeline-item {
+    animation: fadeInUp 0.6s ease-out backwards;
   }
 
-  /* Project card hover animation */
-  .experience-card {
+  .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+  .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+  .timeline-item:nth-child(3) { animation-delay: 0.3s; }
+  .timeline-item:nth-child(4) { animation-delay: 0.4s; }
+  .timeline-item:nth-child(5) { animation-delay: 0.5s; }
+  .timeline-item:nth-child(6) { animation-delay: 0.6s; }
+  .timeline-item:nth-child(7) { animation-delay: 0.7s; }
+  .timeline-item:nth-child(8) { animation-delay: 0.8s; }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Comet card effect */
+  .comet-card {
     transition: transform 0.3s ease-out;
   }
 
-  .experience-card:hover {
-    transform: translateY(-4px);
+  .comet-card:hover {
+    transform: translateX(4px);
+  }
+
+  /* Comet overlay - minimalist light sweep effect */
+  .comet-overlay {
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 255, 255, 0.06),
+      transparent 40%
+    );
+  }
+
+  /* Enhanced comet effect on hover with subtle glow */
+  .comet-card-inner:hover .comet-overlay {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.02) 50%,
+      transparent 80%
+    );
   }
 </style>
+
+<script>
+  // Comet effect - track mouse position on cards
+  document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.comet-card-inner');
+
+    cards.forEach((card) => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = (card as HTMLElement).getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
+        (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        (card as HTMLElement).style.setProperty('--mouse-x', '50%');
+        (card as HTMLElement).style.setProperty('--mouse-y', '50%');
+      });
+    });
+  });
+</script>
