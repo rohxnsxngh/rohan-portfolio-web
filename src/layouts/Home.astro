@@ -429,13 +429,13 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       background: rgba(0, 0, 0, 0.85) !important;
     }
 
-    /* Disable hover effect on mobile */
+    /* Enable touch interaction on mobile */
     .hero-section.mouse-active .hero-content {
-      opacity: 1;
+      opacity: 0.05;
     }
 
     .hero-section.mouse-active .robot-overlay {
-      background: rgba(0, 0, 0, 0.85) !important;
+      background: rgba(0, 0, 0, 0.2) !important;
     }
   }
 
@@ -454,52 +454,92 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     let mouseActive = false;
     let mouseTimeout: number | null = null;
 
-    // ===== DUAL HOVER ANIMATION =====
-    // Track mouse movement and dispatch to THREE.js scene
-    if (heroSection && robotContainer) {
-      heroSection.addEventListener("mousemove", (e) => {
-        const rect = heroSection.getBoundingClientRect();
+    // ===== DUAL HOVER/TOUCH ANIMATION =====
+    // Shared handler for mouse and touch events
+    const handleInteraction = (clientX: number, clientY: number) => {
+      const rect = heroSection!.getBoundingClientRect();
 
-        // Calculate mouse position (0 to 1 normalized coordinates)
-        const mouseX = (e.clientX - rect.left) / rect.width;
-        const mouseY = (e.clientY - rect.top) / rect.height;
+      // Calculate position (0 to 1 normalized coordinates)
+      const mouseX = (clientX - rect.left) / rect.width;
+      const mouseY = (clientY - rect.top) / rect.height;
 
-        // Activate hover state (fade typography, lighten robot overlay)
-        if (!mouseActive) {
-          heroSection.classList.add('mouse-active');
-          mouseActive = true;
-        }
+      // Activate hover state (fade typography, lighten robot overlay)
+      if (!mouseActive) {
+        heroSection!.classList.add('mouse-active');
+        mouseActive = true;
+      }
 
-        // Clear existing timeout
-        if (mouseTimeout) {
-          clearTimeout(mouseTimeout);
-        }
+      // Clear existing timeout
+      if (mouseTimeout) {
+        clearTimeout(mouseTimeout);
+      }
 
-        // Dispatch mouse position to THREE.js robot viewer
-        // This will be caught by the RobotModelViewer component to add dynamic lighting
+      // Dispatch position to THREE.js robot viewer
+      document.dispatchEvent(
+        new CustomEvent("robotMouseMove", {
+          detail: {
+            x: mouseX,
+            y: mouseY,
+            clientX: clientX,
+            clientY: clientY
+          },
+        })
+      );
+
+      // Reset to inactive state after interaction stops (longer delay for admiration)
+      mouseTimeout = window.setTimeout(() => {
+        heroSection!.classList.remove('mouse-active');
+        mouseActive = false;
+
+        // Notify robot viewer that interaction is inactive
         document.dispatchEvent(
-          new CustomEvent("robotMouseMove", {
-            detail: {
-              x: mouseX,
-              y: mouseY,
-              clientX: e.clientX,
-              clientY: e.clientY
-            },
+          new CustomEvent("robotMouseInactive", {
+            detail: { inactive: true },
           })
         );
+      }, 800); // Increased from 150ms to 800ms for user to admire robot
+    };
 
-        // Reset to inactive state after mouse stops moving (longer delay for admiration)
-        mouseTimeout = window.setTimeout(() => {
-          heroSection.classList.remove('mouse-active');
-          mouseActive = false;
+    // Track mouse movement and dispatch to THREE.js scene
+    if (heroSection && robotContainer) {
+      // MOUSE EVENTS
+      heroSection.addEventListener("mousemove", (e) => {
+        handleInteraction(e.clientX, e.clientY);
+      });
 
-          // Notify robot viewer that mouse is inactive
-          document.dispatchEvent(
-            new CustomEvent("robotMouseInactive", {
-              detail: { inactive: true },
-            })
-          );
-        }, 800); // Increased from 150ms to 800ms for user to admire robot
+      // TOUCH EVENTS for mobile
+      heroSection.addEventListener("touchmove", (e) => {
+        // Prevent default scroll behavior while interacting
+        e.preventDefault();
+
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      }, { passive: false });
+
+      heroSection.addEventListener("touchstart", (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      });
+
+      heroSection.addEventListener("touchend", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
+        }
+
+        // Notify robot viewer that touch ended
+        document.dispatchEvent(
+          new CustomEvent("robotMouseLeave", {
+            detail: { left: true },
+          })
+        );
       });
 
       // Remove active state when mouse leaves
