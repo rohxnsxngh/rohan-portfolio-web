@@ -1,102 +1,142 @@
 ---
-import { Image } from "astro:assets";
-import Profile from "@images/profile.jpg";
 import RobotModelViewer from "../components/RobotModelViewer.astro";
 ---
 
 <div
-  class="min-h-screen bg-secondary flex items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden relative mb-12"
+  class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
   id="main-content"
 >
-  <div class="max-w-7xl w-full">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      <!-- Text Content -->
-      <div class="order-2 lg:order-1 text-center lg:text-left slide-up">
-        <h1
-          class="text-3xl sm:text-4xl lg:text-5xl font-mono text-primary mb-6 tracking-tight"
-        >
-          Hey there! I'm
-          <span class="block mt-2 text-primary/90">Rohan Singh</span>
-        </h1>
+  <!-- Tech grid background -->
+  <div class="absolute inset-0 tech-grid opacity-20"></div>
+  <div class="absolute inset-0 gradient-overlay"></div>
 
-        <!-- Robot Viewer centered on mobile, next to text on larger screens -->
-        <div
-          class="flex justify-center lg:justify-start my-6 relative z-10 cursor-pointer"
-        >
-          <div
-            class="robot-frame relative w-72 h-72 sm:w-64 sm:h-64 lg:w-64 lg:h-64 xl:w-72 xl:h-72"
-          >
-            <div class="w-full h-full transition-all duration-500 robot-viewer">
-              <RobotModelViewer />
-            </div>
-            <button
-              class="expand-robot absolute top-0 right-0 w-8 h-8 bg-primary/5 rounded-full flex items-center justify-center m-2 text-primary/80 z-20 hover:bg-primary/30 transition-colors"
-              aria-label="Expand robot view"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                class="w-4 h-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div
-          class="mt-2 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-        >
-          <a
-            href="/about"
-            class="inline-flex items-center justify-center px-6 py-3 border border-primary/20 text-primary/90 hover:bg-primary/10 transition-colors duration-300 font-mono text-sm tracking-wider"
-          >
-            About Me
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 ml-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-          </a>
-          <a
-            href="/project"
-            class="inline-flex items-center justify-center px-6 py-3 bg-primary text-secondary hover:bg-primary/90 transition-colors duration-300 font-mono text-sm tracking-wider"
-          >
-            View Projects
-          </a>
-        </div>
+  <!-- Robot positioned as accent - bottom right corner -->
+  <div class="robot-accent fixed bottom-0 right-0 w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 z-0 opacity-30 hover:opacity-50 transition-opacity duration-700">
+    <div class="robot-frame w-full h-full cursor-pointer" data-robot-accent="true">
+      <div class="w-full h-full robot-viewer">
+        <RobotModelViewer />
       </div>
-
-      <!-- Image -->
-      <div
-        class="order-1 lg:order-2 flex justify-center lg:justify-end fade-in"
+      <button
+        class="expand-robot absolute top-4 right-4 w-10 h-10 bg-primary/10 backdrop-blur-sm rounded-full flex items-center justify-center text-primary/80 z-20 hover:bg-primary/30 transition-all duration-300 hover:scale-110"
+        aria-label="Expand robot view"
       >
-        <div class="relative group">
-          <Image
-            src={Profile}
-            alt="Profile"
-            class="rounded-lg w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] xl:w-[32rem] xl:h-[32rem] object-cover filter grayscale hover:grayscale-0 transition-all duration-500 ease-out"
-          />
-          <div
-            class="absolute inset-0 border border-primary/20 rounded-lg transform transition-transform duration-300 group-hover:scale-105"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          class="w-5 h-5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main content - centered -->
+  <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Small intro label -->
+      <div class="label-intro mb-6 sm:mb-8">
+        <span class="text-primary/50 font-mono text-xs sm:text-sm tracking-[0.3em] uppercase">
+          Engineer • Builder • Creator
+        </span>
+      </div>
+
+      <!-- MASSIVE name display -->
+      <div class="name-display mb-6 sm:mb-10">
+        <h1 class="hero-name font-mono font-black tracking-tighter leading-none select-none">
+          <div class="name-line">
+            <span class="char char-1">R</span><span class="char char-2">O</span><span class="char char-3">H</span><span class="char char-4">A</span><span class="char char-5">N</span>
+          </div>
+          <div class="name-line">
+            <span class="char char-6">S</span><span class="char char-7">I</span><span class="char char-8">N</span><span class="char char-9">G</span><span class="char char-10">H</span>
+          </div>
+        </h1>
+      </div>
+
+      <!-- Bold statement -->
+      <div class="statement mb-8 sm:mb-12 max-w-4xl">
+        <p class="statement-text text-primary/60 font-mono tracking-wide leading-relaxed">
+          I build <span class="highlight">intelligent systems</span> that solve real problems.
+          <br class="hidden sm:block">
+          From <span class="highlight">robotics</span> to <span class="highlight">AI</span>, I turn complex challenges into elegant solutions.
+        </p>
+      </div>
+
+      <!-- CTA Section -->
+      <div class="cta-section flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center">
+        <a
+          href="/project"
+          class="cta-primary group relative inline-flex items-center justify-center px-10 py-5 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+        >
+          <span class="relative z-10">VIEW MY WORK</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 ml-3 group-hover:translate-x-2 transition-transform relative z-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2.5"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+          <div class="cta-shine"></div>
+        </a>
+
+        <a
+          href="/about"
+          class="cta-secondary group inline-flex items-center text-primary/70 hover:text-primary font-mono text-sm sm:text-base tracking-wider transition-all duration-300"
+        >
+          Learn more about me
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Bottom info bar -->
+      <div class="info-bar mt-16 sm:mt-24 pt-8 border-t border-primary/10">
+        <div class="flex flex-col sm:flex-row gap-6 sm:gap-12 text-xs sm:text-sm font-mono text-primary/40">
+          <div class="info-item">
+            <span class="block text-primary/60 mb-1 uppercase tracking-wider">Experience</span>
+            <span class="text-primary/80 font-bold">Tesla • NVIDIA • Toyota</span>
+          </div>
+          <div class="info-item">
+            <span class="block text-primary/60 mb-1 uppercase tracking-wider">Focus</span>
+            <span class="text-primary/80 font-bold">Robotics • AI • Systems</span>
+          </div>
+          <div class="info-item">
+            <span class="block text-primary/60 mb-1 uppercase tracking-wider">Location</span>
+            <span class="text-primary/80 font-bold">San Francisco Bay Area</span>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator-minimal absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block z-20">
+    <div class="w-6 h-10 border-2 border-primary/30 rounded-full flex items-start justify-center p-2">
+      <div class="w-1 h-2 bg-primary/50 rounded-full animate-scroll-dot"></div>
     </div>
   </div>
 </div>
@@ -109,45 +149,217 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 </div>
 
 <style>
-  /* Emoji ripple effect */
-  .emoji {
+  /* ===== THEME: BOLD TECH MINIMALISM ===== */
+
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* Gradient overlay for depth */
+  .gradient-overlay {
+    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.03), transparent 50%);
+  }
+
+  /* ===== MASSIVE TYPOGRAPHY ===== */
+  .hero-name {
+    font-size: clamp(4rem, 18vw, 18rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+  }
+
+  .hero-name .name-line {
+    display: block;
+    position: relative;
+  }
+
+  /* Individual character animations */
+  .hero-name .char {
+    display: inline-block;
     opacity: 0;
-    transform: translateY(20px);
-    animation: bounceIn 1s forwards;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 0 40px rgba(255, 255, 255, 0.1),
+      0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
-  .emoji:nth-child(1) {
-    animation-delay: 0s;
+  /* Staggered animation delays */
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+  .char-6 { animation-delay: 0.30s; }
+  .char-7 { animation-delay: 0.35s; }
+  .char-8 { animation-delay: 0.40s; }
+  .char-9 { animation-delay: 0.45s; }
+  .char-10 { animation-delay: 0.50s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
-  .emoji:nth-child(2) {
-    animation-delay: 0.2s;
+  /* Label intro animation */
+  .label-intro {
+    opacity: 0;
+    animation: fadeInDown 0.8s ease-out forwards;
   }
 
-  .emoji:nth-child(3) {
-    animation-delay: 0.4s;
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Statement text */
+  .statement {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.7s;
+  }
+
+  .statement-text {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: 1.6;
+  }
+
+  .highlight {
+    color: #ffffff;
+    font-weight: 700;
+    position: relative;
+  }
+
+  .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* CTA Section */
+  .cta-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.9s;
+  }
+
+  /* Primary CTA Button */
+  .cta-primary {
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .cta-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.7s;
+  }
+
+  .cta-primary:hover .cta-shine {
+    left: 100%;
+  }
+
+  /* Secondary CTA */
+  .cta-secondary {
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.2);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+  }
+
+  .cta-secondary:hover {
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Info bar */
+  .info-bar {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 1.2s;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  .info-item {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .info-item:nth-child(1) { animation-delay: 1.3s; }
+  .info-item:nth-child(2) { animation-delay: 1.4s; }
+  .info-item:nth-child(3) { animation-delay: 1.5s; }
+
+  /* Robot accent */
+  .robot-accent {
+    filter: blur(1px) opacity(0.3);
+    transition: all 0.7s ease;
+  }
+
+  .robot-accent:hover {
+    filter: blur(0px) opacity(0.5);
   }
 
   /* Robot expanded view */
-  .robot-frame {
-    will-change: transform;
-    transform-origin: center;
-    transition: all 0.4s ease-out;
-  }
-
   .robot-frame.expanded {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
     width: 90vw !important;
     height: 90vw !important;
-    max-width: 600px !important;
-    max-height: 600px !important;
-    z-index: 60; /* Higher than the backdrop overlay */
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    border-radius: 12px;
-    overflow: hidden;
+    max-width: 700px !important;
+    max-height: 700px !important;
+    z-index: 60 !important;
+    opacity: 1 !important;
+    filter: none !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
   }
 
   .backdrop-visible {
@@ -163,65 +375,115 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     transform: rotate(180deg);
   }
 
-  .model-display-container {
-    transition: all 0.3s ease-out;
+  /* Scroll indicator */
+  .scroll-indicator-minimal {
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards;
+    animation-delay: 2s;
   }
 
-  .robot-frame.expanded .model-display-container {
-    border-radius: 12px;
-    border-width: 2px;
-    border-color: rgba(var(--color-primary, 255, 255, 255), 0.4);
-  }
-
-  @keyframes bounceIn {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    60% {
-      opacity: 1;
-      transform: translateY(-10px);
-    }
-    80% {
-      transform: translateY(5px);
-    }
-    100% {
-      opacity: 1;
+  @keyframes scroll-dot {
+    0%, 100% {
       transform: translateY(0);
+      opacity: 1;
     }
+    50% {
+      transform: translateY(12px);
+      opacity: 0.5;
+    }
+  }
+
+  .animate-scroll-dot {
+    animation: scroll-dot 2s ease-in-out infinite;
+  }
+
+  /* ===== RESPONSIVE DESIGN ===== */
+
+  @media (max-width: 1024px) {
+    .hero-name {
+      font-size: clamp(3.5rem, 15vw, 14rem);
+      letter-spacing: -0.06em;
+    }
+
+    .robot-accent {
+      width: 14rem;
+      height: 14rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-name {
+      font-size: clamp(3rem, 18vw, 10rem);
+      letter-spacing: -0.04em;
+    }
+
+    .statement-text {
+      font-size: clamp(0.9rem, 3vw, 1.25rem);
+    }
+
+    .robot-accent {
+      width: 12rem;
+      height: 12rem;
+      opacity: 0.2;
+    }
+
+    .info-bar {
+      margin-top: 3rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-name {
+      font-size: clamp(2.5rem, 20vw, 8rem);
+      letter-spacing: -0.02em;
+    }
+
+    .robot-accent {
+      display: none;
+    }
+
+    .label-intro span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+    }
+
+    .cta-primary {
+      width: 100%;
+    }
+  }
+
+  /* Prevent layout shift */
+  .hero-section {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile */
   }
 </style>
 
-<!-- Script for toggle expand functionality -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const robotFrame = document.querySelector(".robot-frame");
     const expandButton = document.querySelector(".expand-robot");
     const backdropOverlay = document.getElementById("backdrop-overlay");
-    const mainContent = document.getElementById("main-content");
 
+    // Robot expansion functionality
     if (robotFrame && expandButton && backdropOverlay) {
-      // Toggle expanded view
       expandButton.addEventListener("click", (e) => {
-        e.stopPropagation(); // Prevent event from bubbling to model controls
+        e.stopPropagation();
         toggleExpandedView();
       });
 
-      // Allow clicking on backdrop to close expanded view
       backdropOverlay.addEventListener("click", () => {
         if (robotFrame.classList.contains("expanded")) {
           toggleExpandedView(false);
         }
       });
 
-      // Close on escape key
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && robotFrame.classList.contains("expanded")) {
           toggleExpandedView(false);
         }
       });
 
-      // Function to toggle the expanded view state
       function toggleExpandedView(expand: boolean | null = null) {
         const shouldExpand =
           expand !== null
@@ -229,38 +491,22 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
             : robotFrame && !robotFrame.classList.contains("expanded");
 
         if (shouldExpand) {
-          // Expand the view
-          if (robotFrame) {
-            robotFrame.classList.add("expanded");
-          }
-          if (backdropOverlay) {
-            backdropOverlay.classList.add("backdrop-visible");
-          }
-          document.body.style.overflow = "hidden"; // Prevent scrolling
-          if (expandButton) {
-            expandButton.setAttribute("aria-label", "Collapse robot view");
-          }
+          robotFrame.classList.add("expanded");
+          backdropOverlay.classList.add("backdrop-visible");
+          document.body.style.overflow = "hidden";
+          expandButton.setAttribute("aria-label", "Collapse robot view");
 
-          // Dispatch custom event for the robot viewer to adjust its controls
           document.dispatchEvent(
             new CustomEvent("robotViewerStateChange", {
               detail: { expanded: true },
             })
           );
         } else {
-          // Collapse the view
-          if (robotFrame) {
-            robotFrame.classList.remove("expanded");
-          }
-          if (backdropOverlay) {
-            backdropOverlay.classList.remove("backdrop-visible");
-          }
-          document.body.style.overflow = ""; // Restore scrolling
-          if (expandButton) {
-            expandButton.setAttribute("aria-label", "Expand robot view");
-          }
+          robotFrame.classList.remove("expanded");
+          backdropOverlay.classList.remove("backdrop-visible");
+          document.body.style.overflow = "";
+          expandButton.setAttribute("aria-label", "Expand robot view");
 
-          // Dispatch custom event for the robot viewer to adjust its controls
           document.dispatchEvent(
             new CustomEvent("robotViewerStateChange", {
               detail: { expanded: false },
@@ -269,5 +515,44 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
         }
       }
     }
+
+    // Smooth scroll for scroll indicator
+    const scrollIndicator = document.querySelector(".scroll-indicator-minimal");
+    if (scrollIndicator) {
+      scrollIndicator.addEventListener("click", () => {
+        window.scrollTo({
+          top: window.innerHeight,
+          behavior: "smooth",
+        });
+      });
+    }
+
+    // Parallax effect on scroll
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.pageYOffset;
+          const heroContent = document.querySelector(".hero-content");
+          const robotAccent = document.querySelector(".robot-accent");
+
+          if (heroContent && scrolled < window.innerHeight) {
+            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.8));
+            const translateY = scrolled * 0.3;
+            (heroContent as HTMLElement).style.opacity = opacity.toString();
+            (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
+          }
+
+          // Move robot slightly on scroll
+          if (robotAccent && scrolled < window.innerHeight) {
+            const translateY = scrolled * 0.15;
+            (robotAccent as HTMLElement).style.transform = `translateY(${translateY}px)`;
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
   });
 </script>
