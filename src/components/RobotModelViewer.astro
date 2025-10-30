@@ -86,6 +86,8 @@ const {
   let animatedLights: any;
   let mouseSphere: THREE.Mesh | null = null;
   let mousePointLight: THREE.PointLight | null = null;
+  let raycaster: THREE.Raycaster | null = null;
+  let mouseVector: THREE.Vector2 | null = null;
 
   // Initialize scene
   function initScene() {
@@ -146,13 +148,13 @@ const {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    // Enhanced dramatic lighting setup
-    // Ambient light - keep it low for drama
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+    // DRAMATICALLY DIMMED LIGHTING - Create mystery and darkness
+    // Ambient light - extremely low for darkness
+    const ambientLight = new THREE.AmbientLight(0x202020, 0.05);
     scene.add(ambientLight);
 
-    // KEY LIGHT - Main directional light (strong, from top-right)
-    const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    // KEY LIGHT - Much weaker now
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.3);
     mainLight.position.set(3, 5, 4);
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.width = 2048;
@@ -166,28 +168,28 @@ const {
     mainLight.shadow.camera.bottom = -5;
     scene.add(mainLight);
 
-    // FILL LIGHT - Softer light from opposite side
-    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.5);
+    // FILL LIGHT - Barely visible
+    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.08);
     fillLight.position.set(-3, 2, 2);
     scene.add(fillLight);
 
-    // CYAN ACCENT - Point light for color pop
-    const cyanAccent = new THREE.PointLight(0x00ffff, 1.5, 10);
+    // CYAN ACCENT - Very subtle
+    const cyanAccent = new THREE.PointLight(0x00ffff, 0.2, 10);
     cyanAccent.position.set(-2, 1, 3);
     scene.add(cyanAccent);
 
-    // MAGENTA ACCENT - Point light for complementary color
-    const magentaAccent = new THREE.PointLight(0xff00ff, 1.2, 10);
+    // MAGENTA ACCENT - Very subtle
+    const magentaAccent = new THREE.PointLight(0xff00ff, 0.15, 10);
     magentaAccent.position.set(2, 0.5, -2);
     scene.add(magentaAccent);
 
-    // RIM LIGHT - Strong backlight for silhouette definition
-    const rimLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    // RIM LIGHT - Weak backlight
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
     rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
 
-    // ANIMATED SPOTLIGHT - Draws attention
-    const spotlight = new THREE.SpotLight(0xffffff, 2.0);
+    // ANIMATED SPOTLIGHT - Much dimmer
+    const spotlight = new THREE.SpotLight(0xffffff, 0.3);
     spotlight.position.set(0, 6, 0);
     spotlight.angle = Math.PI / 6;
     spotlight.penumbra = 0.5;
@@ -215,10 +217,14 @@ const {
     mouseSphere.position.set(0, 5, 5);
     scene.add(mouseSphere);
 
-    // Add a point light attached to the sphere for illumination
-    mousePointLight = new THREE.PointLight(0xffffff, 0, 15, 2);
+    // Add a powerful point light attached to the sphere - PRIMARY LIGHT SOURCE
+    mousePointLight = new THREE.PointLight(0xffffff, 0, 20, 1.5);
     mousePointLight.position.copy(mouseSphere.position);
     scene.add(mousePointLight);
+
+    // Initialize raycaster for precise mouse-to-3D mapping
+    raycaster = new THREE.Raycaster();
+    mouseVector = new THREE.Vector2();
 
     // Store lights for animation
     animatedLights = {
@@ -334,18 +340,18 @@ const {
         _mixerRobot.update(delta);
       }
 
-      // Animate lights for dramatic effect
+      // Animate lights for subtle dramatic effect (much dimmer)
       if (animatedLights) {
-        // Pulse spotlight intensity
-        animatedLights.spotlight.intensity = 1.5 + Math.sin(elapsed * 0.8) * 0.5;
+        // Subtle pulse spotlight intensity
+        animatedLights.spotlight.intensity = 0.25 + Math.sin(elapsed * 0.8) * 0.08;
 
         // Slowly rotate cyan accent
         const cyanAngle = elapsed * 0.3;
         animatedLights.cyanAccent.position.x = Math.cos(cyanAngle) * 3;
         animatedLights.cyanAccent.position.z = Math.sin(cyanAngle) * 3;
 
-        // Pulse magenta accent
-        animatedLights.magentaAccent.intensity = 1.0 + Math.sin(elapsed * 1.2) * 0.4;
+        // Subtle pulse magenta accent
+        animatedLights.magentaAccent.intensity = 0.12 + Math.sin(elapsed * 1.2) * 0.05;
       }
 
       // Update controls
@@ -372,41 +378,45 @@ const {
       resizeObserver.observe(container);
     }
 
-    // ===== GLOWING SPHERE TRACKING SYSTEM =====
+    // ===== GLOWING SPHERE TRACKING SYSTEM WITH RAYCASTING =====
     // Listen for mouse movement events from Home.astro
     document.addEventListener('robotMouseMove', (e: any) => {
-      if (e.detail && mouseSphere && mousePointLight) {
+      if (e.detail && mouseSphere && mousePointLight && raycaster && mouseVector && camera) {
         const { x, y } = e.detail; // Normalized 0-1 coordinates
 
-        // Convert normalized coordinates to 3D position
-        // X: -6 to 6 (left to right, wider range)
-        // Y: 3 to 1 (top to middle based on mouse Y)
-        // Z: 6 to 0 (front to center based on vertical mouse position)
-        const sphereX = (x - 0.5) * 12; // -6 to 6
-        const sphereY = 3 - (y * 2); // 3 to 1
-        const sphereZ = 6 - (y * 6); // 6 to 0
+        // Convert to normalized device coordinates (-1 to +1)
+        mouseVector.x = (x * 2) - 1;
+        mouseVector.y = -(y * 2) + 1; // Inverted for WebGL
 
-        // Smoothly interpolate sphere position
-        mouseSphere.position.lerp(
-          new THREE.Vector3(sphereX, sphereY, sphereZ),
-          0.15
-        );
+        // Update raycaster with mouse position
+        raycaster.setFromCamera(mouseVector, camera);
 
-        // Point light follows sphere
+        // Position sphere at fixed distance along ray from camera
+        // This makes it feel like the sphere is "in front" of where you're pointing
+        const distance = 4.5; // Distance from camera
+        const spherePosition = new THREE.Vector3();
+        spherePosition.copy(raycaster.ray.direction);
+        spherePosition.multiplyScalar(distance);
+        spherePosition.add(raycaster.ray.origin);
+
+        // Smoothly interpolate sphere position (higher lerp for more responsive tracking)
+        mouseSphere.position.lerp(spherePosition, 0.25);
+
+        // Point light follows sphere exactly
         mousePointLight.position.copy(mouseSphere.position);
 
         // Ramp up glow intensity
         const material = mouseSphere.material as THREE.MeshStandardMaterial;
-        if (material.emissiveIntensity < 2.5) {
-          material.emissiveIntensity += 0.15;
+        if (material.emissiveIntensity < 3.0) {
+          material.emissiveIntensity += 0.2;
         }
-        if (material.opacity < 0.9) {
-          material.opacity += 0.08;
+        if (material.opacity < 0.95) {
+          material.opacity += 0.1;
         }
 
-        // Increase point light intensity
-        if (mousePointLight.intensity < 8.0) {
-          mousePointLight.intensity += 0.4;
+        // Increase point light intensity - PRIMARY LIGHT SOURCE NOW
+        if (mousePointLight.intensity < 12.0) {
+          mousePointLight.intensity += 0.5;
         }
       }
     });
