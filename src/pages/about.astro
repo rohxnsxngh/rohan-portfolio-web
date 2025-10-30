@@ -2,163 +2,231 @@
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
 ---
 
-<Layout>
-  <Navbar>
-    <div class="sm:px-20 px-6">
-      <h1 class="font-semibold sm:text-5xl text-3xl py-4 tracking-wider">
-        About <span class="text-primary">Me</span>
-      </h1>
+<Layout title="About">
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay for texture -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
-      <div class="divider"></div>
+          <!-- Main Content -->
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER SECTION -->
+            <div class="header-section mb-16">
+              <h1 class="about-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">A</span><span class="char char-2">B</span><span class="char char-3">O</span><span class="char char-4">U</span><span class="char char-5">T</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
 
-      <div class="mt-6 sm:text-lg text-md relative text-left">
-        <p>
-          I was born in Goa, India, and moved to the U.S. when I was around
-          eight years old. Growing up, I was always drawn to two things—<span
-            class="font-medium text-primary">sports and building</span
-          >. Tennis and soccer were my first obsessions, and I poured countless
-          hours into them, eventually walking onto Texas A&M's Division 1 tennis
-          team before COVID changed everything. That shift pushed me to channel
-          my competitive drive into something else:
-          <span
-            class="underline decoration-primary decoration-2 underline-offset-4"
-            >engineering</span
-          >. Whether it was coding, designing, or breaking things apart just to
-          understand how they worked, I found the same thrill in building that I
-          once did in sports.
-        </p>
-        <br/>
-        <p class="italic text-sm font-thin text-center">little clip of retired me playing somewhere in Jamaica</p>
-      </div>
+            <!-- HERO SECTION WITH PROFILE -->
+            <div class="hero-grid grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+              <!-- Profile Image Section -->
+              <div class="profile-section">
+                <div class="profile-container group">
+                  <img
+                    src="/profile_processed.jpg"
+                    alt="Rohan Singh"
+                    class="profile-image"
+                  />
+                  <div class="profile-overlay"></div>
+                  <div class="profile-border"></div>
+                </div>
+              </div>
 
-      <!-- Tennis Videos Section - Side by Side -->
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 fade-in">
-        <!-- First video -->
-        <div class="relative group video-container hover:-translate-y-4 duration-500 ease-out">
-          <video
-            poster="/videos/tennis_01_thumb.jpg"
-            class="rounded-lg w-full h-auto object-cover filter grayscale hover:grayscale-0 transition-all duration-500 ease-out -rotate-90 transform-center"
-            autoplay
-            loop
-            muted
-            playsinline
-            preload="metadata"
-            aria-label="Tennis video clip one"
-          >
-            <source src="/videos/tennis_01.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div
-            class="absolute inset-0 border border-primary/20 rounded-lg transform transition-transform duration-300 group-hover:scale-105"
-          >
+              <!-- Intro Text -->
+              <div class="intro-section flex flex-col justify-center">
+                <p class="intro-label font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                  Engineer • Builder • Creator
+                </p>
+                <h2 class="intro-name font-mono font-bold text-4xl sm:text-6xl mb-6 text-primary">
+                  Rohan Singh
+                </h2>
+                <p class="intro-tagline text-lg sm:text-xl text-primary/70 leading-relaxed">
+                  Mechanical Engineer turned AI/Robotics specialist, building the future one system at a time.
+                </p>
+              </div>
+            </div>
+
+            <!-- STORY SECTION -->
+            <div class="story-section space-y-8 mb-20">
+              <div class="story-block">
+                <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                  // ORIGINS
+                </h3>
+                <p class="story-text text-lg sm:text-xl text-primary/80 leading-relaxed">
+                  I was born in <span class="highlight">Goa, India</span>, and moved to the U.S. when I was around
+                  eight years old. Growing up, I was always drawn to two things—<span class="highlight-alt">sports and building</span>.
+                  Tennis and soccer were my first obsessions, and I poured countless hours into them, eventually walking onto
+                  <span class="highlight">Texas A&M's Division 1 tennis team</span> before COVID changed everything.
+                  That shift pushed me to channel my competitive drive into something else: <span class="highlight-alt">engineering</span>.
+                </p>
+              </div>
+
+              <!-- Tennis Videos Section -->
+              <div class="videos-section my-16">
+                <p class="video-caption text-center italic text-sm font-thin text-primary/50 mb-6">
+                  A glimpse of retired me playing somewhere in Jamaica
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <!-- First video -->
+                  <div class="video-wrapper">
+                    <video
+                      poster="/videos/tennis_01_thumb.jpg"
+                      class="video-element"
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      preload="metadata"
+                      aria-label="Tennis video clip one"
+                    >
+                      <source src="/videos/tennis_01.mp4" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                    <div class="video-border"></div>
+                  </div>
+
+                  <!-- Second video -->
+                  <div class="video-wrapper">
+                    <video
+                      poster="/videos/tennis_02_thumb.jpg"
+                      class="video-element"
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      preload="metadata"
+                      aria-label="Tennis video clip two"
+                    >
+                      <source src="/videos/tennis_02.mp4" type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                    <div class="video-border"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="story-block">
+                <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                  // JOURNEY
+                </h3>
+                <p class="story-text text-lg sm:text-xl text-primary/80 leading-relaxed">
+                  That passion led me to <span class="highlight">Texas A&M</span>, where I earned a B.S. in Mechanical Engineering
+                  with minors in Applied Mathematics and Statistics. My journey through tech has been diverse and exciting—from
+                  developing robotics projects at my University clubs as well as working at industry giants like
+                  <span class="company-tag cyan">ASML</span>,
+                  <span class="company-tag red">Toyota</span>,
+                  <span class="company-tag red-bright">Tesla</span>, and
+                  <span class="company-tag green">NVIDIA</span>.
+                  Now, I'm pursuing my passion at <span class="highlight">Carnegie Mellon University</span>, diving deep into
+                  AI, robotics, and control systems—exploring how machines can learn and adapt in dynamic environments.
+                </p>
+              </div>
+
+              <div class="story-block">
+                <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                  // VISION
+                </h3>
+                <p class="story-text text-lg sm:text-xl text-primary/80 leading-relaxed">
+                  Beyond my formal roles, I'm a <span class="highlight-alt">startup enthusiast</span> and founder of
+                  <span class="company-tag blue"><a href="https://www.quaternionstudios.com/" target="_blank" rel="noopener noreferrer">Quaternion Studios</a></span>.
+                  I'm deeply passionate about building companies in the hardware space that contribute to a truly abundant future.
+                  My goal is to bridge cutting-edge AI with practical engineering solutions that solve real-world problems.
+                  When I'm not working on projects, you'll find me playing pickup basketball, exploring new breweries,
+                  or just creating—whether it's software, hardware prototypes, or something completely unexpected.
+                </p>
+              </div>
+            </div>
+
+            <!-- CALL TO ACTION -->
+            <div class="cta-section flex flex-col sm:flex-row gap-6 items-center justify-center py-12">
+              <a
+                href="/project"
+                class="cta-button group"
+              >
+                <span class="relative z-10">VIEW MY WORK</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 ml-3 group-hover:translate-x-2 transition-transform relative z-10"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+                <div class="button-shine"></div>
+              </a>
+
+              <a
+                href="/experience"
+                class="cta-secondary group"
+              >
+                View Experience
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
-
-        <!-- Second video -->
-        <div class="relative group video-container hover:-translate-y-4 duration-500 ease-out">
-          <video
-            poster="/videos/tennis_02_thumb.jpg"
-            class="rounded-lg w-full h-auto object-cover filter grayscale hover:grayscale-0 transition-all duration-500 ease-out -rotate-90 transform-center"
-            autoplay
-            loop
-            muted
-            playsinline
-            preload="metadata"
-            aria-label="Tennis video clip two"
-          >
-            <source src="/videos/tennis_02.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div
-            class="absolute inset-0 border border-primary/20 rounded-lg transform transition-transform duration-300 group-hover:scale-105"
-          >
-          </div>
-        </div>
-      </div>
-
-      <p class="mt-10 sm:text-lg text-md text-left">
-        That passion led me to <span class="font-medium">Texas A&M</span>, where
-        I earned a B.S. in Mechanical Engineering with minors in Applied
-        Mathematics and Statistics. My journey through tech has been diverse and
-        exciting—from developing robotics projects at my University clubs as
-        well as working at industry giants like <span
-          class="text-slate-400/90 hover:underline hover:text-cyan-500/90 decoration-2 underline-offset-4"
-          >ASML</span
-        >,
-        <span class="text-slate-400/90 hover:underline hover:text-red-300/90 decoration-2 underline-offset-4"
-          >Toyota</span
-        >,
-        <span class="text-slate-400/90 hover:underline hover:text-red-500/90 decoration-2 underline-offset-4"
-          >Tesla</span
-        >
-        , and
-        <span class="text-slate-400/90 hover:underline hover:text-lime-500/90 decoration-2 underline-offset-4"
-          >Nvidia</span
-        >
-        . Now, I'm pursuing my passion at <span class="font-medium"
-          >Carnegie Mellon University</span
-        >, diving deep into AI, robotics, and control systems—exploring how
-        machines can learn and adapt in dynamic environments.
-      </p>
-
-      <p class="mt-6 sm:text-lg text-md text-left">
-        Beyond my formal roles, I'm a <span class="font-bold text-primary"
-          >startup enthusiast</span
-        > and founder of <span
-          class="text-slate-400/90 hover:underline hover:text-blue-800/90 decoration-2 underline-offset-4"
-          ><a href="https://www.quaternionstudios.com/">Quaternion Studios</a
-          ></span
-        >. I'm deeply passionate about
-        <span class="italic">building companies in the hardware space</span> that
-        contribute to a truly abundant future. My goal is to bridge cutting-edge
-        AI with practical engineering solutions that solve real-world problems. When
-        I'm not working on projects, you'll find me playing pickup basketball, exploring
-        new breweries, or just creating—whether it's software, hardware prototypes,
-        or something completely unexpected.
-      </p>
-
-      <div class="divider"></div>
-
-      <div class="p-2 mt-6 mb-20">
-        <div class="mockup-code border-2 border-primary bg-black sm:text-lg text-sm">
-          <pre data-prefix="$"><code>sudo install rohxnsxngh</code></pre>
-          <pre
-            data-prefix=">"
-            class="text-error"><code>243 MB of disk space required😇</code></pre>
-          <pre
-            data-prefix=">"
-            class="text-warning"><code>installing dependencies</code></pre>
-          <pre
-            data-prefix=">"
-            class="text-success"><code>Welcome to my page!</code></pre>
-        </div>
-      </div>
+      </Navbar>
     </div>
-  </Navbar>
-  <Footer />
+    <Footer />
+  </div>
 </Layout>
 
 <style>
-  .divider {
-    height: 1px;
-    width: 100%;
-    background-color: rgba(var(--color-primary-rgb), 0.2);
-    margin: 1rem 0;
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
   }
 
-  /* Fade-in animation for videos */
-  .fade-in {
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD ABOUT TITLE */
+  .about-title {
+    font-size: clamp(4rem, 16vw, 14rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
     opacity: 0;
-    animation: fadeIn 1s forwards;
-    animation-delay: 0.3s;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
   }
 
-  @keyframes fadeIn {
+  @keyframes titleReveal {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(50px);
     }
     to {
       opacity: 1;
@@ -166,42 +234,406 @@ import Layout from "../layouts/Layout.astro";
     }
   }
 
-  /* Video container styling - optimized for rotated videos */
-  .video-container {
+  /* Individual character animations */
+  .about-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  /* PROFILE SECTION */
+  .profile-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.6s;
+  }
+
+  .profile-container {
     position: relative;
+    aspect-ratio: 1/1;
+    max-width: 500px;
+    margin: 0 auto;
     overflow: hidden;
     border-radius: 0.5rem;
-    /* Square container to handle the rotation nicely */
+  }
+
+  .profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.3);
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .profile-container:hover .profile-image {
+    filter: grayscale(0);
+    transform: scale(1.05);
+  }
+
+  .profile-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at 50% 50%,
+      transparent 40%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    transition: opacity 1.2s ease;
+  }
+
+  .profile-container:hover .profile-overlay {
+    opacity: 0.5;
+  }
+
+  .profile-border {
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .profile-container:hover .profile-border {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.02);
+  }
+
+  /* INTRO SECTION */
+  .intro-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.8s;
+  }
+
+  .intro-label {
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 1s;
+  }
+
+  .intro-name {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 1.1s;
+  }
+
+  .intro-tagline {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 1.3s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* STORY SECTIONS */
+  .story-block {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    padding: 2rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.6s ease;
+  }
+
+  .story-block:nth-child(1) { animation-delay: 1.4s; }
+  .story-block:nth-child(3) { animation-delay: 1.6s; }
+  .story-block:nth-child(4) { animation-delay: 1.8s; }
+
+  .story-block:hover {
+    border-left-color: rgba(255, 255, 255, 0.4);
+    padding-left: 2.5rem;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .section-label {
+    opacity: 0.7;
+    transition: opacity 0.4s ease;
+  }
+
+  .story-block:hover .section-label {
+    opacity: 1;
+  }
+
+  .story-text {
+    line-height: 1.8;
+  }
+
+  /* Highlight styles */
+  .highlight {
+    color: #ffffff;
+    font-weight: 600;
+    position: relative;
+  }
+
+  .highlight-alt {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.3);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+    transition: text-decoration-color 0.3s ease;
+  }
+
+  .highlight-alt:hover {
+    text-decoration-color: rgba(255, 255, 255, 0.8);
+  }
+
+  /* Company tags */
+  .company-tag {
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .company-tag.cyan {
+    color: rgba(100, 200, 255, 0.9);
+    text-decoration-color: rgba(100, 200, 255, 0.3);
+  }
+
+  .company-tag.cyan:hover {
+    color: rgb(100, 200, 255);
+    text-decoration-color: rgba(100, 200, 255, 0.9);
+  }
+
+  .company-tag.red {
+    color: rgba(255, 150, 150, 0.9);
+    text-decoration-color: rgba(255, 150, 150, 0.3);
+  }
+
+  .company-tag.red:hover {
+    color: rgb(255, 150, 150);
+    text-decoration-color: rgba(255, 150, 150, 0.9);
+  }
+
+  .company-tag.red-bright {
+    color: rgba(255, 100, 100, 0.9);
+    text-decoration-color: rgba(255, 100, 100, 0.3);
+  }
+
+  .company-tag.red-bright:hover {
+    color: rgb(255, 100, 100);
+    text-decoration-color: rgba(255, 100, 100, 0.9);
+  }
+
+  .company-tag.green {
+    color: rgba(150, 255, 150, 0.9);
+    text-decoration-color: rgba(150, 255, 150, 0.3);
+  }
+
+  .company-tag.green:hover {
+    color: rgb(150, 255, 150);
+    text-decoration-color: rgba(150, 255, 150, 0.9);
+  }
+
+  .company-tag.blue {
+    color: rgba(100, 150, 255, 0.9);
+    text-decoration-color: rgba(100, 150, 255, 0.3);
+  }
+
+  .company-tag.blue:hover {
+    color: rgb(100, 150, 255);
+    text-decoration-color: rgba(100, 150, 255, 0.9);
+  }
+
+  /* VIDEO SECTION */
+  .videos-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 1.5s;
+  }
+
+  .video-caption {
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 1.6s;
+  }
+
+  .video-wrapper {
+    position: relative;
     aspect-ratio: 1/1;
+    overflow: hidden;
+    border-radius: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Make the rotated videos display properly */
-  .transform-center {
+  .video-wrapper:hover {
+    transform: translateY(-8px);
+  }
+
+  .video-element {
     transform-origin: center;
-    /* Adjust scale to fill container appropriately */
-    transform: rotate(-90deg) scale(1.2);
+    transform: rotate(-90deg) scale(1.15);
     max-width: 100%;
     max-height: 100%;
+    filter: grayscale(0.5);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Add subtle video shine effect on hover */
-  .group:hover video {
-    box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.3);
+  .video-wrapper:hover .video-element {
+    filter: grayscale(0);
+    transform: rotate(-90deg) scale(1.2);
   }
-  
-  /* Responsive adjustments */
-  @media (min-width: 768px) {
-    .transform-center {
-      transform: rotate(-90deg) scale(1.1);
+
+  .video-border {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .video-wrapper:hover .video-border {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+  }
+
+  /* CTA SECTION */
+  .cta-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 2s;
+  }
+
+  .cta-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 2.5rem;
+    background: rgba(255, 255, 255, 1);
+    color: #000000;
+    font-family: monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+  }
+
+  .cta-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3);
+  }
+
+  .button-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.2), transparent);
+    transition: left 0.7s;
+  }
+
+  .cta-button:hover .button-shine {
+    left: 100%;
+  }
+
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: monospace;
+    font-size: 0.875rem;
+    letter-spacing: 0.1em;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.2);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+    transition: all 0.3s ease;
+  }
+
+  .cta-secondary:hover {
+    color: rgba(255, 255, 255, 1);
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .about-title {
+      font-size: clamp(3.5rem, 14vw, 12rem);
     }
   }
-  
-  @media (min-width: 1024px) {
-    .transform-center {
-      transform: rotate(-90deg) scale(1.15);
+
+  @media (max-width: 768px) {
+    .about-title {
+      font-size: clamp(3rem, 16vw, 10rem);
+    }
+
+    .story-text {
+      font-size: 1rem;
+    }
+
+    .story-block {
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .about-title {
+      font-size: clamp(2.5rem, 18vw, 8rem);
+    }
+
+    .profile-container {
+      max-width: 100%;
     }
   }
 </style>
@@ -216,58 +648,38 @@ import Layout from "../layouts/Layout.astro";
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              // Only play the video when it's visible in the viewport
               const video = entry.target as HTMLVideoElement;
               video.play().catch((error) => {
                 console.warn("Auto-play was prevented by the browser:", error);
-                // Add a play button overlay for user interaction if needed
               });
-
-              // Stop observing once it starts playing
               videoObserver.unobserve(video);
             }
           });
         },
-        {
-          threshold: 0.1, // Start loading when 10% visible
-        }
+        { threshold: 0.1 }
       );
 
-      // Observe all videos
       videos.forEach((video) => {
         videoObserver.observe(video);
       });
-    } else {
-      // Fallback for browsers that don't support IntersectionObserver
-      videos.forEach((video) => {
-        video.play().catch(() => {
-          // Silent catch - some browsers require interaction first
+    }
+
+    // Pause/play based on visibility
+    const pauseObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLVideoElement).play().catch(() => {});
+          } else {
+            (entry.target as HTMLVideoElement).pause();
+          }
         });
-      });
-    }
+      },
+      { threshold: 0 }
+    );
 
-    // Add pause/play functionality when videos are not visible
-    // to save resources (optional)
-    if ("IntersectionObserver" in window) {
-      const pauseObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              (entry.target as HTMLVideoElement).play().catch(() => {});
-            } else {
-              (entry.target as HTMLVideoElement).pause();
-            }
-          });
-        },
-        {
-          rootMargin: "0px",
-          threshold: 0,
-        }
-      );
-
-      videos.forEach((video) => {
-        pauseObserver.observe(video);
-      });
-    }
+    videos.forEach((video) => {
+      pauseObserver.observe(video);
+    });
   });
 </script>
