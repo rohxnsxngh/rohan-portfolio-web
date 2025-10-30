@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-import { Image } from "astro:assets";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 
@@ -14,97 +13,130 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 ---
 
 <Layout title="Experience">
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
-        <div class="sm:px-20 px-6 py-2">
-          <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-4">
-            Experience
-          </h1>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
-          <div class="sm:text-sm text-xs tracking-wider mb-4 px-2">
-            <span class="font-bold font-antialiasing tracking-widest">TLDR:</span> 
-            <span class="text-slate-400/90 hover:underline hover:text-lime-600/90 decoration-2 underline-offset-4">BCG</span> →
-            <span class="text-slate-400/90 hover:underline hover:text-cyan-600/90 decoration-2 underline-offset-4">OctaPulse</span> →
-            <span class="text-slate-400/90 hover:underline hover:text-cyan-500/90 decoration-2 underline-offset-4">ASML</span> → <span
-              class="text-slate-400/90 hover:underline hover:text-red-300/90 decoration-2 underline-offset-4">Toyota</span
-            > → <span class="text-slate-400/90 hover:underline hover:text-red-500/90 decoration-2 underline-offset-4">Tesla</span> → <span
-              class="text-slate-400/90 hover:underline hover:text-red-500/90 decoration-2 underline-offset-4">Tesla</span
-            > 
-            → 
-            <span class="text-slate-400/90 hover:underline hover:text-lime-500/90 decoration-2 underline-offset-4">NVIDIA</span>
-          </div>
-          <div class="divider"></div>
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER -->
+            <div class="header-section mb-12">
+              <h1 class="experience-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">E</span><span class="char char-2">X</span><span class="char char-3">P</span><span class="char char-4">E</span><span class="char char-5">R</span><span class="char char-6">I</span><span class="char char-7">E</span><span class="char char-8">N</span><span class="char char-9">C</span><span class="char char-10">E</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
 
-          <div class="timeline-container relative max-w-5xl mx-auto mt-12">
-            <!-- Timeline vertical line -->
-            <div class="timeline-line absolute left-[20px] sm:left-[40px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-primary/40 via-primary/20 to-transparent"></div>
+            <!-- JOURNEY TLDR -->
+            <div class="journey-section mb-16 opacity-0" style="animation: fadeInUp 0.8s ease-out forwards; animation-delay: 0.8s;">
+              <p class="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-primary/30 mb-6 uppercase">
+                Career Journey
+              </p>
+              <div class="journey-path font-mono text-xs sm:text-sm flex flex-wrap gap-2 items-center">
+                <span class="company-chip green">NVIDIA</span>
+                <span class="arrow">→</span>
+                <span class="company-chip red-bright">Tesla</span>
+                <span class="arrow">→</span>
+                <span class="company-chip red-bright">Tesla</span>
+                <span class="arrow">→</span>
+                <span class="company-chip red">Toyota</span>
+                <span class="arrow">→</span>
+                <span class="company-chip cyan-bright">ASML</span>
+                <span class="arrow">→</span>
+                <span class="company-chip cyan">OctaPulse</span>
+                <span class="arrow">→</span>
+                <span class="company-chip lime">BCG</span>
+              </div>
+            </div>
 
-            {
-              sortedExperiences.map((experience, index) => {
-                const companyFirstLetter = experience.data.company
-                  .toLowerCase()
-                  .charAt(0);
-                const borderClass =
-                  companyFirstLetter === "t"
-                    ? "border-red-300/50 shadow-sm shadow-red-200/40"
-                    : companyFirstLetter === "n"
-                      ? "border-green-300/50 shadow-sm shadow-green-200/40"
-                      : companyFirstLetter === "a"
-                        ? "border-blue-300/50 shadow-sm shadow-cyan-300/90"
-                        : "border-primary/20";
+            <!-- 3D ILLUMINATED TIMELINE -->
+            <div id="experience-timeline" class="relative min-h-screen">
+              <!-- Cards Container -->
+              <div class="cards-container relative z-10 max-w-4xl mx-auto space-y-8 pb-20">
+                {sortedExperiences.map((experience, index) => {
+                  const companyFirstLetter = experience.data.company.toLowerCase().charAt(0);
+                  const borderClass =
+                    companyFirstLetter === "t"
+                      ? "border-red-300/50"
+                      : companyFirstLetter === "n"
+                        ? "border-green-300/50"
+                        : companyFirstLetter === "a"
+                          ? "border-cyan-300/50"
+                          : "border-primary/20";
 
-                return (
-                  <div class="timeline-item relative pl-[60px] sm:pl-[100px] pb-12 group">
-                    <!-- Timeline dot -->
-                    <div class="timeline-dot absolute left-[11px] sm:left-[31px] top-[8px] w-[20px] h-[20px] rounded-full bg-black border-2 border-primary/60 z-10 transition-all duration-300 group-hover:border-primary group-hover:scale-125 group-hover:shadow-lg group-hover:shadow-primary/30"></div>
+                  const colorClass =
+                    companyFirstLetter === "t"
+                      ? "text-red-300/80"
+                      : companyFirstLetter === "n"
+                        ? "text-green-300/80"
+                        : companyFirstLetter === "a"
+                          ? "text-cyan-300/80"
+                          : "text-primary/80";
 
-                    <!-- Comet Card -->
-                    <div class="comet-card relative experience-card">
-                      <div class="comet-card-inner relative p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-primary/20 overflow-hidden transition-all duration-300 group-hover:border-primary/40">
-                        <!-- Comet effect overlay -->
-                        <div class="comet-overlay absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+                  return (
+                    <div
+                      class="experience-card group"
+                      data-index={index}
+                      data-company={experience.data.company.toLowerCase()}
+                      style={`animation-delay: ${1.2 + index * 0.1}s;`}
+                    >
+                      <!-- Clean Minimalist Card -->
+                      <a href={`/experience/${experience.slug}`} class="card-link block relative group">
+                        <!-- The card content -->
+                        <div class="card-content relative p-8 sm:p-12 overflow-hidden transition-all duration-500">
+                          <!-- Subtle accent line -->
+                          <div class={`accent-bar absolute left-0 top-0 w-1 h-0 ${borderClass} transition-all duration-500 group-hover:h-full`}></div>
 
-                        <div class="relative z-10">
-                          <div class="flex sm:flex-row flex-col sm:items-center sm:justify-between gap-3 mb-3">
-                            <h2 class="font-mono text-xl text-white/90">
-                              {experience.data.title}
-                            </h2>
-                            <span
-                              class={`text-xs font-mono px-3 py-1.5 rounded-lg bg-primary/10 text-primary/80 border ${borderClass} whitespace-nowrap w-fit`}
-                            >
-                              {experience.data.company}
-                            </span>
-                          </div>
+                          <!-- Illumination glow effect -->
+                          <div class="card-glow absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none" style="background: radial-gradient(circle 400px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.03), transparent);"></div>
 
-                          <p class="text-base-content/50 mb-4 font-mono text-sm">
-                            {experience.data.date}
-                          </p>
-
-                          <p class="text-base-content/70 mb-4 text-sm leading-relaxed">
-                            {experience.data.description}
-                          </p>
-
-                          <div class="flex flex-wrap gap-2">
-                            {experience.data.tags.map((tag: string) => (
-                              <span class="text-xs px-2.5 py-1 rounded-md bg-accent/5 text-primary/60 border border-accent/10 hover:bg-accent/10 transition-colors duration-200">
-                                {tag}
+                          <div class="relative z-10">
+                            <!-- Header -->
+                            <div class="flex items-start justify-between gap-6 mb-8">
+                              <div class="flex-1">
+                                <h2 class="font-mono text-3xl sm:text-4xl text-white/95 font-bold tracking-tight leading-tight mb-3 group-hover:text-white transition-colors duration-300">
+                                  {experience.data.title}
+                                </h2>
+                                <p class="text-primary/40 font-mono text-xs tracking-[0.2em] uppercase">
+                                  {experience.data.date}
+                                </p>
+                              </div>
+                              <span class={`company-badge font-mono text-sm px-4 py-2 rounded border ${borderClass} ${colorClass} whitespace-nowrap`}>
+                                {experience.data.company}
                               </span>
-                            ))}
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-primary/70 mb-8 text-base leading-relaxed max-w-3xl group-hover:text-primary/90 transition-colors duration-300">
+                              {experience.data.description}
+                            </p>
+
+                            <!-- Tags -->
+                            <div class="flex flex-wrap gap-2 mb-8">
+                              {experience.data.tags.map((tag: string) => (
+                                <span class="text-xs px-3 py-1.5 rounded bg-primary/5 text-primary/50 border border-primary/10 font-mono group-hover:bg-primary/10 group-hover:text-primary/70 group-hover:border-primary/20 transition-all duration-300">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+
+                            <!-- Call to action -->
+                            <div class="text-primary/30 font-mono text-sm flex items-center gap-2 group-hover:text-primary/70 transition-all duration-300">
+                              <span>View details</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                              </svg>
+                            </div>
                           </div>
                         </div>
-                      </div>
-
-                      <a
-                        href={`/experience/${experience.slug}`}
-                        class="absolute inset-0 z-20"
-                        aria-label={`View details for ${experience.data.title} at ${experience.data.company}`}
-                      />
+                      </a>
                     </div>
-                  </div>
-                );
-              })
-            }
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </Navbar>
@@ -114,24 +146,38 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 </Layout>
 
 <style>
-  /* Timeline animations */
-  .timeline-item {
-    animation: fadeInUp 0.6s ease-out backwards;
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
   }
 
-  .timeline-item:nth-child(1) { animation-delay: 0.1s; }
-  .timeline-item:nth-child(2) { animation-delay: 0.2s; }
-  .timeline-item:nth-child(3) { animation-delay: 0.3s; }
-  .timeline-item:nth-child(4) { animation-delay: 0.4s; }
-  .timeline-item:nth-child(5) { animation-delay: 0.5s; }
-  .timeline-item:nth-child(6) { animation-delay: 0.6s; }
-  .timeline-item:nth-child(7) { animation-delay: 0.7s; }
-  .timeline-item:nth-child(8) { animation-delay: 0.8s; }
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
 
-  @keyframes fadeInUp {
+  /* BOLD EXPERIENCE TITLE */
+  .experience-title {
+    font-size: clamp(3rem, 12vw, 12rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(50px);
     }
     to {
       opacity: 1;
@@ -139,54 +185,254 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     }
   }
 
-  /* Comet card effect */
-  .comet-card {
-    transition: transform 0.3s ease-out;
+  /* Character animations */
+  .experience-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  .comet-card:hover {
-    transform: translateX(4px);
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+  .char-6 { animation-delay: 0.30s; }
+  .char-7 { animation-delay: 0.35s; }
+  .char-8 { animation-delay: 0.40s; }
+  .char-9 { animation-delay: 0.45s; }
+  .char-10 { animation-delay: 0.50s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
-  /* Comet overlay - minimalist light sweep effect */
-  .comet-overlay {
-    background: radial-gradient(
-      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 255, 255, 0.06),
-      transparent 40%
-    );
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.6s;
   }
 
-  /* Enhanced comet effect on hover with subtle glow */
-  .comet-card-inner:hover .comet-overlay {
-    background: radial-gradient(
-      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.02) 50%,
-      transparent 80%
-    );
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Journey section */
+  .journey-path {
+    line-height: 2;
+  }
+
+  .company-chip {
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    border: 1px solid;
+    transition: all 0.4s ease;
+    letter-spacing: 0.05em;
+  }
+
+  .company-chip.lime {
+    color: rgba(150, 255, 150, 0.5);
+    border-color: rgba(150, 255, 150, 0.2);
+    background: rgba(150, 255, 150, 0.03);
+  }
+
+  .company-chip.lime:hover {
+    color: rgba(150, 255, 150, 0.8);
+    border-color: rgba(150, 255, 150, 0.5);
+    background: rgba(150, 255, 150, 0.08);
+  }
+
+  .company-chip.cyan {
+    color: rgba(100, 200, 255, 0.5);
+    border-color: rgba(100, 200, 255, 0.2);
+    background: rgba(100, 200, 255, 0.03);
+  }
+
+  .company-chip.cyan:hover {
+    color: rgba(100, 200, 255, 0.8);
+    border-color: rgba(100, 200, 255, 0.5);
+    background: rgba(100, 200, 255, 0.08);
+  }
+
+  .company-chip.cyan-bright {
+    color: rgba(0, 255, 255, 0.5);
+    border-color: rgba(0, 255, 255, 0.2);
+    background: rgba(0, 255, 255, 0.03);
+  }
+
+  .company-chip.cyan-bright:hover {
+    color: rgba(0, 255, 255, 0.8);
+    border-color: rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 255, 0.08);
+  }
+
+  .company-chip.red {
+    color: rgba(255, 150, 150, 0.5);
+    border-color: rgba(255, 150, 150, 0.2);
+    background: rgba(255, 150, 150, 0.03);
+  }
+
+  .company-chip.red:hover {
+    color: rgba(255, 150, 150, 0.8);
+    border-color: rgba(255, 150, 150, 0.5);
+    background: rgba(255, 150, 150, 0.08);
+  }
+
+  .company-chip.red-bright {
+    color: rgba(255, 100, 100, 0.5);
+    border-color: rgba(255, 100, 100, 0.2);
+    background: rgba(255, 100, 100, 0.03);
+  }
+
+  .company-chip.red-bright:hover {
+    color: rgba(255, 100, 100, 0.8);
+    border-color: rgba(255, 100, 100, 0.5);
+    background: rgba(255, 100, 100, 0.08);
+  }
+
+  .company-chip.green {
+    color: rgba(150, 255, 150, 0.5);
+    border-color: rgba(150, 255, 150, 0.2);
+    background: rgba(150, 255, 150, 0.03);
+  }
+
+  .company-chip.green:hover {
+    color: rgba(150, 255, 150, 0.8);
+    border-color: rgba(150, 255, 150, 0.5);
+    background: rgba(150, 255, 150, 0.08);
+  }
+
+  .arrow {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 0.75rem;
+  }
+
+  /* Experience Cards */
+  .experience-card {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+    position: relative;
+  }
+
+  /* Card content - clean minimal design */
+  .card-content {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0;
+    backdrop-filter: blur(10px);
+  }
+
+  .experience-card:hover .card-content {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Accent bar */
+  .accent-bar {
+    background: currentColor;
+  }
+
+  /* Subtle glow on hover */
+  .experience-card:hover .card-glow {
+    opacity: 1;
+  }
+
+  /* Company badge */
+  .company-badge {
+    background: rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .experience-card:hover .company-badge {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Timeline container */
+  #experience-timeline {
+    position: relative;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .experience-title {
+      font-size: clamp(2.5rem, 10vw, 10rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .experience-title {
+      font-size: clamp(2rem, 12vw, 8rem);
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .experience-title {
+      font-size: clamp(1.8rem, 14vw, 6rem);
+    }
+
+    .card-content {
+      padding: 1.25rem;
+    }
   }
 </style>
 
 <script>
-  // Comet effect - track mouse position on cards
-  document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.comet-card-inner');
+  document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll(".experience-card");
 
+    // Track mouse position within each card for subtle glow effect
     cards.forEach((card) => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = (card as HTMLElement).getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
+      const cardEl = card as HTMLElement;
+      const cardContent = cardEl.querySelector(".card-content") as HTMLElement;
+      const glow = cardEl.querySelector(".card-glow") as HTMLElement;
 
-        (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
-        (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
-      });
+      if (cardContent && glow) {
+        cardContent.addEventListener("mousemove", (e) => {
+          const rect = cardContent.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
 
-      card.addEventListener('mouseleave', () => {
-        (card as HTMLElement).style.setProperty('--mouse-x', '50%');
-        (card as HTMLElement).style.setProperty('--mouse-y', '50%');
-      });
+          glow.style.setProperty("--mouse-x", `${x}px`);
+          glow.style.setProperty("--mouse-y", `${y}px`);
+        });
+
+        cardContent.addEventListener("mouseleave", () => {
+          glow.style.setProperty("--mouse-x", "50%");
+          glow.style.setProperty("--mouse-y", "50%");
+        });
+      }
     });
   });
 </script>
