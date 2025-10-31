@@ -5,19 +5,24 @@ import Footer from "../layouts/Footer.astro";
 ---
 
 <Layout title="The Forge - ThreeJS Experiments" description="Interactive ThreeJS experiments and visualizations">
-  <Navbar>
-    <div class="min-h-screen bg-secondary">
-      <!-- Hero Section -->
-      <div class="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-          <div class="text-center mb-16 fade-in">
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-mono text-primary mb-6 tracking-tight">
-              The Forge
-            </h1>
-            <p class="text-xl text-primary/70 font-mono max-w-3xl mx-auto leading-relaxed">
-              Interactive ThreeJS experiments and visualizations
-            </p>
-          </div>
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER -->
+            <div class="header-section mb-12">
+              <h1 class="forge-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">F</span><span class="char char-2">O</span><span class="char char-3">R</span><span class="char char-4">G</span><span class="char char-5">E</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+              <p class="intro-subtitle text-lg sm:text-xl text-primary/70 font-mono mt-8 max-w-3xl leading-relaxed opacity-0" style="animation: fadeInUp 0.8s ease-out forwards; animation-delay: 0.8s;">
+                Interactive ThreeJS experiments and visualizations
+              </p>
+            </div>
 
           <!-- Experiment Windows -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -81,14 +86,109 @@ import Footer from "../layouts/Footer.astro";
               </div>
             </a>
           </div>
+          </div>
         </div>
-      </div>
+      </Navbar>
     </div>
-  </Navbar>
-  <Footer />
+    <Footer />
+  </div>
 </Layout>
 
 <style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD FORGE TITLE */
+  .forge-title {
+    font-size: clamp(4rem, 16vw, 14rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Character animations */
+  .forge-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Existing styles below */
   .slide-up {
     animation: slideUp 0.6s ease-out;
   }
@@ -184,5 +284,24 @@ import Footer from "../layouts/Footer.astro";
   @keyframes rotate {
     0% { transform: rotateX(0deg) rotateY(0deg); }
     100% { transform: rotateX(360deg) rotateY(360deg); }
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .forge-title {
+      font-size: clamp(3.5rem, 14vw, 12rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .forge-title {
+      font-size: clamp(3rem, 16vw, 10rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .forge-title {
+      font-size: clamp(2.5rem, 18vw, 8rem);
+    }
   }
 </style>

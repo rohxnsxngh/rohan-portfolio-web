@@ -1,0 +1,307 @@
+---
+// BlogRobotViewer.astro - Rebellious robot for blog page
+interface Props {
+  width?: string;
+  height?: string;
+  className?: string;
+}
+
+const {
+  width = "100%",
+  height = "100%",
+  className = "",
+} = Astro.props;
+---
+
+<div
+  class={`blog-robot-viewer-container ${className}`}
+  style={`--width: ${width}; --height: ${height};`}
+>
+  <div id="blog-robot-container" class="robot-display">
+    <div class="loading-container">
+      <progress id="blog-progress-bar" value="0" max="100"></progress>
+    </div>
+  </div>
+</div>
+
+<script>
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+  const container = document.querySelector(".blog-robot-viewer-container");
+  const modelContainer = document.getElementById("blog-robot-container");
+  const progressBar = document.getElementById("blog-progress-bar");
+  const loadingContainer = document.querySelector(".blog-robot-viewer-container .loading-container");
+
+  const getContainerSize = () => {
+    if (!container) throw new Error("Container not found");
+    const rect = container.getBoundingClientRect();
+    return {
+      width: rect.width,
+      height: rect.height,
+      aspectRatio: rect.width / rect.height,
+    };
+  };
+
+  let { width, height, aspectRatio } = getContainerSize();
+
+  let robot: THREE.Group;
+  let mixer: THREE.AnimationMixer;
+  let animationAction: THREE.AnimationAction | null = null;
+  let controls: OrbitControls;
+  let camera: THREE.PerspectiveCamera;
+  let renderer: THREE.WebGLRenderer;
+  let scene: THREE.Scene;
+  let clock = new THREE.Clock();
+  let animationPlayed = false;
+
+  function initScene() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color("#000000");
+
+    camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance",
+      precision: "highp",
+    });
+
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    if (modelContainer) {
+      const existingCanvas = modelContainer.querySelector("canvas");
+      if (existingCanvas) modelContainer.removeChild(existingCanvas);
+      modelContainer.appendChild(renderer.domElement);
+    }
+
+    camera.position.set(0, 0, 12);
+    camera.lookAt(0, 0, 0);
+
+    // OrbitControls for user interaction
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.target = new THREE.Vector3(0, 0, 0);
+    controls.enableRotate = true;
+    controls.minAzimuthAngle = -Infinity;
+    controls.maxAzimuthAngle = Infinity;
+    controls.minPolarAngle = Math.PI / 2 - 0.5;
+    controls.maxPolarAngle = Math.PI / 2 + 0.5;
+    controls.enablePan = false;
+    controls.minDistance = 8.0;
+    controls.maxDistance = 16.0;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Brighter lighting for visibility
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    mainLight.position.set(3, 5, 4);
+    mainLight.castShadow = true;
+    scene.add(mainLight);
+
+    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.5);
+    fillLight.position.set(-3, 2, 2);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    rimLight.position.set(0, 3, -5);
+    scene.add(rimLight);
+
+    // Colored accent lights for edge
+    const redAccent = new THREE.PointLight(0xff0000, 0.8, 15);
+    redAccent.position.set(-2, 1, 3);
+    scene.add(redAccent);
+
+    const orangeAccent = new THREE.PointLight(0xff6600, 0.7, 15);
+    orangeAccent.position.set(2, 0.5, -2);
+    scene.add(orangeAccent);
+  }
+
+  function handleResize() {
+    const { width: newWidth, height: newHeight, aspectRatio: newAspectRatio } = getContainerSize();
+    width = newWidth;
+    height = newHeight;
+    aspectRatio = newAspectRatio;
+    camera.aspect = aspectRatio;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.render(scene, camera);
+  }
+
+  function init() {
+    initScene();
+
+    const manager = new THREE.LoadingManager();
+    manager.onProgress = (_url, loaded, total) => {
+      if (progressBar instanceof HTMLProgressElement) {
+        progressBar.value = (loaded / total) * 100;
+      }
+    };
+
+    if (loadingContainer instanceof HTMLElement) {
+      loadingContainer.style.display = "none";
+    }
+
+    // Load the robotic_arm.glb model
+    const loader = new GLTFLoader(manager);
+    loader.load(
+      "/models/robotic_arm.glb",
+      (glb) => {
+        console.log("Robot model loaded successfully!", glb);
+        robot = glb.scene;
+
+        // Dark material like home page robot
+        const robotMaterial = new THREE.MeshPhongMaterial({
+          color: new THREE.Color("#1a1a1a"),
+          emissive: new THREE.Color("#050505"),
+          specular: new THREE.Color("#ffffff"),
+          shininess: 20,
+          flatShading: true,
+        });
+
+        robot.traverse((o) => {
+          if (o instanceof THREE.Mesh) {
+            o.material = robotMaterial;
+            o.castShadow = true;
+            o.receiveShadow = true;
+            console.log("Mesh found:", o.name);
+          }
+        });
+
+        // Calculate bounding box to center properly
+        const box = new THREE.Box3().setFromObject(robot);
+        const center = box.getCenter(new THREE.Vector3());
+
+        console.log("Robot center:", center);
+
+        // Position and scale - keep original scale
+        robot.position.set(-center.x, -center.y + 200, -center.z- 50);
+        robot.scale.set(0.25, 0.25, 0.25);
+
+        console.log("Robot loaded and centered");
+        scene.add(robot);
+
+        // Setup animation
+        if (glb.animations && glb.animations.length > 0) {
+          console.log("Animations found:", glb.animations.length);
+          mixer = new THREE.AnimationMixer(robot);
+          const clip = glb.animations[0];
+          console.log("Animation clip duration:", clip.duration);
+          animationAction = mixer.clipAction(clip);
+
+          // Play animation once to 60% duration
+          animationAction.setLoop(THREE.LoopOnce, 1);
+          animationAction.clampWhenFinished = true;
+          animationAction.play();
+
+          console.log("Animation started");
+
+          // Calculate 60% of animation duration
+          const duration = clip.duration;
+          const targetTime = duration * 1;
+          console.log("Will pause at:", targetTime, "seconds");
+
+          // We'll pause it in the animate loop when it reaches 60%
+          mixer.addEventListener('finished', () => {
+            console.log("Animation finished");
+          });
+        } else {
+          console.log("No animations found in model");
+        }
+      },
+      (xhr) => {
+        console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
+      },
+      (error) => {
+        console.error("Error loading robot model:", error);
+      }
+    );
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+
+      if (mixer && animationAction) {
+        mixer.update(delta);
+
+        // Check if we've reached 60% and pause
+        if (!animationPlayed && animationAction.time >= animationAction.getClip().duration * 1) {
+          animationAction.paused = true;
+          animationPlayed = true;
+          console.log("Animation paused at", animationAction.time);
+        }
+      }
+
+      if (controls) {
+        controls.update();
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener("resize", handleResize);
+    const resizeObserver = new ResizeObserver(() => handleResize());
+    if (container) resizeObserver.observe(container);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>
+
+<style>
+  .blog-robot-viewer-container {
+    display: flex;
+    height: var(--height, 100%);
+    width: var(--width, 100%);
+    position: relative;
+  }
+
+  #blog-robot-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  #blog-robot-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+
+  .robot-display {
+    overflow: hidden;
+    background: #000000;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+  }
+
+  .loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+  }
+
+  #blog-progress-bar {
+    width: 80%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+</style>

@@ -15,7 +15,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     </div>
 
     <!-- Dark overlay to dim robot heavily by default (almost invisible) -->
-    <div class="robot-overlay absolute inset-0 bg-black/95 pointer-events-none transition-all duration-500" id="robot-dim"></div>
+    <div class="robot-overlay absolute inset-0 bg-black/[0.98] pointer-events-none transition-all duration-500" id="robot-dim"></div>
   </div>
 
   <!-- Tech grid overlay for texture -->
@@ -55,7 +55,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       <div class="cta-section flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center pointer-events-auto">
         <a
           href="/project"
-          class="cta-primary group relative inline-flex items-center justify-center px-10 py-5 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+          class="cta-primary group relative inline-flex items-center justify-center px-7 py-3 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
         >
           <span class="relative z-10">VIEW MY WORK</span>
           <svg
@@ -94,13 +94,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
           </svg>
         </a>
       </div>
-    </div>
-  </div>
-
-  <!-- Scroll indicator -->
-  <div class="scroll-indicator-minimal absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block z-20">
-    <div class="w-6 h-10 border-2 border-primary/30 rounded-full flex items-start justify-center p-2">
-      <div class="w-1 h-2 bg-primary/50 rounded-full animate-scroll-dot"></div>
     </div>
   </div>
 </div>
@@ -426,7 +419,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
     /* Slightly more visible robot on mobile - but still dim */
     .robot-overlay {
-      background: rgba(0, 0, 0, 0.85) !important;
+      background: rgba(0, 0, 0, 0.96) !important;
     }
 
     /* Enable touch interaction on mobile */

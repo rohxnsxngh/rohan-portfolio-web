@@ -2,6 +2,7 @@
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import BlogRobotViewer from "../components/BlogRobotViewer.astro";
 
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
@@ -10,10 +11,54 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 ---
 
 <Layout>
-  <Navbar>
-    <div class="sm:px-20 px-6 py-8">
-      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">Technical Chronicles</h1>
-      
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER -->
+            <div class="header-section mb-12">
+              <h1 class="blog-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">T</span><span class="char char-2">E</span><span class="char char-3">C</span><span class="char char-4">H</span><span class="char char-5">N</span><span class="char char-6">I</span><span class="char char-7">C</span><span class="char char-8">A</span><span class="char char-9">L</span>
+                <br>
+                <span class="char char-10">C</span><span class="char char-11">H</span><span class="char char-12">R</span><span class="char char-13">O</span><span class="char char-14">N</span><span class="char char-15">I</span><span class="char char-16">C</span><span class="char char-17">L</span><span class="char char-18">E</span><span class="char char-19">S</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
+
+            <!-- Rebellious Robot Section - Fullscreen Background -->
+            <div class="robot-hero-section relative min-h-screen flex flex-col items-center justify-center my-16">
+              <!-- Fullscreen Robot Background -->
+              <div class="robot-background-fullscreen fixed inset-0 z-0">
+                <BlogRobotViewer height="100vh" className="robot-showcase" />
+                <!-- Dark overlay to dim robot -->
+                <div class="robot-dim-overlay absolute inset-0 bg-black/80 pointer-events-none transition-all duration-500"></div>
+              </div>
+
+              <!-- Content overlay -->
+              <div class="relative z-10 flex flex-col items-center justify-center min-h-screen w-full px-4">
+                <!-- Top text - large and bold -->
+                <div class="top-statement mb-12 text-center">
+                  <h2 class="statement-large font-mono font-bold tracking-tight leading-tight text-primary">
+                    Here are some of my<br>unfiltered opinions
+                  </h2>
+                </div>
+
+                <!-- Spacer for visual balance -->
+                <div class="flex-grow max-h-32"></div>
+
+                <!-- Bottom text - small and dismissive -->
+                <div class="bottom-statement mt-12 text-center">
+                  <p class="statement-small font-mono text-primary/40 italic tracking-wide">
+                    not that anyone cares
+                  </p>
+                </div>
+              </div>
+            </div>
+
       <!-- Search Bar -->
       <div class="mb-8 relative">
         <div class="relative">
@@ -72,12 +117,182 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
           );
         })}
       </div>
+          </div>
+        </div>
+      </Navbar>
     </div>
-  </Navbar>
-  <Footer />
+    <Footer />
+  </div>
 </Layout>
 
 <style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD BLOG TITLE */
+  .blog-title {
+    font-size: clamp(2.5rem, 10vw, 10rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Character animations */
+  .blog-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+  .char-6 { animation-delay: 0.30s; }
+  .char-7 { animation-delay: 0.35s; }
+  .char-8 { animation-delay: 0.40s; }
+  .char-9 { animation-delay: 0.45s; }
+  .char-10 { animation-delay: 0.50s; }
+  .char-11 { animation-delay: 0.55s; }
+  .char-12 { animation-delay: 0.60s; }
+  .char-13 { animation-delay: 0.65s; }
+  .char-14 { animation-delay: 0.70s; }
+  .char-15 { animation-delay: 0.75s; }
+  .char-16 { animation-delay: 0.80s; }
+  .char-17 { animation-delay: 0.85s; }
+  .char-18 { animation-delay: 0.90s; }
+  .char-19 { animation-delay: 0.95s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 1s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  /* Rebellious Robot Section - Fullscreen */
+  .robot-hero-section {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 1.2s;
+  }
+
+  .robot-background-fullscreen {
+    opacity: 0;
+    animation: robotFullscreenEntrance 1.5s ease-out forwards;
+    animation-delay: 1.3s;
+  }
+
+  @keyframes robotFullscreenEntrance {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .robot-dim-overlay {
+    opacity: 0.8;
+  }
+
+  .statement-large {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.1;
+    opacity: 0;
+    animation: fadeInScale 1.2s ease-out forwards;
+    animation-delay: 1.6s;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .statement-small {
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 2s;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
   .line-clamp-3 {
     display: -webkit-box;
@@ -93,6 +308,39 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
   
   .blog-card:hover {
     transform: translateY(-4px);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .blog-title {
+      font-size: clamp(2rem, 9vw, 8rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .blog-title {
+      font-size: clamp(1.8rem, 10vw, 7rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .blog-title {
+      font-size: clamp(1.5rem, 12vw, 5rem);
+    }
+
+    .statement-large {
+      font-size: clamp(1.8rem, 7vw, 3rem);
+    }
+
+    .statement-small {
+      font-size: clamp(0.65rem, 2vw, 0.85rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .statement-large {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+    }
   }
 </style>
 

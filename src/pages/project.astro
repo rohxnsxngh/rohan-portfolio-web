@@ -47,13 +47,21 @@ console.log("Projects after sorting:", sortedProjects.length);
 ---
 
 <Layout>
-  <Navbar>
-    <div class="sm:px-20 px-6 py-8">
-      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">
-        Projects & Experiments
-      </h1>
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
-      <div class="divider"></div>
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER -->
+            <div class="header-section mb-12">
+              <h1 class="projects-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">P</span><span class="char char-2">R</span><span class="char char-3">O</span><span class="char char-4">J</span><span class="char char-5">E</span><span class="char char-6">C</span><span class="char char-7">T</span><span class="char char-8">S</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
 
       <!-- Robot and intro section, side-by-side on larger screens, stacked on mobile -->
       <div class="flex flex-col md:flex-row gap-6 mb-12">
@@ -306,9 +314,12 @@ console.log("Projects after sorting:", sortedProjects.length);
           )
         }
       </div>
+          </div>
+        </div>
+      </Navbar>
     </div>
-  </Navbar>
-  <Footer />
+    <Footer />
+  </div>
 </Layout>
 
 <!-- Backdrop overlay for blur effect -->
@@ -319,6 +330,91 @@ console.log("Projects after sorting:", sortedProjects.length);
 </div>
 
 <style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD PROJECTS TITLE */
+  .projects-title {
+    font-size: clamp(3rem, 12vw, 12rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Character animations */
+  .projects-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+  .char-6 { animation-delay: 0.30s; }
+  .char-7 { animation-delay: 0.35s; }
+  .char-8 { animation-delay: 0.40s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.6s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
   /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
   .line-clamp-3 {
     display: -webkit-box;
@@ -371,6 +467,25 @@ console.log("Projects after sorting:", sortedProjects.length);
   .robot-showcase.expanded .robot-info {
     transform: translateY(0);
     opacity: 1;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .projects-title {
+      font-size: clamp(2.5rem, 10vw, 10rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .projects-title {
+      font-size: clamp(2rem, 12vw, 8rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .projects-title {
+      font-size: clamp(1.8rem, 14vw, 6rem);
+    }
   }
 </style>
 
