@@ -19,8 +19,8 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
           <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
           <div class="relative z-10 sm:px-20 px-6 py-12">
-            <!-- BOLD HEADER -->
-            <div class="header-section mb-12">
+            <!-- BOLD HEADER - Hidden Initially -->
+            <div class="header-section mb-12 opacity-0" id="blog-header">
               <h1 class="blog-title font-mono font-black tracking-tighter leading-none select-none">
                 <span class="char char-1">T</span><span class="char char-2">E</span><span class="char char-3">C</span><span class="char char-4">H</span><span class="char char-5">N</span><span class="char char-6">I</span><span class="char char-7">C</span><span class="char char-8">A</span><span class="char char-9">L</span>
                 <br>
@@ -30,16 +30,16 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
             </div>
 
             <!-- Rebellious Robot Section - Fullscreen Background -->
-            <div class="robot-hero-section relative min-h-screen flex flex-col items-center justify-center my-16">
+            <div class="robot-hero-section relative min-h-screen flex flex-col items-center justify-center my-16" id="robot-intro-section">
               <!-- Fullscreen Robot Background -->
-              <div class="robot-background-fullscreen fixed inset-0 z-0">
+              <div class="robot-background-fullscreen fixed inset-0 z-0" id="robot-background">
                 <BlogRobotViewer height="100vh" className="robot-showcase" />
                 <!-- Dark overlay to dim robot -->
-                <div class="robot-dim-overlay absolute inset-0 bg-black/80 pointer-events-none transition-all duration-500"></div>
+                <div class="robot-dim-overlay absolute inset-0 bg-black/80 pointer-events-none transition-all duration-1000" id="robot-overlay"></div>
               </div>
 
               <!-- Content overlay -->
-              <div class="relative z-10 flex flex-col items-center justify-center min-h-screen w-full px-4">
+              <div class="relative z-10 flex flex-col items-center justify-center min-h-screen w-full px-4" id="robot-cta-text">
                 <!-- Top text - large and bold -->
                 <div class="top-statement mb-12 text-center">
                   <h2 class="statement-large font-mono font-bold tracking-tight leading-tight text-primary">
@@ -59,6 +59,8 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
               </div>
             </div>
 
+      <!-- Blog Content - Hidden Initially -->
+      <div id="blog-content" class="opacity-0 pointer-events-none transition-opacity duration-1000">
       <!-- Search Bar -->
       <div class="mb-8 relative">
         <div class="relative">
@@ -117,6 +119,7 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
           );
         })}
       </div>
+      </div> <!-- End blog-content -->
           </div>
         </div>
       </Navbar>
@@ -147,11 +150,14 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     letter-spacing: -0.08em;
     color: #ffffff;
     text-transform: uppercase;
-    opacity: 0;
-    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
       0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Animate title when shown */
+  #blog-header {
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @keyframes titleReveal {
@@ -165,33 +171,10 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     }
   }
 
-  /* Character animations */
+  /* Character animations - don't animate initially */
   .blog-title .char {
     display: inline-block;
-    opacity: 0;
-    transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
-  .char-4 { animation-delay: 0.20s; }
-  .char-5 { animation-delay: 0.25s; }
-  .char-6 { animation-delay: 0.30s; }
-  .char-7 { animation-delay: 0.35s; }
-  .char-8 { animation-delay: 0.40s; }
-  .char-9 { animation-delay: 0.45s; }
-  .char-10 { animation-delay: 0.50s; }
-  .char-11 { animation-delay: 0.55s; }
-  .char-12 { animation-delay: 0.60s; }
-  .char-13 { animation-delay: 0.65s; }
-  .char-14 { animation-delay: 0.70s; }
-  .char-15 { animation-delay: 0.75s; }
-  .char-16 { animation-delay: 0.80s; }
-  .char-17 { animation-delay: 0.85s; }
-  .char-18 { animation-delay: 0.90s; }
-  .char-19 { animation-delay: 0.95s; }
 
   @keyframes charReveal {
     0% {
@@ -222,59 +205,32 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     }
   }
 
-  /* Rebellious Robot Section - Fullscreen */
+  /* Rebellious Robot Section - Fullscreen - Show Immediately */
   .robot-hero-section {
-    opacity: 0;
-    animation: fadeIn 1s ease-out forwards;
-    animation-delay: 1.2s;
+    opacity: 1;
   }
 
   .robot-background-fullscreen {
-    opacity: 0;
-    animation: robotFullscreenEntrance 1.5s ease-out forwards;
-    animation-delay: 1.3s;
-  }
-
-  @keyframes robotFullscreenEntrance {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    opacity: 1;
   }
 
   .robot-dim-overlay {
     opacity: 0.8;
+    transition: background 1s ease-out;
   }
 
   .statement-large {
     font-size: clamp(2.5rem, 6vw, 5rem);
     line-height: 1.1;
-    opacity: 0;
-    animation: fadeInScale 1.2s ease-out forwards;
-    animation-delay: 1.6s;
+    opacity: 1;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
       0 6px 45px rgba(0, 0, 0, 0.7);
   }
 
-  @keyframes fadeInScale {
-    from {
-      opacity: 0;
-      transform: scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
   .statement-small {
     font-size: clamp(0.75rem, 1.5vw, 1rem);
-    opacity: 0;
-    animation: fadeIn 0.8s ease-out forwards;
-    animation-delay: 2s;
+    opacity: 1;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
   }
 
@@ -345,6 +301,46 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 </style>
 
 <script>
+// Intro animation and transition
+document.addEventListener('DOMContentLoaded', () => {
+  // After 5 seconds, fade intro and show blog content
+  setTimeout(() => {
+    const robotCtaText = document.getElementById('robot-cta-text');
+    const robotOverlay = document.getElementById('robot-overlay');
+    const robotBackground = document.getElementById('robot-background');
+    const robotIntroSection = document.getElementById('robot-intro-section');
+    const blogHeader = document.getElementById('blog-header');
+    const blogContent = document.getElementById('blog-content');
+
+    if (robotCtaText && robotOverlay && blogHeader && blogContent && robotBackground && robotIntroSection) {
+      // Fade out CTA text
+      robotCtaText.style.opacity = '0';
+      robotCtaText.style.transition = 'opacity 1s ease-out';
+
+      // Dim robot to very faint (almost black)
+      robotOverlay.style.background = 'rgba(0, 0, 0, 0.95)';
+
+      // After text fades, hide the intro section and show content
+      setTimeout(() => {
+        // Hide intro section
+        robotIntroSection.style.display = 'none';
+
+        // Show blog header with animation
+        blogHeader.style.opacity = '1';
+        blogHeader.style.transition = 'opacity 1.2s ease-out';
+
+        // Show blog content
+        blogContent.classList.remove('opacity-0', 'pointer-events-none');
+        blogContent.classList.add('opacity-100');
+
+        // Keep robot in background but very dim
+        robotBackground.style.position = 'fixed';
+        robotBackground.style.opacity = '0.3';
+      }, 1000);
+    }
+  }, 5000);
+});
+
 // Client-side search functionality
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput') as HTMLInputElement;
