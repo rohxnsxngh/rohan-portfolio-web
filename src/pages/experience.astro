@@ -54,7 +54,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
             <!-- 3D ILLUMINATED TIMELINE -->
             <div id="experience-timeline" class="relative min-h-screen">
               <!-- Cards Container -->
-              <div class="cards-container relative z-10 max-w-4xl mx-auto space-y-8 pb-20">
+              <div class="cards-container relative z-10 w-full space-y-8 pb-20">
                 {sortedExperiences.map((experience, index) => {
                   const companyFirstLetter = experience.data.company.toLowerCase().charAt(0);
                   const borderClass =

@@ -235,7 +235,7 @@ console.log("Projects after sorting:", sortedProjects.length);
                     <!-- Glow overlay that follows mouse -->
                     <div class="glow-overlay"></div>
 
-                    <div class="card-content h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10 overflow-hidden">
+                    <div class="card-content h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10">
                       {/* Add the ProjectImage component here */}
                       <ProjectImage image={image} title={title} tags={tags} />
 
@@ -451,6 +451,7 @@ console.log("Projects after sorting:", sortedProjects.length);
   .project-card {
     transition: transform 0.3s ease-out;
     overflow: hidden;
+    border-radius: 0.75rem;
   }
 
   .project-card:hover {
@@ -592,6 +593,7 @@ console.log("Projects after sorting:", sortedProjects.length);
   /* Enhanced card content hover with cyan/magenta glow */
   .card-content {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
   }
 
   .project-card:hover .card-content {
