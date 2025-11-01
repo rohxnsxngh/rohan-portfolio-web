@@ -53,6 +53,27 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 
               <!-- Robot Viewer (single instance) -->
               <BlogRobotViewer className="robot-viewer" />
+
+              <!-- Expand button (shown after transition) -->
+              <button
+                class="expand-keyboard-button absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-20 hover:bg-primary/30 transition-colors opacity-0 pointer-events-none"
+                aria-label="Expand keyboard view"
+                id="expand-keyboard-btn"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
+                </svg>
+              </button>
             </div>
 
       <!-- Blog Content - Hidden Initially -->
@@ -123,6 +144,13 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     <Footer />
   </div>
 </Layout>
+
+<!-- Backdrop overlay for expanded view -->
+<div
+  id="keyboard-backdrop-overlay"
+  class="fixed inset-0 bg-black/50 backdrop-blur-md z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+>
+</div>
 
 <style>
   /* Tech grid background */
@@ -259,6 +287,34 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     display: none;
   }
 
+  /* Expanded state */
+  .robot-viewer-wrapper.expanded {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    height: 90vh !important;
+    max-width: 1200px !important;
+    max-height: 800px !important;
+    z-index: 50 !important;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(var(--color-primary, 255, 255, 255), 0.4);
+  }
+
+  /* Show expand button after transition to contained state */
+  .robot-viewer-wrapper.contained .expand-keyboard-button {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Backdrop visible class */
+  .backdrop-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
   .statement-large {
     font-size: clamp(2.5rem, 6vw, 5rem);
     line-height: 1.1;
@@ -383,6 +439,56 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, 1000);
   });
+
+  // Handle expand/collapse functionality
+  const expandButton = document.getElementById('expand-keyboard-btn');
+  const backdropOverlay = document.getElementById('keyboard-backdrop-overlay');
+
+  if (expandButton && robotViewerWrapper && backdropOverlay) {
+    expandButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      toggleExpandedView();
+    });
+
+    backdropOverlay.addEventListener('click', () => {
+      if (robotViewerWrapper.classList.contains('expanded')) {
+        toggleExpandedView(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && robotViewerWrapper.classList.contains('expanded')) {
+        toggleExpandedView(false);
+      }
+    });
+
+    function toggleExpandedView(expand: boolean | null = null) {
+      const shouldExpand = expand !== null ? expand : !robotViewerWrapper.classList.contains('expanded');
+
+      if (shouldExpand) {
+        robotViewerWrapper.classList.add('expanded');
+        backdropOverlay.classList.add('backdrop-visible');
+        document.body.style.overflow = 'hidden';
+        expandButton.setAttribute('aria-label', 'Collapse keyboard view');
+
+        const svg = expandButton.querySelector('svg');
+        if (svg) {
+          svg.style.transform = 'rotate(180deg)';
+        }
+      } else {
+        robotViewerWrapper.classList.remove('expanded');
+        backdropOverlay.classList.remove('backdrop-visible');
+        document.body.style.overflow = '';
+        expandButton.setAttribute('aria-label', 'Expand keyboard view');
+
+        const svg = expandButton.querySelector('svg');
+        if (svg) {
+          svg.style.transform = '';
+        }
+      }
+    }
+  }
 });
 
 // Client-side search functionality

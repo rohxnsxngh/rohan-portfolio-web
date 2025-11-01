@@ -111,6 +111,15 @@ const {
   let clock = new THREE.Clock();
   let animatedLights: any;
 
+  // Mouse lighting system with visible sphere
+  let mousePointLight: THREE.PointLight | null = null;
+  let lightSphere: THREE.Mesh | null = null;
+  let hemisphereLight: THREE.HemisphereLight | null = null;
+  let raycaster: THREE.Raycaster | null = null;
+  let mouseVector: THREE.Vector2 | null = null;
+  let lightPosition: THREE.Vector3 = new THREE.Vector3();
+  let isMouseOver = false;
+
   // Initialize scene
   function initScene() {
     // Convert hex color to THREE.js color
@@ -220,6 +229,29 @@ const {
     spotlight.distance = 20;
     spotlight.castShadow = true;
     scene.add(spotlight);
+
+    // Mouse-based lighting system with visible sphere
+    mousePointLight = new THREE.PointLight(0xff6600, 0, 30, 1.0);
+    mousePointLight.position.set(0, 5, 5);
+    scene.add(mousePointLight);
+
+    // Create visible glowing sphere for the light
+    const sphereGeometry = new THREE.SphereGeometry(3, 16, 16);
+    const sphereMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff6600,
+      transparent: true,
+      opacity: 0,
+    });
+    lightSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    lightSphere.position.copy(mousePointLight.position);
+    scene.add(lightSphere);
+
+    hemisphereLight = new THREE.HemisphereLight(0xffaa44, 0x442200, 0);
+    scene.add(hemisphereLight);
+
+    // Initialize raycaster for mouse-to-3D mapping
+    raycaster = new THREE.Raycaster();
+    mouseVector = new THREE.Vector2();
 
     // Store lights for animation
     animatedLights = {
@@ -397,6 +429,117 @@ const {
     if (container) {
       resizeObserver.observe(container);
     }
+
+    // Mouse event handlers for lighting system
+    if (modelContainer && mouseVector && raycaster) {
+      modelContainer.addEventListener('mouseenter', () => {
+        isMouseOver = true;
+        if (mousePointLight && hemisphereLight && lightSphere) {
+          mousePointLight.intensity = 0;
+          hemisphereLight.intensity = 0;
+          (lightSphere.material as THREE.MeshBasicMaterial).opacity = 0;
+        }
+      });
+
+      modelContainer.addEventListener('mouseleave', () => {
+        isMouseOver = false;
+        fadeOutLights();
+      });
+
+      modelContainer.addEventListener('mousemove', (event) => {
+        if (!isMouseOver || !mouseVector || !raycaster || !camera || !_robot || !mousePointLight || !hemisphereLight || !lightSphere) return;
+
+        const rect = modelContainer.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        mouseVector.x = x;
+        mouseVector.y = y;
+
+        raycaster.setFromCamera(mouseVector, camera);
+        const intersects = raycaster.intersectObject(_robot, true);
+
+        let distance = 50;
+        let intensityMultiplier = 1.0;
+        const robotCenter = new THREE.Vector3(0, 5, -75);
+
+        if (intersects.length > 0) {
+          const intersectPoint = intersects[0].point;
+          const distanceToIntersect = camera.position.distanceTo(intersectPoint);
+          distance = distanceToIntersect * 0.4;
+
+          const distanceFromCenter = intersectPoint.distanceTo(robotCenter);
+          if (distanceFromCenter < 10) {
+            intensityMultiplier = 2.0;
+          } else if (distanceFromCenter < 20) {
+            intensityMultiplier = 1.0 + (1.0 - (distanceFromCenter - 10) / 10);
+          }
+        }
+
+        const targetPosition = new THREE.Vector3();
+        targetPosition.copy(raycaster.ray.direction);
+        targetPosition.multiplyScalar(distance);
+        targetPosition.add(raycaster.ray.origin);
+
+        lightPosition.lerp(targetPosition, 0.25);
+        mousePointLight.position.copy(lightPosition);
+        lightSphere.position.copy(lightPosition);
+
+        // Increase light and sphere visibility
+        const baseIntensity = 15.0;
+        const targetIntensity = baseIntensity * intensityMultiplier;
+
+        if (mousePointLight.intensity < targetIntensity) {
+          mousePointLight.intensity += 0.7;
+        }
+
+        if (hemisphereLight.intensity < 0.6) {
+          hemisphereLight.intensity += 0.04;
+        }
+
+        // Make sphere visible and glowing
+        const sphereMaterial = lightSphere.material as THREE.MeshBasicMaterial;
+        const targetOpacity = 0.8;
+        if (sphereMaterial.opacity < targetOpacity) {
+          sphereMaterial.opacity += 0.05;
+        }
+      });
+    }
+
+    // Fade out lights when mouse is inactive
+    let mouseTimeout: number | null = null;
+    if (modelContainer) {
+      modelContainer.addEventListener('mousemove', () => {
+        if (mouseTimeout) clearTimeout(mouseTimeout);
+        mouseTimeout = window.setTimeout(() => {
+          if (isMouseOver) {
+            fadeOutLights();
+          }
+        }, 2000);
+      });
+    }
+  }
+
+  function fadeOutLights() {
+    if (!mousePointLight || !hemisphereLight || !lightSphere) return;
+
+    const fadeOut = () => {
+      if (mousePointLight && hemisphereLight && lightSphere) {
+        const sphereMaterial = lightSphere.material as THREE.MeshBasicMaterial;
+
+        if (mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01 || sphereMaterial.opacity > 0.01) {
+          mousePointLight.intensity *= 0.9;
+          hemisphereLight.intensity *= 0.9;
+          sphereMaterial.opacity *= 0.9;
+          requestAnimationFrame(fadeOut);
+        } else {
+          mousePointLight.intensity = 0;
+          hemisphereLight.intensity = 0;
+          sphereMaterial.opacity = 0;
+        }
+      }
+    };
+    fadeOut();
   }
 
   // Initialize when DOM is loaded
