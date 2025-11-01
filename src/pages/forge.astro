@@ -27,7 +27,22 @@ import Footer from "../layouts/Footer.astro";
           <!-- Experiment Windows -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <!-- Experiment 1 -->
-            <a href="/forge/experiment-1" class="group">
+            <a href="/forge/experiment-1" class="group experiment-card">
+              <!-- Corner accent marks -->
+              <div class="card-corner-accent card-corner-tl"></div>
+              <div class="card-corner-accent card-corner-tr"></div>
+              <div class="card-corner-accent card-corner-bl"></div>
+              <div class="card-corner-accent card-corner-br"></div>
+
+              <!-- Animated gradient border -->
+              <div class="card-gradient-border"></div>
+
+              <!-- Grid overlay -->
+              <div class="card-grid-overlay"></div>
+
+              <!-- Glow overlay that follows mouse -->
+              <div class="glow-overlay"></div>
+
               <div class="experiment-window slide-up">
                 <div class="experiment-preview">
                   <div class="cube-container">
@@ -47,7 +62,22 @@ import Footer from "../layouts/Footer.astro";
             </a>
 
             <!-- Experiment 2 -->
-            <a href="/forge/experiment-2" class="group">
+            <a href="/forge/experiment-2" class="group experiment-card">
+              <!-- Corner accent marks -->
+              <div class="card-corner-accent card-corner-tl"></div>
+              <div class="card-corner-accent card-corner-tr"></div>
+              <div class="card-corner-accent card-corner-bl"></div>
+              <div class="card-corner-accent card-corner-br"></div>
+
+              <!-- Animated gradient border -->
+              <div class="card-gradient-border"></div>
+
+              <!-- Grid overlay -->
+              <div class="card-grid-overlay"></div>
+
+              <!-- Glow overlay that follows mouse -->
+              <div class="glow-overlay"></div>
+
               <div class="experiment-window slide-up">
                 <div class="experiment-preview">
                   <div class="cube-container">
@@ -67,7 +97,22 @@ import Footer from "../layouts/Footer.astro";
             </a>
 
             <!-- Experiment 3 -->
-            <a href="/forge/experiment-3" class="group">
+            <a href="/forge/experiment-3" class="group experiment-card">
+              <!-- Corner accent marks -->
+              <div class="card-corner-accent card-corner-tl"></div>
+              <div class="card-corner-accent card-corner-tr"></div>
+              <div class="card-corner-accent card-corner-bl"></div>
+              <div class="card-corner-accent card-corner-br"></div>
+
+              <!-- Animated gradient border -->
+              <div class="card-gradient-border"></div>
+
+              <!-- Grid overlay -->
+              <div class="card-grid-overlay"></div>
+
+              <!-- Glow overlay that follows mouse -->
+              <div class="glow-overlay"></div>
+
               <div class="experiment-window slide-up">
                 <div class="experiment-preview">
                   <div class="cube-container">
@@ -221,13 +266,174 @@ import Footer from "../layouts/Footer.astro";
   }
 
   /* Experiment Window Styles */
+  .experiment-card {
+    @apply relative;
+    overflow: hidden;
+  }
+
   .experiment-window {
     @apply relative bg-secondary border border-primary/20 rounded-lg overflow-hidden transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10;
     height: 300px;
+    z-index: 10;
   }
 
-  .experiment-window:hover {
+  .experiment-card:hover {
     transform: translateY(-4px);
+  }
+
+  /* Corner accent marks */
+  .card-corner-accent {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    opacity: 1;
+  }
+
+  .card-corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 12px 0 0 0;
+  }
+
+  .card-corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 12px 0 0;
+  }
+
+  .card-corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 12px;
+  }
+
+  .card-corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 12px 0;
+  }
+
+  .experiment-card:hover .card-corner-accent {
+    width: 30px;
+    height: 30px;
+    border-color: rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  }
+
+  /* Animated gradient border */
+  .card-gradient-border {
+    position: absolute;
+    inset: -2px;
+    border-radius: 0.75rem;
+    padding: 2px;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 255, 255, 0.3),
+      transparent,
+      rgba(255, 0, 255, 0.3),
+      transparent
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderGlow 4s linear infinite;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes borderGlow {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .experiment-card:hover .card-gradient-border {
+    opacity: 1;
+    animation-duration: 2s;
+  }
+
+  /* Grid overlay */
+  .card-grid-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 11;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .experiment-card:hover .card-grid-overlay {
+    opacity: 1;
+  }
+
+  /* Mouse-following glow effect */
+  .glow-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 102, 0, 0.15),
+      rgba(255, 170, 68, 0.1),
+      rgba(255, 68, 68, 0.05),
+      transparent 40%
+    );
+  }
+
+  .experiment-card:hover .glow-overlay {
+    opacity: 1;
+  }
+
+  /* Enhanced experiment window hover with cyan/magenta glow */
+  .experiment-card:hover .experiment-window {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(0, 255, 255, 0.1),
+      0 0 80px rgba(255, 0, 255, 0.1);
+  }
+
+  /* Responsive corner accents for smaller screens */
+  @media (max-width: 640px) {
+    .card-corner-accent {
+      width: 15px;
+      height: 15px;
+    }
+
+    .experiment-card:hover .card-corner-accent {
+      width: 20px;
+      height: 20px;
+    }
   }
 
   .experiment-preview {
@@ -305,3 +511,28 @@ import Footer from "../layouts/Footer.astro";
     }
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const experimentCards = document.querySelectorAll<HTMLElement>('.experiment-card');
+
+    experimentCards.forEach((card) => {
+      const glowOverlay = card.querySelector<HTMLElement>('.glow-overlay');
+      if (!glowOverlay) return;
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        glowOverlay.style.setProperty('--mouse-x', `${x}%`);
+        glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        glowOverlay.style.setProperty('--mouse-x', '50%');
+        glowOverlay.style.setProperty('--mouse-y', '50%');
+      });
+    });
+  });
+</script>
