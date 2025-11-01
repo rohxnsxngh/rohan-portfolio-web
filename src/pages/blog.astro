@@ -29,17 +29,10 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
               <div class="accent-line mt-6"></div>
             </div>
 
-            <!-- Rebellious Robot Section - Fullscreen Background -->
-            <div class="robot-hero-section relative min-h-screen flex flex-col items-center justify-center my-16" id="robot-intro-section">
-              <!-- Fullscreen Robot Background -->
-              <div class="robot-background-fullscreen fixed inset-0 z-0" id="robot-background">
-                <BlogRobotViewer height="100vh" className="robot-showcase" />
-                <!-- Dark overlay to dim robot -->
-                <div class="robot-dim-overlay absolute inset-0 bg-black/80 pointer-events-none transition-all duration-1000" id="robot-overlay"></div>
-              </div>
-
-              <!-- Content overlay -->
-              <div class="relative z-10 flex flex-col items-center justify-center min-h-screen w-full px-4" id="robot-cta-text">
+            <!-- Robot Viewer Container - Transitions from fullscreen to contained -->
+            <div class="robot-viewer-wrapper" id="robot-viewer-wrapper">
+              <!-- Content overlay (shown during intro) -->
+              <div class="robot-text-overlay" id="robot-cta-text">
                 <!-- Top text - large and bold -->
                 <div class="top-statement mb-12 text-center">
                   <h2 class="statement-large font-mono font-bold tracking-tight leading-tight text-primary">
@@ -57,6 +50,9 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
                   </p>
                 </div>
               </div>
+
+              <!-- Robot Viewer (single instance) -->
+              <BlogRobotViewer className="robot-viewer" />
             </div>
 
       <!-- Blog Content - Hidden Initially -->
@@ -205,18 +201,62 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     }
   }
 
-  /* Rebellious Robot Section - Fullscreen - Show Immediately */
-  .robot-hero-section {
-    opacity: 1;
+  /* Robot Viewer Wrapper - Transitions from fullscreen to contained */
+  .robot-viewer-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .robot-background-fullscreen {
-    opacity: 1;
+  /* Contained state (after animation) */
+  .robot-viewer-wrapper.contained {
+    position: relative;
+    width: 100%;
+    height: 24rem; /* h-96 */
+    margin-bottom: 3rem;
+    z-index: 10;
   }
 
-  .robot-dim-overlay {
-    opacity: 0.8;
-    transition: background 1s ease-out;
+  @media (min-width: 768px) {
+    .robot-viewer-wrapper.contained {
+      height: 20rem; /* md:h-80 */
+    }
+  }
+
+  @media (min-width: 640px) {
+    .robot-viewer-wrapper.contained {
+      height: 18rem; /* sm:h-72 */
+    }
+  }
+
+  /* Text overlay during intro */
+  .robot-text-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+    pointer-events: none;
+  }
+
+  .robot-text-overlay.hidden {
+    opacity: 0;
+  }
+
+  .robot-viewer-wrapper.contained .robot-text-overlay {
+    display: none;
   }
 
   .statement-large {
@@ -303,42 +343,46 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 <script>
 // Intro animation and transition
 document.addEventListener('DOMContentLoaded', () => {
-  // After 5 seconds, fade intro and show blog content
-  setTimeout(() => {
-    const robotCtaText = document.getElementById('robot-cta-text');
-    const robotOverlay = document.getElementById('robot-overlay');
-    const robotBackground = document.getElementById('robot-background');
-    const robotIntroSection = document.getElementById('robot-intro-section');
-    const blogHeader = document.getElementById('blog-header');
-    const blogContent = document.getElementById('blog-content');
+  // Listen for robot animation complete event
+  document.addEventListener('blogRobotAnimationComplete', () => {
+    console.log('Blog robot animation complete - starting transition');
 
-    if (robotCtaText && robotOverlay && blogHeader && blogContent && robotBackground && robotIntroSection) {
-      // Fade out CTA text
-      robotCtaText.style.opacity = '0';
-      robotCtaText.style.transition = 'opacity 1s ease-out';
+    // Wait 1 second after animation completes to let user appreciate it
+    setTimeout(() => {
+      const robotViewerWrapper = document.getElementById('robot-viewer-wrapper');
+      const robotCtaText = document.getElementById('robot-cta-text');
+      const blogHeader = document.getElementById('blog-header');
+      const blogContent = document.getElementById('blog-content');
 
-      // Dim robot to very faint (almost black)
-      robotOverlay.style.background = 'rgba(0, 0, 0, 0.95)';
+      if (robotViewerWrapper && robotCtaText && blogHeader && blogContent) {
+        // Fade out CTA text
+        robotCtaText.classList.add('hidden');
 
-      // After text fades, hide the intro section and show content
-      setTimeout(() => {
-        // Hide intro section
-        robotIntroSection.style.display = 'none';
+        // After text fades, transition wrapper to contained state
+        setTimeout(() => {
+          // Transition robot wrapper from fullscreen to contained
+          robotViewerWrapper.classList.add('contained');
 
-        // Show blog header with animation
-        blogHeader.style.opacity = '1';
-        blogHeader.style.transition = 'opacity 1.2s ease-out';
+          // Show blog header with animation
+          blogHeader.style.opacity = '1';
 
-        // Show blog content
-        blogContent.classList.remove('opacity-0', 'pointer-events-none');
-        blogContent.classList.add('opacity-100');
+          // Add interactive class to robot viewer to show decorative elements
+          const robotViewer = document.querySelector('.robot-viewer');
+          if (robotViewer) {
+            setTimeout(() => {
+              robotViewer.classList.add('interactive');
+            }, 800);
+          }
 
-        // Keep robot in background but very dim
-        robotBackground.style.position = 'fixed';
-        robotBackground.style.opacity = '0.3';
-      }, 1000);
-    }
-  }, 5000);
+          // Show blog content
+          setTimeout(() => {
+            blogContent.classList.remove('opacity-0', 'pointer-events-none');
+            blogContent.classList.add('opacity-100');
+          }, 1000);
+        }, 1000);
+      }
+    }, 1000);
+  });
 });
 
 // Client-side search functionality
