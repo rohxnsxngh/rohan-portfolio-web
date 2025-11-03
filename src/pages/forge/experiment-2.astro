@@ -18,8 +18,8 @@ import Footer from "../../layouts/Footer.astro";
                 </svg>
                 Back to Forge
               </a>
-              <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Advanced Shaders</h1>
-              <p class="text-primary/70 font-mono">Custom materials and effects</p>
+              <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Procedural Blob Character</h1>
+              <p class="text-primary/70 font-mono">Marching cubes with skeletal control</p>
             </div>
             <div class="hidden sm:flex items-center space-x-4">
               <button id="play-pause" class="px-4 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
@@ -36,24 +36,145 @@ import Footer from "../../layouts/Footer.astro";
       <!-- ThreeJS Container -->
       <div class="px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-          <div id="threejs-container" class="w-full h-96 border border-primary/20 rounded-lg overflow-hidden bg-black/50">
-            <div class="loading-container">
-              <div class="loading-spinner"></div>
-              <p class="text-primary/60 font-mono text-sm mt-4">Loading shader experiment...</p>
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <!-- ThreeJS Scene -->
+            <div class="lg:col-span-3">
+              <div id="threejs-container" class="w-full h-96 border border-primary/20 rounded-lg overflow-hidden bg-black/50">
+                <div class="loading-container">
+                  <div class="loading-spinner"></div>
+                  <p class="text-primary/60 font-mono text-sm mt-4">Loading blob experiment...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parameter Panel -->
+            <div class="lg:col-span-1">
+              <div class="border border-primary/20 rounded-lg bg-primary/5 p-4 h-96 overflow-y-auto">
+                <h3 class="text-sm font-mono text-primary mb-3 sticky top-0 bg-primary/5 pb-2">Parameters</h3>
+
+                <!-- Metaball Section -->
+                <div class="mb-4">
+                  <p class="text-xs font-mono text-primary/80 mb-2 font-bold">Metaball</p>
+                  <div class="space-y-2 text-xs">
+                    <div>
+                      <label class="text-primary/70">Base Strength</label>
+                      <input type="range" id="metaball-baseStrength" min="0.05" max="0.3" step="0.01" class="w-full">
+                      <span id="metaball-baseStrength-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Bulge Amount</label>
+                      <input type="range" id="metaball-bulgeAmount" min="0" max="0.15" step="0.01" class="w-full">
+                      <span id="metaball-bulgeAmount-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Core Strength</label>
+                      <input type="range" id="metaball-coreStrength" min="0.1" max="0.5" step="0.01" class="w-full">
+                      <span id="metaball-coreStrength-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Spring Physics Section -->
+                <div class="mb-4">
+                  <p class="text-xs font-mono text-primary/80 mb-2 font-bold">Spring</p>
+                  <div class="space-y-2 text-xs">
+                    <div>
+                      <label class="text-primary/70">Stiffness</label>
+                      <input type="range" id="spring-stiffness" min="5" max="30" step="1" class="w-full">
+                      <span id="spring-stiffness-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Damping</label>
+                      <input type="range" id="spring-damping" min="0.3" max="0.95" step="0.05" class="w-full">
+                      <span id="spring-damping-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Jiggle Section -->
+                <div class="mb-4">
+                  <p class="text-xs font-mono text-primary/80 mb-2 font-bold">Jiggle</p>
+                  <div class="space-y-2 text-xs">
+                    <div>
+                      <label class="text-primary/70">Amount</label>
+                      <input type="range" id="jiggle-amount" min="0" max="0.1" step="0.005" class="w-full">
+                      <span id="jiggle-amount-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Frequency</label>
+                      <input type="range" id="jiggle-frequency" min="1" max="8" step="0.5" class="w-full">
+                      <span id="jiggle-frequency-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gait Section -->
+                <div class="mb-4">
+                  <p class="text-xs font-mono text-primary/80 mb-2 font-bold">Gait</p>
+                  <div class="space-y-2 text-xs">
+                    <div>
+                      <label class="text-primary/70">Speed</label>
+                      <input type="range" id="gait-speed" min="0.1" max="1.5" step="0.1" class="w-full">
+                      <span id="gait-speed-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Limb Move Speed</label>
+                      <input type="range" id="gait-limbMoveSpeed" min="1" max="6" step="0.5" class="w-full">
+                      <span id="gait-limbMoveSpeed-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Step Distance</label>
+                      <input type="range" id="gait-stepDistance" min="0.3" max="1.5" step="0.1" class="w-full">
+                      <span id="gait-stepDistance-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Arc Height</label>
+                      <input type="range" id="gait-arcHeight" min="0.1" max="0.8" step="0.05" class="w-full">
+                      <span id="gait-arcHeight-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Body Section -->
+                <div class="mb-4">
+                  <p class="text-xs font-mono text-primary/80 mb-2 font-bold">Body</p>
+                  <div class="space-y-2 text-xs">
+                    <div>
+                      <label class="text-primary/70">Pull Strength</label>
+                      <input type="range" id="body-pullStrength" min="0.01" max="0.2" step="0.01" class="w-full">
+                      <span id="body-pullStrength-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                    <div>
+                      <label class="text-primary/70">Bob Amount</label>
+                      <input type="range" id="body-bobAmount" min="0" max="0.15" step="0.01" class="w-full">
+                      <span id="body-bobAmount-value" class="text-primary/60 text-xs"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          
+
           <!-- Controls Info -->
           <div class="mt-6 p-4 border border-primary/10 rounded-lg bg-primary/5">
-            <h3 class="text-lg font-mono text-primary mb-2">Shader Effects</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-mono text-primary/70">
+            <h3 class="text-lg font-mono text-primary mb-2">Blob Controls</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm font-mono text-primary/70">
               <div>
-                <p><strong>Mouse:</strong> Rotate camera around the scene</p>
-                <p><strong>Scroll:</strong> Zoom in/out</p>
+                <p class="text-primary mb-1"><strong>Movement</strong></p>
+                <p><strong>W/A/S/D:</strong> Move blob</p>
+                <p><strong>Space:</strong> Toggle animation</p>
               </div>
               <div>
-                <p><strong>Space:</strong> Toggle animation</p>
-                <p><strong>R:</strong> Reset camera position</p>
+                <p class="text-primary mb-1"><strong>Camera</strong></p>
+                <p><strong>Mouse:</strong> Rotate view</p>
+                <p><strong>Scroll:</strong> Zoom in/out</p>
+                <p><strong>R:</strong> Reset camera</p>
+                <p><strong>F:</strong> Toggle follow</p>
+              </div>
+              <div>
+                <p class="text-primary mb-1"><strong>Visualization</strong></p>
+                <p><strong>H:</strong> Toggle helpers</p>
+                <p class="text-primary/50 italic mt-2">Spring physics & IK!</p>
               </div>
             </div>
           </div>
@@ -67,64 +188,560 @@ import Footer from "../../layouts/Footer.astro";
 <script>
   import * as THREE from "three";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+  import { MarchingCubes } from "three/examples/jsm/objects/MarchingCubes.js";
+
+  // ===== TUNABLE PARAMETERS =====
+  const config = {
+    // Metaball properties
+    metaball: {
+      baseStrength: 0.12,      // Base metaball radius/strength
+      bulgeAmount: 0.05,       // How much metaballs bulge during movement
+      coreStrength: 0.25,      // Core body metaball strength
+    },
+
+    // Spring physics
+    spring: {
+      stiffness: 15,           // How quickly metaballs follow skeleton (higher = stiffer)
+      damping: 0.7,            // Bounce reduction (0-1, higher = less bounce)
+    },
+
+    // Secondary motion (jiggle)
+    jiggle: {
+      amount: 0.02,            // How much jiggle/wobble
+      frequency: 3,            // Speed of jiggle oscillation
+    },
+
+    // Gait/Walking
+    gait: {
+      speed: 0.5,              // Gait cycle speed
+      limbMoveSpeed: 3,        // How fast limbs reach their targets
+      stepDistance: 0.8,       // How far forward to step
+      limbRadius: 1.2,         // How far limbs extend from body
+      arcHeight: 0.3,          // How high limbs lift off ground
+    },
+
+    // Body movement
+    body: {
+      pullStrength: 0.08,      // How much limbs pull body forward
+      bobAmount: 0.05,         // Body vertical oscillation amount
+      movementSmoothing: 0.05, // Body position interpolation (lower = smoother)
+    },
+
+    // IK
+    ik: {
+      segmentLength: 0.4,      // Length of each limb segment
+    },
+  };
 
   // Scene variables
   let scene: THREE.Scene;
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
-  let cube: THREE.Mesh;
   let controls: OrbitControls;
   let animationId: number;
   let isAnimating = true;
   let time = 0;
 
-  // Custom shader material
-  const vertexShader = `
-    varying vec2 vUv;
-    varying vec3 vPosition;
-    varying vec3 vNormal;
-    
-    void main() {
-      vUv = uv;
-      vPosition = position;
-      vNormal = normal;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `;
+  // Marching cubes
+  let marchingCubes: MarchingCubes;
+  let showHelpers = true;
 
-  const fragmentShader = `
-    uniform float time;
-    uniform vec3 color1;
-    uniform vec3 color2;
-    uniform vec3 color3;
-    
-    varying vec2 vUv;
-    varying vec3 vPosition;
-    varying vec3 vNormal;
-    
-    void main() {
-      // Create animated gradient based on UV coordinates and time
-      vec2 uv = vUv;
-      
-      // Add some noise and distortion
-      float noise = sin(uv.x * 10.0 + time) * sin(uv.y * 10.0 + time) * 0.1;
-      uv += noise;
-      
-      // Create gradient
-      vec3 color = mix(color1, color2, uv.x);
-      color = mix(color, color3, uv.y);
-      
-      // Add some metallic effect
-      float fresnel = 1.0 - dot(vNormal, vec3(0.0, 0.0, 1.0));
-      color += fresnel * 0.3;
-      
-      // Add some pulsing effect
-      float pulse = sin(time * 2.0) * 0.1 + 0.9;
-      color *= pulse;
-      
-      gl_FragColor = vec4(color, 1.0);
+  // Skeletal control point system
+  interface ControlPoint {
+    position: THREE.Vector3;
+    targetPosition: THREE.Vector3;
+    helper?: THREE.Mesh;
+  }
+
+  // Spring physics for smooth metaball motion
+  interface SpringPoint {
+    position: THREE.Vector3;
+    velocity: THREE.Vector3;
+    target: THREE.Vector3;
+  }
+
+  interface Metaball {
+    strength: number;
+    targetStrength: number;
+    subtract: number;
+    springPoint: SpringPoint; // Spring physics for smooth following
+    noiseOffset: THREE.Vector3; // For secondary jiggle motion
+  }
+
+  interface Limb {
+    name: string;
+    controlPoints: ControlPoint[];
+    metaballs: Metaball[];
+    footTarget: THREE.Vector3; // IK target for the foot
+    isGrounded: boolean; // Is the foot touching the ground
+    isMoving: boolean; // Is this limb currently moving
+    moveProgress: number; // 0 to 1, progress through the move
+    restPosition: THREE.Vector3; // Default position for the foot
+  }
+
+  // Movement controls
+  interface MovementState {
+    forward: boolean;
+    backward: boolean;
+    left: boolean;
+    right: boolean;
+    direction: THREE.Vector3; // Calculated movement direction
+  }
+
+  const movementState: MovementState = {
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+    direction: new THREE.Vector3(0, 0, 0),
+  };
+
+  // Gait state machine
+  interface GaitState {
+    currentPhase: number; // 0-1 cycle through gait
+    movingLimbs: Set<number>; // Which limbs are currently moving
+    speed: number; // Movement speed
+  }
+
+  const gaitState: GaitState = {
+    currentPhase: 0,
+    movingLimbs: new Set(),
+    speed: config.gait.speed,
+  };
+
+  // Blob skeleton structure
+  const skeleton = {
+    // Core body
+    core: [] as ControlPoint[],
+    // Limbs (each limb is a chain of control points)
+    limbs: [] as Limb[],
+  };
+
+  // Ground plane for raycasting
+  let groundPlane: THREE.Mesh;
+  let raycaster: THREE.Raycaster;
+
+  // Initialize skeletal control points
+  function initSkeleton() {
+    // Create core (center of the blob body)
+    skeleton.core = [
+      {
+        position: new THREE.Vector3(0, 0.5, 0),
+        targetPosition: new THREE.Vector3(0, 0.5, 0),
+      }
+    ];
+
+    // Create limbs (4 limbs extending from the core)
+    const limbConfigs = [
+      { name: "limb1", angle: 0, direction: new THREE.Vector3(1, -0.5, 0) },
+      { name: "limb2", angle: Math.PI / 2, direction: new THREE.Vector3(0, -0.5, 1) },
+      { name: "limb3", angle: Math.PI, direction: new THREE.Vector3(-1, -0.5, 0) },
+      { name: "limb4", angle: (3 * Math.PI) / 2, direction: new THREE.Vector3(0, -0.5, -1) },
+    ];
+
+    limbConfigs.forEach((limbConfig) => {
+      const controlPoints: ControlPoint[] = [];
+      const numPoints = 3; // Each limb has 3 control points
+
+      for (let i = 0; i < numPoints; i++) {
+        const distance = (i + 1) * config.ik.segmentLength;
+        const pos = limbConfig.direction.clone().multiplyScalar(distance);
+
+        controlPoints.push({
+          position: pos.clone(),
+          targetPosition: pos.clone(),
+        });
+      }
+
+      const footPosition = limbConfig.direction.clone().multiplyScalar(config.gait.limbRadius);
+
+      skeleton.limbs.push({
+        name: limbConfig.name,
+        controlPoints,
+        metaballs: controlPoints.map((cp) => ({
+          strength: config.metaball.baseStrength,
+          targetStrength: config.metaball.baseStrength,
+          subtract: 12,
+          springPoint: {
+            position: cp.position.clone(),
+            velocity: new THREE.Vector3(0, 0, 0),
+            target: cp.position.clone(),
+          },
+          noiseOffset: new THREE.Vector3(
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100
+          ),
+        })),
+        footTarget: footPosition.clone(),
+        isGrounded: true,
+        isMoving: false,
+        moveProgress: 0,
+        restPosition: footPosition.clone(),
+      });
+    });
+  }
+
+  // Create helper visualizations for skeleton
+  function createHelpers() {
+    const helperGroup = new THREE.Group();
+    helperGroup.name = "helpers";
+
+    // Core helper
+    skeleton.core.forEach(cp => {
+      const helper = new THREE.Mesh(
+        new THREE.SphereGeometry(0.1, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true })
+      );
+      helper.position.copy(cp.position);
+      cp.helper = helper;
+      helperGroup.add(helper);
+    });
+
+    // Limb helpers
+    skeleton.limbs.forEach((limb, limbIndex) => {
+      const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff];
+
+      limb.controlPoints.forEach((cp, index) => {
+        const helper = new THREE.Mesh(
+          new THREE.SphereGeometry(0.08, 8, 8),
+          new THREE.MeshBasicMaterial({ color: colors[limbIndex], wireframe: true })
+        );
+        helper.position.copy(cp.position);
+        cp.helper = helper;
+        helperGroup.add(helper);
+
+        // Add line connecting control points
+        if (index > 0) {
+          const prevPoint = limb.controlPoints[index - 1];
+          const points = [prevPoint.position, cp.position];
+          const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+          const line = new THREE.Line(
+            lineGeometry,
+            new THREE.LineBasicMaterial({ color: colors[limbIndex], opacity: 0.5, transparent: true })
+          );
+          helperGroup.add(line);
+        } else {
+          // Connect first limb point to core
+          const points = [skeleton.core[0].position, cp.position];
+          const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
+          const line = new THREE.Line(
+            lineGeometry,
+            new THREE.LineBasicMaterial({ color: colors[limbIndex], opacity: 0.5, transparent: true })
+          );
+          helperGroup.add(line);
+        }
+      });
+
+      // Add foot target helper (small sphere on ground)
+      const footHelper = new THREE.Mesh(
+        new THREE.SphereGeometry(0.06, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, opacity: 0.7, transparent: true })
+      );
+      footHelper.name = `footTarget_${limbIndex}`;
+      footHelper.position.copy(limb.footTarget);
+      helperGroup.add(footHelper);
+    });
+
+    scene.add(helperGroup);
+  }
+
+  // Update helpers positions
+  function updateHelpers() {
+    const helperGroup = scene.getObjectByName("helpers");
+    if (!helperGroup) return;
+
+    // Update all helper positions
+    skeleton.core.forEach(cp => {
+      if (cp.helper) cp.helper.position.copy(cp.position);
+    });
+
+    skeleton.limbs.forEach((limb, limbIndex) => {
+      limb.controlPoints.forEach(cp => {
+        if (cp.helper) cp.helper.position.copy(cp.position);
+      });
+
+      // Update foot target helper
+      const footHelper = helperGroup.getObjectByName(`footTarget_${limbIndex}`) as THREE.Mesh;
+      if (footHelper) {
+        footHelper.position.copy(limb.footTarget);
+        // Make it more visible when limb is moving
+        if (footHelper.material instanceof THREE.MeshBasicMaterial) {
+          footHelper.material.opacity = limb.isMoving ? 1.0 : 0.5;
+        }
+      }
+    });
+
+    // Update lines
+    let lineIndex = 0;
+    skeleton.limbs.forEach(limb => {
+      limb.controlPoints.forEach((cp, index) => {
+        if (index > 0) {
+          const prevPoint = limb.controlPoints[index - 1];
+          const line = helperGroup.children.find(
+            (child) => child instanceof THREE.Line && child === helperGroup.children[lineIndex + skeleton.core.length + skeleton.limbs.length * 3]
+          ) as THREE.Line;
+          if (line) {
+            const positions = new Float32Array([
+              prevPoint.position.x, prevPoint.position.y, prevPoint.position.z,
+              cp.position.x, cp.position.y, cp.position.z
+            ]);
+            line.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          }
+        }
+      });
+    });
+
+    helperGroup.visible = showHelpers;
+  }
+
+  // Update spring physics for smooth metaball motion
+  function updateMetaballs(deltaTime: number) {
+    skeleton.limbs.forEach((limb) => {
+      limb.controlPoints.forEach((cp, index) => {
+        const metaball = limb.metaballs[index];
+        const spring = metaball.springPoint;
+
+        // Set target to control point position
+        spring.target.copy(cp.position);
+
+        // Add secondary jiggle motion (noise-based)
+        const noiseX = Math.sin(time * config.jiggle.frequency + metaball.noiseOffset.x) * config.jiggle.amount;
+        const noiseY = Math.sin(time * config.jiggle.frequency * 1.3 + metaball.noiseOffset.y) * config.jiggle.amount;
+        const noiseZ = Math.sin(time * config.jiggle.frequency * 0.8 + metaball.noiseOffset.z) * config.jiggle.amount;
+
+        const jiggle = new THREE.Vector3(noiseX, noiseY, noiseZ);
+
+        // Only add jiggle when limb is moving (creates muscle-like motion)
+        if (limb.isMoving) {
+          spring.target.add(jiggle.multiplyScalar(limb.moveProgress * 2));
+        }
+
+        // Spring physics simulation
+        const displacement = spring.target.clone().sub(spring.position);
+        const springForce = displacement.multiplyScalar(config.spring.stiffness);
+
+        // Apply damping
+        spring.velocity.multiplyScalar(config.spring.damping);
+
+        // Apply spring force
+        spring.velocity.add(springForce.multiplyScalar(deltaTime));
+
+        // Update position
+        spring.position.add(spring.velocity.clone().multiplyScalar(deltaTime));
+
+        // Muscle-like bulging: increase strength when limb is extending
+        if (limb.isMoving) {
+          const bulge = Math.sin(limb.moveProgress * Math.PI) * config.metaball.bulgeAmount;
+          metaball.targetStrength = config.metaball.baseStrength + bulge;
+        } else {
+          metaball.targetStrength = config.metaball.baseStrength;
+        }
+
+        // Smooth strength interpolation
+        metaball.strength += (metaball.targetStrength - metaball.strength) * 0.15;
+      });
+    });
+  }
+
+  // Update marching cubes with metaballs from skeleton
+  function updateMarchingCubes() {
+    if (!marchingCubes) return;
+
+    marchingCubes.reset();
+
+    // Add core metaballs (larger, stronger)
+    skeleton.core.forEach(cp => {
+      const pos = cp.position;
+      marchingCubes.addBall(pos.x, pos.y, pos.z, config.metaball.coreStrength, 12);
+    });
+
+    // Add limb metaballs using spring positions for smooth motion
+    skeleton.limbs.forEach(limb => {
+      limb.metaballs.forEach((metaball) => {
+        const pos = metaball.springPoint.position;
+        marchingCubes.addBall(pos.x, pos.y, pos.z, metaball.strength, metaball.subtract);
+      });
+    });
+  }
+
+  // Two-joint IK solver (for 3-point chain: shoulder -> elbow -> foot)
+  function solveIK(limb: Limb, target: THREE.Vector3) {
+    if (limb.controlPoints.length < 3) return;
+
+    const origin = skeleton.core[0].position; // Shoulder/hip
+    const joint1 = limb.controlPoints[0]; // Upper segment
+    const joint2 = limb.controlPoints[1]; // Lower segment
+    const endEffector = limb.controlPoints[2]; // Foot
+
+    // Segment lengths (use config)
+    const length1 = config.ik.segmentLength;
+    const length2 = config.ik.segmentLength;
+    const length3 = config.ik.segmentLength;
+
+    // Distance from origin to target
+    const targetVector = target.clone().sub(origin);
+    const targetDistance = targetVector.length();
+    const maxReach = length1 + length2 + length3;
+
+    // Clamp target to maximum reach
+    if (targetDistance > maxReach) {
+      targetVector.normalize().multiplyScalar(maxReach * 0.95);
+      target = origin.clone().add(targetVector);
     }
-  `;
+
+    // Simple 3-segment IK using FABRIK-like approach
+    // Forward reaching
+    const tempEnd = target.clone();
+    const tempMid2 = tempEnd.clone().sub(target.clone().sub(joint2.position).normalize().multiplyScalar(length3));
+    const tempMid1 = tempMid2.clone().sub(tempMid2.clone().sub(joint1.position).normalize().multiplyScalar(length2));
+
+    // Backward reaching
+    const finalStart = origin;
+    const dir1 = tempMid1.clone().sub(finalStart).normalize();
+    const finalJoint1 = finalStart.clone().add(dir1.multiplyScalar(length1));
+
+    const dir2 = tempMid2.clone().sub(finalJoint1).normalize();
+    const finalJoint2 = finalJoint1.clone().add(dir2.multiplyScalar(length2));
+
+    const dir3 = target.clone().sub(finalJoint2).normalize();
+    const finalEnd = finalJoint2.clone().add(dir3.multiplyScalar(length3));
+
+    // Update positions
+    joint1.position.copy(finalJoint1);
+    joint2.position.copy(finalJoint2);
+    endEffector.position.copy(finalEnd);
+  }
+
+  // Raycast to find ground contact point
+  function findGroundPoint(horizontalPos: THREE.Vector2): THREE.Vector3 {
+    if (!raycaster || !groundPlane) {
+      return new THREE.Vector3(horizontalPos.x, -0.5, horizontalPos.y);
+    }
+
+    raycaster.set(
+      new THREE.Vector3(horizontalPos.x, 10, horizontalPos.y),
+      new THREE.Vector3(0, -1, 0)
+    );
+
+    const intersects = raycaster.intersectObject(groundPlane);
+    if (intersects.length > 0) {
+      return intersects[0].point;
+    }
+
+    return new THREE.Vector3(horizontalPos.x, -0.5, horizontalPos.y);
+  }
+
+  // Update movement direction based on WASD input
+  function updateMovementDirection() {
+    movementState.direction.set(0, 0, 0);
+
+    if (movementState.forward) movementState.direction.z -= 1;
+    if (movementState.backward) movementState.direction.z += 1;
+    if (movementState.left) movementState.direction.x -= 1;
+    if (movementState.right) movementState.direction.x += 1;
+
+    // Normalize if moving
+    if (movementState.direction.length() > 0) {
+      movementState.direction.normalize();
+    }
+  }
+
+  // Update gait cycle
+  function updateGait(deltaTime: number) {
+    const corePos = skeleton.core[0].position;
+    const isMoving = movementState.direction.length() > 0;
+
+    // Only advance gait if actually moving
+    if (isMoving) {
+      gaitState.currentPhase += deltaTime * gaitState.speed;
+      if (gaitState.currentPhase >= 1) {
+        gaitState.currentPhase = 0;
+      }
+    }
+
+    // Alternating gait: opposite limbs move together
+    // Phase 0-0.5: limbs 0 and 2 move
+    // Phase 0.5-1: limbs 1 and 3 move
+    const movingSet = gaitState.currentPhase < 0.5 ? [0, 2] : [1, 3];
+
+    skeleton.limbs.forEach((limb, index) => {
+      const shouldMove = movingSet.includes(index) && isMoving;
+
+      if (shouldMove && !limb.isMoving) {
+        // Start moving this limb
+        limb.isMoving = true;
+        limb.moveProgress = 0;
+        limb.isGrounded = false;
+
+        // Calculate new target position (ahead of the body in movement direction)
+        const angle = (index / skeleton.limbs.length) * Math.PI * 2;
+        const radialDirection = new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle));
+
+        // Target position relative to core
+        const targetOffset = radialDirection.clone().multiplyScalar(config.gait.limbRadius)
+          .add(movementState.direction.clone().multiplyScalar(config.gait.stepDistance));
+        const worldTarget = corePos.clone().add(targetOffset);
+
+        // Find ground contact point
+        limb.footTarget = findGroundPoint(new THREE.Vector2(worldTarget.x, worldTarget.z));
+      }
+
+      if (limb.isMoving) {
+        // Update move progress
+        limb.moveProgress += deltaTime * config.gait.limbMoveSpeed;
+
+        if (limb.moveProgress >= 1) {
+          // Limb has finished moving
+          limb.moveProgress = 1;
+          limb.isMoving = false;
+          limb.isGrounded = true;
+          limb.restPosition.copy(limb.footTarget);
+
+          // Pull body forward in movement direction when limb plants
+          if (movementState.direction.length() > 0) {
+            skeleton.core[0].targetPosition.add(
+              movementState.direction.clone().multiplyScalar(config.body.pullStrength)
+            );
+          }
+        }
+
+        // Animate limb reaching toward target with arc
+        const startPos = limb.restPosition.clone();
+        const endPos = limb.footTarget.clone();
+        const t = limb.moveProgress;
+
+        // Add vertical arc to the movement (Bezier curve)
+        const midPoint = startPos.clone().lerp(endPos, 0.5);
+        midPoint.y += config.gait.arcHeight;
+
+        // Quadratic bezier curve
+        const p0 = startPos;
+        const p1 = midPoint;
+        const p2 = endPos;
+
+        const currentTarget = new THREE.Vector3();
+        currentTarget.x = (1 - t) * (1 - t) * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x;
+        currentTarget.y = (1 - t) * (1 - t) * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y;
+        currentTarget.z = (1 - t) * (1 - t) * p0.z + 2 * (1 - t) * t * p1.z + t * t * p2.z;
+
+        // Solve IK for this limb
+        solveIK(limb, currentTarget);
+      } else {
+        // Limb is grounded, use IK to keep foot planted
+        solveIK(limb, limb.restPosition);
+      }
+    });
+
+    // Body oscillation (weight shift)
+    const bodyBob = Math.sin(gaitState.currentPhase * Math.PI * 2) * config.body.bobAmount;
+    skeleton.core[0].position.y = skeleton.core[0].targetPosition.y + bodyBob;
+
+    // Smooth body movement
+    skeleton.core[0].position.x += (skeleton.core[0].targetPosition.x - skeleton.core[0].position.x) * config.body.movementSmoothing;
+    skeleton.core[0].position.z += (skeleton.core[0].targetPosition.z - skeleton.core[0].position.z) * config.body.movementSmoothing;
+  }
+
 
   // Initialize ThreeJS scene
   function initThreeJS() {
@@ -136,66 +753,74 @@ import Footer from "../../layouts/Footer.astro";
 
     // Scene setup
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
+    scene.background = new THREE.Color(0x050505);
+    scene.fog = new THREE.Fog(0x050505, 2, 15);
 
     // Camera setup
-    camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-    camera.position.set(3, 3, 3);
+    camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(3, 2, 3);
 
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     container.appendChild(renderer.domElement);
 
-    // Create cube with custom shader
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        time: { value: 0 },
-        color1: { value: new THREE.Color(0xff6b6b) },
-        color2: { value: new THREE.Color(0x4ecdc4) },
-        color3: { value: new THREE.Color(0x45b7d1) }
-      }
-    });
-    
-    cube = new THREE.Mesh(geometry, material);
-    cube.castShadow = true;
-    cube.receiveShadow = true;
-    scene.add(cube);
+    // Initialize raycaster
+    raycaster = new THREE.Raycaster();
 
-    // Add wireframe cube for extra visual interest
-    const wireframeGeometry = new THREE.BoxGeometry(1.1, 1.1, 1.1);
-    const wireframeMaterial = new THREE.MeshBasicMaterial({ 
-      color: 0xffffff, 
-      wireframe: true,
-      transparent: true,
-      opacity: 0.3
+    // Initialize skeleton
+    initSkeleton();
+
+    // Create marching cubes
+    const resolution = 28;
+    marchingCubes = new MarchingCubes(resolution, new THREE.MeshStandardMaterial({
+      color: 0x4ecdc4,
+      roughness: 0.4,
+      metalness: 0.3,
+      flatShading: true,
+    }), true, true, 100000);
+
+    marchingCubes.position.set(0, 0, 0);
+    marchingCubes.scale.set(2, 2, 2);
+    marchingCubes.enableUvs = false;
+    marchingCubes.enableColors = false;
+
+    scene.add(marchingCubes);
+
+    // Create helpers
+    createHelpers();
+
+    // Add ground plane for reference
+    const groundGeometry = new THREE.PlaneGeometry(50, 50);
+    const groundMaterial = new THREE.MeshStandardMaterial({
+      color: 0x222222,
+      roughness: 0.8,
+      metalness: 0.2,
     });
-    const wireframeCube = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
-    scene.add(wireframeCube);
+    groundPlane = new THREE.Mesh(groundGeometry, groundMaterial);
+    groundPlane.rotation.x = -Math.PI / 2;
+    groundPlane.position.y = -0.5;
+    groundPlane.receiveShadow = true;
+    scene.add(groundPlane);
 
     // Lighting setup
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+    const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 5, 5);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    // Add some colored lights
-    const light1 = new THREE.PointLight(0xff6b6b, 0.5, 10);
-    light1.position.set(2, 2, 2);
+    // Add some colored accent lights
+    const light1 = new THREE.PointLight(0xff6b6b, 0.8, 10);
+    light1.position.set(3, 2, 0);
     scene.add(light1);
 
-    const light2 = new THREE.PointLight(0x4ecdc4, 0.5, 10);
-    light2.position.set(-2, -2, 2);
+    const light2 = new THREE.PointLight(0x4ecdc4, 0.8, 10);
+    light2.position.set(-3, 2, 0);
     scene.add(light2);
 
     // Controls setup
@@ -204,6 +829,7 @@ import Footer from "../../layouts/Footer.astro";
     controls.dampingFactor = 0.05;
     controls.enableZoom = true;
     controls.enablePan = false;
+    controls.maxPolarAngle = Math.PI / 2;
 
     // Start animation loop
     animate();
@@ -213,18 +839,31 @@ import Footer from "../../layouts/Footer.astro";
   }
 
   // Animation loop
+  let lastTime = 0;
+  let cameraFollowEnabled = true;
   function animate() {
     animationId = requestAnimationFrame(animate);
 
-    time += 0.016; // ~60fps
+    const currentTime = performance.now() / 1000;
+    const deltaTime = currentTime - lastTime || 0.016;
+    lastTime = currentTime;
 
-    if (isAnimating && cube) {
-      cube.rotation.x += 0.005;
-      cube.rotation.y += 0.01;
-      
-      // Update shader time uniform
-      if (cube.material instanceof THREE.ShaderMaterial) {
-        cube.material.uniforms.time.value = time;
+    time += deltaTime;
+
+    if (isAnimating) {
+      updateMovementDirection();
+      updateGait(deltaTime);
+      updateMetaballs(deltaTime);
+      updateMarchingCubes();
+      updateHelpers();
+
+      // Camera follow blob
+      if (cameraFollowEnabled && controls) {
+        const corePos = skeleton.core[0].position;
+        const targetPos = new THREE.Vector3(corePos.x, 0, corePos.z);
+
+        // Smoothly move camera target to follow the blob
+        controls.target.lerp(targetPos, 0.02);
       }
     }
 
@@ -237,8 +876,53 @@ import Footer from "../../layouts/Footer.astro";
     }
   }
 
+  // Initialize parameter sliders
+  function initParameterSliders() {
+    // Helper function to setup slider
+    const setupSlider = (category: string, param: string, initialValue: number) => {
+      const slider = document.getElementById(`${category}-${param}`) as HTMLInputElement;
+      const valueDisplay = document.getElementById(`${category}-${param}-value`);
+
+      if (slider && valueDisplay) {
+        slider.value = initialValue.toString();
+        valueDisplay.textContent = initialValue.toFixed(3);
+
+        slider.addEventListener('input', (e) => {
+          const value = parseFloat((e.target as HTMLInputElement).value);
+          valueDisplay.textContent = value.toFixed(3);
+
+          // Update config
+          (config as any)[category][param] = value;
+
+          // Update gait state speed if changed
+          if (category === 'gait' && param === 'speed') {
+            gaitState.speed = value;
+          }
+        });
+      }
+    };
+
+    // Setup all sliders
+    setupSlider('metaball', 'baseStrength', config.metaball.baseStrength);
+    setupSlider('metaball', 'bulgeAmount', config.metaball.bulgeAmount);
+    setupSlider('metaball', 'coreStrength', config.metaball.coreStrength);
+    setupSlider('spring', 'stiffness', config.spring.stiffness);
+    setupSlider('spring', 'damping', config.spring.damping);
+    setupSlider('jiggle', 'amount', config.jiggle.amount);
+    setupSlider('jiggle', 'frequency', config.jiggle.frequency);
+    setupSlider('gait', 'speed', config.gait.speed);
+    setupSlider('gait', 'limbMoveSpeed', config.gait.limbMoveSpeed);
+    setupSlider('gait', 'stepDistance', config.gait.stepDistance);
+    setupSlider('gait', 'arcHeight', config.gait.arcHeight);
+    setupSlider('body', 'pullStrength', config.body.pullStrength);
+    setupSlider('body', 'bobAmount', config.body.bobAmount);
+  }
+
   // Setup event listeners
   function setupEventListeners() {
+    // Initialize parameter sliders
+    initParameterSliders();
+
     // Play/Pause button
     const playPauseBtn = document.getElementById('play-pause');
     if (playPauseBtn) {
@@ -253,7 +937,7 @@ import Footer from "../../layouts/Footer.astro";
     if (resetBtn) {
       resetBtn.addEventListener('click', () => {
         if (camera && controls) {
-          camera.position.set(3, 3, 3);
+          camera.position.set(3, 2, 3);
           controls.target.set(0, 0, 0);
           controls.update();
         }
@@ -272,10 +956,48 @@ import Footer from "../../layouts/Footer.astro";
           break;
         case 'KeyR':
           if (camera && controls) {
-            camera.position.set(3, 3, 3);
+            camera.position.set(3, 2, 3);
             controls.target.set(0, 0, 0);
             controls.update();
           }
+          break;
+        case 'KeyH':
+          showHelpers = !showHelpers;
+          break;
+        case 'KeyF':
+          cameraFollowEnabled = !cameraFollowEnabled;
+          console.log(`Camera follow: ${cameraFollowEnabled ? 'enabled' : 'disabled'}`);
+          break;
+        // WASD movement controls
+        case 'KeyW':
+          movementState.forward = true;
+          break;
+        case 'KeyA':
+          movementState.left = true;
+          break;
+        case 'KeyS':
+          movementState.backward = true;
+          break;
+        case 'KeyD':
+          movementState.right = true;
+          break;
+      }
+    });
+
+    // Keyboard keyup for WASD
+    document.addEventListener('keyup', (event) => {
+      switch(event.code) {
+        case 'KeyW':
+          movementState.forward = false;
+          break;
+        case 'KeyA':
+          movementState.left = false;
+          break;
+        case 'KeyS':
+          movementState.backward = false;
+          break;
+        case 'KeyD':
+          movementState.right = false;
           break;
       }
     });
