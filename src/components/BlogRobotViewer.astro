@@ -251,8 +251,8 @@ const {
           const clip = glb.animations[0];
           console.log("Animation clip duration:", clip.duration);
 
-          // Speed up animation by 1.5x
-          mixer.timeScale = 1.5;
+          // Speed up animation by 4x
+          mixer.timeScale = 4.0;
 
           animationAction = mixer.clipAction(clip);
 
@@ -263,7 +263,7 @@ const {
           console.log("Animation started (1.5x speed, looping)");
 
           // Trigger transition after first loop completes
-          const firstLoopDuration = clip.duration / 1.5; // Adjusted for timeScale
+          const firstLoopDuration = clip.duration / 4.0; // Adjusted for timeScale
           setTimeout(() => {
             console.log("First animation loop complete - dispatching blogRobotAnimationComplete event");
             document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));

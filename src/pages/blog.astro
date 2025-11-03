@@ -33,20 +33,22 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
             <div class="robot-viewer-wrapper" id="robot-viewer-wrapper">
               <!-- Content overlay (shown during intro) -->
               <div class="robot-text-overlay" id="robot-cta-text">
-                <!-- Top text - large and bold -->
+                <!-- Top text - large and bold with typewriter effect -->
                 <div class="top-statement mb-12 text-center">
                   <h2 class="statement-large font-mono font-bold tracking-tight leading-tight text-primary">
-                    Here are some of my<br>unfiltered opinions
+                    <span id="typewriter-main" class="typewriter-text"></span>
+                    <span class="typewriter-cursor">|</span>
                   </h2>
                 </div>
 
                 <!-- Spacer for visual balance -->
                 <div class="flex-grow max-h-32"></div>
 
-                <!-- Bottom text - small and dismissive -->
+                <!-- Bottom text - small and dismissive with typewriter effect -->
                 <div class="bottom-statement mt-12 text-center">
                   <p class="statement-small font-mono text-primary/40 italic tracking-wide">
-                    not that anyone cares
+                    <span id="typewriter-sub" class="typewriter-text"></span>
+                    <span class="typewriter-cursor-sub">|</span>
                   </p>
                 </div>
               </div>
@@ -570,16 +572,70 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       font-size: clamp(2rem, 6vw, 3.5rem);
     }
   }
+
+  /* Typewriter cursor animation */
+  .typewriter-cursor,
+  .typewriter-cursor-sub {
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  .typewriter-text {
+    display: inline-block;
+    white-space: pre-wrap;
+  }
 </style>
 
 <script>
+// Typewriter effect function
+function typeWriter(element: HTMLElement, text: string, speed: number = 80, callback?: () => void) {
+  let i = 0;
+  element.textContent = '';
+
+  function type() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    } else if (callback) {
+      callback();
+    }
+  }
+
+  type();
+}
+
 // Intro animation and transition
 document.addEventListener('DOMContentLoaded', () => {
+  // Start typewriter animations
+  const mainText = document.getElementById('typewriter-main');
+  const subText = document.getElementById('typewriter-sub');
+
+  if (mainText && subText) {
+    // Type main text first
+    typeWriter(mainText, 'Here are some of my\nunfiltered opinions', 60, () => {
+      // After main text completes, type sub text
+      setTimeout(() => {
+        typeWriter(subText, 'not that anyone cares', 50);
+      }, 500);
+    });
+  }
+
   // Listen for robot animation complete event
   document.addEventListener('blogRobotAnimationComplete', () => {
     console.log('Blog robot animation complete - starting transition');
 
-    // Wait 1 second after animation completes to let user appreciate it
+    // Wait 3.5 seconds after animation completes to let user read the typewriter text
     setTimeout(() => {
       const robotViewerWrapper = document.getElementById('robot-viewer-wrapper');
       const robotCtaText = document.getElementById('robot-cta-text');
@@ -613,7 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }, 1000);
         }, 1000);
       }
-    }, 1000);
+    }, 3500);
   });
 
   // Handle expand/collapse functionality

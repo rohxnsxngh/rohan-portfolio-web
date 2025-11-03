@@ -75,7 +75,8 @@ console.log("Projects after sorting:", sortedProjects.length);
             <div class="intro-text-overlay absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
               <div class="text-center px-8 max-w-3xl">
                 <h2 class="text-6xl md:text-7xl lg:text-8xl font-mono font-bold text-white tracking-tight">
-                  Here are some projects
+                  <span id="typewriter-projects" class="typewriter-text"></span>
+                  <span class="typewriter-cursor">|</span>
                 </h2>
               </div>
             </div>
@@ -622,7 +623,7 @@ console.log("Projects after sorting:", sortedProjects.length);
 
   /* Robot showcase hover effect */
   .robot-showcase {
-    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .robot-showcase:hover .robot-info {
@@ -659,10 +660,19 @@ console.log("Projects after sorting:", sortedProjects.length);
     pointer-events: none;
   }
 
+  /* Smooth transition for page content reveal */
+  .header-section,
+  .w-full.md\\:w-1\/3,
+  .divider,
+  .grid,
+  .tech-grid {
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   /* Intro text overlay */
   .intro-text-overlay {
     opacity: 1;
-    transition: opacity 0.6s ease;
+    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
     /* No background or blur so lighting is visible */
   }
 
@@ -721,24 +731,69 @@ console.log("Projects after sorting:", sortedProjects.length);
       font-size: clamp(1.8rem, 14vw, 6rem);
     }
   }
+
+  /* Typewriter cursor animation */
+  .typewriter-cursor {
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  .typewriter-text {
+    display: inline-block;
+    white-space: pre-wrap;
+  }
 </style>
 
 <script>
+  // Typewriter effect function
+  function typeWriter(element: HTMLElement, text: string, speed: number = 80, callback?: () => void) {
+    let i = 0;
+    element.textContent = '';
+
+    function type() {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+        setTimeout(type, speed);
+      } else if (callback) {
+        callback();
+      }
+    }
+
+    type();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const robotViewerWrapper = document.getElementById("robot-viewer-wrapper");
     const robotShowcase = document.querySelector(".robot-showcase");
     const expandButton = document.querySelector(".expand-heavy-robot");
     const backdropOverlay = document.getElementById("backdrop-overlay");
 
+    // Start typewriter animation
+    const projectsText = document.getElementById('typewriter-projects');
+    if (projectsText) {
+      typeWriter(projectsText, 'Here are some projects', 70);
+    }
+
     // Handle fullscreen intro transition
     if (robotViewerWrapper) {
       // Prevent scrolling during intro
       document.body.classList.add("robot-intro-playing");
 
-      // Listen for robot animation completion (shorter intro)
+      // Listen for robot animation completion - increased delay for typewriter
       setTimeout(() => {
         transitionToContainer();
-      }, 2000); // 2 seconds for quick intro
+      }, 4000); // 4 seconds to allow typewriter to complete and be read
 
       function transitionToContainer() {
         // Remove fullscreen class
