@@ -382,6 +382,9 @@ import Footer from "../../layouts/Footer.astro";
     });
   }
 
+  // Store line references for easy updating
+  const limbLines: THREE.Line[] = [];
+
   // Create helper visualizations for skeleton
   function createHelpers() {
     const helperGroup = new THREE.Group();
@@ -414,21 +417,25 @@ import Footer from "../../layouts/Footer.astro";
         // Add line connecting control points
         if (index > 0) {
           const prevPoint = limb.controlPoints[index - 1];
-          const points = [prevPoint.position, cp.position];
+          const points = [prevPoint.position.clone(), cp.position.clone()];
           const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
           const line = new THREE.Line(
             lineGeometry,
             new THREE.LineBasicMaterial({ color: colors[limbIndex], opacity: 0.5, transparent: true })
           );
+          line.name = `line_limb${limbIndex}_seg${index}`;
+          limbLines.push(line);
           helperGroup.add(line);
         } else {
           // Connect first limb point to core
-          const points = [skeleton.core[0].position, cp.position];
+          const points = [skeleton.core[0].position.clone(), cp.position.clone()];
           const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
           const line = new THREE.Line(
             lineGeometry,
             new THREE.LineBasicMaterial({ color: colors[limbIndex], opacity: 0.5, transparent: true })
           );
+          line.name = `line_limb${limbIndex}_core`;
+          limbLines.push(line);
           helperGroup.add(line);
         }
       });
@@ -472,23 +479,37 @@ import Footer from "../../layouts/Footer.astro";
       }
     });
 
-    // Update lines
-    let lineIndex = 0;
-    skeleton.limbs.forEach(limb => {
+    // Update all line positions
+    let lineIdx = 0;
+    skeleton.limbs.forEach((limb, limbIndex) => {
       limb.controlPoints.forEach((cp, index) => {
-        if (index > 0) {
-          const prevPoint = limb.controlPoints[index - 1];
-          const line = helperGroup.children.find(
-            (child) => child instanceof THREE.Line && child === helperGroup.children[lineIndex + skeleton.core.length + skeleton.limbs.length * 3]
-          ) as THREE.Line;
-          if (line) {
-            const positions = new Float32Array([
-              prevPoint.position.x, prevPoint.position.y, prevPoint.position.z,
-              cp.position.x, cp.position.y, cp.position.z
-            ]);
-            line.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        if (lineIdx >= limbLines.length) return;
+
+        const line = limbLines[lineIdx];
+        if (line && line.geometry) {
+          let startPos: THREE.Vector3;
+          let endPos: THREE.Vector3;
+
+          if (index > 0) {
+            // Line from previous control point to current
+            startPos = limb.controlPoints[index - 1].position;
+            endPos = cp.position;
+          } else {
+            // Line from core to first control point
+            startPos = skeleton.core[0].position;
+            endPos = cp.position;
           }
+
+          // Update line geometry positions
+          const positions = new Float32Array([
+            startPos.x, startPos.y, startPos.z,
+            endPos.x, endPos.y, endPos.z
+          ]);
+          line.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+          line.geometry.attributes.position.needsUpdate = true;
         }
+
+        lineIdx++;
       });
     });
 
