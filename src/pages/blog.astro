@@ -495,14 +495,16 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
-    z-index: 5;
+    z-index: 50;
     background: radial-gradient(
       600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 102, 0, 0.15),
-      rgba(255, 170, 68, 0.1),
-      rgba(255, 68, 68, 0.05),
+      rgba(255, 102, 0, 0.2),
+      rgba(255, 170, 68, 0.15),
+      rgba(255, 68, 68, 0.08),
       transparent 40%
     );
+    mix-blend-mode: screen;
+    will-change: opacity;
   }
 
   .blog-card:hover .glow-overlay {
