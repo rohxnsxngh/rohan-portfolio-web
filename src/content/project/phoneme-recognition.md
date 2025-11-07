@@ -2,7 +2,7 @@
 title: "Phoneme Recognition: Neural Networks for Speech Classification"
 date: "2025-02"
 status: "completed"
-image: "/images/projects/IDLHW1Spectogram2.jpg"
+image: "/images/project/IDLHW1Spectogram2.jpg"
 description: "A deep learning system that recognizes phoneme states from speech recordings, implementing advanced neural network architectures and achieving 86% accuracy on frame-level speech classification."
 tags: ["deep learning", "speech recognition", "neural networks", "pytorch", "signal processing", "machine learning"]
 github: "https://github.com/yourusername/phoneme-recognition"

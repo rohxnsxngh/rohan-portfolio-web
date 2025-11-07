@@ -2,7 +2,7 @@
 title: "3D Platform for Scaffolding"
 date: "2024-04"
 status: "completed"
-image: "/images/projects/Scaffolding5.jpg"
+image: "/images/project/Scaffolding5.jpg"
 description: "A high-performance 3D application for scaffolding graphics, utilizing WebGPU and ifc.js for real-time visualization and automated Bill of Materials (BOM) generation."
 tags: ["3D graphics", "WebGPU", "BIM", "construction technology", "real-time rendering"]
 # github: "https://github.com/rohxnsxngh/hans-aubs"
