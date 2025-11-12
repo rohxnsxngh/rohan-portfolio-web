@@ -8,64 +8,64 @@ location: "Remote (Santa Clara, CA)"
 tags: ["C++", "CAD", "GD&T", "DFM", "Creo", "Windchill", "SolidWorks", "Fusion 360", "3D Modeling", "Remote Collaboration", "Virtual Onboarding"]
 ---
 
-## Kicking Off My Engineering Journey: CAD Internship at NVIDIA
+## My First Engineering Internship at NVIDIA
 
-My internship at NVIDIA was my first real-world engineering experience after working as a SolidWorks TA, where I taught CAD fundamentals and design principles. While teaching gave me a strong foundation, stepping into NVIDIA's fast-paced environment took my skills to a whole new level.
+My internship at NVIDIA was my first real engineering experience after working as a SolidWorks TA, where I taught CAD fundamentals and design principles. Teaching gave me a solid foundation, but stepping into NVIDIA's fast-paced environment took my skills to a completely different level.
 
 ![NVIDIA Logo](@images/experience/nvidia/NvidiaLogo.png)
 
-### Navigating Remote Work During COVID-19
+### Working Remote During COVID-19
 
-One of the most significant aspects of my internship was adapting to a fully remote environment during the height of the COVID-19 pandemic. What should have been an in-person experience in NVIDIA's Santa Clara headquarters became a virtual journey that came with unique challenges:
+One of the biggest aspects of this internship was adapting to a fully remote environment during the height of the COVID-19 pandemic. What should have been an in-person experience at NVIDIA's Santa Clara headquarters became a virtual journey with some unique challenges:
 
-- **Virtual Onboarding and Integration**: Building connections with my team through screens instead of in-person interactions required extra effort and intentionality. I scheduled regular virtual coffee chats with team members to build relationships despite the physical distance.
+- **Virtual Onboarding**: Building connections with my team through screens instead of in person required a lot more effort. I scheduled regular virtual coffee chats with team members to try to build relationships despite the distance.
 
-- **Technical Hurdles**: Setting up complex CAD software remotely presented initial challenges, from VPN connectivity issues to figuring out how to access secure design repositories from home. I quickly learned to troubleshoot technical problems independently.
+- **Technical Issues**: Setting up complex CAD software remotely was challenging. From VPN connectivity issues to figuring out how to access secure design repositories from home, I had to learn to troubleshoot technical problems on my own pretty quickly.
 
-- **Collaborative Design Remotely**: CAD work typically benefits from over-the-shoulder reviews and hands-on guidance. Instead, I had to adapt to screen-sharing sessions and detailed written feedback, developing clear communication skills to overcome the distance.
+- **Remote Design Work**: CAD work usually benefits from over-the-shoulder reviews and hands-on guidance. Instead, I had to adapt to screen-sharing sessions and detailed written feedback. This forced me to develop better communication skills.
 
-- **Work-Life Boundaries**: Managing the blurred lines between professional and personal life while working from my apartment required developing strict routines and dedicated workspace arrangements to maintain focus and productivity.
+- **Work-Life Balance**: Managing the blurred lines between work and personal life while working from my apartment was tough. I had to develop strict routines and set up a dedicated workspace to stay focused and productive.
 
-Despite these challenges, the remote format ultimately strengthened my self-reliance, digital collaboration skills, and ability to communicate technical concepts clearly—valuable skills that would serve me well in my future career.
+Despite these challenges, the remote format ended up strengthening my self-reliance, digital collaboration skills, and ability to communicate technical concepts clearly. These turned out to be valuable skills for my future career.
 
-### Automating CAD Workflows with C++
+### C++ Automation Scripts
 
-One of my key projects involved developing C++ scripts to automate repetitive tasks in our CAD software. This significantly boosted efficiency, reducing manual work by about 15% and allowing engineers to focus on higher-value design tasks. It was my first time applying C++ in a real-world setting, and seeing my code streamline processes was both exciting and rewarding.
+One of my main projects was developing C++ scripts to automate repetitive tasks in our CAD software. This boosted efficiency significantly, reducing manual work by about 15% and letting engineers focus on more important design tasks. It was my first time using C++ in a real-world setting, and seeing my code actually streamline processes was both exciting and rewarding.
 
-### Mastering GD&T and Precision Engineering
+### Learning GD&T and Precision Engineering
 
-I also gained hands-on experience with Geometric Dimensioning and Tolerancing (GD&T), ensuring that every design met precise manufacturing standards. This was a major shift from my prior academic projects, where tolerances were often an afterthought. At NVIDIA, precision was everything—every component had to be manufacturable at scale, and I became the go-to person for verifying compliance with GD&T standards.
+I also got hands-on experience with Geometric Dimensioning and Tolerancing (GD&T), making sure every design met precise manufacturing standards. This was a big shift from my academic projects, where tolerances were often just an afterthought. At NVIDIA, precision was everything. Every component had to be manufacturable at scale, and I ended up becoming the go-to person for verifying compliance with GD&T standards.
 
-### Designing with Manufacturability in Mind
+### Design for Manufacturability
 
-Applying Design for Manufacturability (DFM) principles was another major learning experience. I learned to think beyond just creating a perfect CAD model—each design needed to be optimized for cost-effective and scalable production. This aspect of the internship challenged me to balance creativity with real-world constraints, reinforcing the importance of practical engineering design.
+Applying Design for Manufacturability (DFM) principles was another huge learning experience. I learned to think beyond just creating a perfect CAD model. Each design needed to be optimized for cost-effective and scalable production. This really challenged me to balance creativity with real-world constraints and reinforced how important practical engineering design is.
 
 ![NVIDIA CAD](@images/experience/nvidia/NvidiaCAD.png)
 
-### 3D Modeling and Large-Scale Layouts
+### 3D Modeling and Large Systems
 
-A big part of my role involved creating detailed 3D models of equipment and data center layouts. Transitioning from modeling individual parts to designing large-scale systems was eye-opening. It required meticulous attention to detail and a strong understanding of spatial organization to ensure everything fit together seamlessly.
+A big part of my role was creating detailed 3D models of equipment and data center layouts. Going from modeling individual parts to designing large-scale systems was honestly eye-opening. It required a lot of attention to detail and a strong understanding of spatial organization to make sure everything fit together seamlessly.
 
-### Expanding My CAD Toolkit
+### Learning New CAD Tools
 
-During this internship, I worked extensively with multiple CAD tools, including Creo, Windchill, SolidWorks, and Fusion 360. While I was already proficient in SolidWorks from my TA experience, mastering new platforms broadened my skill set and deepened my understanding of industry-standard design workflows.
+During this internship, I worked with multiple CAD tools including Creo, Windchill, SolidWorks, and Fusion 360. I was already good with SolidWorks from my TA experience, but mastering new platforms broadened my skill set and gave me a deeper understanding of industry-standard design workflows.
 
-### Remote Collaboration Skills Development
+### Remote Collaboration Skills
 
-The pandemic environment forced me to develop robust virtual collaboration skills:
+The pandemic environment forced me to develop better virtual collaboration skills:
 
-- **Detailed Documentation**: I created comprehensive documentation of my work to ensure clarity across time zones and asynchronous collaboration.
+- **Documentation**: I created comprehensive documentation of my work to make sure things were clear across time zones when we were working asynchronously.
 
-- **Effective Digital Communication**: I learned to articulate complex design concepts clearly through written explanations, annotated screenshots, and recorded walkthroughs when live demonstrations weren't possible.
+- **Digital Communication**: I learned to explain complex design concepts clearly through written explanations, annotated screenshots, and recorded walkthroughs since live demonstrations were not always possible.
 
-- **Time Management**: Working across multiple time zones with team members in different locations required careful scheduling and prioritization to ensure project deadlines were met.
+- **Time Management**: Working with team members in different time zones required careful scheduling and prioritization to make sure we hit project deadlines.
 
-### Wrapping Up: A Defining First Internship
+### Looking Back
 
-Looking back, my time at NVIDIA was an invaluable first step into the engineering world. It bridged the gap between the theoretical knowledge I had as a TA and the practical skills required in a high-tech industry. This experience not only sharpened my technical abilities but also solidified my passion for engineering design, automation, and problem-solving.
+Looking back, my time at NVIDIA was a really valuable first step into the engineering world. It bridged the gap between the theoretical knowledge I had as a TA and the practical skills you actually need in a high-tech industry. This experience sharpened my technical abilities and solidified my passion for engineering design, automation, and problem-solving.
 
-The additional layer of navigating a remote internship during unprecedented global circumstances developed my resilience and adaptability—skills that proved just as valuable as the technical knowledge I gained. The ability to thrive in a virtual environment and maintain productivity despite the isolation of the pandemic demonstrated my commitment and self-motivation to potential employers.
+Navigating a remote internship during unprecedented circumstances also developed my resilience and adaptability. These skills proved just as valuable as the technical knowledge I gained. Being able to stay productive in a virtual environment despite the isolation of the pandemic showed my commitment and self-motivation.
 
-It was the perfect start to my journey—one that would later lead me to robotics, AI, and deeper explorations into intelligent systems.
+It was honestly the perfect start to my journey. One that would later lead me to robotics, AI, and deeper explorations into intelligent systems.
 
 ---

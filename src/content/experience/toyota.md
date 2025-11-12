@@ -11,30 +11,30 @@ tags: ["Telematics", "Software Reliability", "Autonomous Systems", "Data Analyti
 
 ## Software Systems Engineer at Toyota Motors
 
-As part of Toyota’s rotational program, I explored different aspects of software development, focusing on robotics, reinforcement learning, and data-driven solutions. Each rotation gave me hands-on experience in cutting-edge automotive technologies, allowing me to contribute to projects shaping the future of mobility.
+I joined Toyota's rotational program where I got to explore different aspects of software development. I focused mainly on robotics, reinforcement learning, and data-driven solutions. Each rotation gave me hands-on experience with cutting-edge automotive tech and let me contribute to projects that are shaping the future of mobility.
 
 ![Toyota Headquarters](@images/experience/toyota/ToyotaHeadquarters.jpg)
 
-### Advancing Autonomous Systems
+### Autonomous Systems Work
 
-Working with the Advanced Driver Assistance Systems team, I integrated reinforcement learning algorithms to improve autonomous driving capabilities. My work focused on optimizing decision-making in real-world scenarios, leveraging my robotics background to develop adaptive and intelligent driving systems. These contributions helped enhance the safety and efficiency of Toyota’s autonomous vehicle technology.
+Working with the Advanced Driver Assistance Systems team, I integrated reinforcement learning algorithms to improve autonomous driving capabilities. My work was all about optimizing decision-making in real-world scenarios. I used my robotics background to help develop adaptive and intelligent driving systems. These contributions helped make Toyota's autonomous vehicle technology safer and more efficient.
 
 ![Lexus Concept Car](@images/experience/toyota/LexusConceptCar.jpg)
 
-### Data-Driven Innovation
+### Data Analytics and ML
 
-During my time with the Data Analytics and Machine Learning team, I developed predictive maintenance algorithms, applying reinforcement learning to improve system efficiency and reliability. By leveraging data analytics and machine learning, I contributed to optimizing vehicle performance and ensuring continuous improvement in Toyota’s automotive solutions.
+During my rotation with the Data Analytics and Machine Learning team, I developed predictive maintenance algorithms using reinforcement learning to improve system efficiency and reliability. By using data analytics and machine learning, I helped optimize vehicle performance and work toward continuous improvement in Toyota's automotive solutions.
 
-### Ensuring Software Reliability and Monitoring with Telematics
+### Software Reliability and Telematics Monitoring
 
-In the software reliability rotation, I focused on setting up robust monitoring workflows using Datadog and telematics modules. I implemented real-time logging, alerting, and anomaly detection to ensure that critical automotive systems performed as expected. By integrating telemetry data from connected vehicles, I helped enhance diagnostic capabilities, reduce downtime, and improve predictive maintenance strategies. These efforts played a key role in ensuring the reliability of Toyota’s software ecosystem, reinforcing a proactive approach to system monitoring and optimization.
+In the software reliability rotation, I focused on setting up monitoring workflows using Datadog and telematics modules. I implemented real-time logging, alerting, and anomaly detection to make sure critical automotive systems were performing as expected. By integrating telemetry data from connected vehicles, I helped improve diagnostic capabilities, reduce downtime, and strengthen predictive maintenance strategies. This work was important for making sure Toyota's software ecosystem was reliable and that we were taking a proactive approach to monitoring and optimization.
 
 
 ![Toyota Concept Car](@images/experience/toyota/ToyotaConceptCar.jpeg)
 
 
-### Looking Ahead
+### Looking Back
 
-This experience at Toyota has strengthened my expertise in robotics and AI while deepening my passion for innovation in autonomous systems. The exposure to real-world challenges reinforced my commitment to pushing the boundaries of intelligent mobility. As I continue my journey in AI and robotics, I am excited to apply these learnings to future projects at the intersection of technology and transportation.
+This experience at Toyota strengthened my skills in robotics and AI while deepening my interest in autonomous systems. Getting exposure to real-world challenges reinforced why I want to keep pushing the boundaries of intelligent mobility. As I continue working in AI and robotics, I am excited to apply what I learned to future projects at the intersection of technology and transportation.
 
 ---
