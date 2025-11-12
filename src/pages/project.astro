@@ -50,13 +50,13 @@ console.log("Projects after sorting:", sortedProjects.length);
   <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
-        <div class="relative overflow-hidden">
+        <div class="relative overflow-visible">
           <!-- Tech grid overlay -->
           <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
-          <div class="relative z-10 sm:px-20 px-6 py-12">
+          <div class="relative z-10 sm:px-20 px-6 py-12 pb-16">
             <!-- BOLD HEADER -->
-            <div class="header-section mb-12">
+            <div class="header-section mb-16">
               <h1 class="projects-title font-mono font-black tracking-tighter leading-none select-none">
                 <span class="char char-1">P</span><span class="char char-2">R</span><span class="char char-3">O</span><span class="char char-4">J</span><span class="char char-5">E</span><span class="char char-6">C</span><span class="char char-7">T</span><span class="char char-8">S</span>
               </h1>
@@ -66,7 +66,7 @@ console.log("Projects after sorting:", sortedProjects.length);
       <!-- Robot and intro section, side-by-side on larger screens, stacked on mobile -->
       <div class="flex flex-col md:flex-row gap-6 mb-12">
         <!-- Heavy Robot Model Viewer with fullscreen intro -->
-        <div class="w-full md:w-2/3 relative z-1">
+        <div class="w-full md:w-2/3 relative z-20">
           <div
             id="robot-viewer-wrapper"
             class="robot-showcase fullscreen-intro relative w-full h-64 sm:h-72 md:h-80 lg:h-96 rounded-xl overflow-hidden border border-accent/20 transition-all duration-300 hover:shadow-lg"

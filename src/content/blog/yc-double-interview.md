@@ -8,55 +8,55 @@ description: "A unique experience of being interviewed twice by Y Combinator in 
 tags: ["startups", "Y Combinator", "entrepreneurship", "interviews"]
 ---
 
-My journey toward applying to Y Combinator (YC) didn’t start with a grand vision of building a venture-backed startup. It actually started with freelancing. Freelancing gave me the first taste of building something of my own—solving problems, delivering value, and getting paid for it. There was something exhilarating about owning a project, setting my rates, and being directly responsible for success or failure.
+My journey toward applying to Y Combinator (YC) did not start with some grand vision of building a venture-backed startup. It actually started with freelancing. Freelancing gave me my first taste of building something of my own, solving problems, delivering value, and getting paid for it. There was something really exciting about owning a project, setting my rates, and being directly responsible for whether it succeeded or failed.
 
-That realization planted a seed: I could take ownership of problems and create solutions that had tangible impact. Eventually, I started thinking beyond individual projects—what if I built something scalable? That’s when the idea of starting my own company became more than just a passing thought.
+That planted a seed in my head. I could take ownership of problems and create solutions that actually had impact. Eventually, I started thinking bigger than just individual projects. What if I built something scalable? That is when starting my own company became more than just a random thought.
 
 ## The Birth of an Idea: Construction Industry Pain Points
 
-I’ve always known that the construction industry was incredibly fragmented. Through customer discovery, I found a compelling problem space: the inefficiencies in the bidding and change request processes. The bidding process is how general contracting firms win new business, requiring detailed cost estimations and precise documentation. Mistakes, inconsistencies, and inefficiencies in this process often lead to financial losses and operational setbacks.
+I have always known that the construction industry was incredibly fragmented and messy. Through talking to people, I found what seemed like a compelling problem: the inefficiencies in the bidding and change request processes. The bidding process is how general contracting firms win new business. It requires detailed cost estimations and precise documentation. Mistakes and inefficiencies in this process often lead to financial losses and operational issues.
 
-We believed that AI could streamline and improve this process, offering contractors a smarter, faster way to bid on projects. With that goal in mind, I teamed up with two incredibly smart friends, Dominic and Prathik, to start building a prototype. Prathik, always the go-getter, even secured our first beta user by striking up a conversation with a general contractor on a live construction site. We quickly built a demo and began outreach efforts to validate our idea.
+We thought that AI could streamline this whole thing and make it way better for contractors. With that goal, I teamed up with two really smart friends, Dominic and Prathik, to start building a prototype. Prathik, who is always hustling, even secured our first beta user by literally striking up a conversation with a general contractor on a live construction site. We quickly built a demo and started reaching out to people to see if this was actually a good idea.
 
 ## Applying to YC: First Startup, First Interview
 
-Although we were still early in our journey, we decided to apply to YC. This was a first for me—I wasn’t deeply familiar with YC until Prathik explained its significance. We submitted our application, detailing our problem, solution, and progress.
+Even though we were still pretty early, we decided to just apply to YC. This was new territory for me. I was not deeply familiar with YC until Prathik explained how big of a deal it was. We submitted our application with details about our problem, solution, and what we had done so far.
 
-To our surprise, we got an interview invite.
+To our surprise, we actually got an interview invite.
 
-The first interview was nerve-wracking. YC interviews are notoriously fast-paced—10 minutes to convince some of the sharpest investors in the world that your startup has the potential to be a billion-dollar company. Our interview focused heavily on technical questions, our AI approach, and the market size. The partners wanted to understand how big this opportunity was and why we were the right team to tackle it.
+The first interview was nerve-wracking as hell. YC interviews are notoriously fast paced. You have 10 minutes to convince some of the sharpest investors in the world that your startup could be a billion-dollar company. Our interview focused heavily on technical questions, our AI approach, and the market size. The partners wanted to understand how big this opportunity was and why we were the right team to go after it.
 
-Two days later, we received an unexpected email—YC wanted a second interview.
+Two days later, we got an unexpected email. YC wanted a second interview.
 
 ## The Second Interview: A Rare Occurrence
 
-As far as I know, being invited to a second interview within the same batch isn’t common. It meant YC saw potential but had unresolved questions. In hindsight, this was due to our failure to clearly articulate the problem and the exact value we could provide. The second interview dove into our pricing model, customer acquisition strategy, and go-to-market approach. We hadn’t adequately prepared for these aspects, and it showed.
+As far as I know, getting invited to a second interview within the same batch is not that common. It meant YC saw some potential but had questions they needed answered. Looking back, this was because we failed to clearly explain the problem and the exact value we could provide. The second interview went deep into our pricing model, customer acquisition strategy, and go-to-market approach. We had not prepared well for these aspects, and it definitely showed.
 
-Ultimately, we got rejected.
+In the end, we got rejected.
 
-## Reflections: Why We Didn’t Get In
+## Reflections: Why We Didn't Get In
 
-The biggest lesson I took from this experience was the importance of storytelling. YC’s interviewers are incredibly sharp, but they still need to be convinced—quickly and clearly. We had an interesting problem and a potentially valuable solution, but we didn’t explain it well enough. If you can’t hook someone’s attention within the first 2-3 minutes, you’ve already lost them.
+The biggest lesson I learned from this was the importance of storytelling. YC's interviewers are incredibly sharp, but they still need to be convinced quickly and clearly. We had an interesting problem and a potentially valuable solution, but we did not explain it well enough. If you cannot hook someone's attention within the first 2 to 3 minutes, you have already lost them.
 
-I also realized that strong technical skills alone aren’t enough. You need a deep understanding of your market, a clear business strategy, and an ability to communicate your vision succinctly. Our lack of preparation in these areas likely contributed to our rejection.
+I also realized that strong technical skills alone are not enough. You need a deep understanding of your market, a clear business strategy, and the ability to communicate your vision in a way that makes sense. Our lack of preparation in these areas definitely hurt us.
 
 ## The Bigger Takeaway: From Freelancer to Founder
 
-Despite the rejection, this experience solidified my belief that I wanted to build something of my own. Freelancing had taught me that solving problems and providing value were tangible skills I could own and design. The YC process reinforced that lesson on a larger scale—beyond just earning money, I wanted to create something impactful and lasting.
+Despite the rejection, this experience made it clear that I wanted to build something of my own. Freelancing had taught me that solving problems and providing value were real skills I could use to create things. The YC process reinforced that on a bigger scale. Beyond just earning money, I wanted to create something that actually mattered and lasted.
 
-The rejection wasn’t the end. It was a stepping stone.
+The rejection was not the end. It was more like a learning experience and a stepping stone.
 
 ## Advice for Others Applying to YC
 
-1. **Clearly articulate your problem and solution.** If an intelligent outsider doesn’t understand what you do in 30 seconds, you need to refine your pitch.
-2. **Be prepared to answer tough business questions.** Know your market size, pricing strategy, and customer acquisition model inside and out.
-3. **Tell a compelling story.** Investors aren’t just evaluating your idea; they’re evaluating your ability to communicate it effectively.
-4. **Show traction, even if it’s early.** Customers, users, and beta testers matter more than just an idea.
-5. **Be concise.** YC interviews are only 10 minutes long. Every second counts.
+1. **Clearly explain your problem and solution.** If a smart person does not understand what you do in 30 seconds, you need to work on your pitch.
+2. **Be ready for tough business questions.** Know your market size, pricing strategy, and customer acquisition model really well.
+3. **Tell a good story.** Investors are not just evaluating your idea. They are evaluating your ability to communicate it.
+4. **Show traction, even if it's early.** Actual customers, users, and beta testers matter way more than just an idea.
+5. **Be concise.** YC interviews are only 10 minutes long. Every second actually counts.
 
-## What’s Next?
+## What's Next?
 
-This experience wasn’t a failure—it was a masterclass in pitching, business strategy, and startup storytelling. While that particular idea didn’t make it into YC, the lessons I learned will undoubtedly shape my future endeavors. I left the process with a better understanding of what it takes to build and pitch a startup, and I know this won’t be my last attempt.
+This experience was not a failure. It was honestly like a crash course in pitching, business strategy, and startup storytelling. While that particular idea did not make it into YC, the lessons I learned will definitely help in the future. I came out with a better understanding of what it takes to build and pitch a startup, and I know this will not be my last attempt.
 
-YC or not, the journey of building and creating is just beginning.
+YC or not, the journey of building stuff is just getting started.
 
