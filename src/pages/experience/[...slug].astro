@@ -75,9 +75,19 @@ function formatYearMonth(dateString: string) {
               <!-- Giant Job Title -->
               <div class="header-section mb-12">
                 <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
-                  {experience.data.title.toUpperCase().split('').map((char, index) => (
-                    <span class={`char char-${index + 1}`}>{char === ' ' ? '\u00A0' : char}</span>
-                  ))}
+                  {experience.data.title.toUpperCase().split(' ').map((word, wordIndex) => {
+                    let charCount = 0;
+                    for (let i = 0; i < wordIndex; i++) {
+                      charCount += experience.data.title.toUpperCase().split(' ')[i].length;
+                    }
+                    return (
+                      <span class="word">
+                        {word.split('').map((char, charIndex) => (
+                          <span class={`char char-${charCount + charIndex + 1}`}>{char}</span>
+                        ))}
+                      </span>
+                    );
+                  })}
                 </h1>
                 <div class="accent-line mt-6"></div>
               </div>
@@ -274,6 +284,13 @@ function formatYearMonth(dateString: string) {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* Word wrapper to prevent mid-word breaks */
+  .hero-title .word {
+    display: inline-block;
+    white-space: nowrap;
+    margin-right: 0.3em;
   }
 
   /* Character animations */

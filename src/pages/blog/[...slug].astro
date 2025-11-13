@@ -1,133 +1,382 @@
---- 
-import { getCollection, getEntryBySlug } from "astro:content"; 
-import Layout from "../../layouts/Layout.astro"; 
-import Navbar from "../../layouts/Navigation.astro"; 
-import Footer from "../../layouts/Footer.astro"; 
-import { getEntry } from "astro:content"; 
- 
-// Remove "props" from the returned object 
-export async function getStaticPaths() { 
-  const posts = await getCollection("blog"); 
-  return posts.map((post) => ({ 
-    params: { slug: post.slug }, 
-  })); 
-} 
- 
-// Get the slug from the URL parameters 
-const { slug } = Astro.params; 
-// Fetch the post using getEntryBySlug rather than passing it from getStaticPaths 
-const post = await getEntry("blog", slug); 
-const { Content } = await post.render(); 
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../layouts/Navigation.astro";
+import Footer from "../../layouts/Footer.astro";
+import MarkdownContent from "../../components/MarkdownContent.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const post = await getEntry("blog", slug);
+const { Content } = await post.render();
 
 // Set default status if undefined
-const defaultStatus = "Coming Soon";
+const defaultStatus = "coming-soon";
 const actualStatus = post.data.status || defaultStatus;
-const isComplete = actualStatus === "Complete";
-const statusDisplay = isComplete ? "Complete" : defaultStatus;
---- 
- 
-<Layout title={`${post.data.title} | Rohan Singh`}> 
-  <Navbar> 
-    <div class="sm:px-20 px-6 py-8"> 
-      <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto"> 
-        <header class="mb-8"> 
-          <h1 class="text-4xl font-bold mb-4">{post.data.title}</h1> 
-          <div class="flex items-center gap-4 text-primary/60"> 
-            <time datetime={post.data.date}> 
-              { 
-                new Date(post.data.date).toLocaleDateString("en-US", { 
-                  year: "numeric", 
-                  month: "long", 
-                  day: "numeric", 
-                }) 
-              } 
-            </time> 
-            <span>•</span> 
-            <span>{post.data.author}</span> 
-            <span>•</span> 
-            <span
-              class={`px-2 py-0.5 rounded-full text-xs ${isComplete ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"}`} 
-            > 
-              {statusDisplay} 
-            </span> 
-          </div> 
-          <div class="flex flex-wrap gap-2 mt-4"> 
-            { 
-              post.data.tags.map((tag: string) => ( 
-                <span class="px-3 py-1 text-xs rounded-full bg-accent/10 text-primary/70"> 
-                  {tag} 
-                </span> 
-              )) 
-            } 
-          </div> 
-        </header> 
-         
-        <div class="markdown-content"> 
-          <Content /> 
-        </div> 
-         
-        {
-          !isComplete && (
-            <div class="mt-8 p-4 border border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-800 rounded-lg"> 
-              <p class="font-medium text-amber-800 dark:text-amber-300"> 
-                This post is still in progress. Check back soon for the complete 
-                article! 
-              </p> 
-            </div> 
-          )
-        } 
-      </article> 
-    </div> 
-  </Navbar> 
-  <Footer /> 
-</Layout> 
- 
-<style> 
-  .markdown-content { 
-    @apply text-primary/90; 
-  } 
- 
-  .markdown-content :global(h1) { 
-    @apply text-3xl font-bold mb-6 mt-8; 
-  } 
- 
-  .markdown-content :global(h2) { 
-    @apply text-2xl font-semibold mb-4 mt-6; 
-  } 
- 
-  .markdown-content :global(h3) { 
-    @apply text-xl font-medium mb-3 mt-5; 
-  } 
- 
-  .markdown-content :global(p) { 
-    @apply mb-4 leading-relaxed; 
-  } 
- 
-  .markdown-content :global(ul) { 
-    @apply list-disc list-inside mb-4 ml-4; 
-  } 
- 
-  .markdown-content :global(ol) { 
-    @apply list-decimal list-inside mb-4 ml-4; 
-  } 
- 
-  .markdown-content :global(li) { 
-    @apply mb-2; 
-  } 
- 
-  .markdown-content :global(a) { 
-    @apply text-blue-500 hover:text-blue-600 underline; 
-  } 
- 
-  .markdown-content :global(blockquote) { 
-    @apply border-l-4 border-accent/20 pl-4 italic my-4; 
-  } 
- 
-  .markdown-content :global(code) { 
-    @apply bg-accent/10 rounded px-1 py-0.5; 
-  } 
- 
-  .markdown-content :global(pre) { 
-    @apply bg-accent/10 rounded p-4 mb-4 overflow-x-auto; 
-  } 
+const isComplete = actualStatus === "complete";
+
+type BlogStatus = "complete" | "coming-soon";
+
+// Status colors
+const statusColors: Record<BlogStatus, string> = {
+  complete: "bg-green-500/10 text-green-300 border-green-500/30",
+  "coming-soon": "bg-yellow-500/10 text-yellow-300 border-yellow-500/30",
+};
+
+const statusText: Record<BlogStatus, string> = {
+  complete: "PUBLISHED",
+  "coming-soon": "COMING SOON",
+};
+---
+
+<Layout title={`${post.data.title} | Rohan Singh`}>
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-grow">
+      <Navbar>
+        <!-- Breadcrumbs -->
+        <nav class="sm:px-20 px-6 pt-8 pb-4" aria-label="Breadcrumb">
+          <ol class="breadcrumb font-mono text-sm flex items-center gap-2 text-white/50">
+            <li>
+              <a href="/" class="hover:text-white/80 transition-colors">Home</a>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <a href="/blog" class="hover:text-white/80 transition-colors">Blog</a>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li class="text-white/70 truncate max-w-[200px] sm:max-w-none">
+              {post.data.title}
+            </li>
+          </ol>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section w-full sm:px-20 px-6 py-12 flex flex-col justify-center" style="min-height: 50vh;">
+          <div class="w-full">
+            <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
+              {post.data.title.toUpperCase().split(' ').map((word, wordIndex) => {
+                let charCount = 0;
+                for (let i = 0; i < wordIndex; i++) {
+                  charCount += post.data.title.toUpperCase().split(' ')[i].length;
+                }
+                return (
+                  <span class="word">
+                    {word.split('').map((char, charIndex) => (
+                      <span class={`char char-${charCount + charIndex + 1}`}>{char}</span>
+                    ))}
+                  </span>
+                );
+              })}
+            </h1>
+          </div>
+        </section>
+
+        <!-- Metadata Section -->
+        <section class="metadata-section w-full sm:px-20 px-6 py-8 border-t border-white/10">
+          <div class="flex flex-col gap-6">
+            <!-- Status Badge and Date -->
+            <div class="flex flex-wrap items-center gap-4">
+              <span class={`status-badge font-mono text-xs px-3 py-1.5 rounded border ${statusColors[actualStatus as BlogStatus]}`}>
+                {statusText[actualStatus as BlogStatus]}
+              </span>
+              <div class="flex items-center gap-3 font-mono text-sm text-white/50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <time datetime={post.data.date}>
+                  {new Date(post.data.date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              </div>
+              <div class="flex items-center gap-2 font-mono text-sm text-white/50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>{post.data.author}</span>
+              </div>
+            </div>
+
+            <!-- Tags -->
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2">
+                {post.data.tags.map((tag: string) => (
+                  <span class="font-mono text-xs px-3 py-1 rounded bg-white/5 text-white/60 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        <!-- Story Content Section -->
+        <section class="content-section w-full sm:px-20 px-6 py-12">
+          <div class="w-full">
+            <div class="section-label font-mono text-sm tracking-[0.3em] uppercase text-white/50 mb-8">
+              // ARTICLE
+            </div>
+            <div class="story-content">
+              <MarkdownContent>
+                <Content />
+              </MarkdownContent>
+            </div>
+
+            <!-- In Progress Notice -->
+            {!isComplete && (
+              <div class="in-progress-notice mt-12 p-6 border border-yellow-500/30 bg-yellow-500/5 rounded-lg">
+                <div class="flex items-start gap-3">
+                  <svg class="h-6 w-6 text-yellow-300 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div>
+                    <p class="font-mono font-semibold text-yellow-300 mb-1">Article In Progress</p>
+                    <p class="text-white/70 text-sm">
+                      This post is still being written. Check back soon for the complete article!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <!-- Navigation Section -->
+        <section class="navigation-section w-full sm:px-20 px-6 py-12 border-t border-white/10">
+          <div class="flex flex-col sm:flex-row gap-4 justify-between">
+            <a
+              href="/blog"
+              class="nav-button group flex items-center gap-2 font-mono text-sm px-6 py-3 rounded border border-white/20 text-white/70 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all"
+            >
+              <svg class="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              <span>Back to Blog</span>
+            </a>
+            <a
+              href="/experience"
+              class="nav-button group flex items-center gap-2 font-mono text-sm px-6 py-3 rounded border border-white/20 text-white/70 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all"
+            >
+              <span>View Experience</span>
+              <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </section>
+      </Navbar>
+    </div>
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  /* Hero Title Animation */
+  .hero-title {
+    font-size: clamp(1.8rem, 14vw, 6rem);
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Word wrapper to prevent mid-word breaks */
+  .hero-title .word {
+    display: inline-block;
+    white-space: nowrap;
+    margin-right: 0.3em;
+  }
+
+  .hero-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes charReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Generate animation delays for up to 50 characters */
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.06s; }
+  .char-3 { animation-delay: 0.07s; }
+  .char-4 { animation-delay: 0.08s; }
+  .char-5 { animation-delay: 0.09s; }
+  .char-6 { animation-delay: 0.10s; }
+  .char-7 { animation-delay: 0.11s; }
+  .char-8 { animation-delay: 0.12s; }
+  .char-9 { animation-delay: 0.13s; }
+  .char-10 { animation-delay: 0.14s; }
+  .char-11 { animation-delay: 0.15s; }
+  .char-12 { animation-delay: 0.16s; }
+  .char-13 { animation-delay: 0.17s; }
+  .char-14 { animation-delay: 0.18s; }
+  .char-15 { animation-delay: 0.19s; }
+  .char-16 { animation-delay: 0.20s; }
+  .char-17 { animation-delay: 0.21s; }
+  .char-18 { animation-delay: 0.22s; }
+  .char-19 { animation-delay: 0.23s; }
+  .char-20 { animation-delay: 0.24s; }
+  .char-21 { animation-delay: 0.25s; }
+  .char-22 { animation-delay: 0.26s; }
+  .char-23 { animation-delay: 0.27s; }
+  .char-24 { animation-delay: 0.28s; }
+  .char-25 { animation-delay: 0.29s; }
+  .char-26 { animation-delay: 0.30s; }
+  .char-27 { animation-delay: 0.31s; }
+  .char-28 { animation-delay: 0.32s; }
+  .char-29 { animation-delay: 0.33s; }
+  .char-30 { animation-delay: 0.34s; }
+  .char-31 { animation-delay: 0.35s; }
+  .char-32 { animation-delay: 0.36s; }
+  .char-33 { animation-delay: 0.37s; }
+  .char-34 { animation-delay: 0.38s; }
+  .char-35 { animation-delay: 0.39s; }
+  .char-36 { animation-delay: 0.40s; }
+  .char-37 { animation-delay: 0.41s; }
+  .char-38 { animation-delay: 0.42s; }
+  .char-39 { animation-delay: 0.43s; }
+  .char-40 { animation-delay: 0.44s; }
+  .char-41 { animation-delay: 0.45s; }
+  .char-42 { animation-delay: 0.46s; }
+  .char-43 { animation-delay: 0.47s; }
+  .char-44 { animation-delay: 0.48s; }
+  .char-45 { animation-delay: 0.49s; }
+  .char-46 { animation-delay: 0.50s; }
+  .char-47 { animation-delay: 0.51s; }
+  .char-48 { animation-delay: 0.52s; }
+  .char-49 { animation-delay: 0.53s; }
+  .char-50 { animation-delay: 0.54s; }
+
+  /* Hero Section Animation */
+  .hero-section {
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Metadata Section Animation */
+  .metadata-section {
+    animation: slideUp 0.6s ease-out 0.3s backwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Content Section Animation */
+  .content-section {
+    animation: slideUp 0.6s ease-out 0.5s backwards;
+  }
+
+  /* Story Content Typography */
+  .story-content :global(h2) {
+    font-family: monospace;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s ease;
+  }
+
+  .story-content :global(h2:hover) {
+    border-left-color: rgba(255, 255, 255, 0.5);
+    padding-left: 2.5rem;
+  }
+
+  .story-content :global(h3) {
+    font-family: monospace;
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .story-content :global(p) {
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 1.5rem;
+  }
+
+  /* In Progress Notice */
+  .in-progress-notice {
+    animation: slideUp 0.6s ease-out 0.7s backwards;
+  }
+
+  /* Navigation Section */
+  .navigation-section {
+    animation: slideUp 0.6s ease-out 0.9s backwards;
+  }
+
+  /* Breadcrumb Animation */
+  .breadcrumb {
+    animation: slideDown 0.5s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 640px) {
+    .hero-section {
+      min-height: 35vh !important;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-size: clamp(1.5rem, 12vw, 3rem);
+    }
+
+    .metadata-section,
+    .content-section,
+    .navigation-section {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .navigation-section .flex {
+      flex-direction: column;
+    }
+  }
 </style>
