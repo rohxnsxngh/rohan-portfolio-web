@@ -140,7 +140,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                       <div class="journey-glow-overlay cyan-glow"></div>
                       <div class="journey-card-content">
                         <h3 class="journey-company">ASML</h3>
-                        <p class="journey-year">2024</p>
+                        <p class="journey-year">2025</p>
                         <p class="journey-role">Robotics Eng</p>
                       </div>
                     </div>
@@ -417,41 +417,13 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     }
   }
 
-  /* Connecting Line - Vertical on Mobile */
+  /* Connecting Line - Removed */
   .journey-connector-vertical {
-    position: absolute;
-    left: 3.5rem;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-      to bottom,
-      rgba(150, 255, 150, 0.4),
-      rgba(255, 100, 100, 0.4),
-      rgba(0, 255, 255, 0.4),
-      rgba(150, 255, 150, 0.4)
-    );
-    opacity: 0.3;
-    z-index: 0;
+    display: none;
   }
 
-  /* Connecting Line - Horizontal on Desktop */
   .journey-connector {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 2px;
-    background: linear-gradient(
-      to right,
-      rgba(150, 255, 150, 0.4),
-      rgba(255, 100, 100, 0.4),
-      rgba(0, 255, 255, 0.4),
-      rgba(150, 255, 150, 0.4)
-    );
-    opacity: 0.3;
-    z-index: 0;
-    transform: translateY(-50%);
+    display: none;
   }
 
   /* Journey Card Wrapper */
@@ -1057,8 +1029,13 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     );
   }
 
+  /* Force glow overlay to be visible on hover */
+  .journey-card-wrapper:hover .journey-glow-overlay {
+    opacity: 1 !important;
+  }
+
   .journey-card:hover .journey-glow-overlay {
-    opacity: 1;
+    opacity: 1 !important;
   }
 
   /* Specific Glow Colors - Subtle, natural intensity */
@@ -1803,42 +1780,68 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       });
     });
 
-    // Animate the glow sweep effect
+    // Animate the glow sweep effect with proper hover interaction
     const isMobile = window.innerWidth < 1024;
     const cycleDuration = 21000; // 21 seconds
     const hoverDuration = 2100; // 2.1 seconds (10% of cycle)
     const delays = [0, 2500, 5000, 7500, 10000, 12500, 15000]; // milliseconds
 
     journeyCardWrappers.forEach((wrapper, index) => {
-      const glowOverlay = wrapper.querySelector('.journey-glow-overlay') as HTMLElement;
+      const wrapperEl = wrapper as HTMLElement;
+      const glowOverlay = wrapperEl.querySelector('.journey-glow-overlay') as HTMLElement;
       if (!glowOverlay) return;
+
+      let isUserHovering = false;
+      let animationFrameId: number;
+
+      // Track user hover state
+      wrapperEl.addEventListener('mouseenter', () => {
+        isUserHovering = true;
+      });
+
+      wrapperEl.addEventListener('mouseleave', () => {
+        isUserHovering = false;
+      });
+
+      // Manual mouse tracking (takes priority when hovering)
+      wrapperEl.addEventListener('mousemove', (e) => {
+        const rect = wrapperEl.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        glowOverlay.style.setProperty('--mouse-x', `${x}%`);
+        glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+      });
 
       function animateGlow() {
         const startTime = Date.now();
         const delay = delays[index];
 
         function updateGlow() {
-          const elapsed = (Date.now() - startTime) % cycleDuration;
-          const adjustedTime = elapsed - delay;
+          // Only animate if user is NOT hovering
+          if (!isUserHovering) {
+            const elapsed = (Date.now() - startTime) % cycleDuration;
+            const adjustedTime = elapsed - delay;
 
-          if (adjustedTime >= 0 && adjustedTime <= hoverDuration) {
-            // We're in the active hover period
-            const progress = adjustedTime / hoverDuration;
+            if (adjustedTime >= 0 && adjustedTime <= hoverDuration) {
+              // We're in the active hover period
+              const progress = adjustedTime / hoverDuration;
 
-            if (isMobile) {
-              // Vertical sweep (top to bottom)
-              const yPos = progress * 100;
-              glowOverlay.style.setProperty('--mouse-x', '50%');
-              glowOverlay.style.setProperty('--mouse-y', `${yPos}%`);
-            } else {
-              // Horizontal sweep (left to right)
-              const xPos = progress * 100;
-              glowOverlay.style.setProperty('--mouse-x', `${xPos}%`);
-              glowOverlay.style.setProperty('--mouse-y', '50%');
+              if (isMobile) {
+                // Vertical sweep (top to bottom)
+                const yPos = progress * 100;
+                glowOverlay.style.setProperty('--mouse-x', '50%');
+                glowOverlay.style.setProperty('--mouse-y', `${yPos}%`);
+              } else {
+                // Horizontal sweep (left to right)
+                const xPos = progress * 100;
+                glowOverlay.style.setProperty('--mouse-x', `${xPos}%`);
+                glowOverlay.style.setProperty('--mouse-y', '50%');
+              }
             }
           }
 
-          requestAnimationFrame(updateGlow);
+          animationFrameId = requestAnimationFrame(updateGlow);
         }
 
         updateGlow();
