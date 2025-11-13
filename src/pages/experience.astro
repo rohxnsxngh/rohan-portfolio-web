@@ -29,25 +29,160 @@ const sortedExperiences = allExperiences.sort((a, b) => {
               <div class="accent-line mt-6"></div>
             </div>
 
-            <!-- JOURNEY TLDR -->
+            <!-- CAREER JOURNEY TIMELINE -->
             <div class="journey-section mb-16 opacity-0" style="animation: fadeInUp 0.8s ease-out forwards; animation-delay: 0.8s;">
-              <p class="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-primary/30 mb-6 uppercase">
-                Career Journey
-              </p>
-              <div class="journey-path font-mono text-xs sm:text-sm flex flex-wrap gap-2 items-center">
-                <span class="company-chip green">NVIDIA</span>
-                <span class="arrow">→</span>
-                <span class="company-chip red-bright">Tesla</span>
-                <span class="arrow">→</span>
-                <span class="company-chip red-bright">Tesla</span>
-                <span class="arrow">→</span>
-                <span class="company-chip red">Toyota</span>
-                <span class="arrow">→</span>
-                <span class="company-chip cyan-bright">ASML</span>
-                <span class="arrow">→</span>
-                <span class="company-chip cyan">OctaPulse</span>
-                <span class="arrow">→</span>
-                <span class="company-chip lime">BCG</span>
+              <div class="flex items-center gap-4 mb-8">
+                <p class="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-primary/30 uppercase">
+                  Career Journey
+                </p>
+                <div class="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent"></div>
+              </div>
+
+              <!-- Timeline Container -->
+              <div class="career-timeline-wrapper relative">
+                <!-- Horizontal connector line (desktop/tablet) -->
+                <div class="journey-connector hidden lg:block"></div>
+                <!-- Vertical connector line (mobile) -->
+                <div class="journey-connector-vertical lg:hidden"></div>
+
+                <!-- Journey Cards Grid -->
+                <div class="journey-cards-grid">
+                  <!-- NVIDIA -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1s;" data-company="nvidia">
+                    <div class="journey-card group">
+                      <!-- Corner accents -->
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+
+                      <!-- Gradient border -->
+                      <div class="journey-gradient-border green-gradient"></div>
+
+                      <!-- Grid overlay -->
+                      <div class="journey-grid-overlay"></div>
+
+                      <!-- Glow effect -->
+                      <div class="journey-glow-overlay green-glow"></div>
+
+                      <!-- Content -->
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">NVIDIA</h3>
+                        <p class="journey-year">2021</p>
+                        <p class="journey-role">CAD Engineering</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tesla 2022 -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.1s;" data-company="tesla">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border red-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay red-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">Tesla</h3>
+                        <p class="journey-year">2022</p>
+                        <p class="journey-role">Software Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tesla 2023 -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.2s;" data-company="tesla">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border red-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay red-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">Tesla</h3>
+                        <p class="journey-year">2023</p>
+                        <p class="journey-role">Software Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Toyota -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.3s;" data-company="toyota">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border red-soft-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay red-soft-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">Toyota</h3>
+                        <p class="journey-year">2024</p>
+                        <p class="journey-role">Software Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ASML -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.4s;" data-company="asml">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border cyan-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay cyan-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">ASML</h3>
+                        <p class="journey-year">2024</p>
+                        <p class="journey-role">Robotics Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- OctaPulse -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.5s;" data-company="octapulse">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border cyan-soft-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay cyan-soft-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">OctaPulse</h3>
+                        <p class="journey-year">2025</p>
+                        <p class="journey-role">CTO</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- BCG - Current -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.6s;" data-company="bcg">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border lime-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay lime-glow"></div>
+                      <div class="journey-card-content">
+                        <div class="journey-badge lime-badge">CURRENT</div>
+                        <h3 class="journey-company">BCG</h3>
+                        <p class="journey-year">2026</p>
+                        <p class="journey-role">Associate</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -259,11 +394,438 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     }
   }
 
-  /* Journey section */
-  .journey-path {
-    line-height: 2;
+  /* Journey Cards Timeline */
+  .career-timeline-wrapper {
+    position: relative;
+    padding: 1rem 0;
   }
 
+  /* Journey Cards Grid - Horizontal on Desktop, Vertical on Mobile */
+  .journey-cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-cards-grid {
+      flex-direction: row;
+      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  /* Connecting Line - Vertical on Mobile */
+  .journey-connector-vertical {
+    position: absolute;
+    left: 3.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      rgba(150, 255, 150, 0.4),
+      rgba(255, 100, 100, 0.4),
+      rgba(0, 255, 255, 0.4),
+      rgba(150, 255, 150, 0.4)
+    );
+    opacity: 0.3;
+    z-index: 0;
+  }
+
+  /* Connecting Line - Horizontal on Desktop */
+  .journey-connector {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      rgba(150, 255, 150, 0.4),
+      rgba(255, 100, 100, 0.4),
+      rgba(0, 255, 255, 0.4),
+      rgba(150, 255, 150, 0.4)
+    );
+    opacity: 0.3;
+    z-index: 0;
+    transform: translateY(-50%);
+  }
+
+  /* Journey Card Wrapper */
+  .journey-card-wrapper {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card-wrapper {
+      flex: 0 1 auto;
+      width: calc((100% - 4.5rem) / 7);
+    }
+  }
+
+  /* Journey Card */
+  .journey-card {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .journey-card:hover {
+    transform: translateY(-4px);
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card:hover {
+      transform: translateY(-8px);
+    }
+  }
+
+  /* Journey Card Content */
+  .journey-card-content {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    position: relative;
+    z-index: 10;
+    transition: all 0.4s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card-content {
+      padding: 1.25rem 0.875rem;
+    }
+  }
+
+  .journey-card:hover .journey-card-content {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Journey Corner Accents */
+  .journey-corner {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-corner {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  .journey-corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 8px 0 0 0;
+  }
+
+  .journey-corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 8px 0 0;
+  }
+
+  .journey-corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 8px;
+  }
+
+  .journey-corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 8px 0;
+  }
+
+  .journey-card:hover .journey-corner {
+    width: 16px;
+    height: 16px;
+    border-color: rgba(255, 255, 255, 0.6);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card:hover .journey-corner {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  /* Journey Gradient Border */
+  .journey-gradient-border {
+    position: absolute;
+    inset: -2px;
+    padding: 2px;
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderGlow 4s linear infinite;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .journey-card:hover .journey-gradient-border {
+    opacity: 1;
+    animation-duration: 2s;
+  }
+
+  /* Gradient Colors */
+  .green-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(150, 255, 150, 0.5),
+      transparent,
+      rgba(150, 255, 150, 0.3),
+      transparent
+    );
+  }
+
+  .red-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 100, 100, 0.5),
+      transparent,
+      rgba(255, 100, 100, 0.3),
+      transparent
+    );
+  }
+
+  .red-soft-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 150, 150, 0.5),
+      transparent,
+      rgba(255, 150, 150, 0.3),
+      transparent
+    );
+  }
+
+  .cyan-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 255, 255, 0.5),
+      transparent,
+      rgba(0, 255, 255, 0.3),
+      transparent
+    );
+  }
+
+  .cyan-soft-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(100, 200, 255, 0.5),
+      transparent,
+      rgba(100, 200, 255, 0.3),
+      transparent
+    );
+  }
+
+  .lime-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(150, 255, 150, 0.5),
+      transparent,
+      rgba(150, 255, 150, 0.3),
+      transparent
+    );
+  }
+
+  /* Journey Grid Overlay */
+  .journey-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 15px 15px;
+    pointer-events: none;
+    z-index: 8;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .journey-card:hover .journey-grid-overlay {
+    opacity: 1;
+  }
+
+  /* Journey Glow Overlay */
+  .journey-glow-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 102, 0, 0.12),
+      rgba(255, 170, 68, 0.08),
+      transparent 50%
+    );
+  }
+
+  .journey-card:hover .journey-glow-overlay {
+    opacity: 1;
+  }
+
+  /* Specific Glow Colors */
+  .green-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(150, 255, 150, 0.15),
+      rgba(150, 255, 150, 0.08),
+      transparent 50%
+    );
+  }
+
+  .red-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 100, 100, 0.15),
+      rgba(255, 100, 100, 0.08),
+      transparent 50%
+    );
+  }
+
+  .red-soft-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 150, 150, 0.15),
+      rgba(255, 150, 150, 0.08),
+      transparent 50%
+    );
+  }
+
+  .cyan-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(0, 255, 255, 0.15),
+      rgba(0, 255, 255, 0.08),
+      transparent 50%
+    );
+  }
+
+  .cyan-soft-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(100, 200, 255, 0.15),
+      rgba(100, 200, 255, 0.08),
+      transparent 50%
+    );
+  }
+
+  .lime-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(150, 255, 150, 0.15),
+      rgba(150, 255, 150, 0.08),
+      transparent 50%
+    );
+  }
+
+  /* Journey Text Styles */
+  .journey-company {
+    font-family: monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.05em;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-company {
+      font-size: 0.75rem;
+    }
+  }
+
+  .journey-year {
+    font-family: monospace;
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.1em;
+  }
+
+  .journey-role {
+    font-family: monospace;
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.05em;
+  }
+
+  /* Journey Badge */
+  .journey-badge {
+    position: absolute;
+    top: -16px;
+    right: -8px;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    letter-spacing: 0.12em;
+    z-index: 20;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-badge {
+      font-size: 7px;
+      padding: 0.35rem 0.5rem;
+      top: -12px;
+      right: -12px;
+    }
+  }
+
+  .green-badge {
+    background: rgba(150, 255, 150, 0.2);
+    color: rgba(150, 255, 150, 0.9);
+    border: 1px solid rgba(150, 255, 150, 0.4);
+  }
+
+  .lime-badge {
+    background: rgba(150, 255, 150, 0.2);
+    color: rgba(150, 255, 150, 0.9);
+    border: 1px solid rgba(150, 255, 150, 0.4);
+  }
+
+  /* Company Chips (keeping for compatibility) */
   .company-chip {
     padding: 0.35rem 0.75rem;
     border-radius: 0.25rem;
@@ -271,6 +833,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     border: 1px solid;
     transition: all 0.4s ease;
     letter-spacing: 0.05em;
+    position: relative;
   }
 
   .company-chip.lime {
@@ -345,17 +908,18 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     background: rgba(150, 255, 150, 0.08);
   }
 
-  .arrow {
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 0.75rem;
-  }
-
   /* Experience Cards */
   .experience-card {
     opacity: 0;
     animation: fadeInUp 0.8s ease-out forwards;
     position: relative;
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .experience-card * {
+    box-sizing: border-box;
   }
 
   /* Corner accent marks */
@@ -496,6 +1060,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 0;
     backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 100%;
   }
 
   .experience-card:hover .card-content {
@@ -503,9 +1069,56 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Company-specific hover glows for experience cards */
+  .experience-card[data-company^="nvidia"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
       0 20px 40px rgba(0, 0, 0, 0.6),
-      0 0 40px rgba(0, 255, 255, 0.1),
-      0 0 80px rgba(255, 0, 255, 0.1);
+      0 0 40px rgba(150, 255, 150, 0.2),
+      0 0 80px rgba(150, 255, 150, 0.1);
+  }
+
+  .experience-card[data-company^="tesla"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(255, 100, 100, 0.2),
+      0 0 80px rgba(255, 100, 100, 0.1);
+  }
+
+  .experience-card[data-company^="toyota"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(255, 150, 150, 0.2),
+      0 0 80px rgba(255, 150, 150, 0.1);
+  }
+
+  .experience-card[data-company^="asml"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(0, 255, 255, 0.2),
+      0 0 80px rgba(0, 255, 255, 0.1);
+  }
+
+  .experience-card[data-company^="octapulse"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(100, 200, 255, 0.2),
+      0 0 80px rgba(100, 200, 255, 0.1);
+  }
+
+  .experience-card[data-company^="boston"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(150, 255, 150, 0.2),
+      0 0 80px rgba(150, 255, 150, 0.1);
   }
 
   /* Responsive corner accents for smaller screens */
@@ -544,6 +1157,14 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   /* Timeline container */
   #experience-timeline {
     position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .cards-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   /* Responsive */
@@ -561,6 +1182,23 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     .card-content {
       padding: 1.5rem;
     }
+
+    /* Fix text overflow on tablet */
+    .card-content h2 {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .card-content p {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .company-badge {
+      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
+    }
   }
 
   @media (max-width: 640px) {
@@ -568,17 +1206,122 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       font-size: clamp(1.8rem, 14vw, 6rem);
     }
 
+    /* Ensure page wrapper doesn't overflow */
+    body {
+      overflow-x: hidden;
+    }
+
+    #experience-timeline {
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .cards-container {
+      padding: 0;
+      margin: 0;
+    }
+
+    .experience-card {
+      margin: 0 0 2rem 0;
+      width: 100%;
+      max-width: 100%;
+    }
+
     .card-content {
-      padding: 1.25rem;
+      padding: 1rem;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Fix all text elements */
+    .card-content * {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Headings */
+    .card-content h2 {
+      font-size: 1.5rem !important;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      padding-right: 0;
+    }
+
+    /* Paragraphs */
+    .card-content p {
+      font-size: 0.875rem !important;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Description paragraph - the longest text */
+    .card-content > p {
+      font-size: 0.875rem !important;
+      line-height: 1.6;
+      max-width: 100%;
+      width: 100%;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* Date text */
+    .card-content .text-xs {
+      font-size: 0.625rem !important;
+    }
+
+    /* Company badge */
+    .company-badge {
+      font-size: 0.625rem !important;
+      padding: 0.375rem 0.625rem;
+      white-space: nowrap;
+      position: static;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+
+    /* Header flex container */
+    .card-content > div:first-child {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .card-content > div:first-child > div {
+      width: 100%;
+    }
+
+    /* Tags */
+    .card-content > div:nth-child(3) {
+      gap: 0.375rem !important;
+    }
+
+    .card-content > div:nth-child(3) span {
+      font-size: 0.625rem !important;
+      padding: 0.25rem 0.5rem;
+    }
+
+    /* Call to action */
+    .card-content > div:last-child {
+      font-size: 0.75rem !important;
+    }
+
+    .card-content > div:last-child svg {
+      width: 0.875rem;
+      height: 0.875rem;
     }
   }
 </style>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
+    // Handle experience cards
     const cards = document.querySelectorAll(".experience-card");
 
-    // Track mouse position within each card for subtle glow effect
     cards.forEach((card) => {
       const cardEl = card as HTMLElement;
       const cardContent = cardEl.querySelector(".card-content") as HTMLElement;
@@ -601,7 +1344,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
         });
       }
 
-      // Handle warm glow overlay
       if (glowOverlayWarm) {
         cardEl.addEventListener("mousemove", (e) => {
           const rect = cardEl.getBoundingClientRect();
@@ -615,6 +1357,30 @@ const sortedExperiences = allExperiences.sort((a, b) => {
         cardEl.addEventListener("mouseleave", () => {
           glowOverlayWarm.style.setProperty("--mouse-x", "50%");
           glowOverlayWarm.style.setProperty("--mouse-y", "50%");
+        });
+      }
+    });
+
+    // Handle journey cards
+    const journeyCards = document.querySelectorAll(".journey-card");
+
+    journeyCards.forEach((card) => {
+      const cardEl = card as HTMLElement;
+      const glowOverlay = cardEl.querySelector<HTMLElement>(".journey-glow-overlay");
+
+      if (glowOverlay) {
+        cardEl.addEventListener("mousemove", (e) => {
+          const rect = cardEl.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+          glowOverlay.style.setProperty("--mouse-x", `${x}%`);
+          glowOverlay.style.setProperty("--mouse-y", `${y}%`);
+        });
+
+        cardEl.addEventListener("mouseleave", () => {
+          glowOverlay.style.setProperty("--mouse-x", "50%");
+          glowOverlay.style.setProperty("--mouse-y", "50%");
         });
       }
     });
