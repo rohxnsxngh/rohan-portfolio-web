@@ -175,7 +175,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                       <div class="journey-grid-overlay"></div>
                       <div class="journey-glow-overlay lime-glow"></div>
                       <div class="journey-card-content">
-                        <div class="journey-badge lime-badge">CURRENT</div>
+                        <div class="journey-badge lime-badge mr-8 mt-4">CURRENT</div>
                         <h3 class="journey-company">BCG</h3>
                         <p class="journey-year">2026</p>
                         <p class="journey-role">Associate</p>
@@ -448,7 +448,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card {
     position: relative;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .journey-card:hover {
@@ -463,38 +463,38 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
   /* Cascading hover-like animation for each card */
   .journey-card-wrapper:nth-child(1) .journey-card {
-    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation: autoHoverEffect 15s ease-in-out infinite;
     animation-delay: 0s;
   }
 
   .journey-card-wrapper:nth-child(2) .journey-card {
-    animation: autoHoverEffect 21s ease-in-out infinite;
-    animation-delay: 2.5s;
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 2s;
   }
 
   .journey-card-wrapper:nth-child(3) .journey-card {
-    animation: autoHoverEffect 21s ease-in-out infinite;
-    animation-delay: 5s;
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 4s;
   }
 
   .journey-card-wrapper:nth-child(4) .journey-card {
-    animation: autoHoverEffect 21s ease-in-out infinite;
-    animation-delay: 7.5s;
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 6s;
   }
 
   .journey-card-wrapper:nth-child(5) .journey-card {
-    animation: autoHoverEffect 21s ease-in-out infinite;
-    animation-delay: 10s;
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 8s;
   }
 
   .journey-card-wrapper:nth-child(6) .journey-card {
-    animation: autoHoverEffect 21s ease-in-out infinite;
-    animation-delay: 12.5s;
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 10s;
   }
 
   .journey-card-wrapper:nth-child(7) .journey-card {
-    animation: autoHoverEffect 21s ease-in-out infinite;
-    animation-delay: 15s;
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   /* Auto hover effect - lift the card (longer duration, smooth transitions) */
@@ -535,38 +535,38 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
   /* Corner accent animation */
   .journey-card-wrapper:nth-child(1) .journey-corner {
-    animation: cornerExpand 21s ease-in-out infinite;
+    animation: cornerExpand 15s ease-in-out infinite;
     animation-delay: 0s;
   }
 
   .journey-card-wrapper:nth-child(2) .journey-corner {
-    animation: cornerExpand 21s ease-in-out infinite;
-    animation-delay: 2.5s;
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 2s;
   }
 
   .journey-card-wrapper:nth-child(3) .journey-corner {
-    animation: cornerExpand 21s ease-in-out infinite;
-    animation-delay: 5s;
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 4s;
   }
 
   .journey-card-wrapper:nth-child(4) .journey-corner {
-    animation: cornerExpand 21s ease-in-out infinite;
-    animation-delay: 7.5s;
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 6s;
   }
 
   .journey-card-wrapper:nth-child(5) .journey-corner {
-    animation: cornerExpand 21s ease-in-out infinite;
-    animation-delay: 10s;
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 8s;
   }
 
   .journey-card-wrapper:nth-child(6) .journey-corner {
-    animation: cornerExpand 21s ease-in-out infinite;
-    animation-delay: 12.5s;
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 10s;
   }
 
   .journey-card-wrapper:nth-child(7) .journey-corner {
-    animation: cornerExpand 21s ease-in-out infinite;
-    animation-delay: 15s;
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   @keyframes cornerExpand {
@@ -627,38 +627,38 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
   /* Gradient border animation */
   .journey-card-wrapper:nth-child(1) .journey-gradient-border {
-    animation: borderIntensify 21s ease-in-out infinite;
+    animation: borderIntensify 15s ease-in-out infinite;
     animation-delay: 0s;
   }
 
   .journey-card-wrapper:nth-child(2) .journey-gradient-border {
-    animation: borderIntensify 21s ease-in-out infinite;
-    animation-delay: 2.5s;
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 2s;
   }
 
   .journey-card-wrapper:nth-child(3) .journey-gradient-border {
-    animation: borderIntensify 21s ease-in-out infinite;
-    animation-delay: 5s;
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 4s;
   }
 
   .journey-card-wrapper:nth-child(4) .journey-gradient-border {
-    animation: borderIntensify 21s ease-in-out infinite;
-    animation-delay: 7.5s;
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 6s;
   }
 
   .journey-card-wrapper:nth-child(5) .journey-gradient-border {
-    animation: borderIntensify 21s ease-in-out infinite;
-    animation-delay: 10s;
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 8s;
   }
 
   .journey-card-wrapper:nth-child(6) .journey-gradient-border {
-    animation: borderIntensify 21s ease-in-out infinite;
-    animation-delay: 12.5s;
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 10s;
   }
 
   .journey-card-wrapper:nth-child(7) .journey-gradient-border {
-    animation: borderIntensify 21s ease-in-out infinite;
-    animation-delay: 15s;
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   @keyframes borderIntensify {
@@ -680,38 +680,38 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
   /* Grid overlay animation */
   .journey-card-wrapper:nth-child(1) .journey-grid-overlay {
-    animation: gridFadeIn 21s ease-in-out infinite;
+    animation: gridFadeIn 15s ease-in-out infinite;
     animation-delay: 0s;
   }
 
   .journey-card-wrapper:nth-child(2) .journey-grid-overlay {
-    animation: gridFadeIn 21s ease-in-out infinite;
-    animation-delay: 2.5s;
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 2s;
   }
 
   .journey-card-wrapper:nth-child(3) .journey-grid-overlay {
-    animation: gridFadeIn 21s ease-in-out infinite;
-    animation-delay: 5s;
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 4s;
   }
 
   .journey-card-wrapper:nth-child(4) .journey-grid-overlay {
-    animation: gridFadeIn 21s ease-in-out infinite;
-    animation-delay: 7.5s;
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 6s;
   }
 
   .journey-card-wrapper:nth-child(5) .journey-grid-overlay {
-    animation: gridFadeIn 21s ease-in-out infinite;
-    animation-delay: 10s;
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 8s;
   }
 
   .journey-card-wrapper:nth-child(6) .journey-grid-overlay {
-    animation: gridFadeIn 21s ease-in-out infinite;
-    animation-delay: 12.5s;
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 10s;
   }
 
   .journey-card-wrapper:nth-child(7) .journey-grid-overlay {
-    animation: gridFadeIn 21s ease-in-out infinite;
-    animation-delay: 15s;
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   @keyframes gridFadeIn {
@@ -731,38 +731,38 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
   /* Glow overlay animation */
   .journey-card-wrapper:nth-child(1) .journey-glow-overlay {
-    animation: glowFadeIn 21s ease-in-out infinite;
+    animation: glowFadeIn 15s ease-in-out infinite;
     animation-delay: 0s;
   }
 
   .journey-card-wrapper:nth-child(2) .journey-glow-overlay {
-    animation: glowFadeIn 21s ease-in-out infinite;
-    animation-delay: 2.5s;
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 2s;
   }
 
   .journey-card-wrapper:nth-child(3) .journey-glow-overlay {
-    animation: glowFadeIn 21s ease-in-out infinite;
-    animation-delay: 5s;
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 4s;
   }
 
   .journey-card-wrapper:nth-child(4) .journey-glow-overlay {
-    animation: glowFadeIn 21s ease-in-out infinite;
-    animation-delay: 7.5s;
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 6s;
   }
 
   .journey-card-wrapper:nth-child(5) .journey-glow-overlay {
-    animation: glowFadeIn 21s ease-in-out infinite;
-    animation-delay: 10s;
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 8s;
   }
 
   .journey-card-wrapper:nth-child(6) .journey-glow-overlay {
-    animation: glowFadeIn 21s ease-in-out infinite;
-    animation-delay: 12.5s;
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 10s;
   }
 
   .journey-card-wrapper:nth-child(7) .journey-glow-overlay {
-    animation: glowFadeIn 21s ease-in-out infinite;
-    animation-delay: 15s;
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   /* Sweeping glow animation - horizontal on desktop, vertical on mobile */
@@ -812,16 +812,16 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card-wrapper:nth-child(5) .journey-card-content,
   .journey-card-wrapper:nth-child(6) .journey-card-content,
   .journey-card-wrapper:nth-child(7) .journey-card-content {
-    animation: cardContentBrighten 21s ease-in-out infinite;
+    animation: cardContentBrighten 15s ease-in-out infinite;
   }
 
   .journey-card-wrapper:nth-child(1) .journey-card-content { animation-delay: 0s; }
-  .journey-card-wrapper:nth-child(2) .journey-card-content { animation-delay: 2.5s; }
-  .journey-card-wrapper:nth-child(3) .journey-card-content { animation-delay: 5s; }
-  .journey-card-wrapper:nth-child(4) .journey-card-content { animation-delay: 7.5s; }
-  .journey-card-wrapper:nth-child(5) .journey-card-content { animation-delay: 10s; }
-  .journey-card-wrapper:nth-child(6) .journey-card-content { animation-delay: 12.5s; }
-  .journey-card-wrapper:nth-child(7) .journey-card-content { animation-delay: 15s; }
+  .journey-card-wrapper:nth-child(2) .journey-card-content { animation-delay: 2s; }
+  .journey-card-wrapper:nth-child(3) .journey-card-content { animation-delay: 4s; }
+  .journey-card-wrapper:nth-child(4) .journey-card-content { animation-delay: 6s; }
+  .journey-card-wrapper:nth-child(5) .journey-card-content { animation-delay: 8s; }
+  .journey-card-wrapper:nth-child(6) .journey-card-content { animation-delay: 10s; }
+  .journey-card-wrapper:nth-child(7) .journey-card-content { animation-delay: 12s; }
 
   @keyframes cardContentBrighten {
     0%, 100% {
@@ -995,22 +995,26 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     );
   }
 
-  /* Journey Grid Overlay */
+  /* Journey Grid Overlay - matches experience cards */
   .journey-grid-overlay {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 15px 15px;
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
     pointer-events: none;
     z-index: 8;
     opacity: 0;
     transition: opacity 0.3s ease;
   }
 
+  .journey-card-wrapper:hover .journey-grid-overlay {
+    opacity: 1 !important;
+  }
+
   .journey-card:hover .journey-grid-overlay {
-    opacity: 1;
+    opacity: 1 !important;
   }
 
   /* Journey Glow Overlay */
@@ -1782,9 +1786,9 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
     // Animate the glow sweep effect with proper hover interaction
     const isMobile = window.innerWidth < 1024;
-    const cycleDuration = 21000; // 21 seconds
-    const hoverDuration = 2100; // 2.1 seconds (10% of cycle)
-    const delays = [0, 2500, 5000, 7500, 10000, 12500, 15000]; // milliseconds
+    const cycleDuration = 15000; // 15 seconds
+    const hoverDuration = 1500; // 1.5 seconds (10% of cycle)
+    const delays = [0, 2000, 4000, 6000, 8000, 10000, 12000]; // milliseconds
 
     journeyCardWrappers.forEach((wrapper, index) => {
       const wrapperEl = wrapper as HTMLElement;
@@ -1792,7 +1796,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       if (!glowOverlay) return;
 
       let isUserHovering = false;
-      let animationFrameId: number;
 
       // Track user hover state
       wrapperEl.addEventListener('mouseenter', () => {
@@ -1841,7 +1844,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
             }
           }
 
-          animationFrameId = requestAnimationFrame(updateGlow);
+          requestAnimationFrame(updateGlow);
         }
 
         updateGlow();
