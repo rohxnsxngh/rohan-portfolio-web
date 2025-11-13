@@ -1,5 +1,5 @@
 ---
-title: "Robotics/Mechatronics Controls Engineering Intern"
+title: "Robotics and Mechatronics Engineer"
 company: "ASML"
 description: "Advanced Semiconductor Materials Lithography"
 date: "2025-05"

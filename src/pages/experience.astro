@@ -462,6 +462,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     z-index: 1;
     flex: 1;
     min-width: 0;
+    cursor: pointer;
   }
 
   @media (min-width: 1024px) {
@@ -475,7 +476,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card {
     position: relative;
     overflow: hidden;
-    cursor: pointer;
     transition: transform 0.3s ease;
   }
 
@@ -488,6 +488,327 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       transform: translateY(-8px);
     }
   }
+
+  /* Cascading hover-like animation for each card */
+  .journey-card-wrapper:nth-child(1) .journey-card {
+    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-card {
+    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation-delay: 2.5s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-card {
+    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation-delay: 5s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-card {
+    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation-delay: 7.5s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-card {
+    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-card {
+    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation-delay: 12.5s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-card {
+    animation: autoHoverEffect 21s ease-in-out infinite;
+    animation-delay: 15s;
+  }
+
+  /* Auto hover effect - lift the card (longer duration, smooth transitions) */
+  @keyframes autoHoverEffect {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    5% {
+      transform: translateY(-8px);
+    }
+    15% {
+      transform: translateY(-8px);
+    }
+    20% {
+      transform: translateY(0);
+    }
+  }
+
+  /* Pause all animations on hover - ensure user interaction takes priority */
+  .journey-card-wrapper:hover .journey-card,
+  .journey-card-wrapper:hover .journey-corner,
+  .journey-card-wrapper:hover .journey-gradient-border,
+  .journey-card-wrapper:hover .journey-grid-overlay,
+  .journey-card-wrapper:hover .journey-glow-overlay {
+    animation-play-state: paused !important;
+  }
+
+  /* Ensure manual hover takes priority */
+  .journey-card-wrapper:hover .journey-card {
+    transform: translateY(-4px) !important;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card-wrapper:hover .journey-card {
+      transform: translateY(-8px) !important;
+    }
+  }
+
+  /* Corner accent animation */
+  .journey-card-wrapper:nth-child(1) .journey-corner {
+    animation: cornerExpand 21s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-corner {
+    animation: cornerExpand 21s ease-in-out infinite;
+    animation-delay: 2.5s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-corner {
+    animation: cornerExpand 21s ease-in-out infinite;
+    animation-delay: 5s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-corner {
+    animation: cornerExpand 21s ease-in-out infinite;
+    animation-delay: 7.5s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-corner {
+    animation: cornerExpand 21s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-corner {
+    animation: cornerExpand 21s ease-in-out infinite;
+    animation-delay: 12.5s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-corner {
+    animation: cornerExpand 21s ease-in-out infinite;
+    animation-delay: 15s;
+  }
+
+  @keyframes cornerExpand {
+    0%, 100% {
+      width: 12px;
+      height: 12px;
+      border-color: rgba(255, 255, 255, 0.3);
+      filter: none;
+    }
+    5% {
+      width: 16px;
+      height: 16px;
+      border-color: rgba(255, 255, 255, 0.6);
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+    }
+    15% {
+      width: 16px;
+      height: 16px;
+      border-color: rgba(255, 255, 255, 0.6);
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+    }
+    20% {
+      width: 12px;
+      height: 12px;
+      border-color: rgba(255, 255, 255, 0.3);
+      filter: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    @keyframes cornerExpand {
+      0%, 100% {
+        width: 10px;
+        height: 10px;
+        border-color: rgba(255, 255, 255, 0.3);
+        filter: none;
+      }
+      5% {
+        width: 14px;
+        height: 14px;
+        border-color: rgba(255, 255, 255, 0.6);
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+      }
+      15% {
+        width: 14px;
+        height: 14px;
+        border-color: rgba(255, 255, 255, 0.6);
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+      }
+      20% {
+        width: 10px;
+        height: 10px;
+        border-color: rgba(255, 255, 255, 0.3);
+        filter: none;
+      }
+    }
+  }
+
+  /* Gradient border animation */
+  .journey-card-wrapper:nth-child(1) .journey-gradient-border {
+    animation: borderIntensify 21s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-gradient-border {
+    animation: borderIntensify 21s ease-in-out infinite;
+    animation-delay: 2.5s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-gradient-border {
+    animation: borderIntensify 21s ease-in-out infinite;
+    animation-delay: 5s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-gradient-border {
+    animation: borderIntensify 21s ease-in-out infinite;
+    animation-delay: 7.5s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-gradient-border {
+    animation: borderIntensify 21s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-gradient-border {
+    animation: borderIntensify 21s ease-in-out infinite;
+    animation-delay: 12.5s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-gradient-border {
+    animation: borderIntensify 21s ease-in-out infinite;
+    animation-delay: 15s;
+  }
+
+  @keyframes borderIntensify {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    5% {
+      opacity: 1;
+      animation-duration: 2s;
+    }
+    15% {
+      opacity: 1;
+      animation-duration: 2s;
+    }
+    20% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Grid overlay animation */
+  .journey-card-wrapper:nth-child(1) .journey-grid-overlay {
+    animation: gridFadeIn 21s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-grid-overlay {
+    animation: gridFadeIn 21s ease-in-out infinite;
+    animation-delay: 2.5s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-grid-overlay {
+    animation: gridFadeIn 21s ease-in-out infinite;
+    animation-delay: 5s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-grid-overlay {
+    animation: gridFadeIn 21s ease-in-out infinite;
+    animation-delay: 7.5s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-grid-overlay {
+    animation: gridFadeIn 21s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-grid-overlay {
+    animation: gridFadeIn 21s ease-in-out infinite;
+    animation-delay: 12.5s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-grid-overlay {
+    animation: gridFadeIn 21s ease-in-out infinite;
+    animation-delay: 15s;
+  }
+
+  @keyframes gridFadeIn {
+    0%, 100% {
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+    }
+    15% {
+      opacity: 1;
+    }
+    20% {
+      opacity: 0;
+    }
+  }
+
+  /* Glow overlay animation */
+  .journey-card-wrapper:nth-child(1) .journey-glow-overlay {
+    animation: glowFadeIn 21s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-glow-overlay {
+    animation: glowFadeIn 21s ease-in-out infinite;
+    animation-delay: 2.5s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-glow-overlay {
+    animation: glowFadeIn 21s ease-in-out infinite;
+    animation-delay: 5s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-glow-overlay {
+    animation: glowFadeIn 21s ease-in-out infinite;
+    animation-delay: 7.5s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-glow-overlay {
+    animation: glowFadeIn 21s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-glow-overlay {
+    animation: glowFadeIn 21s ease-in-out infinite;
+    animation-delay: 12.5s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-glow-overlay {
+    animation: glowFadeIn 21s ease-in-out infinite;
+    animation-delay: 15s;
+  }
+
+  /* Sweeping glow animation - horizontal on desktop, vertical on mobile */
+  @keyframes glowFadeIn {
+    0%, 100% {
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+    }
+    15% {
+      opacity: 1;
+    }
+    20% {
+      opacity: 0;
+    }
+  }
+
 
   /* Journey Card Content */
   .journey-card-content {
@@ -509,6 +830,44 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card:hover .journey-card-content {
     background: rgba(0, 0, 0, 0.5);
     border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Enhanced brightness during animation */
+  .journey-card-wrapper:nth-child(1) .journey-card-content,
+  .journey-card-wrapper:nth-child(2) .journey-card-content,
+  .journey-card-wrapper:nth-child(3) .journey-card-content,
+  .journey-card-wrapper:nth-child(4) .journey-card-content,
+  .journey-card-wrapper:nth-child(5) .journey-card-content,
+  .journey-card-wrapper:nth-child(6) .journey-card-content,
+  .journey-card-wrapper:nth-child(7) .journey-card-content {
+    animation: cardContentBrighten 21s ease-in-out infinite;
+  }
+
+  .journey-card-wrapper:nth-child(1) .journey-card-content { animation-delay: 0s; }
+  .journey-card-wrapper:nth-child(2) .journey-card-content { animation-delay: 2.5s; }
+  .journey-card-wrapper:nth-child(3) .journey-card-content { animation-delay: 5s; }
+  .journey-card-wrapper:nth-child(4) .journey-card-content { animation-delay: 7.5s; }
+  .journey-card-wrapper:nth-child(5) .journey-card-content { animation-delay: 10s; }
+  .journey-card-wrapper:nth-child(6) .journey-card-content { animation-delay: 12.5s; }
+  .journey-card-wrapper:nth-child(7) .journey-card-content { animation-delay: 15s; }
+
+  @keyframes cardContentBrighten {
+    0%, 100% {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+    5% {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    15% {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    20% {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
   }
 
   /* Journey Corner Accents */
@@ -702,7 +1061,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     opacity: 1;
   }
 
-  /* Specific Glow Colors */
+  /* Specific Glow Colors - Subtle, natural intensity */
   .green-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
@@ -1243,76 +1602,101 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       box-sizing: border-box;
     }
 
-    /* Headings */
+    /* REDESIGNED MOBILE FRONTMATTER */
+
+    /* Header - Complete redesign for mobile */
+    .card-content > div:first-child {
+      flex-direction: column-reverse !important;
+      align-items: flex-start !important;
+      gap: 0;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    /* Company badge - make it the top element, more prominent */
+    .company-badge {
+      font-size: 0.625rem !important;
+      font-weight: 600 !important;
+      padding: 0.375rem 0.75rem;
+      white-space: nowrap;
+      position: static;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Title section wrapper */
+    .card-content > div:first-child > div:first-child {
+      width: 100%;
+      order: 2;
+    }
+
+    /* Job title - larger, more readable */
     .card-content h2 {
-      font-size: 1.5rem !important;
-      line-height: 1.3;
-      margin-bottom: 0.75rem;
+      font-size: 1.375rem !important;
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
       padding-right: 0;
+      font-weight: 700;
     }
 
-    /* Paragraphs */
-    .card-content p {
-      font-size: 0.875rem !important;
-      line-height: 1.6;
-      margin-bottom: 0.75rem;
+    /* Date - subtle, below title */
+    .card-content .text-xs {
+      font-size: 0.625rem !important;
+      opacity: 0.6;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
-    /* Description paragraph - the longest text */
+    /* Description paragraph */
     .card-content > p {
-      font-size: 0.875rem !important;
-      line-height: 1.6;
+      font-size: 0.9375rem !important;
+      line-height: 1.65;
+      margin-bottom: 1rem;
       max-width: 100%;
       width: 100%;
       overflow-wrap: break-word;
       word-break: break-word;
+      color: rgba(255, 255, 255, 0.75);
     }
 
-    /* Date text */
-    .card-content .text-xs {
-      font-size: 0.625rem !important;
-    }
-
-    /* Company badge */
-    .company-badge {
-      font-size: 0.625rem !important;
-      padding: 0.375rem 0.625rem;
-      white-space: nowrap;
-      position: static;
-      margin-top: 0.5rem;
-      display: inline-block;
-    }
-
-    /* Header flex container */
-    .card-content > div:first-child {
-      flex-direction: column !important;
-      align-items: flex-start !important;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    .card-content > div:first-child > div {
-      width: 100%;
-    }
-
-    /* Tags */
+    /* Tags section - more compact */
     .card-content > div:nth-child(3) {
       gap: 0.375rem !important;
+      margin-bottom: 1rem;
     }
 
     .card-content > div:nth-child(3) span {
       font-size: 0.625rem !important;
-      padding: 0.25rem 0.5rem;
+      padding: 0.3rem 0.6rem;
+      letter-spacing: 0.03em;
     }
 
-    /* Call to action */
+    /* Call to action - slightly larger for easier tapping */
     .card-content > div:last-child {
-      font-size: 0.75rem !important;
+      font-size: 0.8125rem !important;
+      padding-top: 0.25rem;
+    }
+
+    .card-content > div:last-child span {
+      font-weight: 600;
     }
 
     .card-content > div:last-child svg {
-      width: 0.875rem;
-      height: 0.875rem;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    /* Add subtle divider after company badge */
+    .company-badge::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: currentColor;
+      opacity: 0.3;
+      margin-top: 0.75rem;
     }
   }
 </style>
@@ -1363,6 +1747,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
     // Handle journey cards
     const journeyCards = document.querySelectorAll(".journey-card");
+    const journeyCardWrappers = document.querySelectorAll(".journey-card-wrapper");
 
     journeyCards.forEach((card) => {
       const cardEl = card as HTMLElement;
@@ -1383,6 +1768,83 @@ const sortedExperiences = allExperiences.sort((a, b) => {
           glowOverlay.style.setProperty("--mouse-y", "50%");
         });
       }
+    });
+
+    // Add click handlers to scroll to corresponding experience cards
+    journeyCardWrappers.forEach((wrapper) => {
+      const wrapperEl = wrapper as HTMLElement;
+      const companyData = wrapperEl.getAttribute("data-company");
+
+      wrapperEl.addEventListener("click", () => {
+        if (!companyData) return;
+
+        // Find the matching experience card
+        const experienceCard = document.querySelector(
+          `.experience-card[data-company="${companyData}"]`
+        ) as HTMLElement;
+
+        if (experienceCard) {
+          // Smooth scroll to the card with offset for fixed headers
+          const yOffset = -100; // Offset for better visibility
+          const y = experienceCard.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+          window.scrollTo({
+            top: y,
+            behavior: "smooth"
+          });
+
+          // Optional: Add a brief highlight effect
+          experienceCard.style.transition = "transform 0.3s ease";
+          experienceCard.style.transform = "scale(1.02)";
+          setTimeout(() => {
+            experienceCard.style.transform = "scale(1)";
+          }, 300);
+        }
+      });
+    });
+
+    // Animate the glow sweep effect
+    const isMobile = window.innerWidth < 1024;
+    const cycleDuration = 21000; // 21 seconds
+    const hoverDuration = 2100; // 2.1 seconds (10% of cycle)
+    const delays = [0, 2500, 5000, 7500, 10000, 12500, 15000]; // milliseconds
+
+    journeyCardWrappers.forEach((wrapper, index) => {
+      const glowOverlay = wrapper.querySelector('.journey-glow-overlay') as HTMLElement;
+      if (!glowOverlay) return;
+
+      function animateGlow() {
+        const startTime = Date.now();
+        const delay = delays[index];
+
+        function updateGlow() {
+          const elapsed = (Date.now() - startTime) % cycleDuration;
+          const adjustedTime = elapsed - delay;
+
+          if (adjustedTime >= 0 && adjustedTime <= hoverDuration) {
+            // We're in the active hover period
+            const progress = adjustedTime / hoverDuration;
+
+            if (isMobile) {
+              // Vertical sweep (top to bottom)
+              const yPos = progress * 100;
+              glowOverlay.style.setProperty('--mouse-x', '50%');
+              glowOverlay.style.setProperty('--mouse-y', `${yPos}%`);
+            } else {
+              // Horizontal sweep (left to right)
+              const xPos = progress * 100;
+              glowOverlay.style.setProperty('--mouse-x', `${xPos}%`);
+              glowOverlay.style.setProperty('--mouse-y', '50%');
+            }
+          }
+
+          requestAnimationFrame(updateGlow);
+        }
+
+        updateGlow();
+      }
+
+      animateGlow();
     });
   });
 </script>
