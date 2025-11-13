@@ -39,74 +39,559 @@ function formatYearMonth(dateString: string) {
 ---
 
 <Layout title={`${experience.data.title} | Rohan Singh`}>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
-        <div class="sm:px-20 px-6 py-8">
-          <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
-            <header class="mb-8">
-              <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 class="m-0">{experience.data.title}</h1>
-                <span
-                  class="text-primary/60 font-mono px-3 py-1 rounded-lg bg-primary/10 border border-primary/20"
-                >
-                  {experience.data.company}
-                </span>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+          <div class="relative z-10">
+            <!-- Breadcrumbs -->
+            <div class="sm:px-20 px-6 pt-8">
+              <nav class="breadcrumbs mb-8 opacity-0" style="animation: fadeInUp 0.6s ease-out forwards;">
+                <ol class="flex items-center gap-2 text-sm font-mono text-primary/50">
+                  <li>
+                    <a href="/" class="hover:text-primary/80 transition-colors duration-200">
+                      Home
+                    </a>
+                  </li>
+                  <li class="breadcrumb-separator">/</li>
+                  <li>
+                    <a href="/experience" class="hover:text-primary/80 transition-colors duration-200">
+                      Experience
+                    </a>
+                  </li>
+                  <li class="breadcrumb-separator">/</li>
+                  <li class="text-primary/80 font-semibold truncate max-w-[200px] sm:max-w-none" title={experience.data.company}>
+                    {experience.data.company}
+                  </li>
+                </ol>
+              </nav>
+            </div>
+
+            <!-- HERO SECTION - Full Width -->
+            <div class="hero-section sm:px-20 px-6 py-16">
+              <!-- Giant Job Title -->
+              <div class="header-section mb-12">
+                <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
+                  {experience.data.title.toUpperCase().split('').map((char, index) => (
+                    <span class={`char char-${index + 1}`}>{char === ' ' ? '\u00A0' : char}</span>
+                  ))}
+                </h1>
+                <div class="accent-line mt-6"></div>
               </div>
 
-              <div class="flex items-center gap-4 text-primary/60 font-mono">
-                <time datetime={experience.data.date}>
-                  {formatYearMonth(experience.data.date)}
-                </time>
-                {
-                  experience.data.endDate && (
-                    <>
-                      <span>→</span>
-                      <time datetime={experience.data.endDate}>
-                        {formatYearMonth(experience.data.endDate)}
-                      </time>
-                    </>
-                  )
-                }
-                <span>•</span>
-                <span>{experience.data.location}</span>
-              </div>
-
-              <div class="flex flex-wrap gap-2 mt-4">
-                {
-                  experience.data.tags.map((tag: string) => (
-                    <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
-                      {tag}
+              <!-- Company and Metadata -->
+              <div class="metadata-section max-w-4xl opacity-0" style="animation: fadeInUp 0.8s ease-out 0.6s forwards;">
+                <!-- Company Badge -->
+                <div class="company-section mb-8">
+                  <div class="flex items-center gap-4 flex-wrap">
+                    <span class="company-name font-mono text-2xl sm:text-3xl font-bold text-white/95">
+                      {experience.data.company}
                     </span>
-                  ))
-                }
-              </div>
-            </header>
-
-            <MarkdownContent>
-              <Content />
-            </MarkdownContent>
-
-            {
-              experience.data.images && (
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                  {experience.data.images.map(
-                    (image: { src: string; alt: string }) => (
-                      <img
-                        src={image.src}
-                        alt={image.alt}
-                        class="w-full rounded-lg border border-primary/20"
-                      />
-                    )
-                  )}
+                    {!experience.data.endDate && (
+                      <span class="current-badge font-mono text-xs px-3 py-1.5 rounded bg-green-500/10 text-green-400 border border-green-500/30">
+                        CURRENT
+                      </span>
+                    )}
+                  </div>
                 </div>
-              )
-            }
-          </article>
+
+                <!-- Date and Location -->
+                <div class="metadata-grid grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                  <div class="metadata-item">
+                    <div class="flex items-center gap-3 text-primary/60 font-mono text-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <div>
+                        <time datetime={experience.data.date}>
+                          {formatYearMonth(experience.data.date)}
+                        </time>
+                        {
+                          experience.data.endDate && (
+                            <>
+                              <span class="mx-2">→</span>
+                              <time datetime={experience.data.endDate}>
+                                {formatYearMonth(experience.data.endDate)}
+                              </time>
+                            </>
+                          )
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="metadata-item">
+                    <div class="flex items-center gap-3 text-primary/60 font-mono text-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span>{experience.data.location}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="tags-section">
+                  <div class="flex flex-wrap gap-2">
+                    {
+                      experience.data.tags.map((tag: string) => (
+                        <span class="tag font-mono text-xs px-3 py-1.5 rounded bg-primary/5 text-primary/70 border border-primary/20 hover:bg-primary/10 hover:border-primary/30 transition-all duration-200">
+                          {tag}
+                        </span>
+                      ))
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CONTENT SECTION - Full Width Story Format -->
+            <div class="content-section sm:px-20 px-6 py-16">
+              <!-- Section Label -->
+              <div class="section-header mb-12 opacity-0" style="animation: fadeInUp 0.8s ease-out 0.8s forwards;">
+                <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                  // MY STORY
+                </h3>
+                <div class="section-divider h-px bg-gradient-to-r from-primary/20 via-primary/10 to-transparent"></div>
+              </div>
+
+              <!-- Markdown Content in Story Block Format -->
+              <article class="experience-article">
+                <div class="story-content opacity-0" style="animation: fadeInUp 0.8s ease-out 1s forwards;">
+                  <MarkdownContent>
+                    <Content />
+                  </MarkdownContent>
+                </div>
+              </article>
+
+              <!-- Images Section -->
+              {
+                experience.data.images && (
+                  <div class="images-section mt-16 opacity-0" style="animation: fadeInUp 0.8s ease-out 1.2s forwards;">
+                    <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-8">
+                      // GALLERY
+                    </h3>
+                    <div class="images-grid grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {experience.data.images.map(
+                        (image: { src: string; alt: string }) => (
+                          <div class="image-wrapper group relative overflow-hidden rounded-lg">
+                            <img
+                              src={image.src}
+                              alt={image.alt}
+                              class="w-full h-auto transform group-hover:scale-105 transition-transform duration-500 filter grayscale-[0.3] group-hover:grayscale-0"
+                            />
+                            <div class="image-border"></div>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                )
+              }
+
+              <!-- Navigation Section -->
+              <div class="navigation-section mt-20 pt-12 border-t border-primary/10 opacity-0" style="animation: fadeInUp 0.8s ease-out 1.4s forwards;">
+                <div class="flex flex-col sm:flex-row gap-6 items-center justify-between">
+                  <a href="/experience" class="nav-button group inline-flex items-center gap-2 font-mono text-sm text-primary/60 hover:text-primary/90 transition-all duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    <span class="group-hover:underline underline-offset-4">Back to All Experiences</span>
+                  </a>
+
+                  <a href="/project" class="nav-button-secondary inline-flex items-center gap-2 font-mono text-sm text-primary/60 hover:text-primary/90 transition-all duration-300">
+                    <span class="group-hover:underline underline-offset-4">View Projects</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </Navbar>
     </div>
     <Footer />
   </div>
 </Layout>
+
+<style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Breadcrumbs */
+  .breadcrumb-separator {
+    @apply text-primary/30;
+  }
+
+  /* GIANT HERO TITLE */
+  .hero-title {
+    font-size: clamp(3rem, 12vw, 12rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Character animations */
+  .hero-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Generate delays for first 50 characters */
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.06s; }
+  .char-3 { animation-delay: 0.07s; }
+  .char-4 { animation-delay: 0.08s; }
+  .char-5 { animation-delay: 0.09s; }
+  .char-6 { animation-delay: 0.10s; }
+  .char-7 { animation-delay: 0.11s; }
+  .char-8 { animation-delay: 0.12s; }
+  .char-9 { animation-delay: 0.13s; }
+  .char-10 { animation-delay: 0.14s; }
+  .char-11 { animation-delay: 0.15s; }
+  .char-12 { animation-delay: 0.16s; }
+  .char-13 { animation-delay: 0.17s; }
+  .char-14 { animation-delay: 0.18s; }
+  .char-15 { animation-delay: 0.19s; }
+  .char-16 { animation-delay: 0.20s; }
+  .char-17 { animation-delay: 0.21s; }
+  .char-18 { animation-delay: 0.22s; }
+  .char-19 { animation-delay: 0.23s; }
+  .char-20 { animation-delay: 0.24s; }
+  .char-21 { animation-delay: 0.25s; }
+  .char-22 { animation-delay: 0.26s; }
+  .char-23 { animation-delay: 0.27s; }
+  .char-24 { animation-delay: 0.28s; }
+  .char-25 { animation-delay: 0.29s; }
+  .char-26 { animation-delay: 0.30s; }
+  .char-27 { animation-delay: 0.31s; }
+  .char-28 { animation-delay: 0.32s; }
+  .char-29 { animation-delay: 0.33s; }
+  .char-30 { animation-delay: 0.34s; }
+  .char-31 { animation-delay: 0.35s; }
+  .char-32 { animation-delay: 0.36s; }
+  .char-33 { animation-delay: 0.37s; }
+  .char-34 { animation-delay: 0.38s; }
+  .char-35 { animation-delay: 0.39s; }
+  .char-36 { animation-delay: 0.40s; }
+  .char-37 { animation-delay: 0.41s; }
+  .char-38 { animation-delay: 0.42s; }
+  .char-39 { animation-delay: 0.43s; }
+  .char-40 { animation-delay: 0.44s; }
+  .char-41 { animation-delay: 0.45s; }
+  .char-42 { animation-delay: 0.46s; }
+  .char-43 { animation-delay: 0.47s; }
+  .char-44 { animation-delay: 0.48s; }
+  .char-45 { animation-delay: 0.49s; }
+  .char-46 { animation-delay: 0.50s; }
+  .char-47 { animation-delay: 0.51s; }
+  .char-48 { animation-delay: 0.52s; }
+  .char-49 { animation-delay: 0.53s; }
+  .char-50 { animation-delay: 0.54s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.6s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  /* Hero section spacing */
+  .hero-section {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* CONTENT SECTION STYLING */
+  .section-label {
+    opacity: 0.7;
+    transition: opacity 0.4s ease;
+  }
+
+  .section-divider {
+    opacity: 0;
+    animation: lineGrow 1s ease-out forwards;
+    animation-delay: 0.9s;
+  }
+
+  @keyframes lineGrow {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+
+  /* Story Content - Full Width with Better Typography */
+  .story-content {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  /* Enhance markdown content to match about page */
+  .story-content :global(h2) {
+    font-family: monospace;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s ease;
+  }
+
+  .story-content :global(h2:hover) {
+    border-left-color: rgba(255, 255, 255, 0.5);
+    padding-left: 2.5rem;
+  }
+
+  .story-content :global(h3) {
+    font-family: monospace;
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+  }
+
+  .story-content :global(p) {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 1.5rem;
+  }
+
+  .story-content :global(strong) {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+  }
+
+  .story-content :global(ul) {
+    padding-left: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .story-content :global(li) {
+    margin-bottom: 0.75rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+    line-height: 1.7;
+  }
+
+  .story-content :global(li::marker) {
+    color: rgba(100, 200, 255, 0.6);
+  }
+
+  /* Image Gallery Styling */
+  .images-section {
+    padding-top: 2rem;
+  }
+
+  .image-wrapper {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .image-wrapper:hover {
+    transform: translateY(-8px);
+  }
+
+  .image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .image-border {
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .image-wrapper:hover .image-border {
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Navigation Buttons */
+  .nav-button,
+  .nav-button-secondary {
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .nav-button:hover,
+  .nav-button-secondary:hover {
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Mobile responsive adjustments */
+  @media (max-width: 1024px) {
+    .hero-title {
+      font-size: clamp(2.5rem, 10vw, 10rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: clamp(2rem, 12vw, 8rem);
+    }
+
+    .hero-section {
+      min-height: 40vh;
+      padding-top: 3rem;
+      padding-bottom: 3rem;
+    }
+
+    .company-name {
+      font-size: 1.5rem !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-title {
+      font-size: clamp(1.8rem, 14vw, 6rem);
+    }
+
+    .hero-section {
+      min-height: 35vh;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .company-name {
+      font-size: 1.25rem !important;
+    }
+
+    .metadata-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tags-section .tag {
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    /* Mobile story content adjustments */
+    .story-content :global(h2) {
+      font-size: 1.25rem;
+      padding-left: 1rem;
+      margin-top: 2rem;
+    }
+
+    .story-content :global(h2:hover) {
+      padding-left: 1.25rem;
+    }
+
+    .story-content :global(h3) {
+      font-size: 1rem;
+      margin-top: 2rem;
+    }
+
+    .story-content :global(p) {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    .story-content :global(ul) {
+      padding-left: 1.5rem;
+    }
+
+    .story-content :global(li) {
+      font-size: 0.875rem;
+    }
+
+    .navigation-section {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .images-grid {
+      gap: 1.5rem;
+    }
+  }
+</style>
 
