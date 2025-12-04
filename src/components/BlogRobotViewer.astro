@@ -437,6 +437,13 @@ const {
     fadeOut();
   }
 
+  // Listen for skip animation event (when user has already seen it)
+  document.addEventListener('skipBlogRobotAnimation', () => {
+    console.log('Skipping blog robot animation - user has seen it before');
+    // The animation will still run but we don't need to wait for it
+    // The page will immediately show the contained state
+  });
+
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {

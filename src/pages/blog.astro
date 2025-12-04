@@ -621,6 +621,8 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 </style>
 
 <script>
+import { hasSeenAnimation, markAnimationSeen } from '../scripts/animationState';
+
 // Typewriter effect function
 function typeWriter(element: HTMLElement, text: string, speed: number = 80, callback?: () => void) {
   let i = 0;
@@ -641,60 +643,90 @@ function typeWriter(element: HTMLElement, text: string, speed: number = 80, call
 
 // Intro animation and transition
 document.addEventListener('DOMContentLoaded', () => {
-  // Start typewriter animations
-  const mainText = document.getElementById('typewriter-main');
-  const subText = document.getElementById('typewriter-sub');
+  const robotViewerWrapper = document.getElementById('robot-viewer-wrapper');
+  const robotCtaText = document.getElementById('robot-cta-text');
+  const blogHeader = document.getElementById('blog-header');
+  const blogContent = document.getElementById('blog-content');
 
-  if (mainText && subText) {
-    // Type main text first - bold single word for impact
-    typeWriter(mainText, 'CHRONICLES', 80, () => {
-      // After main text completes, type sub text
+  // Check if user has already seen this animation
+  const hasSeenIntro = hasSeenAnimation('blog-intro');
+
+  if (hasSeenIntro) {
+    // Skip animation - go directly to final state
+    if (robotViewerWrapper) {
+      robotViewerWrapper.classList.add('contained');
+    }
+    if (robotCtaText) {
+      robotCtaText.style.display = 'none';
+    }
+    if (blogHeader) {
+      blogHeader.style.opacity = '1';
+    }
+    if (blogContent) {
+      blogContent.classList.remove('opacity-0', 'pointer-events-none');
+      blogContent.classList.add('opacity-100');
+    }
+    const robotViewer = document.querySelector('.robot-viewer');
+    if (robotViewer) {
+      robotViewer.classList.add('interactive');
+    }
+
+    // Dispatch event to tell robot viewer to skip its animation too
+    document.dispatchEvent(new CustomEvent('skipBlogRobotAnimation'));
+  } else {
+    // Play animation normally
+    const mainText = document.getElementById('typewriter-main');
+    const subText = document.getElementById('typewriter-sub');
+
+    if (mainText && subText) {
+      // Type main text first - bold single word for impact
+      typeWriter(mainText, 'CHRONICLES', 80, () => {
+        // After main text completes, type sub text
+        setTimeout(() => {
+          typeWriter(subText, 'UNFILTERED THOUGHTS', 40);
+        }, 400);
+      });
+    }
+
+    // Listen for robot animation complete event
+    document.addEventListener('blogRobotAnimationComplete', () => {
+      console.log('Blog robot animation complete - starting transition');
+
+      // Wait 3.5 seconds after animation completes to let user read the typewriter text
       setTimeout(() => {
-        typeWriter(subText, 'UNFILTERED THOUGHTS', 40);
-      }, 400);
+        if (robotViewerWrapper && robotCtaText && blogHeader && blogContent) {
+          // Fade out CTA text
+          robotCtaText.classList.add('hidden');
+
+          // After text fades, transition wrapper to contained state
+          setTimeout(() => {
+            // Transition robot wrapper from fullscreen to contained
+            robotViewerWrapper.classList.add('contained');
+
+            // Show blog header with animation
+            blogHeader.style.opacity = '1';
+
+            // Add interactive class to robot viewer to show decorative elements
+            const robotViewer = document.querySelector('.robot-viewer');
+            if (robotViewer) {
+              setTimeout(() => {
+                robotViewer.classList.add('interactive');
+              }, 800);
+            }
+
+            // Show blog content
+            setTimeout(() => {
+              blogContent.classList.remove('opacity-0', 'pointer-events-none');
+              blogContent.classList.add('opacity-100');
+
+              // Mark animation as seen after everything is visible
+              markAnimationSeen('blog-intro');
+            }, 1000);
+          }, 1000);
+        }
+      }, 3500);
     });
   }
-
-  // Listen for robot animation complete event
-  document.addEventListener('blogRobotAnimationComplete', () => {
-    console.log('Blog robot animation complete - starting transition');
-
-    // Wait 3.5 seconds after animation completes to let user read the typewriter text
-    setTimeout(() => {
-      const robotViewerWrapper = document.getElementById('robot-viewer-wrapper');
-      const robotCtaText = document.getElementById('robot-cta-text');
-      const blogHeader = document.getElementById('blog-header');
-      const blogContent = document.getElementById('blog-content');
-
-      if (robotViewerWrapper && robotCtaText && blogHeader && blogContent) {
-        // Fade out CTA text
-        robotCtaText.classList.add('hidden');
-
-        // After text fades, transition wrapper to contained state
-        setTimeout(() => {
-          // Transition robot wrapper from fullscreen to contained
-          robotViewerWrapper.classList.add('contained');
-
-          // Show blog header with animation
-          blogHeader.style.opacity = '1';
-
-          // Add interactive class to robot viewer to show decorative elements
-          const robotViewer = document.querySelector('.robot-viewer');
-          if (robotViewer) {
-            setTimeout(() => {
-              robotViewer.classList.add('interactive');
-            }, 800);
-          }
-
-          // Show blog content
-          setTimeout(() => {
-            blogContent.classList.remove('opacity-0', 'pointer-events-none');
-            blogContent.classList.add('opacity-100');
-          }, 1000);
-        }, 1000);
-      }
-    }, 3500);
-  });
 
   // Handle expand/collapse functionality
   const expandButton = document.getElementById('expand-keyboard-btn');

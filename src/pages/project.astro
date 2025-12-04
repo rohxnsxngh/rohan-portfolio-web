@@ -792,6 +792,8 @@ console.log("Projects after sorting:", sortedProjects.length);
 </style>
 
 <script>
+  import { hasSeenAnimation, markAnimationSeen } from '../scripts/animationState';
+
   // Typewriter effect function
   function typeWriter(element: HTMLElement, text: string, speed: number = 80, callback?: () => void) {
     let i = 0;
@@ -815,31 +817,51 @@ console.log("Projects after sorting:", sortedProjects.length);
     const robotShowcase = document.querySelector(".robot-showcase");
     const expandButton = document.querySelector(".expand-heavy-robot");
     const backdropOverlay = document.getElementById("backdrop-overlay");
+    const introTextOverlay = document.querySelector(".intro-text-overlay");
 
-    // Start typewriter animation
-    const projectsText = document.getElementById('typewriter-projects');
-    if (projectsText) {
-      typeWriter(projectsText, 'WORKSHOP', 100);
-    }
+    // Check if user has already seen this animation
+    const hasSeenIntro = hasSeenAnimation('projects-intro');
 
-    // Handle fullscreen intro transition
-    if (robotViewerWrapper) {
-      // Prevent scrolling during intro
-      document.body.classList.add("robot-intro-playing");
-
-      // Listen for robot animation completion - increased delay for typewriter
-      setTimeout(() => {
-        transitionToContainer();
-      }, 4000); // 4 seconds to allow typewriter to complete and be read
-
-      function transitionToContainer() {
-        // Remove fullscreen class
+    if (hasSeenIntro) {
+      // Skip animation - go directly to interactive state
+      if (robotViewerWrapper) {
         robotViewerWrapper.classList.remove("fullscreen-intro");
         robotViewerWrapper.classList.add("interactive");
-
-        // Re-enable scrolling
-        document.body.classList.remove("robot-intro-playing");
       }
+      if (introTextOverlay) {
+        (introTextOverlay as HTMLElement).style.display = 'none';
+      }
+      // Don't add robot-intro-playing class
+    } else {
+      // Play animation normally
+      const projectsText = document.getElementById('typewriter-projects');
+      if (projectsText) {
+        typeWriter(projectsText, 'WORKSHOP', 100);
+      }
+
+      // Handle fullscreen intro transition
+      if (robotViewerWrapper) {
+        // Prevent scrolling during intro
+        document.body.classList.add("robot-intro-playing");
+
+        // Listen for robot animation completion - increased delay for typewriter
+        setTimeout(() => {
+          transitionToContainer();
+          // Mark animation as seen after it completes
+          markAnimationSeen('projects-intro');
+        }, 4000); // 4 seconds to allow typewriter to complete and be read
+      }
+    }
+
+    function transitionToContainer() {
+      if (!robotViewerWrapper) return;
+
+      // Remove fullscreen class
+      robotViewerWrapper.classList.remove("fullscreen-intro");
+      robotViewerWrapper.classList.add("interactive");
+
+      // Re-enable scrolling
+      document.body.classList.remove("robot-intro-playing");
     }
 
     if (robotShowcase && expandButton && backdropOverlay) {
