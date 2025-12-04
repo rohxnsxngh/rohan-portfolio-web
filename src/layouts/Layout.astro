@@ -83,11 +83,120 @@ const { title, description, image, frontmatter, robots } = Astro.props;
       ::-webkit-scrollbar-thumb:hover {
         background: #666666;
       }
+
+      /* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+      /* Skip to main content link */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #ffffff;
+        color: #000000;
+        padding: 8px 16px;
+        z-index: 10000;
+        font-weight: bold;
+        text-decoration: none;
+        transition: top 0.2s ease;
+      }
+
+      .skip-link:focus {
+        top: 0;
+      }
+
+      /* Focus indicators - visible on keyboard navigation */
+      *:focus {
+        outline: none;
+      }
+
+      *:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      /* Interactive elements focus styles */
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      select:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Card and container focus styles */
+      .project-card:focus-visible,
+      .blog-card:focus-visible,
+      .journey-card-wrapper:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 4px;
+      }
+
+      /* Improve color contrast for low-opacity text */
+      .text-primary\/30 {
+        color: rgba(255, 255, 255, 0.5) !important; /* Bumped from 30% to 50% */
+      }
+
+      .text-primary\/40 {
+        color: rgba(255, 255, 255, 0.55) !important; /* Bumped from 40% to 55% */
+      }
+
+      .text-primary\/50 {
+        color: rgba(255, 255, 255, 0.65) !important; /* Bumped from 50% to 65% */
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+
+        .typewriter-cursor {
+          animation: none !important;
+        }
+
+        .tech-grid {
+          animation: none !important;
+        }
+
+        /* Disable parallax effects */
+        .hero-content {
+          transform: none !important;
+        }
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .text-primary\/30,
+        .text-primary\/40,
+        .text-primary\/50,
+        .text-primary\/60,
+        .text-primary\/70,
+        .text-primary\/80 {
+          color: rgba(255, 255, 255, 1) !important;
+        }
+
+        .border-accent\/10,
+        .border-accent\/20,
+        .border-accent\/30 {
+          border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen">
+    <!-- Skip to main content link for keyboard users -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <CustomCursor />
-    <main class="fade-in">
+    <main id="main-content" class="fade-in" role="main">
       <slot />
     </main>
   </body>

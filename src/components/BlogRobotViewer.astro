@@ -199,7 +199,6 @@ const {
     loader.load(
       "/models/keyboard.glb",
       (glb) => {
-        console.log("Keyboard model loaded successfully!", glb);
         keyboard = glb.scene;
 
         // Dark material for keyboard
@@ -216,7 +215,6 @@ const {
             o.material = keyboardMaterial;
             o.castShadow = true;
             o.receiveShadow = true;
-            console.log("Mesh found:", o.name);
           }
         });
 
@@ -224,9 +222,6 @@ const {
         const box = new THREE.Box3().setFromObject(keyboard);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
-
-        console.log("Keyboard center:", center);
-        console.log("Keyboard size:", size);
 
         // Center the keyboard
         keyboard.position.set(-center.x, -center.y, -center.z);
@@ -241,15 +236,12 @@ const {
         keyboard.rotation.x = -0.2; // Tilt forward to show keys better
         keyboard.rotation.y = 0.15; // Slight angle for depth
 
-        console.log("Keyboard loaded, centered, scaled, and tilted");
         scene.add(keyboard);
 
-        // Setup animation - loop continuously at 1.5x speed
+        // Setup animation - loop continuously at 4x speed
         if (glb.animations && glb.animations.length > 0) {
-          console.log("Animations found:", glb.animations.length);
           mixer = new THREE.AnimationMixer(keyboard);
           const clip = glb.animations[0];
-          console.log("Animation clip duration:", clip.duration);
 
           // Speed up animation by 4x
           mixer.timeScale = 4.0;
@@ -260,28 +252,22 @@ const {
           animationAction.setLoop(THREE.LoopRepeat, Infinity);
           animationAction.play();
 
-          console.log("Animation started (1.5x speed, looping)");
-
           // Trigger transition after first loop completes
           const firstLoopDuration = clip.duration / 4.0; // Adjusted for timeScale
           setTimeout(() => {
-            console.log("First animation loop complete - dispatching blogRobotAnimationComplete event");
             document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
           }, firstLoopDuration * 1000); // Convert to milliseconds
         } else {
-          console.log("No animations found in model");
           // If no animation, dispatch event immediately after a short delay
           setTimeout(() => {
-            console.log("No animation - dispatching blogRobotAnimationComplete event after 2s");
             document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
           }, 2000);
         }
       },
-      (xhr) => {
-        console.log(`${(xhr.loaded / xhr.total) * 100}% loaded`);
-      },
+      undefined, // Progress callback not needed
       (error) => {
-        console.error("Error loading keyboard model:", error);
+        // Error loading model - dispatch event anyway to not block UI
+        document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
       }
     );
 
@@ -438,10 +424,9 @@ const {
   }
 
   // Listen for skip animation event (when user has already seen it)
+  // The animation will still run but we don't need to wait for it
   document.addEventListener('skipBlogRobotAnimation', () => {
-    console.log('Skipping blog robot animation - user has seen it before');
-    // The animation will still run but we don't need to wait for it
-    // The page will immediately show the contained state
+    // Page will immediately show the contained state
   });
 
   if (document.readyState === "loading") {

@@ -349,18 +349,8 @@ const {
           }
         }
       },
-      // Progress callback
-      (xhr) => {
-        const progress = (xhr.loaded / xhr.total) * 100;
-        console.log(`${progress}% loaded`);
-      },
-      // Error callback
-      (error) => {
-        console.error(
-          "An error happened while loading the heavy robot model:",
-          error
-        );
-      }
+      undefined, // Progress callback not needed
+      undefined // Error callback - model loading errors handled silently
     );
 
     // Animation loop

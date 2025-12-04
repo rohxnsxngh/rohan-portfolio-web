@@ -8,16 +8,14 @@ import Footer from "../layouts/Footer.astro";
 let allResearch: any[] = [];
 try {
   allResearch = await getCollection("research");
-  console.log("Total research entries found:", allResearch.length);
 } catch (error) {
-  console.error("Error fetching research:", error);
+  // Silently handle error - empty research array will be used
 }
 
 // Make sure we have valid research items
-const validResearch = allResearch.filter(research => 
+const validResearch = allResearch.filter(research =>
   research && research.data && research.data.title
 );
-console.log("Valid research after filtering:", validResearch.length);
 
 // Sort research by status (completed first, then in-progress, then coming-soon)
 const sortedResearch = [...validResearch].sort((a, b) => {
@@ -42,8 +40,6 @@ const sortedResearch = [...validResearch].sort((a, b) => {
   
   return statusCompare;
 });
-
-console.log("Research after sorting:", sortedResearch.length);
 
 // Status colors and text
 const statusColors = {

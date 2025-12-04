@@ -51,17 +51,15 @@ const getImagePath = (path: string | undefined) => {
 };
 
 const imagePath = getImagePath(image);
-
-// Log the image path transformation for debugging
-console.log(`Original path: ${image} → Transformed: ${imagePath}`);
 ---
 
 {hasRealImage ? (
   <div class="w-full h-48 overflow-hidden rounded-lg image-container" id={uniqueId}>
     {/* Primary image attempt - with the fixed path */}
-    <img 
-      src={imagePath} 
+    <img
+      src={imagePath}
       alt={title}
+      loading="lazy"
       class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 real-image"
       onerror={`
         // First attempt failed, try with project directory instead of projects
@@ -73,13 +71,11 @@ console.log(`Original path: ${image} → Transformed: ${imagePath}`);
         if (img.src.includes('/projects/')) {
           // Try project directory instead
           altPath = img.src.replace('/projects/', '/project/');
-          console.log('Trying alternate path: ' + altPath);
           img.src = altPath;
-        } 
+        }
         else if (img.src.includes('/project/')) {
           // Try projects directory instead
           altPath = img.src.replace('/project/', '/projects/');
-          console.log('Trying alternate path: ' + altPath);
           img.src = altPath;
         }
         else {

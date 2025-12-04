@@ -11,16 +11,14 @@ import HeavyRobotModelViewer from "../components/HeavyRobotModelViewer.astro";
 let allProjects: CollectionEntry<"project">[] = [];
 try {
   allProjects = await getCollection("project");
-  console.log("Total projects found:", allProjects.length);
 } catch (error) {
-  console.error("Error fetching projects:", error);
+  // Silently handle error - empty projects array will be used
 }
 
 // Make sure we have valid projects by removing any undefined entries
 const validProjects = allProjects.filter(
   (project) => project && project.data && project.data.title
 );
-console.log("Valid projects after filtering:", validProjects.length);
 
 // Sort projects by status with fallback values
 const sortedProjects = [...validProjects].sort((a, b) => {
@@ -42,8 +40,6 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
   return statusCompare;
 });
-
-console.log("Projects after sorting:", sortedProjects.length);
 ---
 
 <Layout>
