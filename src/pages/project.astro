@@ -73,8 +73,8 @@ console.log("Projects after sorting:", sortedProjects.length);
           >
             <!-- Intro text overlay (only visible during fullscreen) -->
             <div class="intro-text-overlay absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
-              <div class="text-center px-8 max-w-3xl">
-                <h2 class="text-6xl md:text-7xl lg:text-8xl font-mono font-bold text-white tracking-tight">
+              <div class="text-center px-4 w-full">
+                <h2 class="hero-typewriter font-mono font-black text-white select-none">
                   <span id="typewriter-projects" class="typewriter-text"></span>
                   <span class="typewriter-cursor">|</span>
                 </h2>
@@ -732,11 +732,28 @@ console.log("Projects after sorting:", sortedProjects.length);
     }
   }
 
+  /* Hero Typewriter - Massive overlapping style like home page */
+  .hero-typewriter {
+    font-size: clamp(3rem, 14vw, 16rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    text-transform: uppercase;
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    text-shadow:
+      0 0 40px rgba(255, 255, 255, 0.1),
+      0 10px 30px rgba(0, 0, 0, 0.5),
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
   /* Typewriter cursor animation */
   .typewriter-cursor {
     display: inline-block;
     animation: blink 1s step-end infinite;
     margin-left: 2px;
+    font-weight: 100;
+    -webkit-text-stroke: 0;
   }
 
   @keyframes blink {
@@ -751,6 +768,26 @@ console.log("Projects after sorting:", sortedProjects.length);
   .typewriter-text {
     display: inline-block;
     white-space: pre-wrap;
+  }
+
+  /* Responsive hero typewriter */
+  @media (max-width: 1024px) {
+    .hero-typewriter {
+      font-size: clamp(2.5rem, 12vw, 12rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-typewriter {
+      font-size: clamp(2rem, 14vw, 10rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-typewriter {
+      font-size: clamp(1.8rem, 16vw, 8rem);
+      letter-spacing: -0.06em;
+    }
   }
 </style>
 
@@ -782,7 +819,7 @@ console.log("Projects after sorting:", sortedProjects.length);
     // Start typewriter animation
     const projectsText = document.getElementById('typewriter-projects');
     if (projectsText) {
-      typeWriter(projectsText, 'Welcome to my digital workshop', 70);
+      typeWriter(projectsText, 'WORKSHOP', 100);
     }
 
     // Handle fullscreen intro transition
