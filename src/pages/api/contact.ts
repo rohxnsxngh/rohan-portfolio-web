@@ -26,9 +26,11 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     // Send email using Resend
+    // NOTE: When using onboarding@resend.dev, you can only send to the email
+    // registered with your Resend account. Update this once you verify your domain.
     const { data, error } = await resend.emails.send({
-      from: 'Rohan Singh <contact@rohansingh.io>',
-      to: ['rohan.singh.do@gmail.com'],
+      from: 'Contact Form <onboarding@resend.dev>',
+      to: ['rohan.singh.do@gmail.com'], // Must match your Resend account email
       replyTo: email,
       subject: `[Portfolio Contact] ${subject}`,
       html: `
