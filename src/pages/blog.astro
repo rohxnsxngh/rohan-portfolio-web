@@ -338,6 +338,7 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     letter-spacing: -0.08em;
     text-transform: uppercase;
     font-weight: 900;
+    text-align: center;
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
     text-shadow:
       0 0 40px rgba(255, 255, 255, 0.1),
@@ -732,49 +733,54 @@ document.addEventListener('DOMContentLoaded', () => {
   const backdropOverlay = document.getElementById('keyboard-backdrop-overlay');
 
   if (expandButton && robotViewerWrapper && backdropOverlay) {
-    expandButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      toggleExpandedView();
-    });
-
-    backdropOverlay.addEventListener('click', () => {
-      if (robotViewerWrapper.classList.contains('expanded')) {
-        toggleExpandedView(false);
-      }
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && robotViewerWrapper.classList.contains('expanded')) {
-        toggleExpandedView(false);
-      }
-    });
+    // Capture narrowed types for use in nested function
+    const wrapper = robotViewerWrapper;
+    const backdrop = backdropOverlay;
+    const btn = expandButton;
 
     function toggleExpandedView(expand: boolean | null = null) {
-      const shouldExpand = expand !== null ? expand : !robotViewerWrapper.classList.contains('expanded');
+      const shouldExpand = expand !== null ? expand : !wrapper.classList.contains('expanded');
 
       if (shouldExpand) {
-        robotViewerWrapper.classList.add('expanded');
-        backdropOverlay.classList.add('backdrop-visible');
+        wrapper.classList.add('expanded');
+        backdrop.classList.add('backdrop-visible');
         document.body.style.overflow = 'hidden';
-        expandButton.setAttribute('aria-label', 'Collapse keyboard view');
+        btn.setAttribute('aria-label', 'Collapse keyboard view');
 
-        const svg = expandButton.querySelector('svg');
+        const svg = btn.querySelector('svg');
         if (svg) {
           svg.style.transform = 'rotate(180deg)';
         }
       } else {
-        robotViewerWrapper.classList.remove('expanded');
-        backdropOverlay.classList.remove('backdrop-visible');
+        wrapper.classList.remove('expanded');
+        backdrop.classList.remove('backdrop-visible');
         document.body.style.overflow = '';
-        expandButton.setAttribute('aria-label', 'Expand keyboard view');
+        btn.setAttribute('aria-label', 'Expand keyboard view');
 
-        const svg = expandButton.querySelector('svg');
+        const svg = btn.querySelector('svg');
         if (svg) {
           svg.style.transform = '';
         }
       }
     }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      toggleExpandedView();
+    });
+
+    backdrop.addEventListener('click', () => {
+      if (wrapper.classList.contains('expanded')) {
+        toggleExpandedView(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wrapper.classList.contains('expanded')) {
+        toggleExpandedView(false);
+      }
+    });
   }
 });
 

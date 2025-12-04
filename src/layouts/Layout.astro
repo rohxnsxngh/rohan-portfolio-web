@@ -86,11 +86,12 @@ const { title, description, image, frontmatter, robots } = Astro.props;
 
       /* ===== ACCESSIBILITY IMPROVEMENTS ===== */
 
-      /* Skip to main content link */
+      /* Skip to main content link - hidden until focused */
       .skip-link {
         position: absolute;
-        top: -40px;
-        left: 0;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
         background: #ffffff;
         color: #000000;
         padding: 8px 16px;
@@ -98,10 +99,20 @@ const { title, description, image, frontmatter, robots } = Astro.props;
         font-weight: bold;
         text-decoration: none;
         transition: top 0.2s ease;
+        border-radius: 0 0 4px 4px;
       }
 
       .skip-link:focus {
         top: 0;
+      }
+
+      .skip-link:not(:focus) {
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        white-space: nowrap;
       }
 
       /* Focus indicators - visible on keyboard navigation */
