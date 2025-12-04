@@ -4,6 +4,7 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../layouts/Navigation.astro";
 import Footer from "../../layouts/Footer.astro";
 import MarkdownContent from "../../components/MarkdownContent.astro";
+import { calculateReadingTime, formatReadingTime } from "../../utils/readingTime";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -15,6 +16,9 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const post = await getEntry("blog", slug);
 const { Content } = await post.render();
+
+// Calculate reading time from the raw content
+const readingTime = calculateReadingTime(post.body);
 
 // Set default status if undefined
 const defaultStatus = "coming-soon";
@@ -102,6 +106,12 @@ const statusText: Record<BlogStatus, string> = {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 <span>{post.data.author}</span>
+              </div>
+              <div class="flex items-center gap-2 font-mono text-sm text-white/50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{formatReadingTime(readingTime)}</span>
               </div>
             </div>
 

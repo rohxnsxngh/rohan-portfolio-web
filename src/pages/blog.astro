@@ -3,6 +3,7 @@ import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
 import BlogRobotViewer from "../components/BlogRobotViewer.astro";
+import { calculateReadingTime, formatReadingTime } from "../utils/readingTime";
 
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
@@ -114,6 +115,9 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
           const isComplete = actualStatus === "Complete";
           const statusDisplay = isComplete ? "Complete" : defaultStatus;
 
+          // Calculate reading time
+          const readingTime = calculateReadingTime(article.body);
+
           return (
             <a href={`/blog/${article.slug}`} class="group h-full relative blog-card">
               <!-- Corner accent marks -->
@@ -139,7 +143,16 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
                       {statusDisplay}
                     </span>
                   </div>
-                  <p class="text-sm text-primary/60 mb-4">{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <div class="flex items-center gap-3 text-sm text-primary/60 mb-4">
+                    <span>{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span class="text-primary/30">•</span>
+                    <span class="flex items-center gap-1">
+                      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {formatReadingTime(readingTime)}
+                    </span>
+                  </div>
                   <p class="text-primary/80 flex-grow line-clamp-3">{article.data.description}</p>
                   <div class="mt-4 flex flex-wrap gap-2">
                     {tags.map(tag => (

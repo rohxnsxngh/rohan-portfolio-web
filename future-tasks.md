@@ -25,10 +25,7 @@
 
   | Feature                | Why It Matters                                                     |
   |------------------------|--------------------------------------------------------------------|
-  | Reduced motion support | Respect prefers-reduced-motion for users with vestibular disorders |
-  | RSS feed for blog      | Content syndication, discoverability                               |
   | Reading time estimates | User expectation on blog posts                                     |
-  | Project case studies   | Show depth of thinking, not just outcomes                          |
   | Contact form           | Lower friction than email links                                    |
   | Email obfuscation      | Prevent spam harvesting                                            |
 

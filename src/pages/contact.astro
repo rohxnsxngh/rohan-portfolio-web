@@ -2,6 +2,7 @@
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import ObfuscatedEmail from "../components/ObfuscatedEmail.astro";
 ---
 
 <Layout title="Contact">
@@ -159,15 +160,15 @@ import Layout from "../layouts/Layout.astro";
                   Or reach out directly
                 </p>
                 <div class="flex flex-wrap justify-center gap-6">
-                  <a
-                    href="mailto:rohansingh.official@gmail.com"
+                  <ObfuscatedEmail
+                    email="rohansingh.official@gmail.com"
                     class="contact-link group flex items-center text-primary/70 hover:text-primary transition-colors"
                   >
                     <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <span class="font-mono text-sm">Email</span>
-                  </a>
+                  </ObfuscatedEmail>
                   <a
                     href="https://linkedin.com/in/rohan-singh-9325a8196"
                     target="_blank"
@@ -377,7 +378,7 @@ import Layout from "../layouts/Layout.astro";
   .alt-contact {
     opacity: 0;
     animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 1.5s;
+    animation-delay: 1.4s;
   }
 
   .contact-link {

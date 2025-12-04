@@ -1,0 +1,252 @@
+---
+import Navbar from "../layouts/Navigation.astro";
+import Footer from "../layouts/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Art">
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay for texture -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+          <!-- Main Content -->
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER SECTION -->
+            <div class="header-section mb-16">
+              <h1 class="art-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
+
+            <!-- Intro Section -->
+            <div class="max-w-4xl mx-auto">
+              <div class="intro-section mb-12">
+                <p class="intro-label font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                  // CREATIVE CORNER
+                </p>
+                <p class="intro-text text-lg sm:text-xl text-primary/70 leading-relaxed">
+                  A collection of my creative work, experiments, and visual explorations.
+                  From digital art to physical creations, this is where I let my imagination run free.
+                </p>
+              </div>
+
+              <!-- Coming Soon Gallery -->
+              <div class="gallery-section">
+                <div class="gallery-coming-soon relative">
+                  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 opacity-30">
+                    <!-- Placeholder cards -->
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10"></div>
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10"></div>
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10"></div>
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10 hidden md:block"></div>
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10"></div>
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10"></div>
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10"></div>
+                    <div class="aspect-square bg-gradient-to-br from-accent/10 to-accent/5 rounded-lg border border-accent/10 hidden md:block"></div>
+                  </div>
+
+                  <!-- Coming Soon Overlay -->
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center">
+                      <div class="inline-flex items-center px-8 py-4 rounded-full bg-black/80 border border-accent/30 backdrop-blur-sm">
+                        <svg class="h-6 w-6 mr-4 text-primary/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="font-mono text-lg tracking-wider text-primary/70">COMING SOON</span>
+                      </div>
+                      <p class="mt-4 text-primary/40 font-mono text-sm">
+                        Gallery under construction
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Categories Preview -->
+              <div class="categories-section mt-20">
+                <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-8">
+                  // PLANNED CATEGORIES
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div class="category-card p-6 border border-accent/20 rounded-lg bg-accent/5 hover:bg-accent/10 transition-all">
+                    <svg class="h-8 w-8 text-primary/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <h3 class="font-mono font-bold text-primary/80 mb-2">Digital Art</h3>
+                    <p class="text-sm text-primary/50">Illustrations, designs, and digital experiments</p>
+                  </div>
+                  <div class="category-card p-6 border border-accent/20 rounded-lg bg-accent/5 hover:bg-accent/10 transition-all">
+                    <svg class="h-8 w-8 text-primary/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <h3 class="font-mono font-bold text-primary/80 mb-2">Photography</h3>
+                    <p class="text-sm text-primary/50">Captured moments and visual stories</p>
+                  </div>
+                  <div class="category-card p-6 border border-accent/20 rounded-lg bg-accent/5 hover:bg-accent/10 transition-all">
+                    <svg class="h-8 w-8 text-primary/40 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                    <h3 class="font-mono font-bold text-primary/80 mb-2">Experiments</h3>
+                    <p class="text-sm text-primary/50">Creative coding and generative art</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Navbar>
+    </div>
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD ART TITLE */
+  .art-title {
+    font-size: clamp(4rem, 18vw, 16rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Individual character animations */
+  .art-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  /* INTRO SECTION */
+  .intro-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.6s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Gallery Section */
+  .gallery-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.8s;
+  }
+
+  .gallery-coming-soon {
+    min-height: 300px;
+  }
+
+  /* Categories Section */
+  .categories-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 1s;
+  }
+
+  .category-card {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  .category-card:nth-child(1) { animation-delay: 1.1s; }
+  .category-card:nth-child(2) { animation-delay: 1.2s; }
+  .category-card:nth-child(3) { animation-delay: 1.3s; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .art-title {
+      font-size: clamp(3.5rem, 16vw, 14rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .art-title {
+      font-size: clamp(3rem, 18vw, 12rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .art-title {
+      font-size: clamp(2.5rem, 20vw, 10rem);
+    }
+  }
+</style>
