@@ -5,9 +5,10 @@ import CustomCursor from "../components/CustomCursor.astro";
 const { title, description, image, frontmatter, robots } = Astro.props;
 ---
 
-<html lang="en" class="bg-secondary text-primary">
+<html lang="en" class="bg-secondary text-primary" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
+    <meta name="color-scheme" content="dark" />
     <link rel="icon" type="image/jpeg" href="/images/RS.jpg" />
     <meta
       name="viewport"
@@ -35,10 +36,26 @@ const { title, description, image, frontmatter, robots } = Astro.props;
 
       :root {
         --transition-speed: 0.3s;
+        color-scheme: dark;
+      }
+
+      /* Override DaisyUI's base content color to pure white */
+      [data-theme="dark"] {
+        --bc: 1 0 0; /* Pure white in OKLCH: lightness=1, chroma=0, hue=0 */
+        --b1: 0 0 0; /* Pure black background */
+        --b2: 0.05 0 0; /* Slightly lighter for secondary backgrounds */
+        --b3: 0.1 0 0; /* Even lighter for tertiary */
       }
 
       * {
         font-family: 'IBM Plex Mono', monospace;
+      }
+
+      /* Consistent font rendering across platforms */
+      html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
 
       body {
@@ -146,17 +163,46 @@ const { title, description, image, frontmatter, robots } = Astro.props;
         outline-offset: 4px;
       }
 
-      /* Improve color contrast for low-opacity text */
+      /* Improve color contrast for low-opacity text - boost all opacity values for better cross-monitor consistency */
       .text-primary\/30 {
         color: rgba(255, 255, 255, 0.5) !important; /* Bumped from 30% to 50% */
       }
 
       .text-primary\/40 {
-        color: rgba(255, 255, 255, 0.55) !important; /* Bumped from 40% to 55% */
+        color: rgba(255, 255, 255, 0.6) !important; /* Bumped from 40% to 60% */
       }
 
       .text-primary\/50 {
-        color: rgba(255, 255, 255, 0.65) !important; /* Bumped from 50% to 65% */
+        color: rgba(255, 255, 255, 0.7) !important; /* Bumped from 50% to 70% */
+      }
+
+      .text-primary\/60 {
+        color: rgba(255, 255, 255, 0.75) !important; /* Bumped from 60% to 75% */
+      }
+
+      .text-primary\/70 {
+        color: rgba(255, 255, 255, 0.85) !important; /* Bumped from 70% to 85% */
+      }
+
+      .text-primary\/80 {
+        color: rgba(255, 255, 255, 0.9) !important; /* Bumped from 80% to 90% */
+      }
+
+      /* Also boost text-white opacity variants */
+      .text-white\/50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+      }
+
+      .text-white\/60 {
+        color: rgba(255, 255, 255, 0.75) !important;
+      }
+
+      .text-white\/70 {
+        color: rgba(255, 255, 255, 0.85) !important;
+      }
+
+      .text-white\/80 {
+        color: rgba(255, 255, 255, 0.9) !important;
       }
 
       /* Reduced motion support */
@@ -191,7 +237,11 @@ const { title, description, image, frontmatter, robots } = Astro.props;
         .text-primary\/50,
         .text-primary\/60,
         .text-primary\/70,
-        .text-primary\/80 {
+        .text-primary\/80,
+        .text-white\/50,
+        .text-white\/60,
+        .text-white\/70,
+        .text-white\/80 {
           color: rgba(255, 255, 255, 1) !important;
         }
 
@@ -199,6 +249,16 @@ const { title, description, image, frontmatter, robots } = Astro.props;
         .border-accent\/20,
         .border-accent\/30 {
           border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+      }
+
+      /* Fallback for browsers with poor OKLCH support */
+      @supports not (color: oklch(1 0 0)) {
+        [data-theme="dark"] {
+          --fallback-bc: #ffffff;
+          --fallback-b1: #000000;
+          --fallback-b2: #0d0d0d;
+          --fallback-b3: #1a1a1a;
         }
       }
     </style>
