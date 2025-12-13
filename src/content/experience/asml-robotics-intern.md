@@ -67,6 +67,22 @@ The kinematic pins are what lock the EIP in place after the gripper releases it.
   <source src="/images/experience/asml/simulation-bevels.mp4" type="video/mp4">
 </video>
 
+### Material Properties and Friction Research
+
+Getting the geometry right was only half the battle. For the simulation to actually predict real-world behavior, I needed accurate material properties. This meant diving deep into tribology research and materials science literature to find the right values.
+
+The gripper and EIP components are made from different materials depending on the part: aluminum alloys for structural components, hardened steel for the kinematic pins, and specialty ceramics and coatings in certain contact areas. Each material pair has different friction characteristics, and those characteristics change depending on whether you're in atmosphere or vacuum, whether surfaces are lubricated, and even the surface finish from machining.
+
+I spent a lot of time hunting down friction coefficients for specific material combinations. Some were straightforward (steel-on-aluminum is well documented), but others required digging through academic papers and manufacturer datasheets. For the vacuum environment specifically, friction behavior gets weird. Without air molecules to provide some boundary lubrication, metal-on-metal contacts can have significantly higher friction or even cold welding in extreme cases.
+
+Beyond friction, I also had to characterize:
+
+- **Contact stiffness and damping** - How "springy" the contact feels when parts collide. Too stiff and the simulation explodes numerically. Too soft and parts pass through each other.
+- **Coefficient of restitution** - How bouncy collisions are. For precision handoffs you want very little bounce.
+- **Material densities** - For accurate inertia calculations. The simulation needs to know how heavy each part is and how that mass is distributed.
+
+The trickiest part was that some of these values aren't published anywhere. ASML uses proprietary coatings and surface treatments, so I had to work with the materials team to get estimates or run sensitivity analyses to understand how much uncertainty in these parameters affected the simulation results.
+
 ### Running 100,000+ Simulations
 
 The real value of the simulation came from running massive parameter sweeps. I ran over 100,000 different combinations varying:
