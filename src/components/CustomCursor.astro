@@ -28,6 +28,8 @@
     z-index: 10001;
     transition: width 0.2s ease, height 0.2s ease;
     mix-blend-mode: difference;
+    opacity: 0;
+    visibility: hidden;
   }
 
   #cursor-outline {
@@ -39,7 +41,15 @@
     z-index: 10000;
     transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease, border-width 0.3s ease;
     mix-blend-mode: difference;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* Show cursor elements once mouse has moved */
+  #cursor-dot.cursor-initialized,
+  #cursor-outline.cursor-initialized {
     opacity: 1;
+    visibility: visible;
   }
 
   #cursor-canvas {
@@ -160,6 +170,7 @@
     let cursorY = 0;
     let outlineX = 0;
     let outlineY = 0;
+    let isInitialized = false;
 
     const dot = document.getElementById('cursor-dot');
     const outline = document.getElementById('cursor-outline');
@@ -215,6 +226,22 @@
   document.addEventListener('mousemove', (e) => {
     mouseX = e.clientX;
     mouseY = e.clientY;
+
+    // On first mouse move, initialize cursor position immediately (no animation from 0,0)
+    if (!isInitialized) {
+      isInitialized = true;
+      cursorX = mouseX;
+      cursorY = mouseY;
+      outlineX = mouseX;
+      outlineY = mouseY;
+      lastMouseX = mouseX;
+      lastMouseY = mouseY;
+
+      // Show cursor elements now that we have the correct position
+      if (dot) dot.classList.add('cursor-initialized');
+      if (outline) outline.classList.add('cursor-initialized');
+      return;
+    }
 
     // Calculate velocity
     velocity.x = mouseX - lastMouseX;
@@ -348,10 +375,6 @@
     }
   });
 
-  // Show cursor after load
-  setTimeout(() => {
-    if (dot) dot.style.opacity = '1';
-    if (outline) outline.style.opacity = '1';
-  }, 100);
+  // Cursor will be shown on first mouse move via cursor-initialized class
   }
 </script>
