@@ -61,8 +61,8 @@ import Footer from "../layouts/Footer.astro";
               </div>
             </a>
 
-            <!-- Experiment 2 -->
-            <a href="/forge/experiment-2" class="group experiment-card">
+            <!-- Experiment 2 - Coming Soon -->
+            <div class="group experiment-card coming-soon-card">
               <!-- Corner accent marks -->
               <div class="card-corner-accent card-corner-tl"></div>
               <div class="card-corner-accent card-corner-tr"></div>
@@ -79,25 +79,22 @@ import Footer from "../layouts/Footer.astro";
               <div class="glow-overlay"></div>
 
               <div class="experiment-window slide-up">
-                <div class="experiment-preview">
-                  <div class="cube-container">
-                    <div class="cube cube-2"></div>
+                <div class="experiment-preview coming-soon-preview">
+                  <div class="coming-soon-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
                   </div>
                 </div>
                 <div class="experiment-info">
-                  <h3 class="text-xl font-mono text-primary mb-2">Advanced Shaders</h3>
-                  <p class="text-primary/70 font-mono text-sm">Custom materials and effects</p>
-                </div>
-                <div class="experiment-overlay">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
+                  <h3 class="text-xl font-mono text-primary/50 mb-2">Coming Soon</h3>
+                  <p class="text-primary/40 font-mono text-sm">New experiment in development</p>
                 </div>
               </div>
-            </a>
+            </div>
 
-            <!-- Experiment 3 -->
-            <a href="/forge/experiment-3" class="group experiment-card">
+            <!-- Experiment 3 - Coming Soon -->
+            <div class="group experiment-card coming-soon-card">
               <!-- Corner accent marks -->
               <div class="card-corner-accent card-corner-tl"></div>
               <div class="card-corner-accent card-corner-tr"></div>
@@ -114,22 +111,19 @@ import Footer from "../layouts/Footer.astro";
               <div class="glow-overlay"></div>
 
               <div class="experiment-window slide-up">
-                <div class="experiment-preview">
-                  <div class="cube-container">
-                    <div class="cube cube-3"></div>
+                <div class="experiment-preview coming-soon-preview">
+                  <div class="coming-soon-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
                   </div>
                 </div>
                 <div class="experiment-info">
-                  <h3 class="text-xl font-mono text-primary mb-2">Forge v3</h3>
-                  <p class="text-primary/70 font-mono text-sm">Shader effects and visualizations</p>
-                </div>
-                <div class="experiment-overlay">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
+                  <h3 class="text-xl font-mono text-primary/50 mb-2">Coming Soon</h3>
+                  <p class="text-primary/40 font-mono text-sm">New experiment in development</p>
                 </div>
               </div>
-            </a>
+            </div>
           </div>
           </div>
         </div>
@@ -477,6 +471,61 @@ import Footer from "../layouts/Footer.astro";
 
   .experiment-info {
     @apply p-4;
+  }
+
+  /* Coming Soon Card Styles */
+  .coming-soon-card {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  .coming-soon-card:hover {
+    transform: none;
+  }
+
+  .coming-soon-card .card-corner-accent {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .coming-soon-card:hover .card-corner-accent {
+    width: 20px;
+    height: 20px;
+    border-color: rgba(255, 255, 255, 0.3);
+    filter: none;
+  }
+
+  .coming-soon-card .card-gradient-border {
+    opacity: 0.2;
+  }
+
+  .coming-soon-card:hover .card-gradient-border {
+    opacity: 0.3;
+  }
+
+  .coming-soon-card:hover .experiment-window {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+  }
+
+  .coming-soon-preview {
+    @apply flex items-center justify-center;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .coming-soon-icon {
+    @apply flex items-center justify-center w-20 h-20 rounded-full border border-primary/20;
+    animation: pulse-subtle 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
   }
 
   .experiment-overlay {

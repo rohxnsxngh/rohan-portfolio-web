@@ -4,7 +4,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
 <div
   class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
-  id="main-content"
+  id="hero-section"
 >
   <!-- FULL PAGE ROBOT BACKGROUND -->
   <div class="robot-background-container absolute inset-0 z-0" id="robot-container">
@@ -441,7 +441,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const heroSection = document.getElementById("main-content");
+    const heroSection = document.getElementById("hero-section");
     const robotContainer = document.getElementById("robot-container");
 
     let mouseActive = false;
