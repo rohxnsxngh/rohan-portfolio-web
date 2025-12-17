@@ -146,8 +146,27 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                     </div>
                   </div>
 
+                  <!-- Quaternion Studios - Current -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.5s;" data-company="quaternion studios">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border cyan-soft-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay cyan-soft-glow"></div>
+                      <div class="journey-card-content">
+                        <div class="journey-badge cyan-soft-badge mr-8 mt-4">CURRENT</div>
+                        <h3 class="journey-company">Quaternion</h3>
+                        <p class="journey-year">2025</p>
+                        <p class="journey-role">Founder</p>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- OctaPulse - Current -->
-                  <div class="journey-card-wrapper" style="animation-delay: 1.5s;" data-company="octapulse">
+                  <div class="journey-card-wrapper" style="animation-delay: 1.6s;" data-company="octapulse">
                     <div class="journey-card group">
                       <div class="journey-corner journey-corner-tl"></div>
                       <div class="journey-corner journey-corner-tr"></div>
@@ -160,7 +179,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                         <div class="journey-badge cyan-soft-badge mr-8 mt-4">CURRENT</div>
                         <h3 class="journey-company">OctaPulse</h3>
                         <p class="journey-year">2025</p>
-                        <p class="journey-role">Co-founder & CTO</p>
+                        <p class="journey-role">Co-founder</p>
                       </div>
                     </div>
                   </div>
@@ -422,7 +441,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   @media (min-width: 1024px) {
     .journey-card-wrapper {
       flex: 0 1 auto;
-      width: calc((100% - 3.75rem) / 6);
+      width: calc((100% - 4.5rem) / 7);
     }
   }
 
@@ -472,6 +491,11 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card-wrapper:nth-child(6) .journey-card {
     animation: autoHoverEffect 15s ease-in-out infinite;
     animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   /* Auto hover effect - lift the card (longer duration, smooth transitions) */
@@ -539,6 +563,11 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card-wrapper:nth-child(6) .journey-corner {
     animation: cornerExpand 15s ease-in-out infinite;
     animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   @keyframes cornerExpand {
@@ -628,6 +657,11 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     animation-delay: 10s;
   }
 
+  .journey-card-wrapper:nth-child(7) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 12s;
+  }
+
   @keyframes borderIntensify {
     0%, 100% {
       opacity: 0.5;
@@ -676,6 +710,11 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     animation-delay: 10s;
   }
 
+  .journey-card-wrapper:nth-child(7) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 12s;
+  }
+
   @keyframes gridFadeIn {
     0%, 100% {
       opacity: 0;
@@ -720,6 +759,11 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card-wrapper:nth-child(6) .journey-glow-overlay {
     animation: glowFadeIn 15s ease-in-out infinite;
     animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 12s;
   }
 
   /* Sweeping glow animation - horizontal on desktop, vertical on mobile */
@@ -777,6 +821,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .journey-card-wrapper:nth-child(4) .journey-card-content { animation-delay: 6s; }
   .journey-card-wrapper:nth-child(5) .journey-card-content { animation-delay: 8s; }
   .journey-card-wrapper:nth-child(6) .journey-card-content { animation-delay: 10s; }
+  .journey-card-wrapper:nth-child(7) .journey-card-content { animation-delay: 12s; }
 
   @keyframes cardContentBrighten {
     0%, 100% {
@@ -1414,6 +1459,14 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       0 0 80px rgba(100, 200, 255, 0.1);
   }
 
+  .experience-card[data-company^="quaternion"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(100, 200, 255, 0.2),
+      0 0 80px rgba(100, 200, 255, 0.1);
+  }
+
   .experience-card[data-company^="boston"]:hover .card-content {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
@@ -1749,7 +1802,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     const isMobile = window.innerWidth < 1024;
     const cycleDuration = 15000; // 15 seconds
     const hoverDuration = 1500; // 1.5 seconds (10% of cycle)
-    const delays = [0, 2000, 4000, 6000, 8000, 10000]; // milliseconds
+    const delays = [0, 2000, 4000, 6000, 8000, 10000, 12000]; // milliseconds
 
     journeyCardWrappers.forEach((wrapper, index) => {
       const wrapperEl = wrapper as HTMLElement;

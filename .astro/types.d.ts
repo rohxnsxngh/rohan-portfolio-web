@@ -205,6 +205,13 @@ declare module 'astro:content' {
   collection: "experience";
   data: InferEntrySchema<"experience">
 } & { render(): Render[".md"] };
+"quaternion-studios.md": {
+	id: "quaternion-studios.md";
+  slug: "quaternion-studios";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
 "tesla-software-intern-2022.md": {
 	id: "tesla-software-intern-2022.md";
   slug: "tesla-software-intern-2022";
