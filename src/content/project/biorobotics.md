@@ -270,6 +270,12 @@ Our results highlight the importance of biomimetic principles in robotics design
 
 ![Complete T-Bone Fish Robot Group](/images/project/BiobotGroupPicture.JPG)
 
+## Video Demo
+
+Watch T-Bone in action! This video shows our fish robot swimming and the team testing it in the pool.
+
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/_cZWqivbB60" title="Fish Robot Swimming Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="border-radius: 8px; margin: 1rem 0;"></iframe>
+
 ## References
 
 1. Lauder, G. V., Anderson, E. J., Tangorra, J., & Madden, P. G. (2007). Fish biorobotics: kinematics and hydrodynamics of self-propulsion. Journal of Experimental Biology, 210(16), 2767-2780.
