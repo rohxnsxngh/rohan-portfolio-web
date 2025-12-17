@@ -69,9 +69,8 @@ const encodedDomain = btoa(domain);
           // Remove data attributes to clean up DOM
           delete link.dataset.u;
           delete link.dataset.d;
-        } catch (e) {
+        } catch {
           // If decoding fails, leave as is
-          console.error('Failed to decode email:', e);
         }
       }
     });

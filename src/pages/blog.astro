@@ -969,7 +969,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchStatus = document.getElementById('searchStatus') as HTMLElement;
   
   if (!searchInput || !blogGrid || !searchStatus) {
-    console.error('Required DOM elements not found');
     return;
   }
   
@@ -983,7 +982,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const tagElements = card.querySelectorAll('.mt-4 span');
       
       if (!titleElement || !descriptionElement) {
-        console.warn('Blog card is missing required elements', card);
         return;
       }
       

@@ -653,8 +653,8 @@ import { Image } from "astro:assets";
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const video = entry.target as HTMLVideoElement;
-              video.play().catch((error) => {
-                console.warn("Auto-play was prevented by the browser:", error);
+              video.play().catch(() => {
+                // Auto-play may be prevented by browser settings
               });
               videoObserver.unobserve(video);
             }

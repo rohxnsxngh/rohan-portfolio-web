@@ -68,7 +68,6 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     if (error) {
-      console.error('Resend error:', JSON.stringify(error, null, 2));
       return new Response(
         JSON.stringify({ error: error.message || 'Failed to send message. Please try again.' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
@@ -79,8 +78,7 @@ export const POST: APIRoute = async ({ request }) => {
       JSON.stringify({ success: true, id: data?.id }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
-  } catch (error) {
-    console.error('Contact form error:', error);
+  } catch {
     return new Response(
       JSON.stringify({ error: 'An unexpected error occurred.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }

@@ -31,8 +31,7 @@ function formatYearMonth(dateString: string) {
       year: "numeric",
       month: "long",
     });
-  } catch (error) {
-    console.error("Error formatting date:", error);
+  } catch {
     return dateString; // Return original string as fallback
   }
 }

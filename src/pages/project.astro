@@ -317,8 +317,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
                     />
                   </div>
                 );
-              } catch (error) {
-                console.error(`Error rendering project:`, error);
+              } catch {
                 return (
                   <div class="bg-red-500/20 p-4 rounded-xl text-white">
                     Error rendering project
