@@ -47,33 +47,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
                 <!-- Journey Cards Grid -->
                 <div class="journey-cards-grid">
-                  <!-- NVIDIA -->
-                  <div class="journey-card-wrapper" style="animation-delay: 1s;" data-company="nvidia">
-                    <div class="journey-card group">
-                      <!-- Corner accents -->
-                      <div class="journey-corner journey-corner-tl"></div>
-                      <div class="journey-corner journey-corner-tr"></div>
-                      <div class="journey-corner journey-corner-bl"></div>
-                      <div class="journey-corner journey-corner-br"></div>
-
-                      <!-- Gradient border -->
-                      <div class="journey-gradient-border green-gradient"></div>
-
-                      <!-- Grid overlay -->
-                      <div class="journey-grid-overlay"></div>
-
-                      <!-- Glow effect -->
-                      <div class="journey-glow-overlay green-glow"></div>
-
-                      <!-- Content -->
-                      <div class="journey-card-content">
-                        <h3 class="journey-company">NVIDIA</h3>
-                        <p class="journey-year">2021</p>
-                        <p class="journey-role">CAD Engineering</p>
-                      </div>
-                    </div>
-                  </div>
-
                   <!-- Tesla 2022 -->
                   <div class="journey-card-wrapper" style="animation-delay: 1.1s;" data-company="tesla">
                     <div class="journey-card group">
@@ -1419,14 +1392,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   }
 
   /* Company-specific hover glows for experience cards */
-  .experience-card[data-company^="nvidia"]:hover .card-content {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 20px 40px rgba(0, 0, 0, 0.6),
-      0 0 40px rgba(150, 255, 150, 0.2),
-      0 0 80px rgba(150, 255, 150, 0.1);
-  }
-
   .experience-card[data-company^="tesla"]:hover .card-content {
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
