@@ -25,6 +25,10 @@ const projectCollection = defineCollection({
     github: z.string().optional(),
     demo: z.string().optional(),
     kaggle: z.string().optional(),
+    images: z.array(z.object({
+      src: z.string(),
+      alt: z.string()
+    })).optional(),
   }),
 });
 
@@ -39,6 +43,10 @@ const researchCollection = defineCollection({
     tags: z.array(z.string()),
     github: z.string().optional(),
     paper: z.string().optional(),
+    images: z.array(z.object({
+      src: z.string(),
+      alt: z.string()
+    })).optional(),
   }),
 });
 

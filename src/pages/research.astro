@@ -478,9 +478,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!glowOverlay) return;
 
     card.addEventListener('mousemove', (e) => {
+      const mouseEvent = e as MouseEvent;
       const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      const x = ((mouseEvent.clientX - rect.left) / rect.width) * 100;
+      const y = ((mouseEvent.clientY - rect.top) / rect.height) * 100;
 
       glowOverlay.style.setProperty('--mouse-x', `${x}%`);
       glowOverlay.style.setProperty('--mouse-y', `${y}%`);

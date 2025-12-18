@@ -139,6 +139,8 @@ import Footer from "../../layouts/Footer.astro";
 
   // Simple Perlin noise implementation
   class SimpleNoise {
+    perm: number[];
+
     constructor() {
       this.perm = this.generatePermutation();
     }
@@ -155,17 +157,17 @@ import Footer from "../../layouts/Footer.astro";
       return [...p, ...p];
     }
 
-    fade(t) { return t * t * t * (t * (t * 6 - 15) + 10); }
-    lerp(t, a, b) { return a + t * (b - a); }
+    fade(t: number): number { return t * t * t * (t * (t * 6 - 15) + 10); }
+    lerp(t: number, a: number, b: number): number { return a + t * (b - a); }
 
-    grad(hash, x, y, z) {
+    grad(hash: number, x: number, y: number, z: number): number {
       const h = hash & 15;
       const u = h < 8 ? x : y;
       const v = h < 4 ? y : h === 12 || h === 14 ? x : z;
       return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
     }
 
-    noise(x, y, z) {
+    noise(x: number, y: number, z: number): number {
       const X = Math.floor(x) & 255;
       const Y = Math.floor(y) & 255;
       const Z = Math.floor(z) & 255;
@@ -419,7 +421,7 @@ import Footer from "../../layouts/Footer.astro";
     }
     
     mesh.instanceMatrix.needsUpdate = true;
-    mesh.instanceColor.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
   }
 
   function updateFPS(time: number) {
