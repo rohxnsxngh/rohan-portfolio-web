@@ -1,0 +1,380 @@
+---
+// Custom Cursor Component with Pixelated Hieroglyphic Trail Effect
+---
+
+<div id="custom-cursor">
+  <div id="cursor-dot"></div>
+  <div id="cursor-outline"></div>
+  <canvas id="cursor-canvas"></canvas>
+</div>
+
+<style>
+  #custom-cursor {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+  }
+
+  #cursor-dot {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background-color: #FFFFFF;
+    transform: translate(-50%, -50%);
+    z-index: 10001;
+    transition: width 0.2s ease, height 0.2s ease;
+    mix-blend-mode: difference;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  #cursor-outline {
+    position: fixed;
+    width: 28px;
+    height: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%) rotate(45deg);
+    z-index: 10000;
+    transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease, border-width 0.3s ease;
+    mix-blend-mode: difference;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* Show cursor elements once mouse has moved */
+  #cursor-dot.cursor-initialized,
+  #cursor-outline.cursor-initialized {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #cursor-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  /* Hide default cursor completely - override all cursor styles */
+  *,
+  *::before,
+  *::after,
+  body,
+  body *,
+  a,
+  a *,
+  button,
+  button *,
+  [role="button"],
+  input,
+  textarea,
+  select,
+  *:hover,
+  *:active,
+  *:focus,
+  *:link,
+  *:visited {
+    cursor: none !important;
+  }
+
+  /* Hide on mobile */
+  @media (hover: none) and (pointer: coarse) {
+    #custom-cursor {
+      display: none !important;
+    }
+
+    body,
+    body *,
+    body *:hover,
+    body *:active,
+    body *:focus {
+      cursor: auto !important;
+    }
+  }
+
+  /* States */
+  body.cursor-hover #cursor-outline {
+    width: 64px;
+    height: 64px;
+    border-color: rgba(255, 255, 255, 0.9);
+    border-width: 2px;
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.15);
+    opacity: 0.5;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+
+  body.cursor-hover #cursor-dot {
+    width: 6px;
+    height: 6px;
+    opacity: 0.8;
+  }
+
+  body.cursor-click #cursor-outline {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0.9);
+  }
+
+  body.cursor-click #cursor-dot {
+    width: 8px;
+    height: 8px;
+  }
+</style>
+
+<script>
+  // Check if device is mobile
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
+
+  // Exit early if mobile
+  if (isMobile) {
+    const customCursor = document.getElementById('custom-cursor');
+    if (customCursor) {
+      customCursor.style.display = 'none';
+    }
+  } else {
+    // Force cursor: none on all elements via JavaScript
+    const enforceCursorNone = () => {
+      document.body.style.cursor = 'none';
+      const allElements = document.querySelectorAll('*');
+      allElements.forEach((el) => {
+        (el as HTMLElement).style.cursor = 'none';
+      });
+    };
+
+    // Enforce on load
+    enforceCursorNone();
+
+    // Re-enforce when DOM changes (for dynamically added elements)
+    const observer = new MutationObserver(() => {
+      enforceCursorNone();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+    // Cursor state
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    let outlineX = 0;
+    let outlineY = 0;
+    let isInitialized = false;
+
+    const dot = document.getElementById('cursor-dot');
+    const outline = document.getElementById('cursor-outline');
+    const canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement;
+    const ctx = canvas?.getContext('2d');
+
+  // Pixelated block system
+  interface PixelBlock {
+    x: number;
+    y: number;
+    size: number;
+    life: number;
+    maxLife: number;
+    type: 'solid' | 'hollow' | 'dot';
+  }
+
+  const pixelBlocks: PixelBlock[] = [];
+  let lastPixelTime = 0;
+  let velocity = { x: 0, y: 0 };
+  let lastMouseX = 0;
+  let lastMouseY = 0;
+
+  // Setup canvas
+  function resizeCanvas() {
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  // Add pixelated block
+  function addPixelBlock(x: number, y: number) {
+    const types: Array<'solid' | 'hollow' | 'dot'> = ['solid', 'hollow', 'dot'];
+    pixelBlocks.push({
+      x: x + (Math.random() - 0.5) * 20,
+      y: y + (Math.random() - 0.5) * 20,
+      size: 4 + Math.floor(Math.random() * 2) * 2, // Pixelated sizes: 4, 6
+      life: 1,
+      maxLife: 1,
+      type: types[Math.floor(Math.random() * types.length)]
+    });
+
+    // Limit blocks
+    if (pixelBlocks.length > 25) {
+      pixelBlocks.shift();
+    }
+  }
+
+  // Mouse movement
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+
+    // On first mouse move, initialize cursor position immediately (no animation from 0,0)
+    if (!isInitialized) {
+      isInitialized = true;
+      cursorX = mouseX;
+      cursorY = mouseY;
+      outlineX = mouseX;
+      outlineY = mouseY;
+      lastMouseX = mouseX;
+      lastMouseY = mouseY;
+
+      // Show cursor elements now that we have the correct position
+      if (dot) dot.classList.add('cursor-initialized');
+      if (outline) outline.classList.add('cursor-initialized');
+      return;
+    }
+
+    // Calculate velocity
+    velocity.x = mouseX - lastMouseX;
+    velocity.y = mouseY - lastMouseY;
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+
+    const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+    const now = Date.now();
+
+    // Add pixel blocks
+    if (speed > 2 && now - lastPixelTime > 50) {
+      addPixelBlock(mouseX, mouseY);
+      lastPixelTime = now;
+    }
+
+    // On fast movement, spawn more pixel blocks
+    if (speed > 20) {
+      for (let i = 0; i < 2; i++) {
+        addPixelBlock(mouseX, mouseY);
+      }
+    }
+  });
+
+  // Interactive elements
+  const interactiveElements = 'a, button, [role="button"], input, textarea, select, .cursor-hover';
+
+  document.addEventListener('mouseover', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest(interactiveElements)) {
+      document.body.classList.add('cursor-hover');
+    }
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest(interactiveElements)) {
+      document.body.classList.remove('cursor-hover');
+    }
+  });
+
+  document.addEventListener('mousedown', () => {
+    document.body.classList.add('cursor-click');
+
+    // Add pixel blocks burst
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => addPixelBlock(mouseX, mouseY), i * 15);
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    document.body.classList.remove('cursor-click');
+  });
+
+  // Animation loop
+  function animate() {
+    // Smooth cursor movement with easing
+    const ease = 0.15;
+    cursorX += (mouseX - cursorX) * ease;
+    cursorY += (mouseY - cursorY) * ease;
+
+    const outlineEase = 0.1;
+    outlineX += (mouseX - outlineX) * outlineEase;
+    outlineY += (mouseY - outlineY) * outlineEase;
+
+    // Update DOM positions
+    if (dot) {
+      dot.style.left = `${cursorX}px`;
+      dot.style.top = `${cursorY}px`;
+    }
+
+    if (outline) {
+      outline.style.left = `${outlineX}px`;
+      outline.style.top = `${outlineY}px`;
+    }
+
+    // Draw canvas effects (pixelated blocks)
+    if (ctx && canvas) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw pixelated blocks
+      pixelBlocks.forEach((block, index) => {
+        block.life -= 0.025;
+
+        if (block.life <= 0) {
+          pixelBlocks.splice(index, 1);
+          return;
+        }
+
+        const alpha = block.life * 0.35;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1;
+
+        // Draw different block types
+        if (block.type === 'solid') {
+          ctx.fillRect(
+            Math.floor(block.x / block.size) * block.size,
+            Math.floor(block.y / block.size) * block.size,
+            block.size,
+            block.size
+          );
+        } else if (block.type === 'hollow') {
+          ctx.strokeRect(
+            Math.floor(block.x / block.size) * block.size,
+            Math.floor(block.y / block.size) * block.size,
+            block.size,
+            block.size
+          );
+        } else if (block.type === 'dot') {
+          const centerX = Math.floor(block.x / block.size) * block.size + block.size / 2;
+          const centerY = Math.floor(block.y / block.size) * block.size + block.size / 2;
+          ctx.fillRect(centerX - 1, centerY - 1, 2, 2);
+        }
+      });
+
+      ctx.globalAlpha = 1;
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  // Start animation
+  animate();
+
+  // Handle page visibility
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      pixelBlocks.length = 0;
+    }
+  });
+
+  // Cursor will be shown on first mouse move via cursor-initialized class
+  }
+</script>

@@ -126,9 +126,23 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"blog": {
+"bio-inspired-fish-robot-lessons.md": {
+	id: "bio-inspired-fish-robot-lessons.md";
+  slug: "bio-inspired-fish-robot-lessons";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "cmu-computer-vision.md": {
 	id: "cmu-computer-vision.md";
   slug: "cmu-computer-vision";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"cmu-deep-learning-practical.md": {
+	id: "cmu-deep-learning-practical.md";
+  slug: "cmu-deep-learning-practical";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
@@ -140,6 +154,20 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"cofounder-dynamics.md": {
+	id: "cofounder-dynamics.md";
+  slug: "cofounder-dynamics";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"deep-tech-fundraising.md": {
+	id: "deep-tech-fundraising.md";
+  slug: "deep-tech-fundraising";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "freelancing-journey.md": {
 	id: "freelancing-journey.md";
   slug: "freelancing-journey";
@@ -147,9 +175,44 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"hardware-vs-software-startups.md": {
+	id: "hardware-vs-software-startups.md";
+  slug: "hardware-vs-software-startups";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"marine-computer-vision.md": {
+	id: "marine-computer-vision.md";
+  slug: "marine-computer-vision";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"mbb-first-try.md": {
+	id: "mbb-first-try.md";
+  slug: "mbb-first-try";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "mechanical-to-swe-internship.md": {
 	id: "mechanical-to-swe-internship.md";
   slug: "mechanical-to-swe-internship";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"ocean-tech-frontier.md": {
+	id: "ocean-tech-frontier.md";
+  slug: "ocean-tech-frontier";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"side-project-to-company.md": {
+	id: "side-project-to-company.md";
+  slug: "side-project-to-company";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
@@ -168,11 +231,46 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"yc-experience.md": {
+	id: "yc-experience.md";
+  slug: "yc-experience";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"yc-robotics-lessons.md": {
+	id: "yc-robotics-lessons.md";
+  slug: "yc-robotics-lessons";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 };
 "experience": {
 "asml-robotics-intern.md": {
 	id: "asml-robotics-intern.md";
   slug: "asml-robotics-intern";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
+"nvidia-cad-intern.md": {
+	id: "nvidia-cad-intern.md";
+  slug: "nvidia-cad-intern";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
+"octapulse-cto.md": {
+	id: "octapulse-cto.md";
+  slug: "octapulse-cto";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
+"quaternion-studios.md": {
+	id: "quaternion-studios.md";
+  slug: "quaternion-studios";
   body: string;
   collection: "experience";
   data: InferEntrySchema<"experience">

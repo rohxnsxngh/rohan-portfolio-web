@@ -1,0 +1,84 @@
+---
+/**
+ * ObfuscatedEmail Component
+ *
+ * Prevents email harvesting by spam bots by encoding the email address
+ * and decoding it via JavaScript at runtime.
+ *
+ * Usage:
+ * <ObfuscatedEmail email="user@example.com" class="your-classes" />
+ */
+
+interface Props {
+  email: string;
+  class?: string;
+  showIcon?: boolean;
+  children?: any;
+}
+
+const { email, class: className = "", showIcon = false } = Astro.props;
+
+// Simple base64-like encoding to prevent plain text email in HTML
+// Split into parts to make it harder for bots
+const [user, domain] = email.split("@");
+const encodedUser = btoa(user);
+const encodedDomain = btoa(domain);
+---
+
+<a
+  href="#"
+  class:list={["obfuscated-email", className]}
+  data-u={encodedUser}
+  data-d={encodedDomain}
+  aria-label="Send email"
+>
+  {showIcon && (
+    <svg class="h-5 w-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    </svg>
+  )}
+  <slot>
+    <span class="email-text">[Click to reveal email]</span>
+  </slot>
+</a>
+
+<script>
+  // Decode and set up email links on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const emailLinks = document.querySelectorAll<HTMLAnchorElement>('.obfuscated-email');
+
+    emailLinks.forEach((link) => {
+      const encodedUser = link.dataset.u;
+      const encodedDomain = link.dataset.d;
+
+      if (encodedUser && encodedDomain) {
+        try {
+          const user = atob(encodedUser);
+          const domain = atob(encodedDomain);
+          const email = `${user}@${domain}`;
+
+          // Set the href
+          link.href = `mailto:${email}`;
+
+          // Update the display text if it's the default placeholder
+          const emailText = link.querySelector('.email-text');
+          if (emailText && emailText.textContent === '[Click to reveal email]') {
+            emailText.textContent = email;
+          }
+
+          // Remove data attributes to clean up DOM
+          delete link.dataset.u;
+          delete link.dataset.d;
+        } catch {
+          // If decoding fails, leave as is
+        }
+      }
+    });
+  });
+</script>
+
+<style>
+  .obfuscated-email {
+    cursor: pointer;
+  }
+</style>

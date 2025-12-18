@@ -1,0 +1,456 @@
+---
+import Navbar from "../layouts/Navigation.astro";
+import Footer from "../layouts/Footer.astro";
+import Layout from "../layouts/Layout.astro";
+
+const artworks = [
+  {
+    src: "/images/art/demon-masks-illustration.jpeg",
+    title: "Inner Demons",
+    description: "Digital illustration exploring duality and hidden personas"
+  },
+  {
+    src: "/images/art/antelope-canyon-painting.jpg",
+    title: "Antelope Canyon",
+    description: "Painterly interpretation of the iconic slot canyon's warm embrace"
+  },
+  {
+    src: "/images/art/pooh-tigger-butterfly.jpg",
+    title: "Hundred Acre Moment",
+    description: "Hand-drawn tribute to childhood classics"
+  },
+  {
+    src: "/images/art/pooh-tigger-dreaming.jpg",
+    title: "Sweet Dreams",
+    description: "Winnie and Tigger in a peaceful daydream"
+  }
+];
+---
+
+<Layout title="Art - Rohan Singh" description="A collection of my creative work, illustrations, and visual explorations">
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay for texture -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+          <!-- Main Content -->
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER SECTION -->
+            <div class="header-section mb-16">
+              <h1 class="art-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
+
+            <!-- Intro Section -->
+            <div class="intro-section mb-16 max-w-3xl">
+              <p class="intro-label font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                // CREATIVE CORNER
+              </p>
+              <p class="intro-text text-lg sm:text-xl text-primary/70 leading-relaxed">
+                Hand-drawn illustrations and visual experiments.
+              </p>
+            </div>
+
+            <!-- Gallery Section -->
+            <div class="gallery-section mb-20">
+              <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-8">
+                // GALLERY
+              </h2>
+
+              <div class="gallery-grid">
+                {artworks.map((artwork, index) => (
+                  <div class="artwork-card group" style={`animation-delay: ${0.1 * index}s`}>
+                    <!-- Corner accents -->
+                    <div class="card-corner card-corner-tl"></div>
+                    <div class="card-corner card-corner-tr"></div>
+                    <div class="card-corner card-corner-bl"></div>
+                    <div class="card-corner card-corner-br"></div>
+
+                    <div class="artwork-image-container">
+                      <img
+                        src={artwork.src}
+                        alt={artwork.title}
+                        class="artwork-image"
+                        loading="lazy"
+                      />
+                    </div>
+                    <div class="artwork-info">
+                      <h3 class="artwork-title">{artwork.title}</h3>
+                      <p class="artwork-description">{artwork.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- More Coming Soon Section -->
+            <div class="coming-soon-section mb-20">
+              <div class="coming-soon-banner">
+                <div class="banner-content">
+                  <div class="banner-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                  <div class="banner-text">
+                    <h3 class="font-mono text-lg text-primary/80 mb-2">More artwork on the way</h3>
+                    <p class="text-primary/50 text-sm">This gallery is just getting started. Check back soon for new pieces including photography, generative art, and more experiments.</p>
+                  </div>
+                </div>
+
+                <!-- Placeholder grid -->
+                <div class="placeholder-grid">
+                  <div class="placeholder-card"></div>
+                  <div class="placeholder-card"></div>
+                  <div class="placeholder-card"></div>
+                  <div class="placeholder-card hidden sm:block"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </Navbar>
+    </div>
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD ART TITLE */
+  .art-title {
+    font-size: clamp(4rem, 18vw, 16rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Individual character animations */
+  .art-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  /* INTRO SECTION */
+  .intro-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.6s;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Gallery Section */
+  .gallery-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.8s;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+  }
+
+  @media (min-width: 640px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* Artwork Card */
+  .artwork-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .artwork-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 20px 40px rgba(0, 0, 0, 0.4),
+      0 0 60px rgba(255, 255, 255, 0.05);
+  }
+
+  /* Corner accents */
+  .card-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    z-index: 20;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .card-corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 12px 0 0 0;
+  }
+
+  .card-corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 12px 0 0;
+  }
+
+  .card-corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 12px;
+  }
+
+  .card-corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 12px 0;
+  }
+
+  .artwork-card:hover .card-corner {
+    width: 30px;
+    height: 30px;
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Artwork Image */
+  .artwork-image-container {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+
+  .artwork-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .artwork-card:hover .artwork-image {
+    transform: scale(1.05);
+  }
+
+  /* Artwork Info */
+  .artwork-info {
+    padding: 1.5rem;
+  }
+
+  .artwork-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+  }
+
+  .artwork-description {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.5;
+  }
+
+  /* Coming Soon Section */
+  .coming-soon-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 1s;
+  }
+
+  .coming-soon-banner {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .banner-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .banner-icon {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    animation: pulse-subtle 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  .placeholder-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .placeholder-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .placeholder-card {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .placeholder-card::after {
+    content: '+';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.1);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .art-title {
+      font-size: clamp(3.5rem, 16vw, 14rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .art-title {
+      font-size: clamp(3rem, 18vw, 12rem);
+    }
+
+    .banner-content {
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .art-title {
+      font-size: clamp(2.5rem, 20vw, 10rem);
+    }
+  }
+</style>

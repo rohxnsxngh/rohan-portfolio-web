@@ -1,0 +1,706 @@
+---
+// BlogRobotViewer.astro - Keyboard viewer for blog page with smooth transition
+interface Props {
+  width?: string;
+  height?: string;
+  className?: string;
+}
+
+const {
+  width = "100%",
+  height = "100%",
+  className = "",
+} = Astro.props;
+---
+
+<div
+  class={`blog-robot-viewer-container group ${className}`}
+  style={`--width: ${width}; --height: ${height};`}
+>
+  <!-- Corner accent marks (hidden initially, shown after transition) -->
+  <div class="corner-accent corner-tl"></div>
+  <div class="corner-accent corner-tr"></div>
+  <div class="corner-accent corner-bl"></div>
+  <div class="corner-accent corner-br"></div>
+
+  <!-- Animated gradient border (hidden initially) -->
+  <div class="gradient-border"></div>
+
+  <!-- Grid overlay (hidden initially) -->
+  <div class="grid-overlay"></div>
+
+  <!-- Floating badge (hidden initially) -->
+  <div class="model-badge">
+    <svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+    </svg>
+    <span>Technical Chronicles</span>
+  </div>
+
+  <div id="blog-robot-container" class="robot-display">
+    <div class="loading-container">
+      <progress id="blog-progress-bar" value="0" max="100"></progress>
+    </div>
+  </div>
+</div>
+
+<script>
+  import * as THREE from "three";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
+  const container = document.querySelector(".blog-robot-viewer-container");
+  const modelContainer = document.getElementById("blog-robot-container");
+  const progressBar = document.getElementById("blog-progress-bar");
+  const loadingContainer = document.querySelector(".blog-robot-viewer-container .loading-container");
+
+  const getContainerSize = () => {
+    if (!container) throw new Error("Container not found");
+    const rect = container.getBoundingClientRect();
+    return {
+      width: rect.width,
+      height: rect.height,
+      aspectRatio: rect.width / rect.height,
+    };
+  };
+
+  let { width, height, aspectRatio } = getContainerSize();
+
+  let keyboard: THREE.Group;
+  let mixer: THREE.AnimationMixer;
+  let animationAction: THREE.AnimationAction | null = null;
+  let controls: OrbitControls;
+  let camera: THREE.PerspectiveCamera;
+  let renderer: THREE.WebGLRenderer;
+  let scene: THREE.Scene;
+  let clock = new THREE.Clock();
+
+  // Mouse lighting system
+  let mousePointLight: THREE.PointLight | null = null;
+  let hemisphereLight: THREE.HemisphereLight | null = null;
+  let raycaster: THREE.Raycaster | null = null;
+  let mouseVector: THREE.Vector2 | null = null;
+  let lightPosition: THREE.Vector3 = new THREE.Vector3();
+  let isMouseOver = false;
+
+  function initScene() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color("#000000");
+
+    camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.1, 1000);
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance",
+      precision: "highp",
+    });
+
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    if (modelContainer) {
+      const existingCanvas = modelContainer.querySelector("canvas");
+      if (existingCanvas) modelContainer.removeChild(existingCanvas);
+      modelContainer.appendChild(renderer.domElement);
+    }
+
+    // Camera positioned to view keyboard from above-front angle
+    camera.position.set(0, 3, 5);
+    camera.lookAt(0, 0, 0);
+
+    // OrbitControls for user interaction - very limited rotation for keyboard
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.target = new THREE.Vector3(0, 0, 0);
+    controls.enableRotate = true;
+
+    // Restrict horizontal rotation to ±25 degrees
+    controls.minAzimuthAngle = -Math.PI / 7.2; // -25 degrees
+    controls.maxAzimuthAngle = Math.PI / 7.2;  // +25 degrees
+
+    // Restrict vertical rotation to ±10 degrees (viewing from above)
+    controls.minPolarAngle = Math.PI / 3 - 0.17; // About 10 degrees up
+    controls.maxPolarAngle = Math.PI / 3 + 0.17; // About 10 degrees down
+
+    // Disable panning and zooming for minimal interaction
+    controls.enablePan = false;
+    controls.enableZoom = false;
+
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+
+    // Balanced lighting - visible base with mouse enhancement
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+    scene.add(ambientLight);
+
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    mainLight.position.set(3, 5, 4);
+    mainLight.castShadow = true;
+    scene.add(mainLight);
+
+    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.4);
+    fillLight.position.set(-3, 2, 2);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    rimLight.position.set(0, 3, -5);
+    scene.add(rimLight);
+
+    // Subtle colored accent lights
+    const cyanAccent = new THREE.PointLight(0x00ffff, 0.6, 10);
+    cyanAccent.position.set(-2, 1, 3);
+    scene.add(cyanAccent);
+
+    const magentaAccent = new THREE.PointLight(0xff00ff, 0.5, 10);
+    magentaAccent.position.set(2, 0.5, -2);
+    scene.add(magentaAccent);
+
+    // Mouse-based lighting system
+    mousePointLight = new THREE.PointLight(0xff6600, 0, 30, 1.0);
+    mousePointLight.position.set(0, 5, 5);
+    scene.add(mousePointLight);
+
+    hemisphereLight = new THREE.HemisphereLight(0xffaa44, 0x442200, 0);
+    scene.add(hemisphereLight);
+
+    // Initialize raycaster for mouse-to-3D mapping
+    raycaster = new THREE.Raycaster();
+    mouseVector = new THREE.Vector2();
+  }
+
+  function handleResize() {
+    const { width: newWidth, height: newHeight, aspectRatio: newAspectRatio } = getContainerSize();
+    width = newWidth;
+    height = newHeight;
+    aspectRatio = newAspectRatio;
+    camera.aspect = aspectRatio;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.render(scene, camera);
+  }
+
+  function init() {
+    initScene();
+
+    const manager = new THREE.LoadingManager();
+    manager.onProgress = (_url, loaded, total) => {
+      if (progressBar instanceof HTMLProgressElement) {
+        progressBar.value = (loaded / total) * 100;
+      }
+    };
+
+    if (loadingContainer instanceof HTMLElement) {
+      loadingContainer.style.display = "none";
+    }
+
+    // Load the keyboard.glb model
+    const loader = new GLTFLoader(manager);
+    loader.load(
+      "/models/keyboard.glb",
+      (glb) => {
+        keyboard = glb.scene;
+
+        // Dark material for keyboard
+        const keyboardMaterial = new THREE.MeshPhongMaterial({
+          color: new THREE.Color("#2a2a2a"),
+          emissive: new THREE.Color("#080808"),
+          specular: new THREE.Color("#ffffff"),
+          shininess: 25,
+          flatShading: false,
+        });
+
+        keyboard.traverse((o) => {
+          if (o instanceof THREE.Mesh) {
+            o.material = keyboardMaterial;
+            o.castShadow = true;
+            o.receiveShadow = true;
+          }
+        });
+
+        // Calculate bounding box to center and scale properly
+        const box = new THREE.Box3().setFromObject(keyboard);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+
+        // Center the keyboard
+        keyboard.position.set(-center.x, -center.y, -center.z);
+
+        // Auto-scale to fit in view (like home page method)
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const desiredSize = 3; // Fit in 3 units
+        const scale = desiredSize / maxDim;
+        keyboard.scale.set(scale, scale, scale);
+
+        // Add a slight tilt for dynamic presentation
+        keyboard.rotation.x = -0.2; // Tilt forward to show keys better
+        keyboard.rotation.y = 0.15; // Slight angle for depth
+
+        scene.add(keyboard);
+
+        // Setup animation - loop continuously at 4x speed
+        if (glb.animations && glb.animations.length > 0) {
+          mixer = new THREE.AnimationMixer(keyboard);
+          const clip = glb.animations[0];
+
+          // Speed up animation by 4x
+          mixer.timeScale = 4.0;
+
+          animationAction = mixer.clipAction(clip);
+
+          // Loop animation continuously
+          animationAction.setLoop(THREE.LoopRepeat, Infinity);
+          animationAction.play();
+
+          // Trigger transition after first loop completes
+          const firstLoopDuration = clip.duration / 4.0; // Adjusted for timeScale
+          setTimeout(() => {
+            document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
+          }, firstLoopDuration * 1000); // Convert to milliseconds
+        } else {
+          // If no animation, dispatch event immediately after a short delay
+          setTimeout(() => {
+            document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
+          }, 2000);
+        }
+      },
+      undefined, // Progress callback not needed
+      (error) => {
+        // Error loading model - dispatch event anyway to not block UI
+        document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
+      }
+    );
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+
+      if (mixer) {
+        mixer.update(delta);
+      }
+
+      if (controls) {
+        controls.update();
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener("resize", handleResize);
+    const resizeObserver = new ResizeObserver(() => handleResize());
+    if (container) resizeObserver.observe(container);
+
+    // Helper function to update lighting based on position
+    function updateLighting(clientX: number, clientY: number) {
+      if (!mouseVector || !raycaster || !camera || !keyboard || !mousePointLight || !hemisphereLight || !modelContainer) return;
+
+      const rect = modelContainer.getBoundingClientRect();
+      const x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+      mouseVector.x = x;
+      mouseVector.y = y;
+
+      raycaster.setFromCamera(mouseVector, camera);
+      const intersects = raycaster.intersectObject(keyboard, true);
+
+      let distance = 3.5;
+      let intensityMultiplier = 1.0;
+      const keyboardCenter = new THREE.Vector3(0, 0, 0);
+
+      if (intersects.length > 0) {
+        const intersectPoint = intersects[0].point;
+        const distanceToIntersect = camera.position.distanceTo(intersectPoint);
+        distance = distanceToIntersect * 0.4;
+
+        const distanceFromCenter = intersectPoint.distanceTo(keyboardCenter);
+        if (distanceFromCenter < 0.6) {
+          intensityMultiplier = 2.0;
+        } else if (distanceFromCenter < 1.0) {
+          intensityMultiplier = 1.0 + (1.0 - (distanceFromCenter - 0.6) / 0.4);
+        }
+      }
+
+      const targetPosition = new THREE.Vector3();
+      targetPosition.copy(raycaster.ray.direction);
+      targetPosition.multiplyScalar(distance);
+      targetPosition.add(raycaster.ray.origin);
+
+      lightPosition.lerp(targetPosition, 0.25);
+      mousePointLight.position.copy(lightPosition);
+
+      // Increase light visibility
+      const baseIntensity = 10.0;
+      const targetIntensity = baseIntensity * intensityMultiplier;
+
+      if (mousePointLight.intensity < targetIntensity) {
+        mousePointLight.intensity += 0.5;
+      }
+
+      if (hemisphereLight.intensity < 0.5) {
+        hemisphereLight.intensity += 0.04;
+      }
+    }
+
+    // Mouse event handlers for lighting system
+    if (modelContainer && mouseVector && raycaster) {
+      modelContainer.addEventListener('mouseenter', () => {
+        isMouseOver = true;
+        if (mousePointLight && hemisphereLight) {
+          mousePointLight.intensity = 0;
+          hemisphereLight.intensity = 0;
+        }
+      });
+
+      modelContainer.addEventListener('mouseleave', () => {
+        isMouseOver = false;
+        fadeOutLights();
+      });
+
+      modelContainer.addEventListener('mousemove', (event) => {
+        if (!isMouseOver) return;
+        updateLighting(event.clientX, event.clientY);
+      });
+
+      // Touch event handlers for mobile support
+      modelContainer.addEventListener('touchstart', (event) => {
+        isMouseOver = true;
+        if (mousePointLight && hemisphereLight) {
+          mousePointLight.intensity = 0;
+          hemisphereLight.intensity = 0;
+        }
+        if (event.touches.length > 0) {
+          event.preventDefault();
+          updateLighting(event.touches[0].clientX, event.touches[0].clientY);
+        }
+      });
+
+      modelContainer.addEventListener('touchmove', (event) => {
+        if (event.touches.length > 0) {
+          event.preventDefault();
+          updateLighting(event.touches[0].clientX, event.touches[0].clientY);
+        }
+      });
+
+      modelContainer.addEventListener('touchend', () => {
+        isMouseOver = false;
+        fadeOutLights();
+      });
+    }
+
+    // Fade out lights when mouse is inactive
+    let mouseTimeout: number | null = null;
+    if (modelContainer) {
+      modelContainer.addEventListener('mousemove', () => {
+        if (mouseTimeout) clearTimeout(mouseTimeout);
+        mouseTimeout = window.setTimeout(() => {
+          if (isMouseOver) {
+            fadeOutLights();
+          }
+        }, 2000);
+      });
+    }
+  }
+
+  function fadeOutLights() {
+    if (!mousePointLight || !hemisphereLight) return;
+
+    const fadeOut = () => {
+      if (mousePointLight && hemisphereLight) {
+        if (mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01) {
+          mousePointLight.intensity *= 0.9;
+          hemisphereLight.intensity *= 0.9;
+          requestAnimationFrame(fadeOut);
+        } else {
+          mousePointLight.intensity = 0;
+          hemisphereLight.intensity = 0;
+        }
+      }
+    };
+    fadeOut();
+  }
+
+  // Listen for skip animation event (when user has already seen it)
+  // The animation will still run but we don't need to wait for it
+  document.addEventListener('skipBlogRobotAnimation', () => {
+    // Page will immediately show the contained state
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+</script>
+
+<style>
+  .blog-robot-viewer-container {
+    display: flex;
+    height: var(--height, 100%);
+    width: var(--width, 100%);
+    position: relative;
+    transition: transform 0.3s ease-out;
+  }
+
+  .blog-robot-viewer-container:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Corner accent marks - hidden initially */
+  .corner-accent {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+
+  /* Show decorative elements after transition */
+  .blog-robot-viewer-container.interactive .corner-accent {
+    opacity: 1;
+  }
+
+  .corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 12px 0 0 0;
+  }
+
+  .corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 12px 0 0;
+  }
+
+  .corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 12px;
+  }
+
+  .corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 12px 0;
+  }
+
+  .blog-robot-viewer-container:hover .corner-accent {
+    width: 30px;
+    height: 30px;
+    border-color: rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  }
+
+  /* Animated gradient border - hidden initially */
+  .gradient-border {
+    position: absolute;
+    inset: -2px;
+    border-radius: 0.75rem;
+    padding: 2px;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 255, 255, 0.3),
+      transparent,
+      rgba(255, 0, 255, 0.3),
+      transparent
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderGlow 4s linear infinite;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .blog-robot-viewer-container.interactive .gradient-border {
+    opacity: 0.6;
+  }
+
+  @keyframes borderGlow {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .blog-robot-viewer-container:hover .gradient-border {
+    opacity: 1;
+    animation-duration: 2s;
+  }
+
+  /* Grid overlay - hidden initially */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 11;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .blog-robot-viewer-container.interactive:hover .grid-overlay {
+    opacity: 1;
+  }
+
+  /* Floating badge - hidden initially */
+  .model-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.9);
+    z-index: 15;
+    pointer-events: none;
+    animation: badgePulse 3s ease-in-out infinite;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .blog-robot-viewer-container.interactive .model-badge {
+    opacity: 1;
+  }
+
+  @keyframes badgePulse {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.3);
+    }
+  }
+
+  .badge-icon {
+    width: 14px;
+    height: 14px;
+    animation: badgeRotate 8s linear infinite;
+  }
+
+  @keyframes badgeRotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .model-badge {
+      font-size: 9px;
+      padding: 4px 8px;
+    }
+
+    .badge-icon {
+      width: 12px;
+      height: 12px;
+    }
+
+    .corner-accent {
+      width: 15px;
+      height: 15px;
+    }
+
+    .blog-robot-viewer-container:hover .corner-accent {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  #blog-robot-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  #blog-robot-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+  }
+
+  .robot-display {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(20, 20, 20, 0.95) 100%);
+    transition: all 0.4s ease-out;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .robot-display:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(0, 255, 255, 0.1),
+      0 0 80px rgba(255, 0, 255, 0.1);
+  }
+
+  .loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+    z-index: 20;
+  }
+
+  #blog-progress-bar {
+    width: 80%;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  #blog-progress-bar::-webkit-progress-bar {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  #blog-progress-bar::-webkit-progress-value {
+    background-color: rgba(75, 85, 99, 0.8);
+  }
+</style>

@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
-import { Image } from "astro:assets";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 
@@ -14,83 +13,281 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 ---
 
 <Layout title="Experience">
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
-        <div class="sm:px-20 px-6 py-2">
-          <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-4">
-            Experience
-          </h1>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
-          <div class="sm:text-sm text-xs tracking-wider mb-4 px-2">
-            <span class="font-bold font-antialiasing tracking-widest">TLDR:</span> <span class="text-slate-400/90 hover:underline hover:text-cyan-500/90 decoration-2 underline-offset-4">ASML</span> → <span
-              class="text-slate-400/90 hover:underline hover:text-red-300/90 decoration-2 underline-offset-4">Toyota</span
-            > → <span class="text-slate-400/90 hover:underline hover:text-red-500/90 decoration-2 underline-offset-4">Tesla</span> → <span
-              class="text-slate-400/90 hover:underline hover:text-red-500/90 decoration-2 underline-offset-4">Tesla</span
-            > 
-            → 
-            <!-- <span class="text-slate-400/90 hover:underline hover:text-lime-500/90 decoration-2 underline-offset-4">NVIDIA</span> -->
-          </div>
-          <div class="divider"></div>
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER -->
+            <div class="header-section mb-12">
+              <h1 class="experience-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">E</span><span class="char char-2">X</span><span class="char char-3">P</span><span class="char char-4">E</span><span class="char char-5">R</span><span class="char char-6">I</span><span class="char char-7">E</span><span class="char char-8">N</span><span class="char char-9">C</span><span class="char char-10">E</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
 
-          <div class="">
-            {
-              sortedExperiences.map((experience) => {
-                const companyFirstLetter = experience.data.company
-                  .toLowerCase()
-                  .charAt(0);
-                const borderClass =
-                  companyFirstLetter === "t"
-                    ? "border-red-300/50 shadow-sm shadow-red-200/40"
-                    : companyFirstLetter === "n"
-                      ? "border-green-300/50 shadow-sm shadow-green-200/40"
-                      : companyFirstLetter === "a"
-                        ? "border-blue-300/50 shadow-sm shadow-cyan-300/90"
-                        : "border-primary/20";
+            <!-- CAREER JOURNEY TIMELINE -->
+            <div class="journey-section mb-16 opacity-0" style="animation: fadeInUp 0.8s ease-out forwards; animation-delay: 0.8s;">
+              <div class="flex items-center gap-4 mb-8">
+                <p class="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-primary/30 uppercase">
+                  Career Journey
+                </p>
+                <div class="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent"></div>
+              </div>
 
-                return (
-                  <div class="relative z-10 experience-card group my-4">
-                    <div class="grid gap-6 p-4 rounded-xl bg-black transition-colors duration-300 relative z-10">
-                      <div>
-                        <div class="flex items-center gap-4 mb-2">
-                          <h2 class="font-mono text-xl">
-                            {experience.data.title}
-                          </h2>
-                          <span
-                            class={`text-sm font-mono px-3 py-1 rounded-lg bg-primary/10 text-primary/80 border ${borderClass}`}
-                          >
-                            {experience.data.company}
-                          </span>
-                        </div>
+              <!-- Timeline Container -->
+              <div class="career-timeline-wrapper relative">
+                <!-- Horizontal connector line (desktop/tablet) -->
+                <div class="journey-connector hidden lg:block"></div>
+                <!-- Vertical connector line (mobile) -->
+                <div class="journey-connector-vertical lg:hidden"></div>
 
-                        <p class="text-base-content/60 mb-4 font-mono">
-                          {experience.data.date}
-                        </p>
+                <!-- Journey Cards Grid -->
+                <div class="journey-cards-grid">
+                  <!-- NVIDIA -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1s;" data-company="nvidia">
+                    <div class="journey-card group">
+                      <!-- Corner accents -->
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
 
-                        <p class="text-base-content/80 mb-4">
-                          {experience.data.description}
-                        </p>
+                      <!-- Gradient border -->
+                      <div class="journey-gradient-border green-gradient"></div>
 
-                        <div class="flex flex-wrap gap-2 mb-4">
-                          {experience.data.tags.map((tag: string) => (
-                            <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20 hover:bg-accent/20 transition-colors duration-200">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
+                      <!-- Grid overlay -->
+                      <div class="journey-grid-overlay"></div>
+
+                      <!-- Glow effect -->
+                      <div class="journey-glow-overlay green-glow"></div>
+
+                      <!-- Content -->
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">NVIDIA</h3>
+                        <p class="journey-year">2021</p>
+                        <p class="journey-role">CAD Engineering</p>
                       </div>
                     </div>
-                    <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40" />
-                    <a
-                      href={`/experience/${experience.slug}`}
-                      class="absolute inset-0 z-20"
-                      aria-hidden="true"
-                    />
                   </div>
-                  <div class="divider"></div>
-                );
-              })
-            }
+
+                  <!-- Tesla 2022 -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.1s;" data-company="tesla">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border red-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay red-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">Tesla</h3>
+                        <p class="journey-year">2022</p>
+                        <p class="journey-role">Software Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Tesla 2023 -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.2s;" data-company="tesla">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border red-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay red-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">Tesla</h3>
+                        <p class="journey-year">2023</p>
+                        <p class="journey-role">Software Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Toyota -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.3s;" data-company="toyota">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border red-soft-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay red-soft-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">Toyota</h3>
+                        <p class="journey-year">2024</p>
+                        <p class="journey-role">Software Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ASML -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.4s;" data-company="asml">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border cyan-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay cyan-glow"></div>
+                      <div class="journey-card-content">
+                        <h3 class="journey-company">ASML</h3>
+                        <p class="journey-year">2025</p>
+                        <p class="journey-role">Robotics Eng</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Quaternion Studios - Current -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.5s;" data-company="quaternion studios">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border cyan-soft-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay cyan-soft-glow"></div>
+                      <div class="journey-card-content">
+                        <div class="journey-badge cyan-soft-badge mr-8 mt-4">CURRENT</div>
+                        <h3 class="journey-company">Quaternion</h3>
+                        <p class="journey-year">2025</p>
+                        <p class="journey-role">Founder</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- OctaPulse - Current -->
+                  <div class="journey-card-wrapper" style="animation-delay: 1.6s;" data-company="octapulse">
+                    <div class="journey-card group">
+                      <div class="journey-corner journey-corner-tl"></div>
+                      <div class="journey-corner journey-corner-tr"></div>
+                      <div class="journey-corner journey-corner-bl"></div>
+                      <div class="journey-corner journey-corner-br"></div>
+                      <div class="journey-gradient-border cyan-soft-gradient"></div>
+                      <div class="journey-grid-overlay"></div>
+                      <div class="journey-glow-overlay cyan-soft-glow"></div>
+                      <div class="journey-card-content">
+                        <div class="journey-badge cyan-soft-badge mr-8 mt-4">CURRENT</div>
+                        <h3 class="journey-company">OctaPulse</h3>
+                        <p class="journey-year">2025</p>
+                        <p class="journey-role">Co-founder</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3D ILLUMINATED TIMELINE -->
+            <div id="experience-timeline" class="relative min-h-screen">
+              <!-- Cards Container -->
+              <div class="cards-container relative z-10 w-full space-y-8 pb-20">
+                {sortedExperiences.map((experience, index) => {
+                  const companyFirstLetter = experience.data.company.toLowerCase().charAt(0);
+                  const borderClass =
+                    companyFirstLetter === "t"
+                      ? "border-red-300/50"
+                      : companyFirstLetter === "n"
+                        ? "border-green-300/50"
+                        : companyFirstLetter === "a"
+                          ? "border-cyan-300/50"
+                          : "border-primary/20";
+
+                  const colorClass =
+                    companyFirstLetter === "t"
+                      ? "text-red-300/80"
+                      : companyFirstLetter === "n"
+                        ? "text-green-300/80"
+                        : companyFirstLetter === "a"
+                          ? "text-cyan-300/80"
+                          : "text-primary/80";
+
+                  return (
+                    <div
+                      class="experience-card group"
+                      data-index={index}
+                      data-company={experience.data.company.toLowerCase()}
+                      style={`animation-delay: ${1.2 + index * 0.1}s;`}
+                    >
+                      <!-- Corner accent marks -->
+                      <div class="card-corner-accent card-corner-tl"></div>
+                      <div class="card-corner-accent card-corner-tr"></div>
+                      <div class="card-corner-accent card-corner-bl"></div>
+                      <div class="card-corner-accent card-corner-br"></div>
+
+                      <!-- Animated gradient border -->
+                      <div class="card-gradient-border"></div>
+
+                      <!-- Grid overlay -->
+                      <div class="card-grid-overlay"></div>
+
+                      <!-- Glow overlay that follows mouse (warm colored) -->
+                      <div class="glow-overlay-warm"></div>
+
+                      <!-- Clean Minimalist Card -->
+                      <a href={`/experience/${experience.slug}`} class="card-link block relative group">
+                        <!-- The card content -->
+                        <div class="card-content relative p-8 sm:p-12 overflow-hidden transition-all duration-500">
+                          <!-- Subtle accent line -->
+                          <div class={`accent-bar absolute left-0 top-0 w-1 h-0 ${borderClass} transition-all duration-500 group-hover:h-full`}></div>
+
+                          <!-- Illumination glow effect -->
+                          <div class="card-glow absolute inset-0 opacity-0 transition-opacity duration-500 pointer-events-none" style="background: radial-gradient(circle 400px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.03), transparent);"></div>
+
+                          <div class="relative z-10">
+                            <!-- Header -->
+                            <div class="flex items-start justify-between gap-6 mb-8">
+                              <div class="flex-1">
+                                <h2 class="font-mono text-3xl sm:text-4xl text-white/95 font-bold tracking-tight leading-tight mb-3 group-hover:text-white transition-colors duration-300">
+                                  {experience.data.title}
+                                </h2>
+                                <p class="text-primary/40 font-mono text-xs tracking-[0.2em] uppercase">
+                                  {experience.data.date}
+                                </p>
+                              </div>
+                              <span class={`company-badge font-mono text-sm px-4 py-2 rounded border ${borderClass} ${colorClass} whitespace-nowrap`}>
+                                {experience.data.company}
+                              </span>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="text-primary/70 mb-8 text-base leading-relaxed max-w-3xl group-hover:text-primary/90 transition-colors duration-300">
+                              {experience.data.description}
+                            </p>
+
+                            <!-- Tags -->
+                            <div class="flex flex-wrap gap-2 mb-8">
+                              {experience.data.tags.map((tag: string) => (
+                                <span class="text-xs px-3 py-1.5 rounded bg-primary/5 text-primary/50 border border-primary/10 font-mono group-hover:bg-primary/10 group-hover:text-primary/70 group-hover:border-primary/20 transition-all duration-300">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+
+                            <!-- Call to action -->
+                            <div class="text-primary/30 font-mono text-sm flex items-center gap-2 group-hover:text-primary/70 transition-all duration-300">
+                              <span>View details</span>
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </Navbar>
@@ -100,20 +297,1574 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 </Layout>
 
 <style>
-  /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD EXPERIENCE TITLE */
+  .experience-title {
+    font-size: clamp(3rem, 12vw, 12rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Character animations */
+  .experience-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+  .char-6 { animation-delay: 0.30s; }
+  .char-7 { animation-delay: 0.35s; }
+  .char-8 { animation-delay: 0.40s; }
+  .char-9 { animation-delay: 0.45s; }
+  .char-10 { animation-delay: 0.50s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.6s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Journey Cards Timeline */
+  .career-timeline-wrapper {
+    position: relative;
+    padding: 1rem 0;
+  }
+
+  /* Journey Cards Grid - Horizontal on Desktop, Vertical on Mobile */
+  .journey-cards-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-cards-grid {
+      flex-direction: row;
+      gap: 0.75rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  /* Connecting Line - Removed */
+  .journey-connector-vertical {
+    display: none;
+  }
+
+  .journey-connector {
+    display: none;
+  }
+
+  /* Journey Card Wrapper */
+  .journey-card-wrapper {
+    opacity: 0;
+    animation: fadeInUp 0.6s ease-out forwards;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card-wrapper {
+      flex: 0 1 auto;
+      width: calc((100% - 4.5rem) / 7);
+    }
+  }
+
+  /* Journey Card */
+  .journey-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .journey-card:hover {
+    transform: translateY(-4px);
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card:hover {
+      transform: translateY(-8px);
+    }
+  }
+
+  /* Cascading hover-like animation for each card */
+  .journey-card-wrapper:nth-child(1) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 4s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 6s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 8s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-card {
+    animation: autoHoverEffect 15s ease-in-out infinite;
+    animation-delay: 12s;
+  }
+
+  /* Auto hover effect - lift the card (longer duration, smooth transitions) */
+  @keyframes autoHoverEffect {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    5% {
+      transform: translateY(-8px);
+    }
+    15% {
+      transform: translateY(-8px);
+    }
+    20% {
+      transform: translateY(0);
+    }
+  }
+
+  /* Pause all animations on hover - ensure user interaction takes priority */
+  .journey-card-wrapper:hover .journey-card,
+  .journey-card-wrapper:hover .journey-corner,
+  .journey-card-wrapper:hover .journey-gradient-border,
+  .journey-card-wrapper:hover .journey-grid-overlay,
+  .journey-card-wrapper:hover .journey-glow-overlay {
+    animation-play-state: paused !important;
+  }
+
+  /* Ensure manual hover takes priority */
+  .journey-card-wrapper:hover .journey-card {
+    transform: translateY(-4px) !important;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card-wrapper:hover .journey-card {
+      transform: translateY(-8px) !important;
+    }
+  }
+
+  /* Corner accent animation */
+  .journey-card-wrapper:nth-child(1) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 4s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 6s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 8s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-corner {
+    animation: cornerExpand 15s ease-in-out infinite;
+    animation-delay: 12s;
+  }
+
+  @keyframes cornerExpand {
+    0%, 100% {
+      width: 12px;
+      height: 12px;
+      border-color: rgba(255, 255, 255, 0.3);
+      filter: none;
+    }
+    5% {
+      width: 16px;
+      height: 16px;
+      border-color: rgba(255, 255, 255, 0.6);
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+    }
+    15% {
+      width: 16px;
+      height: 16px;
+      border-color: rgba(255, 255, 255, 0.6);
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+    }
+    20% {
+      width: 12px;
+      height: 12px;
+      border-color: rgba(255, 255, 255, 0.3);
+      filter: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    @keyframes cornerExpand {
+      0%, 100% {
+        width: 10px;
+        height: 10px;
+        border-color: rgba(255, 255, 255, 0.3);
+        filter: none;
+      }
+      5% {
+        width: 14px;
+        height: 14px;
+        border-color: rgba(255, 255, 255, 0.6);
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+      }
+      15% {
+        width: 14px;
+        height: 14px;
+        border-color: rgba(255, 255, 255, 0.6);
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+      }
+      20% {
+        width: 10px;
+        height: 10px;
+        border-color: rgba(255, 255, 255, 0.3);
+        filter: none;
+      }
+    }
+  }
+
+  /* Gradient border animation */
+  .journey-card-wrapper:nth-child(1) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 4s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 6s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 8s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-gradient-border {
+    animation: borderIntensify 15s ease-in-out infinite;
+    animation-delay: 12s;
+  }
+
+  @keyframes borderIntensify {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    5% {
+      opacity: 1;
+      animation-duration: 2s;
+    }
+    15% {
+      opacity: 1;
+      animation-duration: 2s;
+    }
+    20% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Grid overlay animation */
+  .journey-card-wrapper:nth-child(1) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 4s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 6s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 8s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-grid-overlay {
+    animation: gridFadeIn 15s ease-in-out infinite;
+    animation-delay: 12s;
+  }
+
+  @keyframes gridFadeIn {
+    0%, 100% {
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+    }
+    15% {
+      opacity: 1;
+    }
+    20% {
+      opacity: 0;
+    }
+  }
+
+  /* Glow overlay animation */
+  .journey-card-wrapper:nth-child(1) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .journey-card-wrapper:nth-child(2) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 2s;
+  }
+
+  .journey-card-wrapper:nth-child(3) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 4s;
+  }
+
+  .journey-card-wrapper:nth-child(4) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 6s;
+  }
+
+  .journey-card-wrapper:nth-child(5) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 8s;
+  }
+
+  .journey-card-wrapper:nth-child(6) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 10s;
+  }
+
+  .journey-card-wrapper:nth-child(7) .journey-glow-overlay {
+    animation: glowFadeIn 15s ease-in-out infinite;
+    animation-delay: 12s;
+  }
+
+  /* Sweeping glow animation - horizontal on desktop, vertical on mobile */
+  @keyframes glowFadeIn {
+    0%, 100% {
+      opacity: 0;
+    }
+    5% {
+      opacity: 1;
+    }
+    15% {
+      opacity: 1;
+    }
+    20% {
+      opacity: 0;
+    }
+  }
+
+
+  /* Journey Card Content */
+  .journey-card-content {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 1rem;
+    position: relative;
+    z-index: 10;
+    transition: all 0.4s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card-content {
+      padding: 1.25rem 0.875rem;
+    }
+  }
+
+  .journey-card:hover .journey-card-content {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Enhanced brightness during animation */
+  .journey-card-wrapper:nth-child(1) .journey-card-content,
+  .journey-card-wrapper:nth-child(2) .journey-card-content,
+  .journey-card-wrapper:nth-child(3) .journey-card-content,
+  .journey-card-wrapper:nth-child(4) .journey-card-content,
+  .journey-card-wrapper:nth-child(5) .journey-card-content,
+  .journey-card-wrapper:nth-child(6) .journey-card-content {
+    animation: cardContentBrighten 15s ease-in-out infinite;
+  }
+
+  .journey-card-wrapper:nth-child(1) .journey-card-content { animation-delay: 0s; }
+  .journey-card-wrapper:nth-child(2) .journey-card-content { animation-delay: 2s; }
+  .journey-card-wrapper:nth-child(3) .journey-card-content { animation-delay: 4s; }
+  .journey-card-wrapper:nth-child(4) .journey-card-content { animation-delay: 6s; }
+  .journey-card-wrapper:nth-child(5) .journey-card-content { animation-delay: 8s; }
+  .journey-card-wrapper:nth-child(6) .journey-card-content { animation-delay: 10s; }
+  .journey-card-wrapper:nth-child(7) .journey-card-content { animation-delay: 12s; }
+
+  @keyframes cardContentBrighten {
+    0%, 100% {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+    5% {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    15% {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    20% {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  /* Journey Corner Accents */
+  .journey-corner {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-corner {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  .journey-corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 8px 0 0 0;
+  }
+
+  .journey-corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 8px 0 0;
+  }
+
+  .journey-corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 8px;
+  }
+
+  .journey-corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 8px 0;
+  }
+
+  .journey-card:hover .journey-corner {
+    width: 16px;
+    height: 16px;
+    border-color: rgba(255, 255, 255, 0.6);
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
+  }
+
+  @media (min-width: 1024px) {
+    .journey-card:hover .journey-corner {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  /* Journey Gradient Border */
+  .journey-gradient-border {
+    position: absolute;
+    inset: -2px;
+    padding: 2px;
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderGlow 4s linear infinite;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .journey-card:hover .journey-gradient-border {
+    opacity: 1;
+    animation-duration: 2s;
+  }
+
+  /* Gradient Colors */
+  .green-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(150, 255, 150, 0.5),
+      transparent,
+      rgba(150, 255, 150, 0.3),
+      transparent
+    );
+  }
+
+  .red-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 100, 100, 0.5),
+      transparent,
+      rgba(255, 100, 100, 0.3),
+      transparent
+    );
+  }
+
+  .red-soft-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 150, 150, 0.5),
+      transparent,
+      rgba(255, 150, 150, 0.3),
+      transparent
+    );
+  }
+
+  .cyan-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 255, 255, 0.5),
+      transparent,
+      rgba(0, 255, 255, 0.3),
+      transparent
+    );
+  }
+
+  .cyan-soft-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(100, 200, 255, 0.5),
+      transparent,
+      rgba(100, 200, 255, 0.3),
+      transparent
+    );
+  }
+
+  .lime-gradient {
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(150, 255, 150, 0.5),
+      transparent,
+      rgba(150, 255, 150, 0.3),
+      transparent
+    );
+  }
+
+  /* Journey Grid Overlay - matches experience cards */
+  .journey-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 8;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .journey-card-wrapper:hover .journey-grid-overlay {
+    opacity: 1 !important;
+  }
+
+  .journey-card:hover .journey-grid-overlay {
+    opacity: 1 !important;
+  }
+
+  /* Journey Glow Overlay */
+  .journey-glow-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 102, 0, 0.12),
+      rgba(255, 170, 68, 0.08),
+      transparent 50%
+    );
+  }
+
+  /* Force glow overlay to be visible on hover */
+  .journey-card-wrapper:hover .journey-glow-overlay {
+    opacity: 1 !important;
+  }
+
+  .journey-card:hover .journey-glow-overlay {
+    opacity: 1 !important;
+  }
+
+  /* Specific Glow Colors - Subtle, natural intensity */
+  .green-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(150, 255, 150, 0.15),
+      rgba(150, 255, 150, 0.08),
+      transparent 50%
+    );
+  }
+
+  .red-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 100, 100, 0.15),
+      rgba(255, 100, 100, 0.08),
+      transparent 50%
+    );
+  }
+
+  .red-soft-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 150, 150, 0.15),
+      rgba(255, 150, 150, 0.08),
+      transparent 50%
+    );
+  }
+
+  .cyan-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(0, 255, 255, 0.15),
+      rgba(0, 255, 255, 0.08),
+      transparent 50%
+    );
+  }
+
+  .cyan-soft-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(100, 200, 255, 0.15),
+      rgba(100, 200, 255, 0.08),
+      transparent 50%
+    );
+  }
+
+  .lime-glow {
+    background: radial-gradient(
+      400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(150, 255, 150, 0.15),
+      rgba(150, 255, 150, 0.08),
+      transparent 50%
+    );
+  }
+
+  /* Journey Text Styles */
+  .journey-company {
+    font-family: monospace;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.05em;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-company {
+      font-size: 0.75rem;
+    }
+  }
+
+  .journey-year {
+    font-family: monospace;
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.1em;
+  }
+
+  .journey-role {
+    font-family: monospace;
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.05em;
+  }
+
+  /* Journey Badge */
+  .journey-badge {
+    position: absolute;
+    top: -16px;
+    right: -8px;
+    font-family: monospace;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    letter-spacing: 0.12em;
+    z-index: 20;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+  }
+
+  @media (min-width: 1024px) {
+    .journey-badge {
+      font-size: 7px;
+      padding: 0.35rem 0.5rem;
+      top: -12px;
+      right: -12px;
+    }
+  }
+
+  .green-badge {
+    background: rgba(150, 255, 150, 0.2);
+    color: rgba(150, 255, 150, 0.9);
+    border: 1px solid rgba(150, 255, 150, 0.4);
+  }
+
+  .lime-badge {
+    background: rgba(150, 255, 150, 0.2);
+    color: rgba(150, 255, 150, 0.9);
+    border: 1px solid rgba(150, 255, 150, 0.4);
+  }
+
+  .cyan-soft-badge {
+    background: rgba(100, 200, 255, 0.2);
+    color: rgba(100, 200, 255, 0.9);
+    border: 1px solid rgba(100, 200, 255, 0.4);
+  }
+
+  /* Company Chips (keeping for compatibility) */
+  .company-chip {
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    border: 1px solid;
+    transition: all 0.4s ease;
+    letter-spacing: 0.05em;
+    position: relative;
+  }
+
+  .company-chip.lime {
+    color: rgba(150, 255, 150, 0.5);
+    border-color: rgba(150, 255, 150, 0.2);
+    background: rgba(150, 255, 150, 0.03);
+  }
+
+  .company-chip.lime:hover {
+    color: rgba(150, 255, 150, 0.8);
+    border-color: rgba(150, 255, 150, 0.5);
+    background: rgba(150, 255, 150, 0.08);
+  }
+
+  .company-chip.cyan {
+    color: rgba(100, 200, 255, 0.5);
+    border-color: rgba(100, 200, 255, 0.2);
+    background: rgba(100, 200, 255, 0.03);
+  }
+
+  .company-chip.cyan:hover {
+    color: rgba(100, 200, 255, 0.8);
+    border-color: rgba(100, 200, 255, 0.5);
+    background: rgba(100, 200, 255, 0.08);
+  }
+
+  .company-chip.cyan-bright {
+    color: rgba(0, 255, 255, 0.5);
+    border-color: rgba(0, 255, 255, 0.2);
+    background: rgba(0, 255, 255, 0.03);
+  }
+
+  .company-chip.cyan-bright:hover {
+    color: rgba(0, 255, 255, 0.8);
+    border-color: rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 255, 0.08);
+  }
+
+  .company-chip.red {
+    color: rgba(255, 150, 150, 0.5);
+    border-color: rgba(255, 150, 150, 0.2);
+    background: rgba(255, 150, 150, 0.03);
+  }
+
+  .company-chip.red:hover {
+    color: rgba(255, 150, 150, 0.8);
+    border-color: rgba(255, 150, 150, 0.5);
+    background: rgba(255, 150, 150, 0.08);
+  }
+
+  .company-chip.red-bright {
+    color: rgba(255, 100, 100, 0.5);
+    border-color: rgba(255, 100, 100, 0.2);
+    background: rgba(255, 100, 100, 0.03);
+  }
+
+  .company-chip.red-bright:hover {
+    color: rgba(255, 100, 100, 0.8);
+    border-color: rgba(255, 100, 100, 0.5);
+    background: rgba(255, 100, 100, 0.08);
+  }
+
+  .company-chip.green {
+    color: rgba(150, 255, 150, 0.5);
+    border-color: rgba(150, 255, 150, 0.2);
+    background: rgba(150, 255, 150, 0.03);
+  }
+
+  .company-chip.green:hover {
+    color: rgba(150, 255, 150, 0.8);
+    border-color: rgba(150, 255, 150, 0.5);
+    background: rgba(150, 255, 150, 0.08);
+  }
+
+  /* Experience Cards */
+  .experience-card {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .experience-card * {
+    box-sizing: border-box;
+  }
+
+  /* Corner accent marks */
+  .card-corner-accent {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    opacity: 1;
+  }
+
+  .card-corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 12px 0 0 0;
+  }
+
+  .card-corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 12px 0 0;
+  }
+
+  .card-corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 12px;
+  }
+
+  .card-corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 12px 0;
+  }
+
+  .experience-card:hover .card-corner-accent {
+    width: 30px;
+    height: 30px;
+    border-color: rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  }
+
+  /* Animated gradient border */
+  .card-gradient-border {
+    position: absolute;
+    inset: -2px;
+    border-radius: 0;
+    padding: 2px;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 255, 255, 0.3),
+      transparent,
+      rgba(255, 0, 255, 0.3),
+      transparent
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderGlow 4s linear infinite;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes borderGlow {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .experience-card:hover .card-gradient-border {
+    opacity: 1;
+    animation-duration: 2s;
+  }
+
+  /* Grid overlay */
+  .card-grid-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 11;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .experience-card:hover .card-grid-overlay {
+    opacity: 1;
+  }
+
+  /* Mouse-following warm glow effect */
+  .glow-overlay-warm {
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 102, 0, 0.15),
+      rgba(255, 170, 68, 0.1),
+      rgba(255, 68, 68, 0.05),
+      transparent 40%
+    );
+  }
+
+  .experience-card:hover .glow-overlay-warm {
+    opacity: 1;
+  }
+
+  /* Card content - clean minimal design */
+  .card-content {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .experience-card:hover .card-content {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Company-specific hover glows for experience cards */
+  .experience-card[data-company^="nvidia"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(150, 255, 150, 0.2),
+      0 0 80px rgba(150, 255, 150, 0.1);
+  }
+
+  .experience-card[data-company^="tesla"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(255, 100, 100, 0.2),
+      0 0 80px rgba(255, 100, 100, 0.1);
+  }
+
+  .experience-card[data-company^="toyota"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(255, 150, 150, 0.2),
+      0 0 80px rgba(255, 150, 150, 0.1);
+  }
+
+  .experience-card[data-company^="asml"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(0, 255, 255, 0.2),
+      0 0 80px rgba(0, 255, 255, 0.1);
+  }
+
+  .experience-card[data-company^="octapulse"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(100, 200, 255, 0.2),
+      0 0 80px rgba(100, 200, 255, 0.1);
+  }
+
+  .experience-card[data-company^="quaternion"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(100, 200, 255, 0.2),
+      0 0 80px rgba(100, 200, 255, 0.1);
+  }
+
+  .experience-card[data-company^="boston"]:hover .card-content {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(150, 255, 150, 0.2),
+      0 0 80px rgba(150, 255, 150, 0.1);
+  }
+
+  /* Responsive corner accents for smaller screens */
+  @media (max-width: 640px) {
+    .card-corner-accent {
+      width: 15px;
+      height: 15px;
+    }
+
+    .experience-card:hover .card-corner-accent {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  /* Accent bar */
+  .accent-bar {
+    background: currentColor;
+  }
+
+  /* Subtle glow on hover */
+  .experience-card:hover .card-glow {
+    opacity: 1;
+  }
+
+  /* Company badge */
+  .company-badge {
+    background: rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .experience-card:hover .company-badge {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Timeline container */
+  #experience-timeline {
+    position: relative;
+    width: 100%;
     overflow: hidden;
   }
 
-  /* Project card hover animation */
-  .experience-card {
-    transition: transform 0.3s ease-out;
+  .cards-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 
-  .experience-card:hover {
-    transform: translateY(-4px);
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .experience-title {
+      font-size: clamp(2.5rem, 10vw, 10rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .experience-title {
+      font-size: clamp(2rem, 12vw, 8rem);
+    }
+
+    .card-content {
+      padding: 1.5rem;
+    }
+
+    /* Fix text overflow on tablet */
+    .card-content h2 {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .card-content p {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .company-badge {
+      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .experience-title {
+      font-size: clamp(1.8rem, 14vw, 6rem);
+    }
+
+    /* Ensure page wrapper doesn't overflow */
+    body {
+      overflow-x: hidden;
+    }
+
+    #experience-timeline {
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .cards-container {
+      padding: 0;
+      margin: 0;
+    }
+
+    .experience-card {
+      margin: 0 0 2rem 0;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .card-content {
+      padding: 1rem;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Fix all text elements */
+    .card-content * {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* REDESIGNED MOBILE FRONTMATTER */
+
+    /* Header - Complete redesign for mobile */
+    .card-content > div:first-child {
+      flex-direction: column-reverse !important;
+      align-items: flex-start !important;
+      gap: 0;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    /* Company badge - make it the top element, more prominent */
+    .company-badge {
+      font-size: 0.625rem !important;
+      font-weight: 600 !important;
+      padding: 0.375rem 0.75rem;
+      white-space: nowrap;
+      position: static;
+      margin-bottom: 0.75rem;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Title section wrapper */
+    .card-content > div:first-child > div:first-child {
+      width: 100%;
+      order: 2;
+    }
+
+    /* Job title - larger, more readable */
+    .card-content h2 {
+      font-size: 1.375rem !important;
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+      padding-right: 0;
+      font-weight: 700;
+    }
+
+    /* Date - subtle, below title */
+    .card-content .text-xs {
+      font-size: 0.625rem !important;
+      opacity: 0.6;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Description paragraph */
+    .card-content > p {
+      font-size: 0.9375rem !important;
+      line-height: 1.65;
+      margin-bottom: 1rem;
+      max-width: 100%;
+      width: 100%;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* Tags section - more compact */
+    .card-content > div:nth-child(3) {
+      gap: 0.375rem !important;
+      margin-bottom: 1rem;
+    }
+
+    .card-content > div:nth-child(3) span {
+      font-size: 0.625rem !important;
+      padding: 0.3rem 0.6rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* Call to action - slightly larger for easier tapping */
+    .card-content > div:last-child {
+      font-size: 0.8125rem !important;
+      padding-top: 0.25rem;
+    }
+
+    .card-content > div:last-child span {
+      font-weight: 600;
+    }
+
+    .card-content > div:last-child svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    /* Add subtle divider after company badge */
+    .company-badge::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: currentColor;
+      opacity: 0.3;
+      margin-top: 0.75rem;
+    }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // Handle experience cards
+    const cards = document.querySelectorAll(".experience-card");
+
+    cards.forEach((card) => {
+      const cardEl = card as HTMLElement;
+      const cardContent = cardEl.querySelector(".card-content") as HTMLElement;
+      const glow = cardEl.querySelector(".card-glow") as HTMLElement;
+      const glowOverlayWarm = cardEl.querySelector<HTMLElement>(".glow-overlay-warm");
+
+      if (cardContent && glow) {
+        cardContent.addEventListener("mousemove", (e) => {
+          const rect = cardContent.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          glow.style.setProperty("--mouse-x", `${x}px`);
+          glow.style.setProperty("--mouse-y", `${y}px`);
+        });
+
+        cardContent.addEventListener("mouseleave", () => {
+          glow.style.setProperty("--mouse-x", "50%");
+          glow.style.setProperty("--mouse-y", "50%");
+        });
+      }
+
+      if (glowOverlayWarm) {
+        cardEl.addEventListener("mousemove", (e) => {
+          const rect = cardEl.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+          glowOverlayWarm.style.setProperty("--mouse-x", `${x}%`);
+          glowOverlayWarm.style.setProperty("--mouse-y", `${y}%`);
+        });
+
+        cardEl.addEventListener("mouseleave", () => {
+          glowOverlayWarm.style.setProperty("--mouse-x", "50%");
+          glowOverlayWarm.style.setProperty("--mouse-y", "50%");
+        });
+      }
+    });
+
+    // Handle journey cards
+    const journeyCards = document.querySelectorAll(".journey-card");
+    const journeyCardWrappers = document.querySelectorAll(".journey-card-wrapper");
+
+    journeyCards.forEach((card) => {
+      const cardEl = card as HTMLElement;
+      const glowOverlay = cardEl.querySelector<HTMLElement>(".journey-glow-overlay");
+
+      if (glowOverlay) {
+        cardEl.addEventListener("mousemove", (e) => {
+          const rect = cardEl.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+          glowOverlay.style.setProperty("--mouse-x", `${x}%`);
+          glowOverlay.style.setProperty("--mouse-y", `${y}%`);
+        });
+
+        cardEl.addEventListener("mouseleave", () => {
+          glowOverlay.style.setProperty("--mouse-x", "50%");
+          glowOverlay.style.setProperty("--mouse-y", "50%");
+        });
+      }
+    });
+
+    // Add click handlers to scroll to corresponding experience cards
+    journeyCardWrappers.forEach((wrapper) => {
+      const wrapperEl = wrapper as HTMLElement;
+      const companyData = wrapperEl.getAttribute("data-company");
+
+      wrapperEl.addEventListener("click", () => {
+        if (!companyData) return;
+
+        // Find the matching experience card
+        const experienceCard = document.querySelector(
+          `.experience-card[data-company="${companyData}"]`
+        ) as HTMLElement;
+
+        if (experienceCard) {
+          // Smooth scroll to the card with offset for fixed headers
+          const yOffset = -100; // Offset for better visibility
+          const y = experienceCard.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+          window.scrollTo({
+            top: y,
+            behavior: "smooth"
+          });
+
+          // Optional: Add a brief highlight effect
+          experienceCard.style.transition = "transform 0.3s ease";
+          experienceCard.style.transform = "scale(1.02)";
+          setTimeout(() => {
+            experienceCard.style.transform = "scale(1)";
+          }, 300);
+        }
+      });
+    });
+
+    // Animate the glow sweep effect with proper hover interaction
+    const isMobile = window.innerWidth < 1024;
+    const cycleDuration = 15000; // 15 seconds
+    const hoverDuration = 1500; // 1.5 seconds (10% of cycle)
+    const delays = [0, 2000, 4000, 6000, 8000, 10000, 12000]; // milliseconds
+
+    journeyCardWrappers.forEach((wrapper, index) => {
+      const wrapperEl = wrapper as HTMLElement;
+      const glowOverlay = wrapperEl.querySelector('.journey-glow-overlay') as HTMLElement;
+      if (!glowOverlay) return;
+
+      let isUserHovering = false;
+
+      // Track user hover state
+      wrapperEl.addEventListener('mouseenter', () => {
+        isUserHovering = true;
+      });
+
+      wrapperEl.addEventListener('mouseleave', () => {
+        isUserHovering = false;
+      });
+
+      // Manual mouse tracking (takes priority when hovering)
+      wrapperEl.addEventListener('mousemove', (e) => {
+        const rect = wrapperEl.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        glowOverlay.style.setProperty('--mouse-x', `${x}%`);
+        glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      function animateGlow() {
+        const startTime = Date.now();
+        const delay = delays[index];
+
+        function updateGlow() {
+          // Only animate if user is NOT hovering
+          if (!isUserHovering) {
+            const elapsed = (Date.now() - startTime) % cycleDuration;
+            const adjustedTime = elapsed - delay;
+
+            if (adjustedTime >= 0 && adjustedTime <= hoverDuration) {
+              // We're in the active hover period
+              const progress = adjustedTime / hoverDuration;
+
+              if (isMobile) {
+                // Vertical sweep (top to bottom)
+                const yPos = progress * 100;
+                glowOverlay.style.setProperty('--mouse-x', '50%');
+                glowOverlay.style.setProperty('--mouse-y', `${yPos}%`);
+              } else {
+                // Horizontal sweep (left to right)
+                const xPos = progress * 100;
+                glowOverlay.style.setProperty('--mouse-x', `${xPos}%`);
+                glowOverlay.style.setProperty('--mouse-y', '50%');
+              }
+            }
+          }
+
+          requestAnimationFrame(updateGlow);
+        }
+
+        updateGlow();
+      }
+
+      animateGlow();
+    });
+  });
+</script>

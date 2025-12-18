@@ -83,6 +83,12 @@ const {
   let renderer: THREE.WebGLRenderer;
   let scene: THREE.Scene;
   let clock = new THREE.Clock();
+  let animatedLights: any;
+  let mousePointLight: THREE.PointLight | null = null;
+  let hemisphereLight: THREE.HemisphereLight | null = null;
+  let raycaster: THREE.Raycaster | null = null;
+  let mouseVector: THREE.Vector2 | null = null;
+  let lightPosition: THREE.Vector3 = new THREE.Vector3();
 
   // Initialize scene
   function initScene() {
@@ -143,16 +149,17 @@ const {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    // Lighting setup
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    // DRAMATICALLY DIMMED LIGHTING - Create mystery and darkness
+    // Ambient light - extremely low for darkness
+    const ambientLight = new THREE.AmbientLight(0x202020, 0.05);
     scene.add(ambientLight);
 
-    // Main directional light
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    mainLight.position.set(2, 4, 3);
+    // KEY LIGHT - Much weaker now
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    mainLight.position.set(3, 5, 4);
     mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 1024;
-    mainLight.shadow.mapSize.height = 1024;
+    mainLight.shadow.mapSize.width = 2048;
+    mainLight.shadow.mapSize.height = 2048;
     mainLight.shadow.bias = -0.001;
     mainLight.shadow.camera.near = 0.5;
     mainLight.shadow.camera.far = 20;
@@ -162,15 +169,58 @@ const {
     mainLight.shadow.camera.bottom = -5;
     scene.add(mainLight);
 
-    // Blue accent light
-    const accentLight = new THREE.DirectionalLight(0xffc107, 0.7);
-    accentLight.position.set(-3, 2, -3);
-    scene.add(accentLight);
+    // FILL LIGHT - Barely visible
+    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.08);
+    fillLight.position.set(-3, 2, 2);
+    scene.add(fillLight);
 
-    // Rim light
-    const rimLight = new THREE.DirectionalLight(0xffddbb, 0.8);
-    rimLight.position.set(0, 3, -4);
+    // CYAN ACCENT - Very subtle
+    const cyanAccent = new THREE.PointLight(0x00ffff, 0.2, 10);
+    cyanAccent.position.set(-2, 1, 3);
+    scene.add(cyanAccent);
+
+    // MAGENTA ACCENT - Very subtle
+    const magentaAccent = new THREE.PointLight(0xff00ff, 0.15, 10);
+    magentaAccent.position.set(2, 0.5, -2);
+    scene.add(magentaAccent);
+
+    // RIM LIGHT - Weak backlight
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
+    rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
+
+    // ANIMATED SPOTLIGHT - Much dimmer
+    const spotlight = new THREE.SpotLight(0xffffff, 0.3);
+    spotlight.position.set(0, 6, 0);
+    spotlight.angle = Math.PI / 6;
+    spotlight.penumbra = 0.5;
+    spotlight.decay = 2;
+    spotlight.distance = 20;
+    spotlight.castShadow = true;
+    scene.add(spotlight);
+
+    // INVISIBLE LIGHTING SYSTEM - No visible geometry, just light
+    // Add a powerful point light that follows mouse - PRIMARY LIGHT SOURCE
+    // Red-orange-yellow gradient light
+    mousePointLight = new THREE.PointLight(0xff6600, 0, 30, 1.0);
+    mousePointLight.position.set(0, 5, 5);
+    scene.add(mousePointLight);
+
+    // Add hemisphere light for better ambient distribution
+    hemisphereLight = new THREE.HemisphereLight(0xffaa44, 0x442200, 0);
+    scene.add(hemisphereLight);
+
+    // Initialize raycaster for precise mouse-to-3D mapping
+    raycaster = new THREE.Raycaster();
+    mouseVector = new THREE.Vector2();
+
+    // Store lights for animation
+    animatedLights = {
+      spotlight,
+      cyanAccent,
+      magentaAccent,
+      mousePointLight
+    };
   }
 
   // Handle window resize
@@ -254,15 +304,8 @@ const {
           _mixerRobot.clipAction(glb.animations[0]).play();
         }
       },
-      // Progress callback
-      (xhr) => {
-        const progress = (xhr.loaded / xhr.total) * 100;
-        console.log(`${progress}% loaded`);
-      },
-      // Error callback
-      (error) => {
-        console.error("An error happened while loading the model:", error);
-      }
+      undefined, // Progress callback not needed
+      undefined // Error callback - model loading errors handled silently
     );
 
     // Animation loop
@@ -271,9 +314,26 @@ const {
 
       // Update animation mixer
       const delta = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+
       if (_mixerRobot) {
         _mixerRobot.update(delta);
       }
+
+      // Animate lights for subtle dramatic effect (much dimmer)
+      if (animatedLights) {
+        // Subtle pulse spotlight intensity
+        animatedLights.spotlight.intensity = 0.25 + Math.sin(elapsed * 0.8) * 0.08;
+
+        // Slowly rotate cyan accent
+        const cyanAngle = elapsed * 0.3;
+        animatedLights.cyanAccent.position.x = Math.cos(cyanAngle) * 3;
+        animatedLights.cyanAccent.position.z = Math.sin(cyanAngle) * 3;
+
+        // Subtle pulse magenta accent
+        animatedLights.magentaAccent.intensity = 0.12 + Math.sin(elapsed * 1.2) * 0.05;
+      }
+
 
       // Update controls
       if (controls) {
@@ -299,24 +359,116 @@ const {
       resizeObserver.observe(container);
     }
 
-    // Listen for expanded state to enhance controls
-    document.addEventListener('robotViewerStateChange', (e: any) => {
-      if (e.detail && e.detail.expanded) {
-        // When expanded, allow more camera movement
-        if (controls) {
-          controls.minDistance = 2.0;
-          controls.maxDistance = 8.0;
-          controls.minPolarAngle = Math.PI / 2 - 0.5; // More vertical rotation
-          controls.maxPolarAngle = Math.PI / 2 + 0.5; // More vertical rotation
+    // ===== INVISIBLE LIGHTING SYSTEM WITH RAYCASTING =====
+    // Listen for mouse movement events from Home.astro
+    document.addEventListener('robotMouseMove', (e: any) => {
+      if (e.detail && mousePointLight && hemisphereLight && raycaster && mouseVector && camera && _robot) {
+        const { x, y } = e.detail; // Normalized 0-1 coordinates
+
+        // Convert to normalized device coordinates (-1 to +1)
+        mouseVector.x = (x * 2) - 1;
+        mouseVector.y = -(y * 2) + 1; // Inverted for WebGL
+
+        // Update raycaster with mouse position
+        raycaster.setFromCamera(mouseVector, camera);
+
+        // Check if ray intersects with robot
+        const intersects = raycaster.intersectObject(_robot, true);
+
+        let distance = 4.5; // Default distance
+        let intensityMultiplier = 1.0; // Normal intensity
+        const robotCenter = new THREE.Vector3(0, -0.4, 0); // Robot's center position
+
+        if (intersects.length > 0) {
+          // Mouse is over robot - position light between camera and intersection point
+          const intersectPoint = intersects[0].point;
+          const distanceToIntersect = camera.position.distanceTo(intersectPoint);
+
+          // Position light much further from robot (30% of the way from camera)
+          distance = distanceToIntersect * 0.3;
+
+          // Check distance from intersection point to robot center
+          const distanceFromCenter = intersectPoint.distanceTo(robotCenter);
+
+          // If within 0.6 units of center, boost intensity significantly
+          if (distanceFromCenter < 0.6) {
+            intensityMultiplier = 2.0; // Double intensity over center
+          } else if (distanceFromCenter < 1.0) {
+            // Gradual falloff from center
+            intensityMultiplier = 1.0 + (1.0 - (distanceFromCenter - 0.6) / 0.4);
+          }
         }
-      } else {
-        // Reset to original constraints
-        if (controls) {
-          controls.minDistance = 3.0;
-          controls.maxDistance = 6.0;
-          controls.minPolarAngle = Math.PI / 2 - 0.3;
-          controls.maxPolarAngle = Math.PI / 2 + 0.3;
+
+        // Position light at calculated distance along ray
+        const targetPosition = new THREE.Vector3();
+        targetPosition.copy(raycaster.ray.direction);
+        targetPosition.multiplyScalar(distance);
+        targetPosition.add(raycaster.ray.origin);
+
+        // Smoothly interpolate light position
+        lightPosition.lerp(targetPosition, 0.25);
+        mousePointLight.position.copy(lightPosition);
+
+        // Determine target intensity based on center proximity
+        const baseIntensity = 18.0;
+        const targetIntensity = baseIntensity * intensityMultiplier;
+
+        // Increase point light intensity - PRIMARY LIGHT SOURCE
+        if (mousePointLight.intensity < targetIntensity) {
+          mousePointLight.intensity += 0.8;
         }
+
+        // Increase hemisphere light for better ambient distribution
+        if (hemisphereLight.intensity < 0.8) {
+          hemisphereLight.intensity += 0.05;
+        }
+      }
+    });
+
+    // Slowly fade out light when mouse becomes inactive (slow for admiration)
+    document.addEventListener('robotMouseInactive', () => {
+      if (mousePointLight && hemisphereLight) {
+        const fadeOut = () => {
+          if (mousePointLight && hemisphereLight) {
+            // Slower fade for psychology - let user admire
+            if (mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01) {
+              mousePointLight.intensity *= 0.93;
+              hemisphereLight.intensity *= 0.93;
+              requestAnimationFrame(fadeOut);
+            } else {
+              mousePointLight.intensity = 0;
+              hemisphereLight.intensity = 0;
+            }
+          }
+        };
+        fadeOut();
+      }
+    });
+
+    // Fade out when mouse leaves (slightly faster than inactive)
+    document.addEventListener('robotMouseLeave', () => {
+      if (mousePointLight && hemisphereLight) {
+        const fadeOut = () => {
+          if (mousePointLight && hemisphereLight) {
+            if (mousePointLight.intensity > 0.05 || hemisphereLight.intensity > 0.01) {
+              mousePointLight.intensity *= 0.9;
+              hemisphereLight.intensity *= 0.9;
+              requestAnimationFrame(fadeOut);
+            } else {
+              mousePointLight.intensity = 0;
+              hemisphereLight.intensity = 0;
+            }
+          }
+        };
+        fadeOut();
+      }
+    });
+
+    // Reset light when mouse enters
+    document.addEventListener('robotMouseEnter', () => {
+      if (mousePointLight && hemisphereLight) {
+        mousePointLight.intensity = 0;
+        hemisphereLight.intensity = 0;
       }
     });
   }
@@ -335,11 +487,6 @@ const {
     height: var(--height, 100%);
     width: var(--width, 100%);
     position: relative;
-    transition: transform 0.3s ease-out;
-  }
-
-  .robot-model-viewer-container:hover {
-    transform: translateY(-4px);
   }
 
   #robot-animation-container {
@@ -355,47 +502,11 @@ const {
   }
 
   .model-display-container {
-    border: 1px solid rgba(var(--color-accent, 0, 0, 0), 0.2);
-    border-radius: 0.75rem;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.95);
-    transition: all 0.4s ease-out;
+    background: #000000;
     z-index: 10;
     width: 100%;
     height: 100%;
-  }
-
-  .model-display-container:hover {
-    background-color: rgba(var(--color-accent, 0, 0, 0), 0.05);
-    box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-
-  /* Enhanced styles for expanded state */
-  :global(.expanded) .model-display-container {
-    background-color: rgba(0, 0, 0, 0.98);
-    border-color: rgba(var(--color-primary, 255, 255, 255), 0.4);
-    border-width: 2px;
-    box-shadow: 
-      0 25px 50px -12px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(var(--color-primary, 255, 255, 255), 0.2);
-  }
-
-  .robot-model-viewer-container::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(var(--color-primary, 0, 0, 0), 0.2);
-    border-radius: 0.75rem;
-    transform: scale(1);
-    transition: all 0.3s ease-out;
-    z-index: 0;
-  }
-
-  .robot-model-viewer-container:hover::after {
-    transform: scale(1.05);
-    border-color: rgba(var(--color-primary, 0, 0, 0), 0.4);
   }
 
   .loading-container {
@@ -421,14 +532,5 @@ const {
 
   #progress-bar::-webkit-progress-value {
     background-color: rgba(var(--color-primary, 75, 85, 99), 0.8);
-  }
-  
-  /* Style for expanded container */
-  :global(.expanded) .robot-model-viewer-container {
-    transform: none;
-  }
-  
-  :global(.expanded) .robot-model-viewer-container::after {
-    opacity: 0;
   }
 </style>

@@ -2,6 +2,8 @@
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import BlogRobotViewer from "../components/BlogRobotViewer.astro";
+import { calculateReadingTime, formatReadingTime } from "../utils/readingTime";
 
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
@@ -10,24 +12,89 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 ---
 
 <Layout>
-  <Navbar>
-    <div class="sm:px-20 px-6 py-8">
-      <h1 class="font-semibold sm:text-5xl text-3xl tracking-wider mb-8">Technical Chronicles</h1>
-      
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER - Hidden Initially -->
+            <div class="header-section mb-12 opacity-0" id="blog-header">
+              <h1 class="blog-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">T</span><span class="char char-2">E</span><span class="char char-3">C</span><span class="char char-4">H</span><span class="char char-5">N</span><span class="char char-6">I</span><span class="char char-7">C</span><span class="char char-8">A</span><span class="char char-9">L</span>
+                <br>
+                <span class="char char-10">C</span><span class="char char-11">H</span><span class="char char-12">R</span><span class="char char-13">O</span><span class="char char-14">N</span><span class="char char-15">I</span><span class="char char-16">C</span><span class="char char-17">L</span><span class="char char-18">E</span><span class="char char-19">S</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+            </div>
+
+            <!-- Robot Viewer Container - Transitions from fullscreen to contained -->
+            <div class="robot-viewer-wrapper" id="robot-viewer-wrapper">
+              <!-- Content overlay (shown during intro) -->
+              <div class="robot-text-overlay" id="robot-cta-text">
+                <!-- Top text - massive hero style with typewriter effect -->
+                <div class="top-statement text-center">
+                  <h2 class="hero-typewriter font-mono font-black text-white select-none">
+                    <span id="typewriter-main" class="typewriter-text"></span>
+                    <span class="typewriter-cursor">|</span>
+                  </h2>
+                </div>
+
+                <!-- Spacer for visual balance -->
+                <div class="flex-grow max-h-16"></div>
+
+                <!-- Bottom text - subtle sub-statement with typewriter effect -->
+                <div class="bottom-statement text-center">
+                  <p class="statement-sub font-mono text-primary/50 tracking-widest uppercase">
+                    <span id="typewriter-sub" class="typewriter-text"></span>
+                    <span class="typewriter-cursor-sub">|</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Robot Viewer (single instance) -->
+              <BlogRobotViewer className="robot-viewer" />
+
+              <!-- Expand button (shown after transition) -->
+              <button
+                class="expand-keyboard-button absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-20 hover:bg-primary/30 transition-colors opacity-0 pointer-events-none"
+                aria-label="Expand keyboard view"
+                id="expand-keyboard-btn"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
+                </svg>
+              </button>
+            </div>
+
+      <!-- Blog Content - Hidden Initially -->
+      <div id="blog-content" class="opacity-0 pointer-events-none transition-opacity duration-1000">
       <!-- Search Bar -->
       <div class="mb-8 relative">
         <div class="relative">
-          <input 
-            type="text" 
-            id="searchInput" 
-            placeholder="Search articles..." 
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search articles..."
             class="w-full p-3 pl-10 rounded-lg border border-accent/30 bg-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
           />
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -36,21 +103,68 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
         <div id="searchStatus" class="text-sm mt-2 text-primary/60 hidden"></div>
       </div>
 
+      <!-- Table of Contents - Quick Jump -->
+      <div class="toc-container mb-10 relative overflow-hidden">
+        <div class="toc-header flex items-center gap-3 mb-4">
+          <div class="toc-icon">
+            <svg class="w-5 h-5 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </div>
+          <span class="text-sm font-mono text-primary/50 uppercase tracking-widest">Quick Jump</span>
+          <div class="flex-grow h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
+        </div>
+        <div class="toc-list flex flex-wrap gap-2" id="tocList">
+          {allBlogArticles.map((article, index) => {
+            const isComplete = article.data.status === "Complete";
+            return (
+              <button
+                class="toc-item group"
+                data-slug={article.slug}
+                data-index={index}
+              >
+                <span class="toc-number font-mono text-xs text-primary/30 mr-1.5">{String(index + 1).padStart(2, '0')}</span>
+                <span class="toc-title">{article.data.title}</span>
+                {isComplete && <span class="toc-status-dot"></span>}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
         {allBlogArticles.map((article) => {
           const tags: string[] = article.data.tags || [];
-          
+
           // Set a default status if undefined
           const defaultStatus = "Coming Soon";
           const actualStatus = article.data.status || defaultStatus;
-          
+
           // Determine if the article is complete or not
           const isComplete = actualStatus === "Complete";
           const statusDisplay = isComplete ? "Complete" : defaultStatus;
-          
+
+          // Calculate reading time
+          const readingTime = calculateReadingTime(article.body);
+
           return (
             <a href={`/blog/${article.slug}`} class="group h-full relative blog-card">
-              <div class="p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col relative z-10">
+              <!-- Corner accent marks -->
+              <div class="card-corner-accent card-corner-tl"></div>
+              <div class="card-corner-accent card-corner-tr"></div>
+              <div class="card-corner-accent card-corner-bl"></div>
+              <div class="card-corner-accent card-corner-br"></div>
+
+              <!-- Animated gradient border -->
+              <div class="card-gradient-border"></div>
+
+              <!-- Grid overlay -->
+              <div class="card-grid-overlay"></div>
+
+              <!-- Glow overlay that follows mouse -->
+              <div class="glow-overlay"></div>
+
+              <div class="card-content p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col relative z-10">
                 <div class="flex flex-col h-full">
                   <div class="flex justify-between items-start mb-3">
                     <h2 class="text-xl font-bold group-hover:text-primary/90 transition-colors">{article.data.title}</h2>
@@ -58,7 +172,16 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
                       {statusDisplay}
                     </span>
                   </div>
-                  <p class="text-sm text-primary/60 mb-4">{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <div class="flex items-center gap-3 text-sm text-primary/60 mb-4">
+                    <span>{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    <span class="text-primary/30">•</span>
+                    <span class="flex items-center gap-1">
+                      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {formatReadingTime(readingTime)}
+                    </span>
+                  </div>
                   <p class="text-primary/80 flex-grow line-clamp-3">{article.data.description}</p>
                   <div class="mt-4 flex flex-wrap gap-2">
                     {tags.map(tag => (
@@ -67,17 +190,227 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
                   </div>
                 </div>
               </div>
-              <div class="absolute inset-0 border border-primary/20 rounded-xl transform transition-all duration-300 group-hover:scale-105 group-hover:border-primary/40"></div>
             </a>
           );
         })}
       </div>
+      </div> <!-- End blog-content -->
+          </div>
+        </div>
+      </Navbar>
     </div>
-  </Navbar>
-  <Footer />
+    <Footer />
+  </div>
 </Layout>
 
+<!-- Backdrop overlay for expanded view -->
+<div
+  id="keyboard-backdrop-overlay"
+  class="fixed inset-0 bg-black/50 backdrop-blur-md z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+>
+</div>
+
 <style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD BLOG TITLE */
+  .blog-title {
+    font-size: clamp(2.5rem, 10vw, 10rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Animate title when shown */
+  #blog-header {
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Character animations - don't animate initially */
+  .blog-title .char {
+    display: inline-block;
+  }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 1s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  /* Robot Viewer Wrapper - Transitions from fullscreen to contained */
+  .robot-viewer-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Contained state (after animation) */
+  .robot-viewer-wrapper.contained {
+    position: relative;
+    width: 100%;
+    height: 24rem; /* h-96 */
+    margin-bottom: 3rem;
+    z-index: 10;
+  }
+
+  @media (min-width: 768px) {
+    .robot-viewer-wrapper.contained {
+      height: 20rem; /* md:h-80 */
+    }
+  }
+
+  @media (min-width: 640px) {
+    .robot-viewer-wrapper.contained {
+      height: 18rem; /* sm:h-72 */
+    }
+  }
+
+  /* Text overlay during intro */
+  .robot-text-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 1;
+    transition: opacity 1s ease-out;
+    pointer-events: none;
+  }
+
+  .robot-text-overlay.hidden {
+    opacity: 0;
+  }
+
+  .robot-viewer-wrapper.contained .robot-text-overlay {
+    display: none;
+  }
+
+  /* Expanded state */
+  .robot-viewer-wrapper.expanded {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    height: 90vh !important;
+    max-width: 1200px !important;
+    max-height: 800px !important;
+    z-index: 50 !important;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(var(--color-primary, 255, 255, 255), 0.4);
+  }
+
+  /* Show expand button after transition to contained state */
+  .robot-viewer-wrapper.contained .expand-keyboard-button {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Backdrop visible class */
+  .backdrop-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Hero Typewriter - Massive overlapping style like home page */
+  .hero-typewriter {
+    font-size: clamp(3rem, 14vw, 16rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    text-transform: uppercase;
+    font-weight: 900;
+    text-align: center;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    text-shadow:
+      0 0 40px rgba(255, 255, 255, 0.1),
+      0 10px 30px rgba(0, 0, 0, 0.5),
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  .statement-sub {
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    opacity: 1;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.2em;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
   .line-clamp-3 {
     display: -webkit-box;
@@ -89,14 +422,545 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
   /* Border animation styles */
   .blog-card {
     transition: transform 0.3s ease-out;
+    overflow: hidden;
   }
-  
+
   .blog-card:hover {
     transform: translateY(-4px);
+  }
+
+  /* Corner accent marks */
+  .card-corner-accent {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    opacity: 1;
+  }
+
+  .card-corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 12px 0 0 0;
+  }
+
+  .card-corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 12px 0 0;
+  }
+
+  .card-corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 12px;
+  }
+
+  .card-corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 12px 0;
+  }
+
+  .blog-card:hover .card-corner-accent {
+    width: 30px;
+    height: 30px;
+    border-color: rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  }
+
+  /* Animated gradient border */
+  .card-gradient-border {
+    position: absolute;
+    inset: -2px;
+    border-radius: 0.75rem;
+    padding: 2px;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 255, 255, 0.3),
+      transparent,
+      rgba(255, 0, 255, 0.3),
+      transparent
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderGlow 4s linear infinite;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes borderGlow {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .blog-card:hover .card-gradient-border {
+    opacity: 1;
+    animation-duration: 2s;
+  }
+
+  /* Grid overlay */
+  .card-grid-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 11;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .blog-card:hover .card-grid-overlay {
+    opacity: 1;
+  }
+
+  /* Mouse-following glow effect */
+  .glow-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 50;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 102, 0, 0.2),
+      rgba(255, 170, 68, 0.15),
+      rgba(255, 68, 68, 0.08),
+      transparent 40%
+    );
+    mix-blend-mode: screen;
+    will-change: opacity;
+  }
+
+  .blog-card:hover .glow-overlay {
+    opacity: 1;
+  }
+
+  /* Enhanced card content hover with cyan/magenta glow */
+  .card-content {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .blog-card:hover .card-content {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(0, 255, 255, 0.1),
+      0 0 80px rgba(255, 0, 255, 0.1);
+  }
+
+  /* Responsive corner accents for smaller screens */
+  @media (max-width: 640px) {
+    .card-corner-accent {
+      width: 15px;
+      height: 15px;
+    }
+
+    .blog-card:hover .card-corner-accent {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .blog-title {
+      font-size: clamp(2rem, 9vw, 8rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .blog-title {
+      font-size: clamp(1.8rem, 10vw, 7rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .blog-title {
+      font-size: clamp(1.5rem, 12vw, 5rem);
+    }
+
+    .statement-sub {
+      font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+    }
+  }
+
+  /* Table of Contents Styles */
+  .toc-container {
+    padding: 1.25rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+  }
+
+  .toc-icon {
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .toc-item {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .toc-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  .toc-item:hover::before {
+    transform: translateX(100%);
+  }
+
+  .toc-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(0, 255, 255, 0.1);
+  }
+
+  .toc-item:hover .toc-number {
+    color: rgba(0, 255, 255, 0.7);
+  }
+
+  .toc-title {
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .toc-status-dot {
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.2);
+    }
+  }
+
+  /* Active state when scrolled to that article */
+  .toc-item.active {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.4);
+    color: #fff;
+  }
+
+  .toc-item.active .toc-number {
+    color: rgba(0, 255, 255, 0.9);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .toc-container {
+      padding: 1rem;
+    }
+
+    .toc-item {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Highlight animation when TOC item is clicked */
+  .toc-highlight {
+    animation: tocHighlight 2s ease-out;
+  }
+
+  @keyframes tocHighlight {
+    0% {
+      box-shadow:
+        0 0 0 2px rgba(0, 255, 255, 0.8),
+        0 0 30px rgba(0, 255, 255, 0.4),
+        0 0 60px rgba(0, 255, 255, 0.2);
+    }
+    50% {
+      box-shadow:
+        0 0 0 3px rgba(0, 255, 255, 0.5),
+        0 0 40px rgba(0, 255, 255, 0.3),
+        0 0 80px rgba(0, 255, 255, 0.1);
+    }
+    100% {
+      box-shadow: none;
+    }
+  }
+
+  .toc-highlight .card-content {
+    border-color: rgba(0, 255, 255, 0.5) !important;
+  }
+
+  /* Typewriter cursor animation */
+  .typewriter-cursor {
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+    font-weight: 100;
+    -webkit-text-stroke: 0;
+  }
+
+  .typewriter-cursor-sub {
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  .typewriter-text {
+    display: inline-block;
+    white-space: pre-wrap;
+  }
+
+  /* Responsive hero typewriter */
+  @media (max-width: 1024px) {
+    .hero-typewriter {
+      font-size: clamp(2.5rem, 12vw, 12rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-typewriter {
+      font-size: clamp(2rem, 14vw, 10rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-typewriter {
+      font-size: clamp(1.8rem, 16vw, 8rem);
+      letter-spacing: -0.06em;
+    }
   }
 </style>
 
 <script>
+import { hasSeenAnimation, markAnimationSeen } from '../scripts/animationState';
+
+// Typewriter effect function
+function typeWriter(element: HTMLElement, text: string, speed: number = 80, callback?: () => void) {
+  let i = 0;
+  element.textContent = '';
+
+  function type() {
+    if (i < text.length) {
+      element.textContent += text.charAt(i);
+      i++;
+      setTimeout(type, speed);
+    } else if (callback) {
+      callback();
+    }
+  }
+
+  type();
+}
+
+// Intro animation and transition
+document.addEventListener('DOMContentLoaded', () => {
+  const robotViewerWrapper = document.getElementById('robot-viewer-wrapper');
+  const robotCtaText = document.getElementById('robot-cta-text');
+  const blogHeader = document.getElementById('blog-header');
+  const blogContent = document.getElementById('blog-content');
+
+  // Check if user has already seen this animation
+  const hasSeenIntro = hasSeenAnimation('blog-intro');
+
+  if (hasSeenIntro) {
+    // Skip animation - go directly to final state
+    if (robotViewerWrapper) {
+      robotViewerWrapper.classList.add('contained');
+    }
+    if (robotCtaText) {
+      robotCtaText.style.display = 'none';
+    }
+    if (blogHeader) {
+      blogHeader.style.opacity = '1';
+    }
+    if (blogContent) {
+      blogContent.classList.remove('opacity-0', 'pointer-events-none');
+      blogContent.classList.add('opacity-100');
+    }
+    const robotViewer = document.querySelector('.robot-viewer');
+    if (robotViewer) {
+      robotViewer.classList.add('interactive');
+    }
+
+    // Dispatch event to tell robot viewer to skip its animation too
+    document.dispatchEvent(new CustomEvent('skipBlogRobotAnimation'));
+  } else {
+    // Play animation normally
+    const mainText = document.getElementById('typewriter-main');
+    const subText = document.getElementById('typewriter-sub');
+
+    if (mainText && subText) {
+      // Type main text first - bold single word for impact
+      typeWriter(mainText, 'CHRONICLES', 80, () => {
+        // After main text completes, type sub text
+        setTimeout(() => {
+          typeWriter(subText, 'UNFILTERED THOUGHTS', 40);
+        }, 400);
+      });
+    }
+
+    // Listen for robot animation complete event
+    document.addEventListener('blogRobotAnimationComplete', () => {
+
+      // Wait 3.5 seconds after animation completes to let user read the typewriter text
+      setTimeout(() => {
+        if (robotViewerWrapper && robotCtaText && blogHeader && blogContent) {
+          // Fade out CTA text
+          robotCtaText.classList.add('hidden');
+
+          // After text fades, transition wrapper to contained state
+          setTimeout(() => {
+            // Transition robot wrapper from fullscreen to contained
+            robotViewerWrapper.classList.add('contained');
+
+            // Show blog header with animation
+            blogHeader.style.opacity = '1';
+
+            // Add interactive class to robot viewer to show decorative elements
+            const robotViewer = document.querySelector('.robot-viewer');
+            if (robotViewer) {
+              setTimeout(() => {
+                robotViewer.classList.add('interactive');
+              }, 800);
+            }
+
+            // Show blog content
+            setTimeout(() => {
+              blogContent.classList.remove('opacity-0', 'pointer-events-none');
+              blogContent.classList.add('opacity-100');
+
+              // Mark animation as seen after everything is visible
+              markAnimationSeen('blog-intro');
+            }, 1000);
+          }, 1000);
+        }
+      }, 3500);
+    });
+  }
+
+  // Handle expand/collapse functionality
+  const expandButton = document.getElementById('expand-keyboard-btn');
+  const backdropOverlay = document.getElementById('keyboard-backdrop-overlay');
+
+  if (expandButton && robotViewerWrapper && backdropOverlay) {
+    // Capture narrowed types for use in nested function
+    const wrapper = robotViewerWrapper;
+    const backdrop = backdropOverlay;
+    const btn = expandButton;
+
+    function toggleExpandedView(expand: boolean | null = null) {
+      const shouldExpand = expand !== null ? expand : !wrapper.classList.contains('expanded');
+
+      if (shouldExpand) {
+        wrapper.classList.add('expanded');
+        backdrop.classList.add('backdrop-visible');
+        document.body.style.overflow = 'hidden';
+        btn.setAttribute('aria-label', 'Collapse keyboard view');
+
+        const svg = btn.querySelector('svg');
+        if (svg) {
+          svg.style.transform = 'rotate(180deg)';
+        }
+      } else {
+        wrapper.classList.remove('expanded');
+        backdrop.classList.remove('backdrop-visible');
+        document.body.style.overflow = '';
+        btn.setAttribute('aria-label', 'Expand keyboard view');
+
+        const svg = btn.querySelector('svg');
+        if (svg) {
+          svg.style.transform = '';
+        }
+      }
+    }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      toggleExpandedView();
+    });
+
+    backdrop.addEventListener('click', () => {
+      if (wrapper.classList.contains('expanded')) {
+        toggleExpandedView(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && wrapper.classList.contains('expanded')) {
+        toggleExpandedView(false);
+      }
+    });
+  }
+});
+
 // Client-side search functionality
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('searchInput') as HTMLInputElement;
@@ -105,7 +969,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchStatus = document.getElementById('searchStatus') as HTMLElement;
   
   if (!searchInput || !blogGrid || !searchStatus) {
-    console.error('Required DOM elements not found');
     return;
   }
   
@@ -119,7 +982,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const tagElements = card.querySelectorAll('.mt-4 span');
       
       if (!titleElement || !descriptionElement) {
-        console.warn('Blog card is missing required elements', card);
         return;
       }
       
@@ -179,5 +1041,84 @@ document.addEventListener('DOMContentLoaded', () => {
       emptyStateEl.remove();
     }
   });
+
+  // Mouse-following glow effect for blog cards (reusing blogCards variable from above)
+  blogCards.forEach((card) => {
+    const glowOverlay = card.querySelector<HTMLElement>('.glow-overlay');
+    if (!glowOverlay) return;
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      glowOverlay.style.setProperty('--mouse-x', `${x}%`);
+      glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      glowOverlay.style.setProperty('--mouse-x', '50%');
+      glowOverlay.style.setProperty('--mouse-y', '50%');
+    });
+  });
+
+  // Table of Contents click-to-scroll functionality
+  const tocItems = document.querySelectorAll<HTMLButtonElement>('.toc-item');
+  const blogCardsArray = Array.from(blogCards);
+
+  tocItems.forEach((tocItem) => {
+    tocItem.addEventListener('click', () => {
+      const index = parseInt(tocItem.dataset.index || '0', 10);
+      const targetCard = blogCardsArray[index];
+
+      if (targetCard) {
+        // Remove active class from all TOC items
+        tocItems.forEach(item => item.classList.remove('active'));
+        // Add active class to clicked item
+        tocItem.classList.add('active');
+
+        // Scroll to the card with smooth animation
+        const cardRect = targetCard.getBoundingClientRect();
+        const offset = 100; // Offset from top of viewport
+        const scrollTo = window.scrollY + cardRect.top - offset;
+
+        window.scrollTo({
+          top: scrollTo,
+          behavior: 'smooth'
+        });
+
+        // Add a highlight animation to the target card
+        targetCard.classList.add('toc-highlight');
+        setTimeout(() => {
+          targetCard.classList.remove('toc-highlight');
+        }, 2000);
+      }
+    });
+  });
+
+  // Update active TOC item on scroll (Intersection Observer)
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const cardIndex = blogCardsArray.indexOf(entry.target as HTMLElement);
+          if (cardIndex !== -1) {
+            tocItems.forEach((item, i) => {
+              if (i === cardIndex) {
+                item.classList.add('active');
+              } else {
+                item.classList.remove('active');
+              }
+            });
+          }
+        }
+      });
+    }, {
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    });
+
+    blogCardsArray.forEach(card => observer.observe(card));
+  }
 });
 </script>

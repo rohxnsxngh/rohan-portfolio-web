@@ -1,0 +1,587 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../layouts/Navigation.astro";
+import Footer from "../layouts/Footer.astro";
+---
+
+<Layout title="The Forge - ThreeJS Experiments" description="Interactive ThreeJS experiments and visualizations">
+  <div class="min-h-screen flex flex-col bg-secondary">
+    <div class="flex-grow">
+      <Navbar>
+        <div class="relative overflow-hidden">
+          <!-- Tech grid overlay -->
+          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+          <div class="relative z-10 sm:px-20 px-6 py-12">
+            <!-- BOLD HEADER -->
+            <div class="header-section mb-12">
+              <h1 class="forge-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">F</span><span class="char char-2">O</span><span class="char char-3">R</span><span class="char char-4">G</span><span class="char char-5">E</span>
+              </h1>
+              <div class="accent-line mt-6"></div>
+              <p class="intro-subtitle text-lg sm:text-xl text-primary/70 font-mono mt-8 max-w-3xl leading-relaxed opacity-0" style="animation: fadeInUp 0.8s ease-out forwards; animation-delay: 0.8s;">
+                Interactive experiments and visualizations
+              </p>
+            </div>
+
+          <!-- Experiment Windows -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Experiment 1 -->
+            <a href="/forge/experiment-1" class="group experiment-card">
+              <!-- Corner accent marks -->
+              <div class="card-corner-accent card-corner-tl"></div>
+              <div class="card-corner-accent card-corner-tr"></div>
+              <div class="card-corner-accent card-corner-bl"></div>
+              <div class="card-corner-accent card-corner-br"></div>
+
+              <!-- Animated gradient border -->
+              <div class="card-gradient-border"></div>
+
+              <!-- Grid overlay -->
+              <div class="card-grid-overlay"></div>
+
+              <!-- Glow overlay that follows mouse -->
+              <div class="glow-overlay"></div>
+
+              <div class="experiment-window slide-up">
+                <div class="experiment-preview">
+                  <div class="cube-container">
+                    <div class="cube"></div>
+                  </div>
+                </div>
+                <div class="experiment-info">
+                  <h3 class="text-xl font-mono text-primary mb-2">Basic Geometry</h3>
+                  <p class="text-primary/70 font-mono text-sm">Simple cube rotation and lighting</p>
+                </div>
+                <div class="experiment-overlay">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+
+            <!-- Experiment 2 - Coming Soon -->
+            <div class="group experiment-card coming-soon-card">
+              <!-- Corner accent marks -->
+              <div class="card-corner-accent card-corner-tl"></div>
+              <div class="card-corner-accent card-corner-tr"></div>
+              <div class="card-corner-accent card-corner-bl"></div>
+              <div class="card-corner-accent card-corner-br"></div>
+
+              <!-- Animated gradient border -->
+              <div class="card-gradient-border"></div>
+
+              <!-- Grid overlay -->
+              <div class="card-grid-overlay"></div>
+
+              <!-- Glow overlay that follows mouse -->
+              <div class="glow-overlay"></div>
+
+              <div class="experiment-window slide-up">
+                <div class="experiment-preview coming-soon-preview">
+                  <div class="coming-soon-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="experiment-info">
+                  <h3 class="text-xl font-mono text-primary/50 mb-2">Coming Soon</h3>
+                  <p class="text-primary/40 font-mono text-sm">New experiment in development</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Experiment 3 - Coming Soon -->
+            <div class="group experiment-card coming-soon-card">
+              <!-- Corner accent marks -->
+              <div class="card-corner-accent card-corner-tl"></div>
+              <div class="card-corner-accent card-corner-tr"></div>
+              <div class="card-corner-accent card-corner-bl"></div>
+              <div class="card-corner-accent card-corner-br"></div>
+
+              <!-- Animated gradient border -->
+              <div class="card-gradient-border"></div>
+
+              <!-- Grid overlay -->
+              <div class="card-grid-overlay"></div>
+
+              <!-- Glow overlay that follows mouse -->
+              <div class="glow-overlay"></div>
+
+              <div class="experiment-window slide-up">
+                <div class="experiment-preview coming-soon-preview">
+                  <div class="coming-soon-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                  </div>
+                </div>
+                <div class="experiment-info">
+                  <h3 class="text-xl font-mono text-primary/50 mb-2">Coming Soon</h3>
+                  <p class="text-primary/40 font-mono text-sm">New experiment in development</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </Navbar>
+    </div>
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* BOLD FORGE TITLE */
+  .forge-title {
+    font-size: clamp(4rem, 16vw, 14rem);
+    line-height: 0.85;
+    letter-spacing: -0.08em;
+    color: #ffffff;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7);
+  }
+
+  @keyframes titleReveal {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Character animations */
+  .forge-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+
+  @keyframes charReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(100px) scale(0.8);
+    }
+    60% {
+      transform: translateY(-10px) scale(1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Accent line */
+  .accent-line {
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
+    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes lineExpand {
+    to {
+      width: 200px;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Existing styles below */
+  .slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+
+  .slide-up:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .slide-up:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .slide-up:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .slide-up:nth-child(5) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes slideUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Experiment Window Styles */
+  .experiment-card {
+    @apply relative;
+    overflow: hidden;
+  }
+
+  .experiment-window {
+    @apply relative bg-secondary border border-primary/20 rounded-lg overflow-hidden transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10;
+    height: 300px;
+    z-index: 10;
+  }
+
+  .experiment-card:hover {
+    transform: translateY(-4px);
+  }
+
+  /* Corner accent marks */
+  .card-corner-accent {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    z-index: 15;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    opacity: 1;
+  }
+
+  .card-corner-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 12px 0 0 0;
+  }
+
+  .card-corner-tr {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 12px 0 0;
+  }
+
+  .card-corner-bl {
+    bottom: -1px;
+    left: -1px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 12px;
+  }
+
+  .card-corner-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 12px 0;
+  }
+
+  .experiment-card:hover .card-corner-accent {
+    width: 30px;
+    height: 30px;
+    border-color: rgba(255, 255, 255, 0.8);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+  }
+
+  /* Animated gradient border */
+  .card-gradient-border {
+    position: absolute;
+    inset: -2px;
+    border-radius: 0.75rem;
+    padding: 2px;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(0, 255, 255, 0.3),
+      transparent,
+      rgba(255, 0, 255, 0.3),
+      transparent
+    );
+    background-size: 200% 200%;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: borderGlow 4s linear infinite;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @keyframes borderGlow {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .experiment-card:hover .card-gradient-border {
+    opacity: 1;
+    animation-duration: 2s;
+  }
+
+  /* Grid overlay */
+  .card-grid-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 11;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .experiment-card:hover .card-grid-overlay {
+    opacity: 1;
+  }
+
+  /* Mouse-following glow effect */
+  .glow-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 102, 0, 0.15),
+      rgba(255, 170, 68, 0.1),
+      rgba(255, 68, 68, 0.05),
+      transparent 40%
+    );
+  }
+
+  .experiment-card:hover .glow-overlay {
+    opacity: 1;
+  }
+
+  /* Enhanced experiment window hover with cyan/magenta glow */
+  .experiment-card:hover .experiment-window {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 20px 40px rgba(0, 0, 0, 0.6),
+      0 0 40px rgba(0, 255, 255, 0.1),
+      0 0 80px rgba(255, 0, 255, 0.1);
+  }
+
+  /* Responsive corner accents for smaller screens */
+  @media (max-width: 640px) {
+    .card-corner-accent {
+      width: 15px;
+      height: 15px;
+    }
+
+    .experiment-card:hover .card-corner-accent {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .experiment-preview {
+    @apply w-full h-48 bg-black/50 flex items-center justify-center relative overflow-hidden;
+  }
+
+  .cube-container {
+    @apply w-24 h-24 relative;
+    perspective: 200px;
+  }
+
+  .cube {
+    @apply w-full h-full relative;
+    transform-style: preserve-3d;
+    animation: rotate 4s infinite linear;
+  }
+
+  .cube-2 {
+    animation: rotate 3s infinite linear reverse;
+  }
+
+  .cube-3 {
+    animation: rotate 2s infinite linear;
+  }
+
+  .cube::before,
+  .cube::after {
+    content: '';
+    @apply absolute inset-0 border-2 border-primary/60;
+  }
+
+  .cube::before {
+    transform: rotateY(45deg) rotateX(45deg);
+    background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+  }
+
+  .cube::after {
+    transform: rotateY(-45deg) rotateX(45deg);
+    background: linear-gradient(-45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+  }
+
+  .experiment-info {
+    @apply p-4;
+  }
+
+  /* Coming Soon Card Styles */
+  .coming-soon-card {
+    cursor: default;
+    opacity: 0.6;
+  }
+
+  .coming-soon-card:hover {
+    transform: none;
+  }
+
+  .coming-soon-card .card-corner-accent {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .coming-soon-card:hover .card-corner-accent {
+    width: 20px;
+    height: 20px;
+    border-color: rgba(255, 255, 255, 0.3);
+    filter: none;
+  }
+
+  .coming-soon-card .card-gradient-border {
+    opacity: 0.2;
+  }
+
+  .coming-soon-card:hover .card-gradient-border {
+    opacity: 0.3;
+  }
+
+  .coming-soon-card:hover .experiment-window {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+  }
+
+  .coming-soon-preview {
+    @apply flex items-center justify-center;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .coming-soon-icon {
+    @apply flex items-center justify-center w-20 h-20 rounded-full border border-primary/20;
+    animation: pulse-subtle 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+
+  .experiment-overlay {
+    @apply absolute top-4 right-4 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300;
+  }
+
+  .experiment-overlay svg {
+    @apply text-primary/80;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotateX(0deg) rotateY(0deg); }
+    100% { transform: rotateX(360deg) rotateY(360deg); }
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .forge-title {
+      font-size: clamp(3.5rem, 14vw, 12rem);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .forge-title {
+      font-size: clamp(3rem, 16vw, 10rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .forge-title {
+      font-size: clamp(2.5rem, 18vw, 8rem);
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const experimentCards = document.querySelectorAll<HTMLElement>('.experiment-card');
+
+    experimentCards.forEach((card) => {
+      const glowOverlay = card.querySelector<HTMLElement>('.glow-overlay');
+      if (!glowOverlay) return;
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        glowOverlay.style.setProperty('--mouse-x', `${x}%`);
+        glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        glowOverlay.style.setProperty('--mouse-x', '50%');
+        glowOverlay.style.setProperty('--mouse-y', '50%');
+      });
+    });
+  });
+</script>

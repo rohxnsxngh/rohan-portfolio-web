@@ -18,25 +18,17 @@ const { Content } = await research.render();
 
 type ResearchStatus = "completed" | "in-progress" | "coming-soon";
 
-interface StatusConfig {
-  color: string;
-  text: string;
-}
+// Status colors
+const statusColors: Record<ResearchStatus, string> = {
+  completed: "bg-green-500/10 text-green-300 border-green-500/30",
+  "in-progress": "bg-blue-500/10 text-blue-300 border-blue-500/30",
+  "coming-soon": "bg-yellow-500/10 text-yellow-300 border-yellow-500/30",
+};
 
-// Status colors and text
-const statusConfig: Record<ResearchStatus, StatusConfig> = {
-  completed: {
-    color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-    text: "Completed",
-  },
-  "in-progress": {
-    color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-    text: "In Progress",
-  },
-  "coming-soon": {
-    color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-    text: "Coming Soon",
-  },
+const statusText: Record<ResearchStatus, string> = {
+  completed: "COMPLETED",
+  "in-progress": "IN PROGRESS",
+  "coming-soon": "COMING SOON",
 };
 ---
 
@@ -44,78 +36,380 @@ const statusConfig: Record<ResearchStatus, StatusConfig> = {
   <div class="min-h-screen flex flex-col">
     <div class="flex-grow">
       <Navbar>
-        <div class="sm:px-20 px-6 py-8">
-          <article class="prose prose-lg dark:prose-invert max-w-4xl mx-auto">
-            <header class="mb-8">
-              <div class="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                <h1 class="m-0">{research.data.title}</h1>
-                <span
-                  class={`px-2.5 py-0.5 rounded-full text-xs font-medium w-fit ${
-                    statusConfig[research.data.status as ResearchStatus].color
-                  }`}
-                >
-                  {statusConfig[research.data.status as ResearchStatus].text}
-                </span>
-              </div>
+        <!-- Breadcrumbs -->
+        <nav class="sm:px-20 px-6 pt-8 pb-4" aria-label="Breadcrumb">
+          <ol class="breadcrumb font-mono text-sm flex items-center gap-2 text-white/50">
+            <li>
+              <a href="/" class="hover:text-white/80 transition-colors">Home</a>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <a href="/research" class="hover:text-white/80 transition-colors">Research</a>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li class="text-white/70 truncate max-w-[200px] sm:max-w-none">
+              {research.data.title}
+            </li>
+          </ol>
+        </nav>
 
-              <div class="flex flex-wrap gap-2 mt-4">
-                {
-                  research.data.tags.map((tag: string) => (
-                    <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-primary/70 border border-accent/20">
-                      {tag}
-                    </span>
-                  ))
+        <!-- Hero Section -->
+        <section class="hero-section w-full sm:px-20 px-6 py-12 flex flex-col justify-center" style="min-height: 50vh;">
+          <div class="w-full">
+            <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
+              {research.data.title.toUpperCase().split(' ').map((word, wordIndex) => {
+                let charCount = 0;
+                for (let i = 0; i < wordIndex; i++) {
+                  charCount += research.data.title.toUpperCase().split(' ')[i].length;
                 }
-              </div>
+                return (
+                  <span class="word">
+                    {word.split('').map((char, charIndex) => (
+                      <span class={`char char-${charCount + charIndex + 1}`}>{char}</span>
+                    ))}
+                  </span>
+                );
+              })}
+            </h1>
+          </div>
+        </section>
 
-              <div class="flex gap-4 mt-4">
-                {
-                  research.data.github && (
-                    <a
-                      href={research.data.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-primary/60 hover:text-primary transition-colors"
-                    >
-                      GitHub →
-                    </a>
-                  )
-                }
-                {
-                  research.data.paper && (
-                    <a
-                      href={research.data.paper}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="text-primary/60 hover:text-primary transition-colors"
-                    >
-                      Research Paper →
-                    </a>
-                  )
-                }
-              </div>
-            </header>
-            {/* @ts-ignore */}
-            {research.data.images && (
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                {/* @ts-ignore */}
-                {research.data.images.map((image: { src: string; alt: string }) => (
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    class="w-full rounded-lg border border-primary/20"
-                  />
+        <!-- Metadata Section -->
+        <section class="metadata-section w-full sm:px-20 px-6 py-8 border-t border-white/10">
+          <div class="flex flex-col gap-6">
+            <!-- Status Badge -->
+            <div class="flex items-center gap-4">
+              <span class={`status-badge font-mono text-xs px-3 py-1.5 rounded border ${statusColors[research.data.status as ResearchStatus]}`}>
+                {statusText[research.data.status as ResearchStatus]}
+              </span>
+            </div>
+
+            <!-- Tags -->
+            {research.data.tags && research.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2">
+                {research.data.tags.map((tag: string) => (
+                  <span class="font-mono text-xs px-3 py-1 rounded bg-white/5 text-white/60 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all">
+                    {tag}
+                  </span>
                 ))}
               </div>
             )}
 
-            <MarkdownContent>
-              <Content />
-            </MarkdownContent>
-          </article>
-        </div>
+            <!-- Links -->
+            <div class="flex flex-wrap gap-4">
+              {research.data.github && (
+                <a
+                  href={research.data.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-button group flex items-center gap-2 font-mono text-sm px-4 py-2 rounded border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                  <span>GitHub</span>
+                  <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              )}
+              {research.data.paper && (
+                <a
+                  href={research.data.paper}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="link-button group flex items-center gap-2 font-mono text-sm px-4 py-2 rounded border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Research Paper</span>
+                  <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <!-- Story Content Section -->
+        <section class="content-section w-full sm:px-20 px-6 py-12">
+          <div class="w-full">
+            <div class="section-label font-mono text-sm tracking-[0.3em] uppercase text-white/50 mb-8">
+              // RESEARCH DETAILS
+            </div>
+            <div class="story-content">
+              <MarkdownContent>
+                <Content />
+              </MarkdownContent>
+            </div>
+          </div>
+        </section>
+
+        <!-- Image Gallery Section -->
+        {research.data.images && research.data.images.length > 0 && (
+          <section class="gallery-section w-full sm:px-20 px-6 py-12 border-t border-white/10">
+            <div class="w-full">
+              <div class="section-label font-mono text-sm tracking-[0.3em] uppercase text-white/50 mb-8">
+                // GALLERY
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {research.data.images.map((image: { src: string; alt: string }) => (
+                  <div class="gallery-item group relative overflow-hidden rounded-lg border border-white/10 hover:border-white/30 transition-all duration-500">
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      loading="lazy"
+                      class="w-full h-full object-cover transition-all duration-500 filter grayscale-[0.3] group-hover:grayscale-0 group-hover:scale-105"
+                      style="aspect-ratio: 16/9;"
+                    />
+                    <div class="absolute inset-0 border-2 border-transparent group-hover:border-white/20 transition-all duration-500 pointer-events-none" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        <!-- Navigation Section -->
+        <section class="navigation-section w-full sm:px-20 px-6 py-12 border-t border-white/10">
+          <div class="flex flex-col sm:flex-row gap-4 justify-between">
+            <a
+              href="/research"
+              class="nav-button group flex items-center gap-2 font-mono text-sm px-6 py-3 rounded border border-white/20 text-white/70 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all"
+            >
+              <svg class="h-4 w-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              <span>Back to Research</span>
+            </a>
+            <a
+              href="/project"
+              class="nav-button group flex items-center gap-2 font-mono text-sm px-6 py-3 rounded border border-white/20 text-white/70 hover:text-white hover:border-white/40 hover:bg-white/5 transition-all"
+            >
+              <span>View Projects</span>
+              <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </section>
       </Navbar>
     </div>
     <Footer />
   </div>
 </Layout>
+
+<style>
+  /* Hero Title Animation */
+  .hero-title {
+    font-size: clamp(1.8rem, 14vw, 6rem);
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+  }
+
+  /* Word wrapper to prevent mid-word breaks */
+  .hero-title .word {
+    display: inline-block;
+    white-space: nowrap;
+    margin-right: 0.3em;
+  }
+
+  .hero-title .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes charReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Generate animation delays for up to 50 characters */
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.06s; }
+  .char-3 { animation-delay: 0.07s; }
+  .char-4 { animation-delay: 0.08s; }
+  .char-5 { animation-delay: 0.09s; }
+  .char-6 { animation-delay: 0.10s; }
+  .char-7 { animation-delay: 0.11s; }
+  .char-8 { animation-delay: 0.12s; }
+  .char-9 { animation-delay: 0.13s; }
+  .char-10 { animation-delay: 0.14s; }
+  .char-11 { animation-delay: 0.15s; }
+  .char-12 { animation-delay: 0.16s; }
+  .char-13 { animation-delay: 0.17s; }
+  .char-14 { animation-delay: 0.18s; }
+  .char-15 { animation-delay: 0.19s; }
+  .char-16 { animation-delay: 0.20s; }
+  .char-17 { animation-delay: 0.21s; }
+  .char-18 { animation-delay: 0.22s; }
+  .char-19 { animation-delay: 0.23s; }
+  .char-20 { animation-delay: 0.24s; }
+  .char-21 { animation-delay: 0.25s; }
+  .char-22 { animation-delay: 0.26s; }
+  .char-23 { animation-delay: 0.27s; }
+  .char-24 { animation-delay: 0.28s; }
+  .char-25 { animation-delay: 0.29s; }
+  .char-26 { animation-delay: 0.30s; }
+  .char-27 { animation-delay: 0.31s; }
+  .char-28 { animation-delay: 0.32s; }
+  .char-29 { animation-delay: 0.33s; }
+  .char-30 { animation-delay: 0.34s; }
+  .char-31 { animation-delay: 0.35s; }
+  .char-32 { animation-delay: 0.36s; }
+  .char-33 { animation-delay: 0.37s; }
+  .char-34 { animation-delay: 0.38s; }
+  .char-35 { animation-delay: 0.39s; }
+  .char-36 { animation-delay: 0.40s; }
+  .char-37 { animation-delay: 0.41s; }
+  .char-38 { animation-delay: 0.42s; }
+  .char-39 { animation-delay: 0.43s; }
+  .char-40 { animation-delay: 0.44s; }
+  .char-41 { animation-delay: 0.45s; }
+  .char-42 { animation-delay: 0.46s; }
+  .char-43 { animation-delay: 0.47s; }
+  .char-44 { animation-delay: 0.48s; }
+  .char-45 { animation-delay: 0.49s; }
+  .char-46 { animation-delay: 0.50s; }
+  .char-47 { animation-delay: 0.51s; }
+  .char-48 { animation-delay: 0.52s; }
+  .char-49 { animation-delay: 0.53s; }
+  .char-50 { animation-delay: 0.54s; }
+
+  /* Hero Section Animation */
+  .hero-section {
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Metadata Section Animation */
+  .metadata-section {
+    animation: slideUp 0.6s ease-out 0.3s backwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Content Section Animation */
+  .content-section {
+    animation: slideUp 0.6s ease-out 0.5s backwards;
+  }
+
+  /* Story Content Typography */
+  .story-content :global(h2) {
+    font-family: monospace;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.4s ease;
+  }
+
+  .story-content :global(h2:hover) {
+    border-left-color: rgba(255, 255, 255, 0.5);
+    padding-left: 2.5rem;
+  }
+
+  .story-content :global(h3) {
+    font-family: monospace;
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .story-content :global(p) {
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Gallery Animation */
+  .gallery-section {
+    animation: slideUp 0.6s ease-out 0.7s backwards;
+  }
+
+  .gallery-item {
+    transform: translateY(0);
+    transition: transform 0.5s ease;
+  }
+
+  .gallery-item:hover {
+    transform: translateY(-8px);
+  }
+
+  /* Navigation Section */
+  .navigation-section {
+    animation: slideUp 0.6s ease-out 0.9s backwards;
+  }
+
+  /* Breadcrumb Animation */
+  .breadcrumb {
+    animation: slideDown 0.5s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 640px) {
+    .hero-section {
+      min-height: 35vh !important;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-size: clamp(1.5rem, 12vw, 3rem);
+    }
+
+    .metadata-section,
+    .content-section,
+    .gallery-section,
+    .navigation-section {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .navigation-section .flex {
+      flex-direction: column;
+    }
+  }
+</style>

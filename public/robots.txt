@@ -1,0 +1,10 @@
+# robots.txt for rohansingh.io
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://rohansingh.io/sitemap-index.xml
+
+# Disallow admin or private paths (if any)
+Disallow: /api/

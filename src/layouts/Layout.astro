@@ -1,16 +1,18 @@
 ---
 import Seo from "../components/Seo.astro";
+import CustomCursor from "../components/CustomCursor.astro";
 
 const { title, description, image, frontmatter, robots } = Astro.props;
 ---
 
-<html lang="en" class="bg-secondary text-primary">
+<html lang="en" class="bg-secondary text-primary" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/RS.jpg" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" type="image/jpeg" href="/images/RS.jpg" />
     <meta
       name="viewport"
-      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+      content="width=device-width, initial-scale=1.0"
     />
     <meta
       name="description"
@@ -34,10 +36,26 @@ const { title, description, image, frontmatter, robots } = Astro.props;
 
       :root {
         --transition-speed: 0.3s;
+        color-scheme: dark;
+      }
+
+      /* Override DaisyUI's base content color to pure white */
+      [data-theme="dark"] {
+        --bc: 1 0 0; /* Pure white in OKLCH: lightness=1, chroma=0, hue=0 */
+        --b1: 0 0 0; /* Pure black background */
+        --b2: 0.05 0 0; /* Slightly lighter for secondary backgrounds */
+        --b3: 0.1 0 0; /* Even lighter for tertiary */
       }
 
       * {
         font-family: 'IBM Plex Mono', monospace;
+      }
+
+      /* Consistent font rendering across platforms */
+      html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
 
       body {
@@ -82,10 +100,174 @@ const { title, description, image, frontmatter, robots } = Astro.props;
       ::-webkit-scrollbar-thumb:hover {
         background: #666666;
       }
+
+      /* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+      /* Skip to main content link - hidden until focused */
+      .skip-link {
+        position: absolute;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ffffff;
+        color: #000000;
+        padding: 8px 16px;
+        z-index: 10000;
+        font-weight: bold;
+        text-decoration: none;
+        transition: top 0.2s ease;
+        border-radius: 0 0 4px 4px;
+      }
+
+      .skip-link:focus {
+        top: 0;
+      }
+
+      .skip-link:not(:focus) {
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+
+      /* Focus indicators - visible on keyboard navigation */
+      *:focus {
+        outline: none;
+      }
+
+      *:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+        border-radius: 2px;
+      }
+
+      /* Interactive elements focus styles */
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible,
+      select:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Card and container focus styles */
+      .project-card:focus-visible,
+      .blog-card:focus-visible,
+      .journey-card-wrapper:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 4px;
+      }
+
+      /* Improve color contrast for low-opacity text - boost all opacity values for better cross-monitor consistency */
+      .text-primary\/30 {
+        color: rgba(255, 255, 255, 0.5) !important; /* Bumped from 30% to 50% */
+      }
+
+      .text-primary\/40 {
+        color: rgba(255, 255, 255, 0.6) !important; /* Bumped from 40% to 60% */
+      }
+
+      .text-primary\/50 {
+        color: rgba(255, 255, 255, 0.7) !important; /* Bumped from 50% to 70% */
+      }
+
+      .text-primary\/60 {
+        color: rgba(255, 255, 255, 0.75) !important; /* Bumped from 60% to 75% */
+      }
+
+      .text-primary\/70 {
+        color: rgba(255, 255, 255, 0.85) !important; /* Bumped from 70% to 85% */
+      }
+
+      .text-primary\/80 {
+        color: rgba(255, 255, 255, 0.9) !important; /* Bumped from 80% to 90% */
+      }
+
+      /* Also boost text-white opacity variants */
+      .text-white\/50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+      }
+
+      .text-white\/60 {
+        color: rgba(255, 255, 255, 0.75) !important;
+      }
+
+      .text-white\/70 {
+        color: rgba(255, 255, 255, 0.85) !important;
+      }
+
+      .text-white\/80 {
+        color: rgba(255, 255, 255, 0.9) !important;
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+
+        .typewriter-cursor {
+          animation: none !important;
+        }
+
+        .tech-grid {
+          animation: none !important;
+        }
+
+        /* Disable parallax effects */
+        .hero-content {
+          transform: none !important;
+        }
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .text-primary\/30,
+        .text-primary\/40,
+        .text-primary\/50,
+        .text-primary\/60,
+        .text-primary\/70,
+        .text-primary\/80,
+        .text-white\/50,
+        .text-white\/60,
+        .text-white\/70,
+        .text-white\/80 {
+          color: rgba(255, 255, 255, 1) !important;
+        }
+
+        .border-accent\/10,
+        .border-accent\/20,
+        .border-accent\/30 {
+          border-color: rgba(255, 255, 255, 0.5) !important;
+        }
+      }
+
+      /* Fallback for browsers with poor OKLCH support */
+      @supports not (color: oklch(1 0 0)) {
+        [data-theme="dark"] {
+          --fallback-bc: #ffffff;
+          --fallback-b1: #000000;
+          --fallback-b2: #0d0d0d;
+          --fallback-b3: #1a1a1a;
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen">
-    <main class="fade-in">
+    <!-- Skip to main content link for keyboard users -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <CustomCursor />
+    <main id="main-content" class="fade-in" role="main">
       <slot />
     </main>
   </body>
