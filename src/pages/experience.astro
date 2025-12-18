@@ -1781,7 +1781,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
         if (experienceCard) {
           // Smooth scroll to the card with offset for fixed headers
           const yOffset = -100; // Offset for better visibility
-          const y = experienceCard.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          const y = experienceCard.getBoundingClientRect().top + window.scrollY + yOffset;
 
           window.scrollTo({
             top: y,

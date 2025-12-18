@@ -255,7 +255,7 @@ const {
     // Loading manager for tracking progress
     const manager = new THREE.LoadingManager();
 
-    manager.onProgress = (url, loaded, total) => {
+    manager.onProgress = (_url, loaded, total) => {
       if (progressBar instanceof HTMLProgressElement) {
         progressBar.value = (loaded / total) * 100;
       }

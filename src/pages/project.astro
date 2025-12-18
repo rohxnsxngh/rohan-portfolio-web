@@ -279,7 +279,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="text-sm text-white/80 hover:text-white transition-colors"
-                                onclick="(e => { e.stopPropagation(); })(event)"
+                                onclick="arguments[0].stopPropagation()"
                               >
                                 GitHub →
                               </a>
@@ -290,7 +290,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="text-sm text-white/80 hover:text-white transition-colors ml-4"
-                                onclick="(e => { e.stopPropagation(); })(event)"
+                                onclick="arguments[0].stopPropagation()"
                               >
                                 Live Demo →
                               </a>
@@ -301,7 +301,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="text-sm text-white/80 hover:text-white transition-colors ml-4"
-                                onclick="(e => { e.stopPropagation(); })(event)"
+                                onclick="arguments[0].stopPropagation()"
                               >
                                 Kaggle Challenge →
                               </a>

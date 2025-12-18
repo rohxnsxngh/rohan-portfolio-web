@@ -17,13 +17,7 @@ interface Props {
 const {
   width = "100%",
   height = "100%",
-  modelPath = "/models/kuma_heavy_robot.glb", // Default path to the heavy robot model
-  backgroundColor = "#000000",
-  robotColor = "#444444", // Slightly darker color for heavy robot
-  robotEmissive = "#111111",
-  robotSpecular = "#aaaaaa",
   className = "",
-  animationIndex = 0, // Default to first animation
 } = Astro.props;
 ---
 
@@ -281,7 +275,7 @@ const {
     // Loading manager for tracking progress
     const manager = new THREE.LoadingManager();
 
-    manager.onProgress = (url, loaded, total) => {
+    manager.onProgress = (_url, loaded, total) => {
       if (progressBar instanceof HTMLProgressElement) {
         progressBar.value = (loaded / total) * 100;
       }

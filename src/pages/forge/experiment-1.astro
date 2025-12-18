@@ -209,7 +209,7 @@ import Footer from "../../layouts/Footer.astro";
   let bloomPass: UnrealBloomPass;
   let controls: OrbitControls;
   let mesh: THREE.InstancedMesh;
-  let animationId: number;
+  let _animationId: number;
   let isAnimating = true;
   let bloomEnabled = true;
   let wireframeMode = false;
@@ -444,7 +444,7 @@ import Footer from "../../layouts/Footer.astro";
   }
 
   function animate() {
-    animationId = requestAnimationFrame(animate);
+    _animationId = requestAnimationFrame(animate);
     const time = performance.now();
 
     if (isAnimating) {

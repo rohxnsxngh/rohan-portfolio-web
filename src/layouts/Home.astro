@@ -580,7 +580,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     window.addEventListener("scroll", () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const scrolled = window.pageYOffset;
+          const scrolled = window.scrollY;
           const heroContent = document.querySelector(".hero-content");
 
           if (heroContent && scrolled < window.innerHeight) {

@@ -74,7 +74,7 @@ import Footer from "../../layouts/Footer.astro";
   let renderer: THREE.WebGLRenderer;
   let cube: THREE.Mesh;
   let controls: OrbitControls;
-  let animationId: number;
+  let _animationId: number;
   let isAnimating = true;
   let time = 0;
 
@@ -214,7 +214,7 @@ import Footer from "../../layouts/Footer.astro";
 
   // Animation loop
   function animate() {
-    animationId = requestAnimationFrame(animate);
+    _animationId = requestAnimationFrame(animate);
 
     time += 0.016; // ~60fps
 
