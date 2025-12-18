@@ -40,6 +40,14 @@ export default defineConfig({
     build: {
       commonjsOptions: {
         include: [/three/, /three\/examples\/jsm\/*/]
+      },
+      chunkSizeWarningLimit: 600,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'three-vendor': ['three'],
+          }
+        }
       }
     }
   },
