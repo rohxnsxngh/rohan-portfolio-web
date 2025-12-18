@@ -265,7 +265,7 @@ const {
         }
       },
       undefined, // Progress callback not needed
-      (error) => {
+      () => {
         // Error loading model - dispatch event anyway to not block UI
         document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
       }
