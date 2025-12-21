@@ -226,7 +226,7 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 <!-- Backdrop overlay for expanded view -->
 <div
   id="keyboard-backdrop-overlay"
-  class="fixed inset-0 bg-black/50 backdrop-blur-md z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+  class="fixed inset-0 bg-black/50 backdrop-blur-md z-5 opacity-0 pointer-events-none transition-opacity duration-300"
 >
 </div>
 
@@ -393,7 +393,7 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     height: 90vh !important;
     max-width: 1200px !important;
     max-height: 800px !important;
-    z-index: 50 !important;
+    z-index: 60 !important;
     border-radius: 12px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     border: 2px solid rgba(var(--color-primary, 255, 255, 255), 0.4);
