@@ -33,7 +33,7 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
             <!-- Robot Viewer Container - Transitions from fullscreen to contained -->
             <div class="robot-viewer-wrapper" id="robot-viewer-wrapper">
               <!-- Content overlay (shown during intro) -->
-              <div class="robot-text-overlay" id="robot-cta-text">
+              <div class="robot-text-overlay cursor-pointer" id="robot-cta-text">
                 <!-- Top text - massive hero style with typewriter effect -->
                 <div class="top-statement text-center">
                   <h2 class="hero-typewriter font-mono font-black text-white select-none">
@@ -52,6 +52,11 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
                     <span class="typewriter-cursor-sub">|</span>
                   </p>
                 </div>
+
+                <!-- Click to continue hint -->
+                <div class="click-hint absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/50 text-sm font-mono tracking-wider opacity-0 transition-opacity duration-500" id="click-hint">
+                  <span class="animate-pulse">CLICK TO CONTINUE</span>
+                </div>
               </div>
 
               <!-- Robot Viewer (single instance) -->
@@ -63,18 +68,33 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
                 aria-label="Expand keyboard view"
                 id="expand-keyboard-btn"
               >
+                <!-- Expand icon (arrows pointing outward) - shown when collapsed -->
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  class="w-5 h-5"
+                  class="expand-icon w-5 h-5"
                 >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
                     d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
+                </svg>
+                <!-- Collapse icon (arrows pointing inward) - shown when expanded -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  class="collapse-icon w-5 h-5 hidden"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 14h6m0 0v6m0-6l-6 6M20 10h-6m0 0V4m0 6l6-6"></path>
                 </svg>
               </button>
             </div>
@@ -295,10 +315,16 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     width: 100vw;
     height: 100vh;
     z-index: 20;
-    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  /* Transitioning state - slight scale for smoother feel */
+  .robot-viewer-wrapper.transitioning {
+    transform: scale(0.98);
+    opacity: 0.95;
   }
 
   /* Contained state (after animation) */
@@ -339,6 +365,18 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 
   .robot-text-overlay.hidden {
     opacity: 0;
+  }
+
+  /* Fade out animation for intro overlay before transition */
+  .robot-text-overlay.fading-out {
+    opacity: 0;
+    transition: opacity 0.8s ease-out;
+    pointer-events: none;
+  }
+
+  /* Show click hint */
+  .click-hint.visible {
+    opacity: 1 !important;
   }
 
   .robot-viewer-wrapper.contained .robot-text-overlay {
@@ -855,28 +893,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Play animation normally
     const mainText = document.getElementById('typewriter-main');
     const subText = document.getElementById('typewriter-sub');
+    const clickHint = document.getElementById('click-hint');
+    let hasTransitioned = false;
 
-    if (mainText && subText) {
-      // Type main text first - bold single word for impact
-      typeWriter(mainText, 'CHRONICLES', 80, () => {
-        // After main text completes, type sub text
+    // Function to handle the full transition (can be called by click or auto)
+    function handleFullTransition() {
+      if (hasTransitioned) return;
+      hasTransitioned = true;
+
+      if (robotViewerWrapper && robotCtaText && blogHeader && blogContent) {
+        // Fade out CTA text with smooth animation
+        robotCtaText.classList.add('fading-out');
+
+        // After text fades, transition wrapper to contained state
         setTimeout(() => {
-          typeWriter(subText, 'UNFILTERED THOUGHTS', 40);
-        }, 400);
-      });
-    }
+          // Add transitioning class for smoother animation
+          robotViewerWrapper.classList.add('transitioning');
 
-    // Listen for robot animation complete event
-    document.addEventListener('blogRobotAnimationComplete', () => {
-
-      // Wait 3.5 seconds after animation completes to let user read the typewriter text
-      setTimeout(() => {
-        if (robotViewerWrapper && robotCtaText && blogHeader && blogContent) {
-          // Fade out CTA text
-          robotCtaText.classList.add('hidden');
-
-          // After text fades, transition wrapper to contained state
-          setTimeout(() => {
+          requestAnimationFrame(() => {
             // Transition robot wrapper from fullscreen to contained
             robotViewerWrapper.classList.add('contained');
 
@@ -891,6 +925,11 @@ document.addEventListener('DOMContentLoaded', () => {
               }, 800);
             }
 
+            // Remove transitioning class after animation completes
+            setTimeout(() => {
+              robotViewerWrapper.classList.remove('transitioning');
+            }, 1200);
+
             // Show blog content
             setTimeout(() => {
               blogContent.classList.remove('opacity-0', 'pointer-events-none');
@@ -899,8 +938,39 @@ document.addEventListener('DOMContentLoaded', () => {
               // Mark animation as seen after everything is visible
               markAnimationSeen('blog-intro');
             }, 1000);
-          }, 1000);
-        }
+          });
+        }, 600);
+      }
+    }
+
+    if (mainText && subText) {
+      // Type main text first - bold single word for impact
+      typeWriter(mainText, 'CHRONICLES', 80, () => {
+        // After main text completes, type sub text
+        setTimeout(() => {
+          typeWriter(subText, 'UNFILTERED THOUGHTS', 40, () => {
+            // Show click hint after both typewriters finish
+            setTimeout(() => {
+              if (clickHint && !hasTransitioned) {
+                clickHint.classList.add('visible');
+              }
+            }, 300);
+          });
+        }, 400);
+      });
+    }
+
+    // Click anywhere on intro overlay to skip
+    if (robotCtaText) {
+      robotCtaText.style.pointerEvents = 'auto';
+      robotCtaText.addEventListener('click', handleFullTransition);
+    }
+
+    // Listen for robot animation complete event for auto-transition
+    document.addEventListener('blogRobotAnimationComplete', () => {
+      // Wait 3.5 seconds after animation completes to let user read the typewriter text
+      setTimeout(() => {
+        handleFullTransition();
       }, 3500);
     });
   }
@@ -924,20 +994,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden';
         btn.setAttribute('aria-label', 'Collapse keyboard view');
 
-        const svg = btn.querySelector('svg');
-        if (svg) {
-          svg.style.transform = 'rotate(180deg)';
-        }
+        // Toggle icons - hide expand, show collapse
+        const expandIcon = btn.querySelector('.expand-icon');
+        const collapseIcon = btn.querySelector('.collapse-icon');
+        if (expandIcon) expandIcon.classList.add('hidden');
+        if (collapseIcon) collapseIcon.classList.remove('hidden');
       } else {
         wrapper.classList.remove('expanded');
         backdrop.classList.remove('backdrop-visible');
         document.body.style.overflow = '';
         btn.setAttribute('aria-label', 'Expand keyboard view');
 
-        const svg = btn.querySelector('svg');
-        if (svg) {
-          svg.style.transform = '';
-        }
+        // Toggle icons - show expand, hide collapse
+        const expandIcon = btn.querySelector('.expand-icon');
+        const collapseIcon = btn.querySelector('.collapse-icon');
+        if (expandIcon) expandIcon.classList.remove('hidden');
+        if (collapseIcon) collapseIcon.classList.add('hidden');
       }
     }
 

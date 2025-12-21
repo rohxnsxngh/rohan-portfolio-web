@@ -68,12 +68,16 @@ const sortedProjects = [...validProjects].sort((a, b) => {
             class="robot-showcase fullscreen-intro relative w-full h-64 sm:h-72 md:h-80 lg:h-96 rounded-xl overflow-hidden border border-accent/20 transition-all duration-300 hover:shadow-lg"
           >
             <!-- Intro text overlay (only visible during fullscreen) -->
-            <div class="intro-text-overlay absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
+            <div class="intro-text-overlay absolute inset-0 z-30 flex flex-col items-center justify-center cursor-pointer">
               <div class="text-center px-4 w-full">
                 <h2 class="hero-typewriter font-mono font-black text-white select-none">
                   <span id="typewriter-projects" class="typewriter-text"></span>
                   <span class="typewriter-cursor">|</span>
                 </h2>
+              </div>
+              <!-- Click to continue hint -->
+              <div class="click-hint absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/50 text-sm font-mono tracking-wider opacity-0 transition-opacity duration-500">
+                <span class="animate-pulse">CLICK TO CONTINUE</span>
               </div>
             </div>
 
@@ -82,18 +86,33 @@ const sortedProjects = [...validProjects].sort((a, b) => {
               class="expand-heavy-robot absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-20 hover:bg-primary/30 transition-colors opacity-0"
               aria-label="Expand robot view"
             >
+              <!-- Expand icon (arrows pointing outward) - shown when collapsed -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                class="w-5 h-5"
+                class="expand-icon w-5 h-5"
               >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
+              </svg>
+              <!-- Collapse icon (arrows pointing inward) - shown when expanded -->
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                class="collapse-icon w-5 h-5 hidden"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 14h6m0 0v6m0-6l-6 6M20 10h-6m0 0V4m0 6l6-6"></path>
               </svg>
             </button>
           </div>
@@ -618,7 +637,13 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
   /* Robot showcase hover effect */
   .robot-showcase {
-    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* Transitioning state - slight scale for smoother feel */
+  .robot-showcase.transitioning {
+    transform: scale(0.98);
+    opacity: 0.95;
   }
 
   .robot-showcase:hover .robot-info {
@@ -674,6 +699,18 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   /* Hide intro text when interactive */
   .robot-showcase.interactive .intro-text-overlay {
     opacity: 0 !important;
+    pointer-events: none;
+  }
+
+  /* Fade out animation for intro overlay before transition */
+  .intro-text-overlay.fading-out {
+    opacity: 0;
+    transition: opacity 0.8s ease-out;
+  }
+
+  /* Show click hint after delay */
+  .click-hint.visible {
+    opacity: 1 !important;
   }
 
   /* Show expand button when interactive */
@@ -831,8 +868,36 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     } else {
       // Play animation normally
       const projectsText = document.getElementById('typewriter-projects');
+      const clickHint = document.querySelector('.click-hint');
+      let hasTransitioned = false;
+
+      // Function to handle the transition (can be called by click or timeout)
+      function handleTransition() {
+        if (hasTransitioned) return;
+        hasTransitioned = true;
+
+        // First fade out the intro text overlay
+        if (introTextOverlay) {
+          introTextOverlay.classList.add('fading-out');
+        }
+
+        // Wait for fade-out, then transition container
+        setTimeout(() => {
+          transitionToContainer();
+          markAnimationSeen('projects-intro');
+        }, 600); // Wait for fade animation
+      }
+
+      // Start typewriter and show hint when complete
       if (projectsText) {
-        typeWriter(projectsText, 'WORKSHOP', 100);
+        typeWriter(projectsText, 'WORKSHOP', 100, () => {
+          // Show click hint after typewriter finishes
+          setTimeout(() => {
+            if (clickHint && !hasTransitioned) {
+              clickHint.classList.add('visible');
+            }
+          }, 300);
+        });
       }
 
       // Handle fullscreen intro transition
@@ -840,24 +905,38 @@ const sortedProjects = [...validProjects].sort((a, b) => {
         // Prevent scrolling during intro
         document.body.classList.add("robot-intro-playing");
 
-        // Listen for robot animation completion - increased delay for typewriter
+        // Click anywhere to skip
+        if (introTextOverlay) {
+          introTextOverlay.addEventListener('click', handleTransition);
+        }
+
+        // Auto-transition after delay (if user doesn't click)
         setTimeout(() => {
-          transitionToContainer();
-          // Mark animation as seen after it completes
-          markAnimationSeen('projects-intro');
-        }, 4000); // 4 seconds to allow typewriter to complete and be read
+          handleTransition();
+        }, 4500); // 4.5 seconds to allow typewriter + time to read
       }
     }
 
     function transitionToContainer() {
       if (!robotViewerWrapper) return;
 
-      // Remove fullscreen class
-      robotViewerWrapper.classList.remove("fullscreen-intro");
-      robotViewerWrapper.classList.add("interactive");
+      // Add transitioning class for smoother animation
+      robotViewerWrapper.classList.add("transitioning");
 
-      // Re-enable scrolling
-      document.body.classList.remove("robot-intro-playing");
+      // Brief delay for the transition effect to register
+      requestAnimationFrame(() => {
+        // Remove fullscreen class
+        robotViewerWrapper.classList.remove("fullscreen-intro");
+        robotViewerWrapper.classList.add("interactive");
+
+        // Re-enable scrolling
+        document.body.classList.remove("robot-intro-playing");
+
+        // Remove transitioning class after animation completes
+        setTimeout(() => {
+          robotViewerWrapper.classList.remove("transitioning");
+        }, 1200);
+      });
     }
 
     if (robotShowcase && expandButton && backdropOverlay) {
@@ -903,12 +982,11 @@ const sortedProjects = [...validProjects].sort((a, b) => {
           document.body.style.overflow = "hidden"; // Prevent scrolling
           if (expandButton) {
             expandButton.setAttribute("aria-label", "Collapse robot view");
-          }
-
-          // Update SVG in button
-          const svg = expandButton ? expandButton.querySelector("svg") : null;
-          if (svg) {
-            svg.style.transform = "rotate(180deg)";
+            // Toggle icons - hide expand, show collapse
+            const expandIcon = expandButton.querySelector(".expand-icon");
+            const collapseIcon = expandButton.querySelector(".collapse-icon");
+            if (expandIcon) expandIcon.classList.add("hidden");
+            if (collapseIcon) collapseIcon.classList.remove("hidden");
           }
 
           // Dispatch custom event for the robot viewer to adjust its controls
@@ -928,12 +1006,11 @@ const sortedProjects = [...validProjects].sort((a, b) => {
           document.body.style.overflow = ""; // Restore scrolling
           if (expandButton) {
             expandButton.setAttribute("aria-label", "Expand robot view");
-          }
-
-          // Reset SVG in button
-          const svg = expandButton ? expandButton.querySelector("svg") : null;
-          if (svg) {
-            svg.style.transform = "";
+            // Toggle icons - show expand, hide collapse
+            const expandIcon = expandButton.querySelector(".expand-icon");
+            const collapseIcon = expandButton.querySelector(".collapse-icon");
+            if (expandIcon) expandIcon.classList.remove("hidden");
+            if (collapseIcon) collapseIcon.classList.add("hidden");
           }
 
           // Dispatch custom event for the robot viewer to adjust its controls
