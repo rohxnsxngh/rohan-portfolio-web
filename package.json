@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/three": "^0.174.0",
-    "daisyui": "^4.7.3"
+    "daisyui": "^4.7.3",
+    "gltf-pipeline": "^4.3.0"
   }
 }

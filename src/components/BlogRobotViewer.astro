@@ -30,6 +30,7 @@ const {
 <script>
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
   const container = document.querySelector(".blog-robot-viewer-container");
@@ -66,21 +67,30 @@ const {
   let lightPosition: THREE.Vector3 = new THREE.Vector3();
   let isMouseOver = false;
 
+  // Throttle for mouse raycasting (~30fps = 33ms)
+  let lastRaycastTime = 0;
+  const RAYCAST_THROTTLE_MS = 33;
+  let pendingMousePosition: { x: number; y: number } | null = null;
+
   function initScene() {
     scene = new THREE.Scene();
     scene.background = new THREE.Color("#000000");
 
     camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.1, 1000);
+
+    // Disable antialiasing on large viewports (>1080p) for performance
+    const isLargeViewport = width > 1920 || height > 1080;
+
     renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !isLargeViewport, // Disable AA on large screens
       powerPreference: "high-performance",
-      precision: "highp",
+      precision: "mediump", // Medium precision is sufficient and faster
     });
 
     renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.BasicShadowMap; // Faster than PCFSoftShadowMap
 
     if (modelContainer) {
       const existingCanvas = modelContainer.querySelector("canvas");
@@ -159,7 +169,7 @@ const {
     camera.aspect = aspectRatio;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.render(scene, camera);
   }
 
@@ -177,10 +187,16 @@ const {
       loadingContainer.style.display = "none";
     }
 
-    // Load the keyboard.glb model
+    // Configure Draco loader for compressed models
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    dracoLoader.preload();
+
+    // Load the keyboard model with Draco support
     const loader = new GLTFLoader(manager);
+    loader.setDRACOLoader(dracoLoader);
     loader.load(
-      "/models/keyboard.glb",
+      "/models/keyboard_draco.glb", // Draco-compressed model
       (glb) => {
         keyboard = glb.scene;
 
@@ -267,6 +283,11 @@ const {
         controls.update();
       }
 
+      // Process any pending mouse position (from throttled updates)
+      if (pendingMousePosition && isMouseOver) {
+        updateLighting(pendingMousePosition.x, pendingMousePosition.y, true);
+      }
+
       renderer.render(scene, camera);
     }
 
@@ -276,9 +297,20 @@ const {
     const resizeObserver = new ResizeObserver(() => handleResize());
     if (container) resizeObserver.observe(container);
 
-    // Helper function to update lighting based on position
-    function updateLighting(clientX: number, clientY: number) {
+    // Helper function to update lighting based on position (with throttling)
+    function updateLighting(clientX: number, clientY: number, forceUpdate = false) {
       if (!mouseVector || !raycaster || !camera || !keyboard || !mousePointLight || !hemisphereLight || !modelContainer) return;
+
+      const now = performance.now();
+
+      // Throttle raycasting to ~30fps for performance
+      if (!forceUpdate && now - lastRaycastTime < RAYCAST_THROTTLE_MS) {
+        pendingMousePosition = { x: clientX, y: clientY };
+        return;
+      }
+
+      lastRaycastTime = now;
+      pendingMousePosition = null;
 
       const rect = modelContainer.getBoundingClientRect();
       const x = ((clientX - rect.left) / rect.width) * 2 - 1;

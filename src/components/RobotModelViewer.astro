@@ -41,6 +41,7 @@ const {
   // Import Three.js properly using ES modules
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
   // DOM elements
@@ -90,6 +91,11 @@ const {
   let mouseVector: THREE.Vector2 | null = null;
   let lightPosition: THREE.Vector3 = new THREE.Vector3();
 
+  // Throttle for mouse raycasting (~30fps = 33ms)
+  let lastRaycastTime = 0;
+  const RAYCAST_THROTTLE_MS = 33;
+  let pendingMousePosition: { x: number; y: number } | null = null;
+
   // Initialize scene
   function initScene() {
     // Convert hex color to THREE.js color
@@ -100,16 +106,20 @@ const {
     scene.background = bgColor;
 
     camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+
+    // Disable antialiasing on large viewports (>1080p) for performance
+    const isLargeViewport = width > 1920 || height > 1080;
+
     renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !isLargeViewport, // Disable AA on large screens
       powerPreference: "high-performance",
-      precision: "highp",
+      precision: "mediump", // Medium precision is sufficient and faster
     });
 
     renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.BasicShadowMap; // Faster than PCFSoftShadowMap
 
     if (modelContainer) {
       // Remove any existing canvas
@@ -242,7 +252,7 @@ const {
 
     // Update renderer
     renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // Render scene
     renderer.render(scene, camera);
@@ -265,10 +275,16 @@ const {
       loadingContainer.style.display = "none";
     }
 
-    // Load robot model
+    // Configure Draco loader for compressed models
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    dracoLoader.preload();
+
+    // Load robot model with Draco support
     const loader = new GLTFLoader(manager);
+    loader.setDRACOLoader(dracoLoader);
     loader.load(
-      "/models/robot_playground.glb",
+      "/models/robot_playground_draco.glb", // Draco-compressed model
       async (glb) => {
         _robot = glb.scene;
 
@@ -340,6 +356,13 @@ const {
         controls.update();
       }
 
+      // Process any pending mouse position (from throttled updates)
+      if (pendingMousePosition) {
+        performRaycastUpdate(pendingMousePosition.x, pendingMousePosition.y);
+        pendingMousePosition = null;
+        lastRaycastTime = performance.now();
+      }
+
       // Render
       renderer.render(scene, camera);
     }
@@ -359,69 +382,85 @@ const {
       resizeObserver.observe(container);
     }
 
-    // ===== INVISIBLE LIGHTING SYSTEM WITH RAYCASTING =====
-    // Listen for mouse movement events from Home.astro
+    // ===== INVISIBLE LIGHTING SYSTEM WITH RAYCASTING (THROTTLED) =====
+    // Helper function to perform raycasting update
+    function performRaycastUpdate(x: number, y: number) {
+      if (!mousePointLight || !hemisphereLight || !raycaster || !mouseVector || !camera || !_robot) return;
+
+      // Convert to normalized device coordinates (-1 to +1)
+      mouseVector.x = (x * 2) - 1;
+      mouseVector.y = -(y * 2) + 1; // Inverted for WebGL
+
+      // Update raycaster with mouse position
+      raycaster.setFromCamera(mouseVector, camera);
+
+      // Check if ray intersects with robot
+      const intersects = raycaster.intersectObject(_robot, true);
+
+      let distance = 4.5; // Default distance
+      let intensityMultiplier = 1.0; // Normal intensity
+      const robotCenter = new THREE.Vector3(0, -0.4, 0); // Robot's center position
+
+      if (intersects.length > 0) {
+        // Mouse is over robot - position light between camera and intersection point
+        const intersectPoint = intersects[0].point;
+        const distanceToIntersect = camera.position.distanceTo(intersectPoint);
+
+        // Position light much further from robot (30% of the way from camera)
+        distance = distanceToIntersect * 0.3;
+
+        // Check distance from intersection point to robot center
+        const distanceFromCenter = intersectPoint.distanceTo(robotCenter);
+
+        // If within 0.6 units of center, boost intensity significantly
+        if (distanceFromCenter < 0.6) {
+          intensityMultiplier = 2.0; // Double intensity over center
+        } else if (distanceFromCenter < 1.0) {
+          // Gradual falloff from center
+          intensityMultiplier = 1.0 + (1.0 - (distanceFromCenter - 0.6) / 0.4);
+        }
+      }
+
+      // Position light at calculated distance along ray
+      const targetPosition = new THREE.Vector3();
+      targetPosition.copy(raycaster.ray.direction);
+      targetPosition.multiplyScalar(distance);
+      targetPosition.add(raycaster.ray.origin);
+
+      // Smoothly interpolate light position
+      lightPosition.lerp(targetPosition, 0.25);
+      mousePointLight.position.copy(lightPosition);
+
+      // Determine target intensity based on center proximity
+      const baseIntensity = 18.0;
+      const targetIntensity = baseIntensity * intensityMultiplier;
+
+      // Increase point light intensity - PRIMARY LIGHT SOURCE
+      if (mousePointLight.intensity < targetIntensity) {
+        mousePointLight.intensity += 0.8;
+      }
+
+      // Increase hemisphere light for better ambient distribution
+      if (hemisphereLight.intensity < 0.8) {
+        hemisphereLight.intensity += 0.05;
+      }
+    }
+
+    // Listen for mouse movement events from Home.astro (with throttling)
     document.addEventListener('robotMouseMove', (e: any) => {
       if (e.detail && mousePointLight && hemisphereLight && raycaster && mouseVector && camera && _robot) {
         const { x, y } = e.detail; // Normalized 0-1 coordinates
+        const now = performance.now();
 
-        // Convert to normalized device coordinates (-1 to +1)
-        mouseVector.x = (x * 2) - 1;
-        mouseVector.y = -(y * 2) + 1; // Inverted for WebGL
-
-        // Update raycaster with mouse position
-        raycaster.setFromCamera(mouseVector, camera);
-
-        // Check if ray intersects with robot
-        const intersects = raycaster.intersectObject(_robot, true);
-
-        let distance = 4.5; // Default distance
-        let intensityMultiplier = 1.0; // Normal intensity
-        const robotCenter = new THREE.Vector3(0, -0.4, 0); // Robot's center position
-
-        if (intersects.length > 0) {
-          // Mouse is over robot - position light between camera and intersection point
-          const intersectPoint = intersects[0].point;
-          const distanceToIntersect = camera.position.distanceTo(intersectPoint);
-
-          // Position light much further from robot (30% of the way from camera)
-          distance = distanceToIntersect * 0.3;
-
-          // Check distance from intersection point to robot center
-          const distanceFromCenter = intersectPoint.distanceTo(robotCenter);
-
-          // If within 0.6 units of center, boost intensity significantly
-          if (distanceFromCenter < 0.6) {
-            intensityMultiplier = 2.0; // Double intensity over center
-          } else if (distanceFromCenter < 1.0) {
-            // Gradual falloff from center
-            intensityMultiplier = 1.0 + (1.0 - (distanceFromCenter - 0.6) / 0.4);
-          }
+        // Throttle raycasting to ~30fps for performance
+        if (now - lastRaycastTime < RAYCAST_THROTTLE_MS) {
+          pendingMousePosition = { x, y };
+          return;
         }
 
-        // Position light at calculated distance along ray
-        const targetPosition = new THREE.Vector3();
-        targetPosition.copy(raycaster.ray.direction);
-        targetPosition.multiplyScalar(distance);
-        targetPosition.add(raycaster.ray.origin);
-
-        // Smoothly interpolate light position
-        lightPosition.lerp(targetPosition, 0.25);
-        mousePointLight.position.copy(lightPosition);
-
-        // Determine target intensity based on center proximity
-        const baseIntensity = 18.0;
-        const targetIntensity = baseIntensity * intensityMultiplier;
-
-        // Increase point light intensity - PRIMARY LIGHT SOURCE
-        if (mousePointLight.intensity < targetIntensity) {
-          mousePointLight.intensity += 0.8;
-        }
-
-        // Increase hemisphere light for better ambient distribution
-        if (hemisphereLight.intensity < 0.8) {
-          hemisphereLight.intensity += 0.05;
-        }
+        lastRaycastTime = now;
+        pendingMousePosition = null;
+        performRaycastUpdate(x, y);
       }
     });
 
