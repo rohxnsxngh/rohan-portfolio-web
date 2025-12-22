@@ -12,225 +12,235 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 ---
 
 <Layout>
-  <div class="min-h-screen flex flex-col bg-secondary">
-    <div class="flex-grow">
-      <Navbar>
-        <div class="relative overflow-hidden">
-          <!-- Tech grid overlay -->
-          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
-
-          <div class="relative z-10 sm:px-20 px-6 py-12">
-            <!-- BOLD HEADER - Hidden Initially -->
-            <div class="header-section mb-12 opacity-0" id="blog-header">
-              <h1 class="blog-title font-mono font-black tracking-tighter leading-none select-none">
-                <span class="char char-1">T</span><span class="char char-2">E</span><span class="char char-3">C</span><span class="char char-4">H</span><span class="char char-5">N</span><span class="char char-6">I</span><span class="char char-7">C</span><span class="char char-8">A</span><span class="char char-9">L</span>
-                <br>
-                <span class="char char-10">C</span><span class="char char-11">H</span><span class="char char-12">R</span><span class="char char-13">O</span><span class="char char-14">N</span><span class="char char-15">I</span><span class="char char-16">C</span><span class="char char-17">L</span><span class="char char-18">E</span><span class="char char-19">S</span>
-              </h1>
-              <div class="accent-line mt-6"></div>
-            </div>
-
-            <!-- Robot Viewer Container - Transitions from fullscreen to contained -->
-            <div class="robot-viewer-wrapper" id="robot-viewer-wrapper">
-              <!-- Content overlay (shown during intro) -->
-              <div class="robot-text-overlay cursor-pointer" id="robot-cta-text">
-                <!-- Top text - massive hero style with typewriter effect -->
-                <div class="top-statement text-center">
-                  <h2 class="hero-typewriter font-mono font-black text-white select-none">
-                    <span id="typewriter-main" class="typewriter-text"></span>
-                    <span class="typewriter-cursor">|</span>
-                  </h2>
-                </div>
-
-                <!-- Spacer for visual balance -->
-                <div class="flex-grow max-h-16"></div>
-
-                <!-- Bottom text - subtle sub-statement with typewriter effect -->
-                <div class="bottom-statement text-center">
-                  <p class="statement-sub font-mono text-primary/50 tracking-widest uppercase">
-                    <span id="typewriter-sub" class="typewriter-text"></span>
-                    <span class="typewriter-cursor-sub">|</span>
-                  </p>
-                </div>
-
-                <!-- Click to continue hint -->
-                <div class="click-hint absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/50 text-sm font-mono tracking-wider opacity-0 transition-opacity duration-500" id="click-hint">
-                  <span class="animate-pulse">CLICK TO CONTINUE</span>
-                </div>
-              </div>
-
-              <!-- Robot Viewer (single instance) -->
-              <BlogRobotViewer className="robot-viewer" />
-
-              <!-- Expand button (shown after transition) -->
-              <button
-                class="expand-keyboard-button absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-20 hover:bg-primary/30 transition-colors opacity-0 pointer-events-none"
-                aria-label="Expand keyboard view"
-                id="expand-keyboard-btn"
-              >
-                <!-- Expand icon (arrows pointing outward) - shown when collapsed -->
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  class="expand-icon w-5 h-5"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
-                </svg>
-                <!-- Collapse icon (arrows pointing inward) - shown when expanded -->
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  class="collapse-icon w-5 h-5 hidden"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 14h6m0 0v6m0-6l-6 6M20 10h-6m0 0V4m0 6l6-6"></path>
-                </svg>
-              </button>
-            </div>
-
-      <!-- Blog Content - Hidden Initially -->
-      <div id="blog-content" class="opacity-0 pointer-events-none transition-opacity duration-1000">
-      <!-- Search Bar -->
-      <div class="mb-8 relative">
-        <div class="relative">
-          <input
-            type="text"
-            id="searchInput"
-            placeholder="Search articles..."
-            class="w-full p-3 pl-10 rounded-lg border border-accent/30 bg-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
-          />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+  <Navbar>
+    <!-- HERO SECTION - Full page keyboard background like homepage -->
+    <div
+      class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
+      id="hero-section"
+    >
+      <!-- FULL PAGE KEYBOARD BACKGROUND -->
+      <div class="robot-background-container absolute inset-0 z-0" id="robot-container">
+        <div class="robot-frame-fullscreen w-full h-full">
+          <div class="w-full h-full robot-viewer" id="robot-viewer">
+            <BlogRobotViewer />
+          </div>
         </div>
-        <div id="searchStatus" class="text-sm mt-2 text-primary/60 hidden"></div>
+
+        <!-- Dark overlay to dim keyboard heavily by default -->
+        <div class="robot-overlay absolute inset-0 bg-black/[0.98] pointer-events-none transition-all duration-500" id="robot-dim"></div>
       </div>
 
-      <!-- Table of Contents - Quick Jump -->
-      <div class="toc-container mb-10 relative overflow-hidden">
-        <div class="toc-header flex items-center gap-3 mb-4">
-          <div class="toc-icon">
-            <svg class="w-5 h-5 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+      <!-- Tech grid overlay for texture -->
+      <div class="absolute inset-0 tech-grid opacity-10 z-[5] pointer-events-none"></div>
+
+      <!-- Main content - layered on top -->
+      <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
+        <div class="max-w-7xl mx-auto">
+          <!-- Small intro label -->
+          <div class="label-intro mb-6 sm:mb-8">
+            <span class="text-primary/50 font-mono text-xs sm:text-sm tracking-[0.3em] uppercase">
+              Thoughts • Ideas • Insights
+            </span>
+          </div>
+
+          <!-- MASSIVE title display -->
+          <div class="name-display mb-6 sm:mb-10">
+            <h1 class="hero-name font-mono font-black tracking-tighter leading-none select-none">
+              <div class="name-line">
+                <span class="char char-1">C</span><span class="char char-2">H</span><span class="char char-3">R</span><span class="char char-4">O</span><span class="char char-5">N</span><span class="char char-6">I</span><span class="char char-7">C</span><span class="char char-8">L</span><span class="char char-9">E</span><span class="char char-10">S</span>
+              </div>
+            </h1>
+          </div>
+
+          <!-- Bold statement -->
+          <div class="statement mb-8 sm:mb-12 max-w-4xl">
+            <p class="statement-text text-primary/60 font-mono tracking-wide leading-relaxed">
+              <span class="highlight">Unfiltered thoughts</span> on tech and life
+            </p>
+          </div>
+
+          <!-- CTA Section -->
+          <div class="cta-section flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center pointer-events-auto">
+            <a
+              href="#blog-content"
+              class="cta-primary group relative inline-flex items-center justify-center px-7 py-3 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+            >
+              <span class="relative z-10">READ ARTICLES</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 ml-3 group-hover:translate-y-1 transition-transform relative z-10"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2.5"
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+              <div class="cta-shine"></div>
+            </a>
+
+            <a
+              href="/"
+              class="cta-secondary group inline-flex items-center text-primary/70 hover:text-primary font-mono text-sm sm:text-base tracking-wider transition-all duration-300"
+            >
+              Back to home
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 ml-2 group-hover:-translate-x-1 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+        <div class="scroll-content flex flex-col items-center gap-2">
+          <span class="text-primary/40 font-mono text-xs tracking-widest uppercase">Scroll</span>
+          <div class="scroll-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </div>
-          <span class="text-sm font-mono text-primary/50 uppercase tracking-widest">Quick Jump</span>
-          <div class="flex-grow h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
         </div>
-        <div class="toc-list flex flex-wrap gap-2" id="tocList">
-          {allBlogArticles.map((article, index) => {
-            const isComplete = article.data.status === "Complete";
+      </div>
+    </div>
+
+    <!-- BLOG CONTENT SECTION -->
+    <div class="relative bg-secondary" id="blog-content">
+      <!-- Tech grid overlay -->
+      <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+      <div class="relative z-10 sm:px-20 px-6 py-16">
+        <!-- Search Bar -->
+        <div class="mb-8 relative">
+          <div class="relative">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search articles..."
+              class="w-full p-3 pl-10 rounded-lg border border-accent/30 bg-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <div id="searchStatus" class="text-sm mt-2 text-primary/60 hidden"></div>
+        </div>
+
+        <!-- Table of Contents - Quick Jump -->
+        <div class="toc-container mb-10 relative overflow-hidden">
+          <div class="toc-header flex items-center gap-3 mb-4">
+            <div class="toc-icon">
+              <svg class="w-5 h-5 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            </div>
+            <span class="text-sm font-mono text-primary/50 uppercase tracking-widest">Quick Jump</span>
+            <div class="flex-grow h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
+          </div>
+          <div class="toc-list flex flex-wrap gap-2" id="tocList">
+            {allBlogArticles.map((article, index) => {
+              const isComplete = article.data.status === "Complete";
+              return (
+                <button
+                  class="toc-item group"
+                  data-slug={article.slug}
+                  data-index={index}
+                >
+                  <span class="toc-number font-mono text-xs text-primary/30 mr-1.5">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="toc-title">{article.data.title}</span>
+                  {isComplete && <span class="toc-status-dot"></span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
+          {allBlogArticles.map((article) => {
+            const tags: string[] = article.data.tags || [];
+            const defaultStatus = "Coming Soon";
+            const actualStatus = article.data.status || defaultStatus;
+            const isComplete = actualStatus === "Complete";
+            const statusDisplay = isComplete ? "Complete" : defaultStatus;
+            const readingTime = calculateReadingTime(article.body);
+
             return (
-              <button
-                class="toc-item group"
-                data-slug={article.slug}
-                data-index={index}
-              >
-                <span class="toc-number font-mono text-xs text-primary/30 mr-1.5">{String(index + 1).padStart(2, '0')}</span>
-                <span class="toc-title">{article.data.title}</span>
-                {isComplete && <span class="toc-status-dot"></span>}
-              </button>
+              <a href={`/blog/${article.slug}`} class="group h-full relative blog-card">
+                <!-- Corner accent marks -->
+                <div class="card-corner-accent card-corner-tl"></div>
+                <div class="card-corner-accent card-corner-tr"></div>
+                <div class="card-corner-accent card-corner-bl"></div>
+                <div class="card-corner-accent card-corner-br"></div>
+
+                <!-- Animated gradient border -->
+                <div class="card-gradient-border"></div>
+
+                <!-- Grid overlay -->
+                <div class="card-grid-overlay"></div>
+
+                <!-- Glow overlay that follows mouse -->
+                <div class="glow-overlay"></div>
+
+                <div class="card-content p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col relative z-10">
+                  <div class="flex flex-col h-full">
+                    <div class="flex justify-between items-start mb-3">
+                      <h2 class="text-xl font-bold group-hover:text-primary/90 transition-colors">{article.data.title}</h2>
+                      <span class={`px-2 py-0.5 ml-2 rounded-full text-xs whitespace-nowrap flex-shrink-0 ${isComplete ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'}`}>
+                        {statusDisplay}
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm text-primary/60 mb-4">
+                      <span>{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      <span class="text-primary/30">•</span>
+                      <span class="flex items-center gap-1">
+                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {formatReadingTime(readingTime)}
+                      </span>
+                    </div>
+                    <p class="text-primary/80 flex-grow line-clamp-3">{article.data.description}</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                      {tags.map(tag => (
+                        <span class="px-3 py-1 text-xs rounded-full bg-accent/10 text-primary/70">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </a>
             );
           })}
         </div>
       </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
-        {allBlogArticles.map((article) => {
-          const tags: string[] = article.data.tags || [];
-
-          // Set a default status if undefined
-          const defaultStatus = "Coming Soon";
-          const actualStatus = article.data.status || defaultStatus;
-
-          // Determine if the article is complete or not
-          const isComplete = actualStatus === "Complete";
-          const statusDisplay = isComplete ? "Complete" : defaultStatus;
-
-          // Calculate reading time
-          const readingTime = calculateReadingTime(article.body);
-
-          return (
-            <a href={`/blog/${article.slug}`} class="group h-full relative blog-card">
-              <!-- Corner accent marks -->
-              <div class="card-corner-accent card-corner-tl"></div>
-              <div class="card-corner-accent card-corner-tr"></div>
-              <div class="card-corner-accent card-corner-bl"></div>
-              <div class="card-corner-accent card-corner-br"></div>
-
-              <!-- Animated gradient border -->
-              <div class="card-gradient-border"></div>
-
-              <!-- Grid overlay -->
-              <div class="card-grid-overlay"></div>
-
-              <!-- Glow overlay that follows mouse -->
-              <div class="glow-overlay"></div>
-
-              <div class="card-content p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col relative z-10">
-                <div class="flex flex-col h-full">
-                  <div class="flex justify-between items-start mb-3">
-                    <h2 class="text-xl font-bold group-hover:text-primary/90 transition-colors">{article.data.title}</h2>
-                    <span class={`px-2 py-0.5 ml-2 rounded-full text-xs whitespace-nowrap flex-shrink-0 ${isComplete ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'}`}>
-                      {statusDisplay}
-                    </span>
-                  </div>
-                  <div class="flex items-center gap-3 text-sm text-primary/60 mb-4">
-                    <span>{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-                    <span class="text-primary/30">•</span>
-                    <span class="flex items-center gap-1">
-                      <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {formatReadingTime(readingTime)}
-                    </span>
-                  </div>
-                  <p class="text-primary/80 flex-grow line-clamp-3">{article.data.description}</p>
-                  <div class="mt-4 flex flex-wrap gap-2">
-                    {tags.map(tag => (
-                      <span class="px-3 py-1 text-xs rounded-full bg-accent/10 text-primary/70">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-      </div> <!-- End blog-content -->
-          </div>
-        </div>
-      </Navbar>
     </div>
-    <Footer />
-  </div>
+  </Navbar>
+  <Footer />
 </Layout>
 
-<!-- Backdrop overlay for expanded view -->
-<div
-  id="keyboard-backdrop-overlay"
-  class="fixed inset-0 bg-black/50 backdrop-blur-md z-5 opacity-0 pointer-events-none transition-opacity duration-300"
->
-</div>
-
 <style>
+  /* ===== HERO SECTION STYLES (matching homepage) ===== */
+
   /* Tech grid background */
   .tech-grid {
     background-image:
@@ -245,38 +255,45 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     100% { background-position: 100px 100px; }
   }
 
-  /* BOLD BLOG TITLE */
-  .blog-title {
-    font-size: clamp(2.5rem, 10vw, 10rem);
+  /* ===== MASSIVE TYPOGRAPHY ===== */
+  .hero-name {
+    font-size: clamp(2rem, 9vw, 14rem);
     line-height: 0.85;
-    letter-spacing: -0.08em;
+    letter-spacing: -0.05em;
     color: #ffffff;
     text-transform: uppercase;
-    text-shadow:
-      0 3px 25px rgba(0, 0, 0, 0.9),
-      0 6px 45px rgba(0, 0, 0, 0.7);
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
   }
 
-  /* Animate title when shown */
-  #blog-header {
-    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  .hero-name .name-line {
+    display: block;
+    position: relative;
   }
 
-  @keyframes titleReveal {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Character animations - don't animate initially */
-  .blog-title .char {
+  /* Individual character animations */
+  .hero-name .char {
     display: inline-block;
+    opacity: 0;
+    transform: translateY(100px) scale(0.8);
+    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 0 40px rgba(255, 255, 255, 0.1),
+      0 10px 30px rgba(0, 0, 0, 0.5);
   }
+
+  /* Staggered animation delays */
+  .char-1 { animation-delay: 0.05s; }
+  .char-2 { animation-delay: 0.10s; }
+  .char-3 { animation-delay: 0.15s; }
+  .char-4 { animation-delay: 0.20s; }
+  .char-5 { animation-delay: 0.25s; }
+  .char-6 { animation-delay: 0.30s; }
+  .char-7 { animation-delay: 0.35s; }
+  .char-8 { animation-delay: 0.40s; }
+  .char-9 { animation-delay: 0.45s; }
+  .char-10 { animation-delay: 0.50s; }
 
   @keyframes charReveal {
     0% {
@@ -292,150 +309,49 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     }
   }
 
-  /* Accent line */
-  .accent-line {
-    height: 3px;
-    width: 0;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 1s;
+  /* Label intro animation */
+  .label-intro {
+    opacity: 0;
+    animation: fadeInDown 0.8s ease-out forwards;
   }
 
-  @keyframes lineExpand {
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
     to {
-      width: 200px;
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
-  /* Robot Viewer Wrapper - Transitions from fullscreen to contained */
-  .robot-viewer-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 20;
-    transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Statement text */
+  .statement {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.6s;
   }
 
-  /* Transitioning state - slight scale for smoother feel */
-  .robot-viewer-wrapper.transitioning {
-    transform: scale(0.98);
-    opacity: 0.95;
+  .statement-text {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: 1.6;
   }
 
-  /* Contained state (after animation) */
-  .robot-viewer-wrapper.contained {
+  .highlight {
+    color: #ffffff;
+    font-weight: 700;
     position: relative;
-    width: 100%;
-    height: 24rem; /* h-96 */
-    margin-bottom: 3rem;
-    z-index: 10;
   }
 
-  @media (min-width: 768px) {
-    .robot-viewer-wrapper.contained {
-      height: 20rem; /* md:h-80 */
-    }
-  }
-
-  @media (min-width: 640px) {
-    .robot-viewer-wrapper.contained {
-      height: 18rem; /* sm:h-72 */
-    }
-  }
-
-  /* Text overlay during intro */
-  .robot-text-overlay {
+  .highlight::after {
+    content: '';
     position: absolute;
-    inset: 0;
-    z-index: 30;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    opacity: 1;
-    transition: opacity 1s ease-out;
-    pointer-events: none;
-  }
-
-  .robot-text-overlay.hidden {
-    opacity: 0;
-  }
-
-  /* Fade out animation for intro overlay before transition */
-  .robot-text-overlay.fading-out {
-    opacity: 0;
-    transition: opacity 0.8s ease-out;
-    pointer-events: none;
-  }
-
-  /* Show click hint */
-  .click-hint.visible {
-    opacity: 1 !important;
-  }
-
-  .robot-viewer-wrapper.contained .robot-text-overlay {
-    display: none;
-  }
-
-  /* Expanded state */
-  .robot-viewer-wrapper.expanded {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 90vw !important;
-    height: 90vh !important;
-    max-width: 1200px !important;
-    max-height: 800px !important;
-    z-index: 60 !important;
-    border-radius: 12px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(var(--color-primary, 255, 255, 255), 0.4);
-  }
-
-  /* Show expand button after transition to contained state */
-  .robot-viewer-wrapper.contained .expand-keyboard-button {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* Backdrop visible class */
-  .backdrop-visible {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
-  /* Hero Typewriter - Massive overlapping style like home page */
-  .hero-typewriter {
-    font-size: clamp(3rem, 14vw, 16rem);
-    line-height: 0.85;
-    letter-spacing: -0.08em;
-    text-transform: uppercase;
-    font-weight: 900;
-    text-align: center;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-    text-shadow:
-      0 0 40px rgba(255, 255, 255, 0.1),
-      0 10px 30px rgba(0, 0, 0, 0.5),
-      0 3px 25px rgba(0, 0, 0, 0.9),
-      0 6px 45px rgba(0, 0, 0, 0.7);
-  }
-
-  .statement-sub {
-    font-size: clamp(0.7rem, 1.5vw, 1rem);
-    opacity: 1;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-    letter-spacing: 0.2em;
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
   }
 
   @keyframes fadeInUp {
@@ -449,15 +365,117 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     }
   }
 
-  /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
+  /* CTA Section */
+  .cta-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.8s;
+  }
+
+  /* Primary CTA Button */
+  .cta-primary {
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .cta-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.7s;
+  }
+
+  .cta-primary:hover .cta-shine {
+    left: 100%;
+  }
+
+  /* Secondary CTA */
+  .cta-secondary {
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.2);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+  }
+
+  .cta-secondary:hover {
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* ===== KEYBOARD AS FULL BACKGROUND ===== */
+
+  .robot-background-container {
+    opacity: 1;
+  }
+
+  .robot-frame-fullscreen {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Overlay - dims the keyboard heavily, lightens on hover */
+  .robot-overlay {
+    z-index: 1;
+    transition: background 0.6s ease-out;
+  }
+
+  /* Hero content with slower fade transitions */
+  .hero-content {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+  }
+
+  /* Typography with enhanced text shadow for readability */
+  .hero-name {
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7),
+      0 0 80px rgba(0, 0, 0, 0.5);
+  }
+
+  .statement-text,
+  .label-intro span {
+    text-shadow:
+      0 2px 15px rgba(0, 0, 0, 0.95),
+      0 4px 25px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Mouse interaction states */
+  .hero-section.mouse-active .hero-content {
+    opacity: 0.05;
+    transition: opacity 0.6s ease-out;
+  }
+
+  .hero-section.mouse-active .robot-overlay {
+    background: rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* When mouse becomes inactive, fade back slowly */
+  .hero-section:not(.mouse-active) .hero-content {
+    transition: opacity 2s ease-in-out;
+  }
+
+  .hero-section:not(.mouse-active) .robot-overlay {
+    transition: background 2.5s ease-in-out;
+  }
+
+  /* Prevent layout shift */
+  .hero-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* ===== BLOG CARDS ===== */
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  
-  /* Border animation styles */
+
   .blog-card {
     transition: transform 0.3s ease-out;
     overflow: hidden;
@@ -601,7 +619,7 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     opacity: 1;
   }
 
-  /* Enhanced card content hover with cyan/magenta glow */
+  /* Enhanced card content hover */
   .card-content {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
   }
@@ -615,43 +633,8 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       0 0 80px rgba(255, 0, 255, 0.1);
   }
 
-  /* Responsive corner accents for smaller screens */
-  @media (max-width: 640px) {
-    .card-corner-accent {
-      width: 15px;
-      height: 15px;
-    }
+  /* ===== TABLE OF CONTENTS ===== */
 
-    .blog-card:hover .card-corner-accent {
-      width: 20px;
-      height: 20px;
-    }
-  }
-
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .blog-title {
-      font-size: clamp(2rem, 9vw, 8rem);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .blog-title {
-      font-size: clamp(1.8rem, 10vw, 7rem);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .blog-title {
-      font-size: clamp(1.5rem, 12vw, 5rem);
-    }
-
-    .statement-sub {
-      font-size: clamp(0.6rem, 2.5vw, 0.8rem);
-    }
-  }
-
-  /* Table of Contents Styles */
   .toc-container {
     padding: 1.25rem;
     border-radius: 12px;
@@ -736,7 +719,6 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     }
   }
 
-  /* Active state when scrolled to that article */
   .toc-item.active {
     background: rgba(0, 255, 255, 0.1);
     border-color: rgba(0, 255, 255, 0.4);
@@ -745,18 +727,6 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 
   .toc-item.active .toc-number {
     color: rgba(0, 255, 255, 0.9);
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 640px) {
-    .toc-container {
-      padding: 1rem;
-    }
-
-    .toc-item {
-      padding: 0.4rem 0.75rem;
-      font-size: 0.75rem;
-    }
   }
 
   /* Highlight animation when TOC item is clicked */
@@ -786,411 +756,388 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     border-color: rgba(0, 255, 255, 0.5) !important;
   }
 
-  /* Typewriter cursor animation */
-  .typewriter-cursor {
-    display: inline-block;
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
-    font-weight: 100;
-    -webkit-text-stroke: 0;
+  /* ===== SCROLL INDICATOR ===== */
+  .scroll-indicator {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards, floatUpDown 2s ease-in-out infinite;
+    animation-delay: 1.2s, 1.2s;
   }
 
-  .typewriter-cursor-sub {
-    display: inline-block;
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
+  .scroll-arrow {
+    animation: bounceDown 1.5s ease-in-out infinite;
   }
 
-  @keyframes blink {
-    0%, 50% {
-      opacity: 1;
+  @keyframes bounceDown {
+    0%, 100% {
+      transform: translateY(0);
     }
-    51%, 100% {
-      opacity: 0;
+    50% {
+      transform: translateY(8px);
     }
   }
 
-  .typewriter-text {
-    display: inline-block;
-    white-space: pre-wrap;
+  @keyframes floatUpDown {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-5px);
+    }
   }
 
-  /* Responsive hero typewriter */
+  /* Hide scroll indicator when scrolled or mouse active */
+  .hero-section.mouse-active .scroll-indicator {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-out;
+  }
+
+  /* ===== RESPONSIVE DESIGN ===== */
+
   @media (max-width: 1024px) {
-    .hero-typewriter {
-      font-size: clamp(2.5rem, 12vw, 12rem);
+    .hero-name {
+      font-size: clamp(1.8rem, 8vw, 10rem);
+      letter-spacing: -0.04em;
     }
   }
 
   @media (max-width: 768px) {
-    .hero-typewriter {
-      font-size: clamp(2rem, 14vw, 10rem);
+    .hero-name {
+      font-size: clamp(1.5rem, 7.5vw, 8rem);
+      letter-spacing: -0.03em;
+    }
+
+    .statement-text {
+      font-size: clamp(0.9rem, 3vw, 1.25rem);
+    }
+
+    .hero-section.mouse-active .hero-content {
+      opacity: 0.08;
     }
   }
 
   @media (max-width: 640px) {
-    .hero-typewriter {
-      font-size: clamp(1.8rem, 16vw, 8rem);
-      letter-spacing: -0.06em;
+    .hero-name {
+      font-size: clamp(1.2rem, 9vw, 5rem);
+      letter-spacing: -0.02em;
+    }
+
+    .label-intro span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+    }
+
+    .cta-primary {
+      width: 100%;
+    }
+
+    .robot-overlay {
+      background: rgba(0, 0, 0, 0.96) !important;
+    }
+
+    .hero-section.mouse-active .hero-content {
+      opacity: 0.05;
+    }
+
+    .hero-section.mouse-active .robot-overlay {
+      background: rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .card-corner-accent {
+      width: 15px;
+      height: 15px;
+    }
+
+    .blog-card:hover .card-corner-accent {
+      width: 20px;
+      height: 20px;
+    }
+
+    .toc-container {
+      padding: 1rem;
+    }
+
+    .toc-item {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
     }
   }
 </style>
 
 <script>
-import { hasSeenAnimation, markAnimationSeen } from '../scripts/animationState';
+  document.addEventListener("DOMContentLoaded", () => {
+    const heroSection = document.getElementById("hero-section");
+    const robotContainer = document.getElementById("robot-container");
 
-// Typewriter effect function
-function typeWriter(element: HTMLElement, text: string, speed: number = 80, callback?: () => void) {
-  let i = 0;
-  element.textContent = '';
+    let mouseActive = false;
+    let mouseTimeout: number | null = null;
 
-  function type() {
-    if (i < text.length) {
-      element.textContent += text.charAt(i);
-      i++;
-      setTimeout(type, speed);
-    } else if (callback) {
-      callback();
-    }
-  }
+    // ===== DUAL HOVER/TOUCH ANIMATION =====
+    const handleInteraction = (clientX: number, clientY: number) => {
+      const rect = heroSection!.getBoundingClientRect();
 
-  type();
-}
+      const mouseX = (clientX - rect.left) / rect.width;
+      const mouseY = (clientY - rect.top) / rect.height;
 
-// Intro animation and transition
-document.addEventListener('DOMContentLoaded', () => {
-  const robotViewerWrapper = document.getElementById('robot-viewer-wrapper');
-  const robotCtaText = document.getElementById('robot-cta-text');
-  const blogHeader = document.getElementById('blog-header');
-  const blogContent = document.getElementById('blog-content');
-
-  // Check if user has already seen this animation
-  const hasSeenIntro = hasSeenAnimation('blog-intro');
-
-  if (hasSeenIntro) {
-    // Skip animation - go directly to final state
-    if (robotViewerWrapper) {
-      robotViewerWrapper.classList.add('contained');
-    }
-    if (robotCtaText) {
-      robotCtaText.style.display = 'none';
-    }
-    if (blogHeader) {
-      blogHeader.style.opacity = '1';
-    }
-    if (blogContent) {
-      blogContent.classList.remove('opacity-0', 'pointer-events-none');
-      blogContent.classList.add('opacity-100');
-    }
-    const robotViewer = document.querySelector('.robot-viewer');
-    if (robotViewer) {
-      robotViewer.classList.add('interactive');
-    }
-
-    // Dispatch event to tell robot viewer to skip its animation too
-    document.dispatchEvent(new CustomEvent('skipBlogRobotAnimation'));
-  } else {
-    // Play animation normally
-    const mainText = document.getElementById('typewriter-main');
-    const subText = document.getElementById('typewriter-sub');
-    const clickHint = document.getElementById('click-hint');
-    let hasTransitioned = false;
-
-    // Function to handle the full transition (can be called by click or auto)
-    function handleFullTransition() {
-      if (hasTransitioned) return;
-      hasTransitioned = true;
-
-      if (robotViewerWrapper && robotCtaText && blogHeader && blogContent) {
-        // Fade out CTA text with smooth animation
-        robotCtaText.classList.add('fading-out');
-
-        // After text fades, transition wrapper to contained state
-        setTimeout(() => {
-          // Add transitioning class for smoother animation
-          robotViewerWrapper.classList.add('transitioning');
-
-          requestAnimationFrame(() => {
-            // Transition robot wrapper from fullscreen to contained
-            robotViewerWrapper.classList.add('contained');
-
-            // Show blog header with animation
-            blogHeader.style.opacity = '1';
-
-            // Add interactive class to robot viewer to show decorative elements
-            const robotViewer = document.querySelector('.robot-viewer');
-            if (robotViewer) {
-              setTimeout(() => {
-                robotViewer.classList.add('interactive');
-              }, 800);
-            }
-
-            // Remove transitioning class after animation completes
-            setTimeout(() => {
-              robotViewerWrapper.classList.remove('transitioning');
-            }, 1200);
-
-            // Show blog content
-            setTimeout(() => {
-              blogContent.classList.remove('opacity-0', 'pointer-events-none');
-              blogContent.classList.add('opacity-100');
-
-              // Mark animation as seen after everything is visible
-              markAnimationSeen('blog-intro');
-            }, 1000);
-          });
-        }, 600);
+      if (!mouseActive) {
+        heroSection!.classList.add('mouse-active');
+        mouseActive = true;
       }
-    }
 
-    if (mainText && subText) {
-      // Type main text first - bold single word for impact
-      typeWriter(mainText, 'CHRONICLES', 80, () => {
-        // After main text completes, type sub text
-        setTimeout(() => {
-          typeWriter(subText, 'UNFILTERED THOUGHTS', 40, () => {
-            // Show click hint after both typewriters finish
-            setTimeout(() => {
-              if (clickHint && !hasTransitioned) {
-                clickHint.classList.add('visible');
-              }
-            }, 300);
-          });
-        }, 400);
+      if (mouseTimeout) {
+        clearTimeout(mouseTimeout);
+      }
+
+      // Dispatch position to THREE.js keyboard viewer
+      document.dispatchEvent(
+        new CustomEvent("blogKeyboardMouseMove", {
+          detail: {
+            x: mouseX,
+            y: mouseY,
+            clientX: clientX,
+            clientY: clientY
+          },
+        })
+      );
+
+      mouseTimeout = window.setTimeout(() => {
+        heroSection!.classList.remove('mouse-active');
+        mouseActive = false;
+
+        document.dispatchEvent(
+          new CustomEvent("blogKeyboardMouseInactive", {
+            detail: { inactive: true },
+          })
+        );
+      }, 800);
+    };
+
+    if (heroSection && robotContainer) {
+      heroSection.addEventListener("mousemove", (e) => {
+        handleInteraction(e.clientX, e.clientY);
+      });
+
+      heroSection.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      }, { passive: false });
+
+      heroSection.addEventListener("touchstart", (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      });
+
+      heroSection.addEventListener("touchend", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
+        }
+
+        document.dispatchEvent(
+          new CustomEvent("blogKeyboardMouseLeave", {
+            detail: { left: true },
+          })
+        );
+      });
+
+      heroSection.addEventListener("mouseleave", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
+        }
+
+        document.dispatchEvent(
+          new CustomEvent("blogKeyboardMouseLeave", {
+            detail: { left: true },
+          })
+        );
+      });
+
+      heroSection.addEventListener("mouseenter", () => {
+        document.dispatchEvent(
+          new CustomEvent("blogKeyboardMouseEnter", {
+            detail: { entered: true },
+          })
+        );
       });
     }
 
-    // Click anywhere on intro overlay to skip
-    if (robotCtaText) {
-      robotCtaText.style.pointerEvents = 'auto';
-      robotCtaText.addEventListener('click', handleFullTransition);
-    }
+    // ===== PARALLAX EFFECT ON SCROLL =====
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY;
+          const heroContent = document.querySelector(".hero-content");
 
-    // Listen for robot animation complete event for auto-transition
-    document.addEventListener('blogRobotAnimationComplete', () => {
-      // Wait 3.5 seconds after animation completes to let user read the typewriter text
-      setTimeout(() => {
-        handleFullTransition();
-      }, 3500);
-    });
-  }
+          if (heroContent && scrolled < window.innerHeight) {
+            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.7));
+            const translateY = scrolled * 0.3;
+            (heroContent as HTMLElement).style.opacity = opacity.toString();
+            (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
+          }
 
-  // Handle expand/collapse functionality
-  const expandButton = document.getElementById('expand-keyboard-btn');
-  const backdropOverlay = document.getElementById('keyboard-backdrop-overlay');
-
-  if (expandButton && robotViewerWrapper && backdropOverlay) {
-    // Capture narrowed types for use in nested function
-    const wrapper = robotViewerWrapper;
-    const backdrop = backdropOverlay;
-    const btn = expandButton;
-
-    function toggleExpandedView(expand: boolean | null = null) {
-      const shouldExpand = expand !== null ? expand : !wrapper.classList.contains('expanded');
-
-      if (shouldExpand) {
-        wrapper.classList.add('expanded');
-        backdrop.classList.add('backdrop-visible');
-        document.body.style.overflow = 'hidden';
-        btn.setAttribute('aria-label', 'Collapse keyboard view');
-
-        // Toggle icons - hide expand, show collapse
-        const expandIcon = btn.querySelector('.expand-icon');
-        const collapseIcon = btn.querySelector('.collapse-icon');
-        if (expandIcon) expandIcon.classList.add('hidden');
-        if (collapseIcon) collapseIcon.classList.remove('hidden');
-      } else {
-        wrapper.classList.remove('expanded');
-        backdrop.classList.remove('backdrop-visible');
-        document.body.style.overflow = '';
-        btn.setAttribute('aria-label', 'Expand keyboard view');
-
-        // Toggle icons - show expand, hide collapse
-        const expandIcon = btn.querySelector('.expand-icon');
-        const collapseIcon = btn.querySelector('.collapse-icon');
-        if (expandIcon) expandIcon.classList.remove('hidden');
-        if (collapseIcon) collapseIcon.classList.add('hidden');
-      }
-    }
-
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      toggleExpandedView();
-    });
-
-    backdrop.addEventListener('click', () => {
-      if (wrapper.classList.contains('expanded')) {
-        toggleExpandedView(false);
+          ticking = false;
+        });
+        ticking = true;
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && wrapper.classList.contains('expanded')) {
-        toggleExpandedView(false);
-      }
-    });
-  }
-});
+    // ===== BLOG CARD GLOW EFFECT =====
+    const blogCards = document.querySelectorAll<HTMLElement>('.blog-card');
 
-// Client-side search functionality
-document.addEventListener('DOMContentLoaded', () => {
-  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
-  const blogCards = document.querySelectorAll<HTMLElement>('.blog-card');
-  const blogGrid = document.getElementById('blogGrid') as HTMLElement;
-  const searchStatus = document.getElementById('searchStatus') as HTMLElement;
-  
-  if (!searchInput || !blogGrid || !searchStatus) {
-    return;
-  }
-  
-  searchInput.addEventListener('input', () => {
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    let matchCount = 0;
-    
-    blogCards.forEach((card: HTMLElement) => {
-      const titleElement = card.querySelector('h2');
-      const descriptionElement = card.querySelector('p.text-primary\\/80');
-      const tagElements = card.querySelectorAll('.mt-4 span');
-      
-      if (!titleElement || !descriptionElement) {
-        return;
-      }
-      
-      const title = titleElement.textContent?.toLowerCase() || '';
-      const description = descriptionElement.textContent?.toLowerCase() || '';
-      const tags = Array.from(tagElements).map(tag => tag.textContent?.toLowerCase() || '');
-      
-      // Check if the search term is found in title, description, or tags
-      const matchesSearch = 
-        title.includes(searchTerm) || 
-        description.includes(searchTerm) || 
-        tags.some(tag => tag.includes(searchTerm));
-      
-      // Toggle visibility based on search match
-      if (matchesSearch || searchTerm === '') {
-        card.classList.remove('hidden');
-        matchCount++;
-      } else {
-        card.classList.add('hidden');
-      }
-    });
-    
-    // Show search status message
-    if (searchTerm !== '') {
-      searchStatus.classList.remove('hidden');
-      searchStatus.textContent = `Found ${matchCount} article${matchCount !== 1 ? 's' : ''}`;
-    } else {
-      searchStatus.classList.add('hidden');
-    }
-    
-    // Add empty state message if no results
-    const emptyStateEl = document.getElementById('emptyState');
-    if (matchCount === 0 && searchTerm !== '') {
-      if (!emptyStateEl) {
-        const emptyState = document.createElement('div');
-        emptyState.id = 'emptyState';
-        emptyState.className = 'col-span-1 sm:col-span-2 lg:col-span-3 text-center py-12';
-        emptyState.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p class="mt-4 text-lg text-primary/70">No articles found matching "${searchTerm}"</p>
-          <button id="clearSearch" class="mt-2 text-primary hover:text-primary/80 underline">Clear search</button>
-        `;
-        blogGrid.appendChild(emptyState);
-        
-        // Add event listener to the clear button
-        const clearButton = document.getElementById('clearSearch');
-        if (clearButton) {
-          clearButton.addEventListener('click', () => {
-            searchInput.value = '';
-            searchInput.dispatchEvent(new Event('input'));
-          });
-        }
-      }
-    } else if (emptyStateEl) {
-      emptyStateEl.remove();
-    }
-  });
+    blogCards.forEach((card) => {
+      const glowOverlay = card.querySelector<HTMLElement>('.glow-overlay');
+      if (!glowOverlay) return;
 
-  // Mouse-following glow effect for blog cards (reusing blogCards variable from above)
-  blogCards.forEach((card) => {
-    const glowOverlay = card.querySelector<HTMLElement>('.glow-overlay');
-    if (!glowOverlay) return;
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
+        glowOverlay.style.setProperty('--mouse-x', `${x}%`);
+        glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+      });
 
-      glowOverlay.style.setProperty('--mouse-x', `${x}%`);
-      glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+      card.addEventListener('mouseleave', () => {
+        glowOverlay.style.setProperty('--mouse-x', '50%');
+        glowOverlay.style.setProperty('--mouse-y', '50%');
+      });
     });
 
-    card.addEventListener('mouseleave', () => {
-      glowOverlay.style.setProperty('--mouse-x', '50%');
-      glowOverlay.style.setProperty('--mouse-y', '50%');
-    });
-  });
+    // ===== SEARCH FUNCTIONALITY =====
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+    const blogGrid = document.getElementById('blogGrid') as HTMLElement;
+    const searchStatus = document.getElementById('searchStatus') as HTMLElement;
 
-  // Table of Contents click-to-scroll functionality
-  const tocItems = document.querySelectorAll<HTMLButtonElement>('.toc-item');
-  const blogCardsArray = Array.from(blogCards);
+    if (searchInput && blogGrid && searchStatus) {
+      searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        let matchCount = 0;
 
-  tocItems.forEach((tocItem) => {
-    tocItem.addEventListener('click', () => {
-      const index = parseInt(tocItem.dataset.index || '0', 10);
-      const targetCard = blogCardsArray[index];
+        blogCards.forEach((card: HTMLElement) => {
+          const titleElement = card.querySelector('h2');
+          const descriptionElement = card.querySelector('p.text-primary\\/80');
+          const tagElements = card.querySelectorAll('.mt-4 span');
 
-      if (targetCard) {
-        // Remove active class from all TOC items
-        tocItems.forEach(item => item.classList.remove('active'));
-        // Add active class to clicked item
-        tocItem.classList.add('active');
+          if (!titleElement || !descriptionElement) return;
 
-        // Scroll to the card with smooth animation
-        const cardRect = targetCard.getBoundingClientRect();
-        const offset = 100; // Offset from top of viewport
-        const scrollTo = window.scrollY + cardRect.top - offset;
+          const title = titleElement.textContent?.toLowerCase() || '';
+          const description = descriptionElement.textContent?.toLowerCase() || '';
+          const tags = Array.from(tagElements).map(tag => tag.textContent?.toLowerCase() || '');
 
-        window.scrollTo({
-          top: scrollTo,
-          behavior: 'smooth'
+          const matchesSearch =
+            title.includes(searchTerm) ||
+            description.includes(searchTerm) ||
+            tags.some(tag => tag.includes(searchTerm));
+
+          if (matchesSearch || searchTerm === '') {
+            card.classList.remove('hidden');
+            matchCount++;
+          } else {
+            card.classList.add('hidden');
+          }
         });
 
-        // Add a highlight animation to the target card
-        targetCard.classList.add('toc-highlight');
-        setTimeout(() => {
-          targetCard.classList.remove('toc-highlight');
-        }, 2000);
-      }
-    });
-  });
+        if (searchTerm !== '') {
+          searchStatus.classList.remove('hidden');
+          searchStatus.textContent = `Found ${matchCount} article${matchCount !== 1 ? 's' : ''}`;
+        } else {
+          searchStatus.classList.add('hidden');
+        }
 
-  // Update active TOC item on scroll (Intersection Observer)
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const cardIndex = blogCardsArray.indexOf(entry.target as HTMLElement);
-          if (cardIndex !== -1) {
-            tocItems.forEach((item, i) => {
-              if (i === cardIndex) {
-                item.classList.add('active');
-              } else {
-                item.classList.remove('active');
-              }
-            });
+        const emptyStateEl = document.getElementById('emptyState');
+        if (matchCount === 0 && searchTerm !== '') {
+          if (!emptyStateEl) {
+            const emptyState = document.createElement('div');
+            emptyState.id = 'emptyState';
+            emptyState.className = 'col-span-1 sm:col-span-2 lg:col-span-3 text-center py-12';
+            emptyState.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="mt-4 text-lg text-primary/70">No articles found matching "${searchTerm}"</p>
+              <button id="clearSearch" class="mt-2 text-primary hover:text-primary/80 underline">Clear search</button>
+            `;
+            blogGrid.appendChild(emptyState);
+
+            const clearButton = document.getElementById('clearSearch');
+            if (clearButton) {
+              clearButton.addEventListener('click', () => {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+              });
+            }
           }
+        } else if (emptyStateEl) {
+          emptyStateEl.remove();
         }
       });
-    }, {
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0
+    }
+
+    // ===== TABLE OF CONTENTS =====
+    const tocItems = document.querySelectorAll<HTMLButtonElement>('.toc-item');
+    const blogCardsArray = Array.from(blogCards);
+
+    tocItems.forEach((tocItem) => {
+      tocItem.addEventListener('click', () => {
+        const index = parseInt(tocItem.dataset.index || '0', 10);
+        const targetCard = blogCardsArray[index];
+
+        if (targetCard) {
+          tocItems.forEach(item => item.classList.remove('active'));
+          tocItem.classList.add('active');
+
+          const cardRect = targetCard.getBoundingClientRect();
+          const offset = 100;
+          const scrollTo = window.scrollY + cardRect.top - offset;
+
+          window.scrollTo({
+            top: scrollTo,
+            behavior: 'smooth'
+          });
+
+          targetCard.classList.add('toc-highlight');
+          setTimeout(() => {
+            targetCard.classList.remove('toc-highlight');
+          }, 2000);
+        }
+      });
     });
 
-    blogCardsArray.forEach(card => observer.observe(card));
-  }
-});
+    // Update active TOC item on scroll
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const cardIndex = blogCardsArray.indexOf(entry.target as HTMLElement);
+            if (cardIndex !== -1) {
+              tocItems.forEach((item, i) => {
+                if (i === cardIndex) {
+                  item.classList.add('active');
+                } else {
+                  item.classList.remove('active');
+                }
+              });
+            }
+          }
+        });
+      }, {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0
+      });
+
+      blogCardsArray.forEach(card => observer.observe(card));
+    }
+  });
 </script>

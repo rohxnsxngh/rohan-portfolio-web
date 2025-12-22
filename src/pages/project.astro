@@ -43,332 +43,298 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 ---
 
 <Layout>
-  <div class="min-h-screen flex flex-col bg-secondary">
-    <div class="flex-grow">
-      <Navbar>
-        <div class="relative overflow-visible">
-          <!-- Tech grid overlay -->
-          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
-
-          <div class="relative z-10 sm:px-20 px-6 py-12 pb-16">
-            <!-- BOLD HEADER -->
-            <div class="header-section mb-16">
-              <h1 class="projects-title font-mono font-black tracking-tighter leading-none select-none">
-                <span class="char char-1">P</span><span class="char char-2">R</span><span class="char char-3">O</span><span class="char char-4">J</span><span class="char char-5">E</span><span class="char char-6">C</span><span class="char char-7">T</span><span class="char char-8">S</span>
-              </h1>
-              <div class="accent-line mt-6"></div>
-            </div>
-
-      <!-- Robot and intro section, side-by-side on larger screens, stacked on mobile -->
-      <div class="flex flex-col md:flex-row gap-6 mb-12">
-        <!-- Heavy Robot Model Viewer with fullscreen intro -->
-        <div class="w-full md:w-2/3 relative z-20">
-          <div
-            id="robot-viewer-wrapper"
-            class="robot-showcase fullscreen-intro relative w-full h-64 sm:h-72 md:h-80 lg:h-96 rounded-xl overflow-hidden border border-accent/20 transition-all duration-300 hover:shadow-lg"
-          >
-            <!-- Intro text overlay (only visible during fullscreen) -->
-            <div class="intro-text-overlay absolute inset-0 z-30 flex flex-col items-center justify-center cursor-pointer">
-              <div class="text-center px-4 w-full">
-                <h2 class="hero-typewriter font-mono font-black text-white select-none">
-                  <span id="typewriter-projects" class="typewriter-text"></span>
-                  <span class="typewriter-cursor">|</span>
-                </h2>
-              </div>
-              <!-- Click to continue hint -->
-              <div class="click-hint absolute bottom-12 left-1/2 transform -translate-x-1/2 text-white/50 text-sm font-mono tracking-wider opacity-0 transition-opacity duration-500">
-                <span class="animate-pulse">CLICK TO CONTINUE</span>
-              </div>
-            </div>
-
+  <Navbar>
+    <!-- HERO SECTION - Full page robot background like homepage -->
+    <div
+      class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
+      id="hero-section"
+    >
+      <!-- FULL PAGE ROBOT BACKGROUND -->
+      <div class="robot-background-container absolute inset-0 z-0" id="robot-container">
+        <div class="robot-frame-fullscreen w-full h-full">
+          <div class="w-full h-full robot-viewer" id="robot-viewer">
             <HeavyRobotModelViewer />
-            <button
-              class="expand-heavy-robot absolute top-4 right-4 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary/90 z-20 hover:bg-primary/30 transition-colors opacity-0"
-              aria-label="Expand robot view"
-            >
-              <!-- Expand icon (arrows pointing outward) - shown when collapsed -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                class="expand-icon w-5 h-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 3h6m0 0v6m0-6l-6 6M9 21H3m0 0v-6m0 6l6-6"></path>
-              </svg>
-              <!-- Collapse icon (arrows pointing inward) - shown when expanded -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                class="collapse-icon w-5 h-5 hidden"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 14h6m0 0v6m0-6l-6 6M20 10h-6m0 0V4m0 6l6-6"></path>
-              </svg>
-            </button>
           </div>
         </div>
 
-        <!-- Enhanced introduction text and arrow -->
-        <div class="w-full md:w-1/3 flex flex-col justify-center">
-          <div
-            class="bg-gradient-to-br from-black/80 to-black/60 p-6 rounded-xl h-full flex flex-col justify-between border border-accent/20 backdrop-blur-sm shadow-lg transition-all duration-300 hover:border-accent/40"
-          >
-            <div>
-              <h3
-                class="text-xl font-bold text-white mb-3 border-b border-accent/30 pb-2 inline-block"
-              >
-                Welcome to my Digital Workshop
-              </h3>
-              <p class="text-white/60 text-md sm:text-sm text-base mb-4 leading-relaxed">
-                This showcase features my software and robotics projects, from
-                AI applications to 3D visualizations.
-              </p>
-              <p class="text-white/80 text-xs sm:text-sm leading-relaxed mb-2">
-                These projects were completed either for class or solely for
-                fun.
-              </p>
+        <!-- Dark overlay to dim robot heavily by default -->
+        <div class="robot-overlay absolute inset-0 bg-black/[0.98] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+      </div>
 
-              <p class="text-white/80 text-xs sm:text-sm leading-relaxed">
-                Below you'll find a curated collection of my fun projects.
-              </p>
-              <div class="flex justify-center gap-3 mt-6 text-xs mb-4">
-                <span
-                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20"
-                >
-                  <span class="w-2 h-2 rounded-full bg-green-400 mr-2"
-                  ></span>Completed
-                </span>
-                <span
-                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                >
-                  <span class="w-2 h-2 rounded-full bg-blue-400 mr-2"></span>In
-                  Progress
-                </span>
-                <span
-                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20"
-                >
-                  <span class="w-2 h-2 rounded-full bg-purple-400 mr-2"
-                  ></span>Coming Soon
-                </span>
-              </div>
-            </div>
+      <!-- Tech grid overlay for texture -->
+      <div class="absolute inset-0 tech-grid opacity-10 z-[5] pointer-events-none"></div>
 
-            <div class="mt-auto">
-              <p
-                class="text-primary/90 text-xs italic font-medium mb-4 text-left"
-              >
-                Scroll down to see some of my favorite projects.
-              </p>
-              <!-- Bounce arrow with enhanced animation -->
-              <div class="flex justify-center">
-                <a href="#projects-display">
-                  <div
-                    class="animate-bounce bounce-arrow w-10 h-10 flex items-center justify-center text-primary hover:text-primary-focus cursor-pointer bg-primary/10 rounded-full hover:bg-primary/20 transition-all duration-300"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="w-6 h-6"
-                    >
-                      <path d="M12 5v14M5 12l7 7 7-7"></path>
-                    </svg>
-                  </div></a
-                >
+      <!-- Main content - layered on top -->
+      <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
+        <div class="max-w-7xl mx-auto">
+          <!-- Small intro label -->
+          <div class="label-intro mb-6 sm:mb-8">
+            <span class="text-primary/50 font-mono text-xs sm:text-sm tracking-[0.3em] uppercase">
+              Software • Robotics • AI
+            </span>
+          </div>
+
+          <!-- MASSIVE title display -->
+          <div class="name-display mb-6 sm:mb-10">
+            <h1 class="hero-name font-mono font-black tracking-tighter leading-none select-none">
+              <div class="name-line">
+                <span class="char char-1">P</span><span class="char char-2">R</span><span class="char char-3">O</span><span class="char char-4">J</span><span class="char char-5">E</span><span class="char char-6">C</span><span class="char char-7">T</span><span class="char char-8">S</span>
               </div>
-            </div>
+            </h1>
+          </div>
+
+          <!-- Bold statement -->
+          <div class="statement mb-8 sm:mb-12 max-w-4xl">
+            <p class="statement-text text-primary/60 font-mono tracking-wide leading-relaxed">
+              A showcase of my <span class="highlight">digital workshop</span>
+            </p>
+          </div>
+
+          <!-- CTA Section -->
+          <div class="cta-section flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center pointer-events-auto">
+            <a
+              href="#projects-display"
+              class="cta-primary group relative inline-flex items-center justify-center px-7 py-3 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+            >
+              <span class="relative z-10">VIEW PROJECTS</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 ml-3 group-hover:translate-y-1 transition-transform relative z-10"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2.5"
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+              <div class="cta-shine"></div>
+            </a>
+
+            <a
+              href="/"
+              class="cta-secondary group inline-flex items-center text-primary/70 hover:text-primary font-mono text-sm sm:text-base tracking-wider transition-all duration-300"
+            >
+              Back to home
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 ml-2 group-hover:-translate-x-1 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+              </svg>
+            </a>
           </div>
         </div>
       </div>
 
-      <div class="divider" id="projects-display"></div>
+      <!-- Scroll Indicator -->
+      <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+        <div class="scroll-content flex flex-col items-center gap-2">
+          <span class="text-primary/40 font-mono text-xs tracking-widest uppercase">Scroll</span>
+          <div class="scroll-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <!-- Project grid layout -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-        {
-          sortedProjects.length > 0 ? (
-            sortedProjects.map((project) => {
-              try {
-                // Default values for missing data
-                const title = project.data?.title || "Untitled Project";
-                const description =
-                  project.data?.description || "No description available";
-                const status = project.data?.status || "completed";
-                const date = project.data?.date || new Date().toISOString();
-                const tags = Array.isArray(project.data?.tags)
-                  ? project.data.tags
-                  : [];
-                const github = project.data?.github || "";
-                const demo = project.data?.demo || "";
-                const kaggle = project.data?.kaggle || "";
-                const image = project.data?.image || "";
+    <!-- PROJECTS SECTION -->
+    <div class="relative bg-secondary" id="projects-display">
+      <!-- Tech grid overlay -->
+      <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
-                const statusColors = {
-                  completed: "bg-green-500/10 text-green-400",
-                  "in-progress": "bg-blue-500/10 text-blue-400",
-                  "coming-soon": "bg-purple-500/10 text-purple-400",
-                };
+      <div class="relative z-10 sm:px-20 px-6 py-16">
+        <!-- Section header -->
+        <div class="mb-12">
+          <div class="flex flex-wrap justify-center gap-3 text-xs mb-8">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+              <span class="w-2 h-2 rounded-full bg-green-400 mr-2"></span>Completed
+            </span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              <span class="w-2 h-2 rounded-full bg-blue-400 mr-2"></span>In Progress
+            </span>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              <span class="w-2 h-2 rounded-full bg-purple-400 mr-2"></span>Coming Soon
+            </span>
+          </div>
+        </div>
 
-                const statusText = {
-                  completed: "Completed",
-                  "in-progress": "In Progress",
-                  "coming-soon": "Coming Soon",
-                };
+        <!-- Project grid layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {
+            sortedProjects.length > 0 ? (
+              sortedProjects.map((project) => {
+                try {
+                  // Default values for missing data
+                  const title = project.data?.title || "Untitled Project";
+                  const description =
+                    project.data?.description || "No description available";
+                  const status = project.data?.status || "completed";
+                  const date = project.data?.date || new Date().toISOString();
+                  const tags = Array.isArray(project.data?.tags)
+                    ? project.data.tags
+                    : [];
+                  const github = project.data?.github || "";
+                  const demo = project.data?.demo || "";
+                  const kaggle = project.data?.kaggle || "";
+                  const image = project.data?.image || "";
 
-                // Use default color if status is not recognized
-                const statusColor =
-                  statusColors[status] || "bg-gray-500/10 text-gray-400";
-                const statusDisplay = statusText[status] || "Unknown";
+                  const statusColors = {
+                    completed: "bg-green-500/10 text-green-400",
+                    "in-progress": "bg-blue-500/10 text-blue-400",
+                    "coming-soon": "bg-purple-500/10 text-purple-400",
+                  };
 
-                return (
-                  <div class="relative z-1 project-card group">
-                    <!-- Corner accent marks -->
-                    <div class="card-corner-accent card-corner-tl"></div>
-                    <div class="card-corner-accent card-corner-tr"></div>
-                    <div class="card-corner-accent card-corner-bl"></div>
-                    <div class="card-corner-accent card-corner-br"></div>
+                  const statusText = {
+                    completed: "Completed",
+                    "in-progress": "In Progress",
+                    "coming-soon": "Coming Soon",
+                  };
 
-                    <!-- Animated gradient border -->
-                    <div class="card-gradient-border"></div>
+                  // Use default color if status is not recognized
+                  const statusColor =
+                    statusColors[status] || "bg-gray-500/10 text-gray-400";
+                  const statusDisplay = statusText[status] || "Unknown";
 
-                    <!-- Grid overlay -->
-                    <div class="card-grid-overlay"></div>
+                  return (
+                    <div class="relative z-1 project-card group">
+                      <!-- Corner accent marks -->
+                      <div class="card-corner-accent card-corner-tl"></div>
+                      <div class="card-corner-accent card-corner-tr"></div>
+                      <div class="card-corner-accent card-corner-bl"></div>
+                      <div class="card-corner-accent card-corner-br"></div>
 
-                    <!-- Glow overlay that follows mouse -->
-                    <div class="glow-overlay"></div>
+                      <!-- Animated gradient border -->
+                      <div class="card-gradient-border"></div>
 
-                    <div class="card-content h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10">
-                      {/* Add the ProjectImage component here */}
-                      <ProjectImage image={image} title={title} tags={tags} />
+                      <!-- Grid overlay -->
+                      <div class="card-grid-overlay"></div>
 
-                      <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                          <a
-                            href={`/project/${project.slug}`}
-                            class="text-xl font-bold text-white hover:text-primary/90 transition-colors"
-                          >
-                            {title}
-                          </a>
-                          <span
-                            class={`px-2 py-1 text-xs rounded-full flex-shrink-0 ${statusColor}`}
-                          >
-                            {statusDisplay}
-                          </span>
-                        </div>
-                        <p class="text-sm text-white/60 mb-4">
-                          {new Date(date).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                          })}
-                        </p>
-                        <p class="text-white/80 flex-grow line-clamp-3">
-                          {description}
-                        </p>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                          {tags.slice(0, 3).map((tag) => (
-                            <span class="text-sm px-3 py-1 rounded-lg bg-accent/20 text-white/90 border border-accent/30 hover:bg-accent/30 transition-colors duration-200">
-                              {tag}
+                      <!-- Glow overlay that follows mouse -->
+                      <div class="glow-overlay"></div>
+
+                      <div class="card-content h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10">
+                        {/* Add the ProjectImage component here */}
+                        <ProjectImage image={image} title={title} tags={tags} />
+
+                        <div class="p-6">
+                          <div class="flex items-center justify-between mb-3">
+                            <a
+                              href={`/project/${project.slug}`}
+                              class="text-xl font-bold text-white hover:text-primary/90 transition-colors"
+                            >
+                              {title}
+                            </a>
+                            <span
+                              class={`px-2 py-1 text-xs rounded-full flex-shrink-0 ${statusColor}`}
+                            >
+                              {statusDisplay}
                             </span>
-                          ))}
-                          {tags.length > 3 && (
-                            <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-white/70">
-                              +{tags.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                        {(github || demo || kaggle) && (
-                          <div class="mt-4 pt-4 flex gap-4 border-t border-accent/10">
-                            {github && (
-                              <a
-                                href={github}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="text-sm text-white/80 hover:text-white transition-colors"
-                                onclick="arguments[0].stopPropagation()"
-                              >
-                                GitHub →
-                              </a>
-                            )}
-                            {demo && (
-                              <a
-                                href={demo}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="text-sm text-white/80 hover:text-white transition-colors ml-4"
-                                onclick="arguments[0].stopPropagation()"
-                              >
-                                Live Demo →
-                              </a>
-                            )}
-                            {kaggle && (
-                              <a
-                                href={kaggle}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="text-sm text-white/80 hover:text-white transition-colors ml-4"
-                                onclick="arguments[0].stopPropagation()"
-                              >
-                                Kaggle Challenge →
-                              </a>
+                          </div>
+                          <p class="text-sm text-white/60 mb-4">
+                            {new Date(date).toLocaleDateString("en-US", {
+                              year: "numeric",
+                              month: "long",
+                            })}
+                          </p>
+                          <p class="text-white/80 flex-grow line-clamp-3">
+                            {description}
+                          </p>
+                          <div class="mt-4 flex flex-wrap gap-2">
+                            {tags.slice(0, 3).map((tag) => (
+                              <span class="text-sm px-3 py-1 rounded-lg bg-accent/20 text-white/90 border border-accent/30 hover:bg-accent/30 transition-colors duration-200">
+                                {tag}
+                              </span>
+                            ))}
+                            {tags.length > 3 && (
+                              <span class="text-sm px-3 py-1 rounded-lg bg-accent/10 text-white/70">
+                                +{tags.length - 3} more
+                              </span>
                             )}
                           </div>
-                        )}
+                          {(github || demo || kaggle) && (
+                            <div class="mt-4 pt-4 flex gap-4 border-t border-accent/10">
+                              {github && (
+                                <a
+                                  href={github}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class="text-sm text-white/80 hover:text-white transition-colors"
+                                  onclick="arguments[0].stopPropagation()"
+                                >
+                                  GitHub →
+                                </a>
+                              )}
+                              {demo && (
+                                <a
+                                  href={demo}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class="text-sm text-white/80 hover:text-white transition-colors ml-4"
+                                  onclick="arguments[0].stopPropagation()"
+                                >
+                                  Live Demo →
+                                </a>
+                              )}
+                              {kaggle && (
+                                <a
+                                  href={kaggle}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  class="text-sm text-white/80 hover:text-white transition-colors ml-4"
+                                  onclick="arguments[0].stopPropagation()"
+                                >
+                                  Kaggle Challenge →
+                                </a>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
+                      <a
+                        href={`/project/${project.slug}`}
+                        class="absolute inset-0 z-20"
+                        aria-hidden="true"
+                      />
                     </div>
-                    <a
-                      href={`/project/${project.slug}`}
-                      class="absolute inset-0 z-20"
-                      aria-hidden="true"
-                    />
-                  </div>
-                );
-              } catch {
-                return (
-                  <div class="bg-red-500/20 p-4 rounded-xl text-white">
-                    Error rendering project
-                  </div>
-                );
-              }
-            })
-          ) : (
-            <div class="col-span-3 text-center py-8 bg-base-200/30 rounded-xl">
-              <p class="text-white/80">
-                No projects found. Check your content collection.
-              </p>
-            </div>
-          )
-        }
-      </div>
-          </div>
+                  );
+                } catch {
+                  return (
+                    <div class="bg-red-500/20 p-4 rounded-xl text-white">
+                      Error rendering project
+                    </div>
+                  );
+                }
+              })
+            ) : (
+              <div class="col-span-3 text-center py-8 bg-base-200/30 rounded-xl">
+                <p class="text-white/80">
+                  No projects found. Check your content collection.
+                </p>
+              </div>
+            )
+          }
         </div>
-      </Navbar>
+      </div>
     </div>
-    <Footer />
-  </div>
+  </Navbar>
+  <Footer />
 </Layout>
 
-<!-- Backdrop overlay for blur effect -->
-<div
-  id="backdrop-overlay"
-  class="fixed inset-0 bg-black/50 backdrop-blur-md z-5 opacity-0 pointer-events-none transition-opacity duration-300"
->
-</div>
-
 <style>
+  /* ===== HERO SECTION STYLES (matching homepage) ===== */
+
   /* Tech grid background */
   .tech-grid {
     background-image:
@@ -383,39 +349,35 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     100% { background-position: 100px 100px; }
   }
 
-  /* BOLD PROJECTS TITLE */
-  .projects-title {
-    font-size: clamp(3rem, 12vw, 12rem);
+  /* ===== MASSIVE TYPOGRAPHY ===== */
+  .hero-name {
+    font-size: clamp(2.5rem, 11vw, 16rem);
     line-height: 0.85;
-    letter-spacing: -0.08em;
+    letter-spacing: -0.06em;
     color: #ffffff;
     text-transform: uppercase;
-    opacity: 0;
-    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    text-shadow:
-      0 3px 25px rgba(0, 0, 0, 0.9),
-      0 6px 45px rgba(0, 0, 0, 0.7);
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
   }
 
-  @keyframes titleReveal {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .hero-name .name-line {
+    display: block;
+    position: relative;
   }
 
-  /* Character animations */
-  .projects-title .char {
+  /* Individual character animations */
+  .hero-name .char {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
     animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    text-shadow:
+      0 0 40px rgba(255, 255, 255, 0.1),
+      0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
+  /* Staggered animation delays */
   .char-1 { animation-delay: 0.05s; }
   .char-2 { animation-delay: 0.10s; }
   .char-3 { animation-delay: 0.15s; }
@@ -439,22 +401,166 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     }
   }
 
-  /* Accent line */
-  .accent-line {
-    height: 3px;
-    width: 0;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.6s;
+  /* Label intro animation */
+  .label-intro {
+    opacity: 0;
+    animation: fadeInDown 0.8s ease-out forwards;
   }
 
-  @keyframes lineExpand {
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
     to {
-      width: 200px;
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
-  /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
+  /* Statement text */
+  .statement {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.5s;
+  }
+
+  .statement-text {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: 1.6;
+  }
+
+  .highlight {
+    color: #ffffff;
+    font-weight: 700;
+    position: relative;
+  }
+
+  .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* CTA Section */
+  .cta-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.7s;
+  }
+
+  /* Primary CTA Button */
+  .cta-primary {
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .cta-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.7s;
+  }
+
+  .cta-primary:hover .cta-shine {
+    left: 100%;
+  }
+
+  /* Secondary CTA */
+  .cta-secondary {
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.2);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+  }
+
+  .cta-secondary:hover {
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* ===== ROBOT AS FULL BACKGROUND ===== */
+
+  .robot-background-container {
+    opacity: 1;
+  }
+
+  .robot-frame-fullscreen {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Robot overlay - dims the robot heavily, lightens on hover */
+  .robot-overlay {
+    z-index: 1;
+    transition: background 0.6s ease-out;
+  }
+
+  /* Hero content with slower fade transitions */
+  .hero-content {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+  }
+
+  /* Typography with enhanced text shadow for readability */
+  .hero-name {
+    text-shadow:
+      0 3px 25px rgba(0, 0, 0, 0.9),
+      0 6px 45px rgba(0, 0, 0, 0.7),
+      0 0 80px rgba(0, 0, 0, 0.5);
+  }
+
+  .statement-text,
+  .label-intro span {
+    text-shadow:
+      0 2px 15px rgba(0, 0, 0, 0.95),
+      0 4px 25px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Mouse interaction states */
+  .hero-section.mouse-active .hero-content {
+    opacity: 0.05;
+    transition: opacity 0.6s ease-out;
+  }
+
+  .hero-section.mouse-active .robot-overlay {
+    background: rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* When mouse becomes inactive, fade back slowly */
+  .hero-section:not(.mouse-active) .hero-content {
+    transition: opacity 2s ease-in-out;
+  }
+
+  .hero-section:not(.mouse-active) .robot-overlay {
+    transition: background 2.5s ease-in-out;
+  }
+
+  /* Prevent layout shift */
+  .hero-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* ===== PROJECT CARDS ===== */
+
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -462,7 +568,6 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     overflow: hidden;
   }
 
-  /* Project card hover animation */
   .project-card {
     transition: transform 0.3s ease-out;
     overflow: hidden;
@@ -607,7 +712,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     opacity: 1;
   }
 
-  /* Enhanced card content hover with cyan/magenta glow */
+  /* Enhanced card content hover */
   .card-content {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 10px 30px rgba(0, 0, 0, 0.5);
     overflow: hidden;
@@ -622,8 +727,92 @@ const sortedProjects = [...validProjects].sort((a, b) => {
       0 0 80px rgba(255, 0, 255, 0.1);
   }
 
-  /* Responsive corner accents for smaller screens */
+  /* ===== SCROLL INDICATOR ===== */
+  .scroll-indicator {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards, floatUpDown 2s ease-in-out infinite;
+    animation-delay: 1.2s, 1.2s;
+  }
+
+  .scroll-arrow {
+    animation: bounceDown 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bounceDown {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes floatUpDown {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-5px);
+    }
+  }
+
+  /* Hide scroll indicator when scrolled or mouse active */
+  .hero-section.mouse-active .scroll-indicator {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-out;
+  }
+
+  /* ===== RESPONSIVE DESIGN ===== */
+
+  @media (max-width: 1024px) {
+    .hero-name {
+      font-size: clamp(2rem, 10vw, 12rem);
+      letter-spacing: -0.05em;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-name {
+      font-size: clamp(1.8rem, 9vw, 8rem);
+      letter-spacing: -0.04em;
+    }
+
+    .statement-text {
+      font-size: clamp(0.9rem, 3vw, 1.25rem);
+    }
+
+    .hero-section.mouse-active .hero-content {
+      opacity: 0.08;
+    }
+  }
+
   @media (max-width: 640px) {
+    .hero-name {
+      font-size: clamp(1.5rem, 11vw, 6rem);
+      letter-spacing: -0.03em;
+    }
+
+    .label-intro span {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+    }
+
+    .cta-primary {
+      width: 100%;
+    }
+
+    .robot-overlay {
+      background: rgba(0, 0, 0, 0.96) !important;
+    }
+
+    .hero-section.mouse-active .hero-content {
+      opacity: 0.05;
+    }
+
+    .hero-section.mouse-active .robot-overlay {
+      background: rgba(0, 0, 0, 0.2) !important;
+    }
+
     .card-corner-accent {
       width: 15px;
       height: 15px;
@@ -634,396 +823,148 @@ const sortedProjects = [...validProjects].sort((a, b) => {
       height: 20px;
     }
   }
-
-  /* Robot showcase hover effect */
-  .robot-showcase {
-    transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-
-  /* Transitioning state - slight scale for smoother feel */
-  .robot-showcase.transitioning {
-    transform: scale(0.98);
-    opacity: 0.95;
-  }
-
-  .robot-showcase:hover .robot-info {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  /* Fullscreen intro state */
-  .robot-showcase.fullscreen-intro {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    max-width: 100vw;
-    max-height: 100vh;
-    z-index: 9999;
-    border-radius: 0;
-    border: none;
-  }
-
-  /* Fullscreen intro prevents page scroll */
-  body.robot-intro-playing {
-    overflow: hidden;
-  }
-
-  /* Hide page content during fullscreen intro */
-  body.robot-intro-playing .header-section,
-  body.robot-intro-playing .w-full.md\\:w-1\/3,
-  body.robot-intro-playing .divider,
-  body.robot-intro-playing .grid,
-  body.robot-intro-playing .tech-grid {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* Smooth transition for page content reveal */
-  .header-section,
-  .w-full.md\\:w-1\/3,
-  .divider,
-  .grid,
-  .tech-grid {
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Intro text overlay */
-  .intro-text-overlay {
-    opacity: 1;
-    transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
-    /* No background or blur so lighting is visible */
-  }
-
-  /* Hide intro text when interactive */
-  .robot-showcase.interactive .intro-text-overlay {
-    opacity: 0 !important;
-    pointer-events: none;
-  }
-
-  /* Fade out animation for intro overlay before transition */
-  .intro-text-overlay.fading-out {
-    opacity: 0;
-    transition: opacity 0.8s ease-out;
-  }
-
-  /* Show click hint after delay */
-  .click-hint.visible {
-    opacity: 1 !important;
-  }
-
-  /* Show expand button when interactive */
-  .robot-showcase.interactive .expand-heavy-robot {
-    opacity: 1 !important;
-  }
-
-  /* Backdrop visible class */
-  .backdrop-visible {
-    opacity: 1 !important;
-    pointer-events: auto !important;
-  }
-
-  /* Expanded robot viewer styling */
-  .robot-showcase.expanded {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90vw;
-    height: 90vw;
-    max-width: 800px;
-    max-height: 800px;
-    z-index: 60;
-    border-radius: 12px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(var(--color-primary, 255, 255, 255), 0.4);
-  }
-
-  .robot-showcase.expanded .robot-info {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  /* Responsive */
-  @media (max-width: 1024px) {
-    .projects-title {
-      font-size: clamp(2.5rem, 10vw, 10rem);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .projects-title {
-      font-size: clamp(2rem, 12vw, 8rem);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .projects-title {
-      font-size: clamp(1.8rem, 14vw, 6rem);
-    }
-  }
-
-  /* Hero Typewriter - Massive overlapping style like home page */
-  .hero-typewriter {
-    font-size: clamp(3rem, 14vw, 16rem);
-    line-height: 0.85;
-    letter-spacing: -0.08em;
-    text-transform: uppercase;
-    font-weight: 900;
-    text-align: center;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
-    text-shadow:
-      0 0 40px rgba(255, 255, 255, 0.1),
-      0 10px 30px rgba(0, 0, 0, 0.5),
-      0 3px 25px rgba(0, 0, 0, 0.9),
-      0 6px 45px rgba(0, 0, 0, 0.7);
-  }
-
-  /* Typewriter cursor animation */
-  .typewriter-cursor {
-    display: inline-block;
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
-    font-weight: 100;
-    -webkit-text-stroke: 0;
-  }
-
-  @keyframes blink {
-    0%, 50% {
-      opacity: 1;
-    }
-    51%, 100% {
-      opacity: 0;
-    }
-  }
-
-  .typewriter-text {
-    display: inline-block;
-    white-space: pre-wrap;
-  }
-
-  /* Responsive hero typewriter */
-  @media (max-width: 1024px) {
-    .hero-typewriter {
-      font-size: clamp(2.5rem, 12vw, 12rem);
-    }
-  }
-
-  @media (max-width: 768px) {
-    .hero-typewriter {
-      font-size: clamp(2rem, 14vw, 10rem);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .hero-typewriter {
-      font-size: clamp(1.8rem, 16vw, 8rem);
-      letter-spacing: -0.06em;
-    }
-  }
 </style>
 
 <script>
-  import { hasSeenAnimation, markAnimationSeen } from '../scripts/animationState';
-
-  // Typewriter effect function
-  function typeWriter(element: HTMLElement, text: string, speed: number = 80, callback?: () => void) {
-    let i = 0;
-    element.textContent = '';
-
-    function type() {
-      if (i < text.length) {
-        element.textContent += text.charAt(i);
-        i++;
-        setTimeout(type, speed);
-      } else if (callback) {
-        callback();
-      }
-    }
-
-    type();
-  }
-
   document.addEventListener("DOMContentLoaded", () => {
-    const robotViewerWrapper = document.getElementById("robot-viewer-wrapper");
-    const robotShowcase = document.querySelector(".robot-showcase");
-    const expandButton = document.querySelector(".expand-heavy-robot");
-    const backdropOverlay = document.getElementById("backdrop-overlay");
-    const introTextOverlay = document.querySelector(".intro-text-overlay");
+    const heroSection = document.getElementById("hero-section");
+    const robotContainer = document.getElementById("robot-container");
 
-    // Check if user has already seen this animation
-    const hasSeenIntro = hasSeenAnimation('projects-intro');
+    let mouseActive = false;
+    let mouseTimeout: number | null = null;
 
-    if (hasSeenIntro) {
-      // Skip animation - go directly to interactive state
-      if (robotViewerWrapper) {
-        robotViewerWrapper.classList.remove("fullscreen-intro");
-        robotViewerWrapper.classList.add("interactive");
+    // ===== DUAL HOVER/TOUCH ANIMATION =====
+    const handleInteraction = (clientX: number, clientY: number) => {
+      const rect = heroSection!.getBoundingClientRect();
+
+      // Calculate position (0 to 1 normalized coordinates)
+      const mouseX = (clientX - rect.left) / rect.width;
+      const mouseY = (clientY - rect.top) / rect.height;
+
+      // Activate hover state (fade typography, lighten robot overlay)
+      if (!mouseActive) {
+        heroSection!.classList.add('mouse-active');
+        mouseActive = true;
       }
-      if (introTextOverlay) {
-        (introTextOverlay as HTMLElement).style.display = 'none';
+
+      // Clear existing timeout
+      if (mouseTimeout) {
+        clearTimeout(mouseTimeout);
       }
-      // Don't add robot-intro-playing class
-    } else {
-      // Play animation normally
-      const projectsText = document.getElementById('typewriter-projects');
-      const clickHint = document.querySelector('.click-hint');
-      let hasTransitioned = false;
 
-      // Function to handle the transition (can be called by click or timeout)
-      function handleTransition() {
-        if (hasTransitioned) return;
-        hasTransitioned = true;
+      // Dispatch position to THREE.js robot viewer
+      document.dispatchEvent(
+        new CustomEvent("projectsRobotMouseMove", {
+          detail: {
+            x: mouseX,
+            y: mouseY,
+            clientX: clientX,
+            clientY: clientY
+          },
+        })
+      );
 
-        // First fade out the intro text overlay
-        if (introTextOverlay) {
-          introTextOverlay.classList.add('fading-out');
+      // Reset to inactive state after interaction stops
+      mouseTimeout = window.setTimeout(() => {
+        heroSection!.classList.remove('mouse-active');
+        mouseActive = false;
+
+        document.dispatchEvent(
+          new CustomEvent("projectsRobotMouseInactive", {
+            detail: { inactive: true },
+          })
+        );
+      }, 800);
+    };
+
+    // Track mouse/touch movement
+    if (heroSection && robotContainer) {
+      // MOUSE EVENTS
+      heroSection.addEventListener("mousemove", (e) => {
+        handleInteraction(e.clientX, e.clientY);
+      });
+
+      // TOUCH EVENTS for mobile
+      heroSection.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      }, { passive: false });
+
+      heroSection.addEventListener("touchstart", (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      });
+
+      heroSection.addEventListener("touchend", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
         }
 
-        // Wait for fade-out, then transition container
-        setTimeout(() => {
-          transitionToContainer();
-          markAnimationSeen('projects-intro');
-        }, 600); // Wait for fade animation
-      }
+        document.dispatchEvent(
+          new CustomEvent("projectsRobotMouseLeave", {
+            detail: { left: true },
+          })
+        );
+      });
 
-      // Start typewriter and show hint when complete
-      if (projectsText) {
-        typeWriter(projectsText, 'WORKSHOP', 100, () => {
-          // Show click hint after typewriter finishes
-          setTimeout(() => {
-            if (clickHint && !hasTransitioned) {
-              clickHint.classList.add('visible');
-            }
-          }, 300);
+      // Remove active state when mouse leaves
+      heroSection.addEventListener("mouseleave", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
+        }
+
+        document.dispatchEvent(
+          new CustomEvent("projectsRobotMouseLeave", {
+            detail: { left: true },
+          })
+        );
+      });
+
+      // Reactivate on mouse enter
+      heroSection.addEventListener("mouseenter", () => {
+        document.dispatchEvent(
+          new CustomEvent("projectsRobotMouseEnter", {
+            detail: { entered: true },
+          })
+        );
+      });
+    }
+
+    // ===== PARALLAX EFFECT ON SCROLL =====
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY;
+          const heroContent = document.querySelector(".hero-content");
+
+          if (heroContent && scrolled < window.innerHeight) {
+            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.7));
+            const translateY = scrolled * 0.3;
+            (heroContent as HTMLElement).style.opacity = opacity.toString();
+            (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
+          }
+
+          ticking = false;
         });
+        ticking = true;
       }
+    });
 
-      // Handle fullscreen intro transition
-      if (robotViewerWrapper) {
-        // Prevent scrolling during intro
-        document.body.classList.add("robot-intro-playing");
-
-        // Click anywhere to skip
-        if (introTextOverlay) {
-          introTextOverlay.addEventListener('click', handleTransition);
-        }
-
-        // Auto-transition after delay (if user doesn't click)
-        setTimeout(() => {
-          handleTransition();
-        }, 4500); // 4.5 seconds to allow typewriter + time to read
-      }
-    }
-
-    function transitionToContainer() {
-      if (!robotViewerWrapper) return;
-
-      // Add transitioning class for smoother animation
-      robotViewerWrapper.classList.add("transitioning");
-
-      // Brief delay for the transition effect to register
-      requestAnimationFrame(() => {
-        // Remove fullscreen class
-        robotViewerWrapper.classList.remove("fullscreen-intro");
-        robotViewerWrapper.classList.add("interactive");
-
-        // Re-enable scrolling
-        document.body.classList.remove("robot-intro-playing");
-
-        // Remove transitioning class after animation completes
-        setTimeout(() => {
-          robotViewerWrapper.classList.remove("transitioning");
-        }, 1200);
-      });
-    }
-
-    if (robotShowcase && expandButton && backdropOverlay) {
-      // Toggle expanded view
-      expandButton.addEventListener("click", (e) => {
-        e.stopPropagation(); // Prevent event from bubbling
-        e.preventDefault(); // Prevent navigation
-        toggleExpandedView();
-      });
-
-      // Allow clicking on backdrop to close expanded view
-      backdropOverlay.addEventListener("click", () => {
-        if (robotShowcase.classList.contains("expanded")) {
-          toggleExpandedView(false);
-        }
-      });
-
-      // Close on escape key
-      document.addEventListener("keydown", (e) => {
-        if (
-          e.key === "Escape" &&
-          robotShowcase.classList.contains("expanded")
-        ) {
-          toggleExpandedView(false);
-        }
-      });
-
-      // Function to toggle the expanded view state
-      function toggleExpandedView(expand: boolean | null = null) {
-        const shouldExpand =
-          expand !== null
-            ? expand
-            : robotShowcase && !robotShowcase.classList.contains("expanded");
-
-        if (shouldExpand) {
-          // Expand the view
-          if (robotShowcase) {
-            robotShowcase.classList.add("expanded");
-          }
-          if (backdropOverlay) {
-            backdropOverlay.classList.add("backdrop-visible");
-          }
-          document.body.style.overflow = "hidden"; // Prevent scrolling
-          if (expandButton) {
-            expandButton.setAttribute("aria-label", "Collapse robot view");
-            // Toggle icons - hide expand, show collapse
-            const expandIcon = expandButton.querySelector(".expand-icon");
-            const collapseIcon = expandButton.querySelector(".collapse-icon");
-            if (expandIcon) expandIcon.classList.add("hidden");
-            if (collapseIcon) collapseIcon.classList.remove("hidden");
-          }
-
-          // Dispatch custom event for the robot viewer to adjust its controls
-          document.dispatchEvent(
-            new CustomEvent("heavyRobotViewerStateChange", {
-              detail: { expanded: true },
-            })
-          );
-        } else {
-          // Collapse the view
-          if (robotShowcase) {
-            robotShowcase.classList.remove("expanded");
-          }
-          if (backdropOverlay) {
-            backdropOverlay.classList.remove("backdrop-visible");
-          }
-          document.body.style.overflow = ""; // Restore scrolling
-          if (expandButton) {
-            expandButton.setAttribute("aria-label", "Expand robot view");
-            // Toggle icons - show expand, hide collapse
-            const expandIcon = expandButton.querySelector(".expand-icon");
-            const collapseIcon = expandButton.querySelector(".collapse-icon");
-            if (expandIcon) expandIcon.classList.remove("hidden");
-            if (collapseIcon) collapseIcon.classList.add("hidden");
-          }
-
-          // Dispatch custom event for the robot viewer to adjust its controls
-          document.dispatchEvent(
-            new CustomEvent("heavyRobotViewerStateChange", {
-              detail: { expanded: false },
-            })
-          );
-        }
-      }
-    }
-
-    // Mouse-following glow effect for project cards
+    // ===== PROJECT CARD GLOW EFFECT =====
     const projectCards = document.querySelectorAll<HTMLElement>('.project-card');
 
     projectCards.forEach((card) => {

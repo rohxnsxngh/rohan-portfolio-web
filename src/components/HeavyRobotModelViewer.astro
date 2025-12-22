@@ -25,25 +25,8 @@ const {
   class={`heavy-robot-model-viewer-container group ${className}`}
   style={`--width: ${width}; --height: ${height};`}
 >
-  <!-- Corner accent marks -->
-  <div class="corner-accent corner-tl"></div>
-  <div class="corner-accent corner-tr"></div>
-  <div class="corner-accent corner-bl"></div>
-  <div class="corner-accent corner-br"></div>
-
-  <!-- Animated gradient border -->
-  <div class="gradient-border"></div>
-
-  <!-- Grid overlay -->
+  <!-- Grid overlay for texture -->
   <div class="grid-overlay"></div>
-
-  <!-- Floating badge -->
-  <div class="model-badge">
-    <svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-    </svg>
-    <span>Digital Workshop</span>
-  </div>
 
   <div id="heavy-robot-animation-container" class="model-display-container">
     <div class="loading-container">
@@ -162,9 +145,9 @@ const {
     controls.minPolarAngle = Math.PI / 4; // Allow more up-down rotation
     controls.maxPolarAngle = (3 * Math.PI) / 4;
 
-    // Allow more zooming range to accommodate the distant position
-    controls.minDistance = 50; // Minimum zoom distance
-    controls.maxDistance = 100; // Maximum zoom distance
+    // Disable zoom to allow page scrolling
+    controls.enableZoom = false;
+    controls.enablePan = false;
 
     // Add damping for smoother controls
     controls.enableDamping = true;
@@ -173,55 +156,38 @@ const {
     // Force an initial update to apply these settings
     // controls.update();
 
-    // Enhanced dramatic lighting setup for heavy robot
+    // Optimized lighting setup for heavy robot
     // Ambient light - keep it low for drama
     const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
     scene.add(ambientLight);
 
     // KEY LIGHT - Main directional light (strong, from top-right)
-    const mainLight = new THREE.DirectionalLight(0xffffff, 2.0);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
     mainLight.position.set(3, 5, 4);
     mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 2048;
-    mainLight.shadow.mapSize.height = 2048;
-    mainLight.shadow.bias = -0.001;
-    mainLight.shadow.camera.near = 0.5;
-    mainLight.shadow.camera.far = 20;
-    mainLight.shadow.camera.left = -5;
-    mainLight.shadow.camera.right = 5;
-    mainLight.shadow.camera.top = 5;
-    mainLight.shadow.camera.bottom = -5;
+    mainLight.shadow.mapSize.width = 512;
+    mainLight.shadow.mapSize.height = 512;
     scene.add(mainLight);
 
     // FILL LIGHT - Softer light from opposite side
-    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.5);
+    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.4);
     fillLight.position.set(-3, 2, 2);
     scene.add(fillLight);
 
     // CYAN ACCENT - Point light for color pop
-    const cyanAccent = new THREE.PointLight(0x00ffff, 1.5, 10);
+    const cyanAccent = new THREE.PointLight(0x00ffff, 0.8, 10);
     cyanAccent.position.set(-2, 1, 3);
     scene.add(cyanAccent);
 
     // MAGENTA ACCENT - Point light for complementary color
-    const magentaAccent = new THREE.PointLight(0xff00ff, 1.2, 10);
+    const magentaAccent = new THREE.PointLight(0xff00ff, 0.6, 10);
     magentaAccent.position.set(2, 0.5, -2);
     scene.add(magentaAccent);
 
     // RIM LIGHT - Strong backlight for silhouette definition
-    const rimLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.8);
     rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
-
-    // ANIMATED SPOTLIGHT - Draws attention
-    const spotlight = new THREE.SpotLight(0xffffff, 2.0);
-    spotlight.position.set(0, 6, 0);
-    spotlight.angle = Math.PI / 6;
-    spotlight.penumbra = 0.5;
-    spotlight.decay = 2;
-    spotlight.distance = 20;
-    spotlight.castShadow = true;
-    scene.add(spotlight);
 
     // Mouse-based lighting system
     mousePointLight = new THREE.PointLight(0xff6600, 0, 30, 1.0);
@@ -235,9 +201,8 @@ const {
     raycaster = new THREE.Raycaster();
     mouseVector = new THREE.Vector2();
 
-    // Store lights for animation
+    // Store lights for subtle animation (no spotlight for performance)
     animatedLights = {
-      spotlight,
       cyanAccent,
       magentaAccent
     };
@@ -359,18 +324,12 @@ const {
         _mixerRobot.update(delta);
       }
 
-      // Animate lights for dramatic effect
+      // Subtle light animations (optimized for performance)
       if (animatedLights) {
-        // Pulse spotlight intensity
-        animatedLights.spotlight.intensity = 1.5 + Math.sin(elapsed * 0.8) * 0.5;
-
         // Slowly rotate cyan accent
-        const cyanAngle = elapsed * 0.3;
+        const cyanAngle = elapsed * 0.2;
         animatedLights.cyanAccent.position.x = Math.cos(cyanAngle) * 3;
         animatedLights.cyanAccent.position.z = Math.sin(cyanAngle) * 3;
-
-        // Pulse magenta accent
-        animatedLights.magentaAccent.intensity = 1.0 + Math.sin(elapsed * 1.2) * 0.4;
       }
 
       // Update controls
@@ -512,6 +471,32 @@ const {
         }, 2000);
       });
     }
+
+    // ===== LISTEN FOR PAGE-LEVEL EVENTS (for hero section integration) =====
+    // This allows the model to respond to mouse events from the hero overlay
+    document.addEventListener('projectsRobotMouseMove', (e: any) => {
+      if (e.detail && mousePointLight && hemisphereLight && raycaster && mouseVector && camera && _robot) {
+        const { clientX, clientY } = e.detail;
+        updateLighting(clientX, clientY);
+      }
+    });
+
+    document.addEventListener('projectsRobotMouseInactive', () => {
+      fadeOutLights();
+    });
+
+    document.addEventListener('projectsRobotMouseLeave', () => {
+      isMouseOver = false;
+      fadeOutLights();
+    });
+
+    document.addEventListener('projectsRobotMouseEnter', () => {
+      isMouseOver = true;
+      if (mousePointLight && hemisphereLight) {
+        mousePointLight.intensity = 0;
+        hemisphereLight.intensity = 0;
+      }
+    });
   }
 
   function fadeOutLights() {
@@ -546,191 +531,19 @@ const {
     height: var(--height, 100%);
     width: var(--width, 100%);
     position: relative;
-    transition: transform 0.3s ease-out;
   }
 
-  /* Removed translateY hover effect to prevent clipping issues */
-  .heavy-robot-model-viewer-container:hover {
-    /* transform: translateY(-4px); */
-  }
-
-  /* Corner accent marks */
-  .corner-accent {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
-    z-index: 15;
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-
-  .corner-tl {
-    top: -1px;
-    left: -1px;
-    border-right: none;
-    border-bottom: none;
-    border-radius: 12px 0 0 0;
-  }
-
-  .corner-tr {
-    top: -1px;
-    right: -1px;
-    border-left: none;
-    border-bottom: none;
-    border-radius: 0 12px 0 0;
-  }
-
-  .corner-bl {
-    bottom: -1px;
-    left: -1px;
-    border-right: none;
-    border-top: none;
-    border-radius: 0 0 0 12px;
-  }
-
-  .corner-br {
-    bottom: -1px;
-    right: -1px;
-    border-left: none;
-    border-top: none;
-    border-radius: 0 0 12px 0;
-  }
-
-  .heavy-robot-model-viewer-container:hover .corner-accent {
-    width: 30px;
-    height: 30px;
-    border-color: rgba(255, 255, 255, 0.8);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
-  }
-
-  /* Animated gradient border */
-  .gradient-border {
-    position: absolute;
-    inset: -2px;
-    border-radius: 0.75rem;
-    padding: 2px;
-    background: linear-gradient(
-      45deg,
-      transparent,
-      rgba(0, 255, 255, 0.3),
-      transparent,
-      rgba(255, 0, 255, 0.3),
-      transparent
-    );
-    background-size: 200% 200%;
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: borderGlow 4s linear infinite;
-    opacity: 0.6;
-    pointer-events: none;
-    z-index: 5;
-  }
-
-  @keyframes borderGlow {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  .heavy-robot-model-viewer-container:hover .gradient-border {
-    opacity: 1;
-    animation-duration: 2s;
-  }
-
-  /* Grid overlay */
+  /* Grid overlay - subtle tech grid texture */
   .grid-overlay {
     position: absolute;
     inset: 0;
-    border-radius: 0.75rem;
     background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
+      linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
     pointer-events: none;
     z-index: 11;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .heavy-robot-model-viewer-container:hover .grid-overlay {
-    opacity: 1;
-  }
-
-  /* Floating badge */
-  .model-badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.9);
-    z-index: 15;
-    pointer-events: none;
-    animation: badgePulse 3s ease-in-out infinite;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  @keyframes badgePulse {
-    0%, 100% {
-      transform: scale(1);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    50% {
-      transform: scale(1.05);
-      box-shadow: 0 4px 20px rgba(0, 255, 255, 0.3);
-    }
-  }
-
-  .badge-icon {
-    width: 14px;
-    height: 14px;
-    animation: badgeRotate 8s linear infinite;
-  }
-
-  @keyframes badgeRotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .model-badge {
-      font-size: 9px;
-      padding: 4px 8px;
-    }
-
-    .badge-icon {
-      width: 12px;
-      height: 12px;
-    }
-
-    .corner-accent {
-      width: 15px;
-      height: 15px;
-    }
-
-    .heavy-robot-model-viewer-container:hover .corner-accent {
-      width: 20px;
-      height: 20px;
-    }
+    opacity: 0.5;
   }
 
   #heavy-robot-animation-container {
@@ -745,53 +558,13 @@ const {
     display: block;
   }
 
+  /* Seamless container - no borders, blends with page */
   .model-display-container {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 0.75rem;
     overflow: hidden;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(20, 20, 20, 0.95) 100%);
-    transition: all 0.4s ease-out;
+    background: #000000;
     z-index: 10;
     width: 100%;
     height: 100%;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      0 10px 30px rgba(0, 0, 0, 0.5);
-  }
-
-  .model-display-container:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 20px 40px rgba(0, 0, 0, 0.6),
-      0 0 40px rgba(0, 255, 255, 0.1),
-      0 0 80px rgba(255, 0, 255, 0.1);
-  }
-
-  /* Enhanced styles for expanded state */
-  :global(.expanded) .model-display-container {
-    background-color: rgba(0, 0, 0, 0.98);
-    border-color: rgba(var(--color-primary, 255, 255, 255), 0.4);
-    border-width: 2px;
-    box-shadow:
-      0 25px 50px -12px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(var(--color-primary, 255, 255, 255), 0.2);
-  }
-
-  .heavy-robot-model-viewer-container::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgba(var(--color-primary, 0, 0, 0), 0.2);
-    border-radius: 0.75rem;
-    transform: scale(1);
-    transition: all 0.3s ease-out;
-    z-index: 0;
-  }
-
-  .heavy-robot-model-viewer-container:hover::after {
-    transform: scale(1.05);
-    border-color: rgba(var(--color-primary, 0, 0, 0), 0.4);
   }
 
   .loading-container {
@@ -816,15 +589,6 @@ const {
   }
 
   #heavy-progress-bar::-webkit-progress-value {
-    background-color: rgba(var(--color-primary, 75, 85, 99), 0.8);
-  }
-
-  /* Style for expanded container */
-  :global(.expanded) .heavy-robot-model-viewer-container {
-    transform: none;
-  }
-
-  :global(.expanded) .heavy-robot-model-viewer-container::after {
-    opacity: 0;
+    background-color: rgba(255, 255, 255, 0.5);
   }
 </style>
