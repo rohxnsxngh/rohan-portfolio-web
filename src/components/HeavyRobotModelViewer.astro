@@ -209,16 +209,17 @@ const {
     scene.add(rimLight);
 
     // GRADIENT LIGHTING: Yellow (top) -> Orange (center) -> Red (bottom)
-    const yellowLight = new THREE.PointLight(0xffee00, 0, 25, 1.2);
-    yellowLight.position.set(0, 6, 5);
+    // Note: Heavy robot is at Z=-75, so lights need much larger distance/range
+    const yellowLight = new THREE.PointLight(0xffee00, 0, 150, 1.0);
+    yellowLight.position.set(0, 10, -60);
     scene.add(yellowLight);
 
-    mousePointLight = new THREE.PointLight(0xff8800, 0, 30, 1.0);
-    mousePointLight.position.set(0, 5, 5);
+    mousePointLight = new THREE.PointLight(0xff8800, 0, 200, 0.8);
+    mousePointLight.position.set(0, 5, -60);
     scene.add(mousePointLight);
 
-    const redLight = new THREE.PointLight(0xff2200, 0, 25, 1.2);
-    redLight.position.set(0, 4, 5);
+    const redLight = new THREE.PointLight(0xff2200, 0, 150, 1.0);
+    redLight.position.set(0, 0, -60);
     scene.add(redLight);
 
     hemisphereLight = new THREE.HemisphereLight(0xffcc44, 0x661100, 0);
@@ -542,29 +543,30 @@ const {
       mousePointLight.position.copy(lightPosition);
 
       // Position yellow light above and red light below for gradient effect
+      // Larger offsets for heavy robot scene (robot at Z=-75)
       if (animatedLights.yellowLight) {
         animatedLights.yellowLight.position.copy(lightPosition);
-        animatedLights.yellowLight.position.y += 1.2;
+        animatedLights.yellowLight.position.y += 15;
       }
       if (animatedLights.redLight) {
         animatedLights.redLight.position.copy(lightPosition);
-        animatedLights.redLight.position.y -= 1.0;
+        animatedLights.redLight.position.y -= 12;
       }
 
-      // Increase light visibility
-      const baseIntensity = 15.0;
+      // Increase light visibility (higher intensity for distant heavy robot)
+      const baseIntensity = 35.0;
       const targetIntensity = baseIntensity * intensityMultiplier;
 
       if (mousePointLight.intensity < targetIntensity) {
-        mousePointLight.intensity += 0.7;
+        mousePointLight.intensity += 1.5;
       }
 
       // Increase gradient lights
       if (animatedLights.yellowLight && animatedLights.yellowLight.intensity < targetIntensity * 0.7) {
-        animatedLights.yellowLight.intensity += 0.6;
+        animatedLights.yellowLight.intensity += 1.2;
       }
       if (animatedLights.redLight && animatedLights.redLight.intensity < targetIntensity * 0.8) {
-        animatedLights.redLight.intensity += 0.7;
+        animatedLights.redLight.intensity += 1.4;
       }
 
       if (hemisphereLight.intensity < 0.6) {
