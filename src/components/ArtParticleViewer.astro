@@ -3,17 +3,34 @@
 // Inspired by riot.vc with organic particle movement and mouse interaction
 interface Props {
   className?: string;
+  opacity?: number; // 0-1, controls overall particle brightness
+  listenToRobotEvents?: boolean; // Listen to robotMouseMove events (for homepage)
 }
 
-const { className = "" } = Astro.props;
+const {
+  className = "",
+  opacity = 1.0,
+  listenToRobotEvents = false
+} = Astro.props;
 ---
 
-<div class={`art-particle-container ${className}`}>
-  <div id="art-particle-canvas"></div>
+<div class={`art-particle-container ${className}`} data-opacity={opacity}>
+  <div class="art-particle-canvas-inner"></div>
 </div>
 
 <script>
   import * as THREE from "three";
+
+  // Get the canvas container
+  const container = document.querySelector(".art-particle-canvas-inner") as HTMLElement;
+  if (!container) throw new Error("Canvas container not found");
+
+  // Get opacity from parent data attribute
+  const parentContainer = container.closest('.art-particle-container') as HTMLElement;
+  const OPACITY_MULTIPLIER = parseFloat(parentContainer?.dataset.opacity || '1.0');
+
+  // Always listen for robot events - they only fire on the homepage anyway
+  const LISTEN_TO_ROBOT_EVENTS = true;
 
   // Simplex noise implementation for organic movement
   class SimplexNoise {
@@ -101,9 +118,6 @@ const { className = "" } = Astro.props;
   const MOUSE_REPEL_STRENGTH = 0.8;
 
   // Scene setup
-  const container = document.getElementById("art-particle-canvas");
-  if (!container) throw new Error("Canvas container not found");
-
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
 
@@ -280,6 +294,8 @@ const { className = "" } = Astro.props;
   `;
 
   const fragmentShader = `
+    uniform float uOpacityMultiplier;
+
     varying float vOpacity;
     varying float vDistanceFromCenter;
 
@@ -293,14 +309,18 @@ const { className = "" } = Astro.props;
       alpha *= vOpacity;
 
       // Fade particles at edges
-      alpha *= (1.0 - vDistanceFromCenter * 0.5);
+      alpha *= (1.0 - vDistanceFromCenter * 0.6);
 
-      // Slight color variation based on distance
-      vec3 color = mix(
-        vec3(0.9, 0.9, 1.0),  // Slightly blue-white
-        vec3(0.7, 0.7, 0.8),  // Dimmer at edges
-        vDistanceFromCenter
-      );
+      // Apply global opacity multiplier
+      alpha *= uOpacityMultiplier;
+
+      // Warm color gradient: deep red-orange at center → lighter yellow-orange at edges
+      vec3 innerColor = vec3(0.6, 0.15, 0.05);   // Deep red-orange (darker)
+      vec3 outerColor = vec3(0.9, 0.5, 0.15);    // Yellow-orange (lighter)
+      vec3 color = mix(innerColor, outerColor, vDistanceFromCenter);
+
+      // Reduce overall brightness for background feel
+      color *= 0.7;
 
       if (alpha < 0.01) discard;
 
@@ -315,6 +335,7 @@ const { className = "" } = Astro.props;
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(0, 0) },
       uMouseInfluence: { value: 0 },
+      uOpacityMultiplier: { value: OPACITY_MULTIPLIER },
     },
     transparent: true,
     blending: THREE.AdditiveBlending,
@@ -362,6 +383,30 @@ const { className = "" } = Astro.props;
   container.addEventListener("touchend", () => {
     targetMouseInfluence = 0;
   });
+
+  // Listen to robot mouse events (for homepage integration)
+  if (LISTEN_TO_ROBOT_EVENTS) {
+    document.addEventListener('robotMouseMove', (e: any) => {
+      if (e.detail) {
+        const { x, y } = e.detail; // Normalized 0-1 coordinates
+        // Convert from 0-1 to -1 to 1 range
+        mouseX = x * 2 - 1;
+        mouseY = -(y * 2 - 1); // Invert Y
+        targetMouseInfluence = 1;
+        isMouseInView = true;
+      }
+    });
+
+    document.addEventListener('robotMouseLeave', () => {
+      targetMouseInfluence = 0;
+      isMouseInView = false;
+    });
+
+    document.addEventListener('robotMouseInactive', () => {
+      targetMouseInfluence = 0;
+      isMouseInView = false;
+    });
+  }
 
   // Animation
   const clock = new THREE.Clock();
@@ -446,12 +491,12 @@ const { className = "" } = Astro.props;
     overflow: hidden;
   }
 
-  #art-particle-canvas {
+  .art-particle-canvas-inner {
     width: 100%;
     height: 100%;
   }
 
-  #art-particle-canvas canvas {
+  .art-particle-canvas-inner canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;

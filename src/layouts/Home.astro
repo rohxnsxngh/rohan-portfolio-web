@@ -1,13 +1,19 @@
 ---
 import RobotModelViewer from "../components/RobotModelViewer.astro";
+import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 ---
 
 <div
   class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
   id="hero-section"
 >
-  <!-- FULL PAGE ROBOT BACKGROUND -->
-  <div class="robot-background-container absolute inset-0 z-0" id="robot-container">
+  <!-- PARTICLE EFFECT - Lowest layer -->
+  <div class="particle-background absolute inset-0 z-0">
+    <ArtParticleViewer className="home-particles" opacity={0.25} listenToRobotEvents={true} />
+  </div>
+
+  <!-- FULL PAGE ROBOT BACKGROUND - Above particles -->
+  <div class="robot-background-container absolute inset-0 z-[1]" id="robot-container">
     <div class="robot-frame-fullscreen w-full h-full">
       <div class="w-full h-full robot-viewer" id="robot-viewer">
         <RobotModelViewer />
@@ -19,10 +25,10 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   </div>
 
   <!-- Tech grid overlay for texture -->
-  <div class="absolute inset-0 tech-grid opacity-10 z-[5] pointer-events-none"></div>
+  <div class="absolute inset-0 tech-grid opacity-10 z-[6] pointer-events-none"></div>
 
   <!-- Main content - layered on top with semi-transparent effect -->
-  <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
+  <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
     <div class="max-w-7xl mx-auto">
 
       <!-- Small intro label -->
@@ -287,6 +293,17 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   .info-item:nth-child(1) { animation-delay: 1.3s; }
   .info-item:nth-child(2) { animation-delay: 1.4s; }
   .info-item:nth-child(3) { animation-delay: 1.5s; }
+
+  /* ===== PARTICLE BACKGROUND ===== */
+  .particle-background {
+    opacity: 0.7;
+    transition: opacity 0.5s ease;
+  }
+
+  /* Particles more visible when mouse active */
+  .hero-section.mouse-active .particle-background {
+    opacity: 1;
+  }
 
   /* ===== ROBOT AS FULL BACKGROUND ===== */
 

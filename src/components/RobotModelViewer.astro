@@ -98,12 +98,10 @@ const {
 
   // Initialize scene
   function initScene() {
-    // Convert hex color to THREE.js color
-    const bgColor = new THREE.Color(backgroundColor);
-
     // Simple scene setup
     scene = new THREE.Scene();
-    scene.background = bgColor;
+    // Transparent background to allow particle effect to show through
+    scene.background = null;
 
     camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 
@@ -114,7 +112,11 @@ const {
       antialias: !isLargeViewport, // Disable AA on large screens
       powerPreference: "high-performance",
       precision: "mediump", // Medium precision is sufficient and faster
+      alpha: true, // Enable transparency
     });
+
+    // Set clear color to transparent
+    renderer.setClearColor(0x000000, 0);
 
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -542,7 +544,7 @@ const {
 
   .model-display-container {
     overflow: hidden;
-    background: #000000;
+    background: transparent;
     z-index: 10;
     width: 100%;
     height: 100%;
