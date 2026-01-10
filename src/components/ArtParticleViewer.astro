@@ -1,0 +1,459 @@
+---
+// ArtParticleViewer.astro - Interactive particle effect hero for the art page
+// Inspired by riot.vc with organic particle movement and mouse interaction
+interface Props {
+  className?: string;
+}
+
+const { className = "" } = Astro.props;
+---
+
+<div class={`art-particle-container ${className}`}>
+  <div id="art-particle-canvas"></div>
+</div>
+
+<script>
+  import * as THREE from "three";
+
+  // Simplex noise implementation for organic movement
+  class SimplexNoise {
+    private p: number[];
+    private perm: number[];
+    private grad3: number[][];
+
+    constructor() {
+      this.grad3 = [
+        [1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+        [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+        [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]
+      ];
+      this.p = [];
+      for (let i = 0; i < 256; i++) {
+        this.p[i] = Math.floor(Math.random() * 256);
+      }
+      this.perm = [];
+      for (let i = 0; i < 512; i++) {
+        this.perm[i] = this.p[i & 255];
+      }
+    }
+
+    dot(g: number[], x: number, y: number, z: number): number {
+      return g[0] * x + g[1] * y + g[2] * z;
+    }
+
+    noise3d(x: number, y: number, z: number): number {
+      const F3 = 1.0 / 3.0;
+      const G3 = 1.0 / 6.0;
+      let s = (x + y + z) * F3;
+      let i = Math.floor(x + s);
+      let j = Math.floor(y + s);
+      let k = Math.floor(z + s);
+      let t = (i + j + k) * G3;
+      let X0 = i - t;
+      let Y0 = j - t;
+      let Z0 = k - t;
+      let x0 = x - X0;
+      let y0 = y - Y0;
+      let z0 = z - Z0;
+      let i1, j1, k1, i2, j2, k2;
+      if (x0 >= y0) {
+        if (y0 >= z0) { i1=1; j1=0; k1=0; i2=1; j2=1; k2=0; }
+        else if (x0 >= z0) { i1=1; j1=0; k1=0; i2=1; j2=0; k2=1; }
+        else { i1=0; j1=0; k1=1; i2=1; j2=0; k2=1; }
+      } else {
+        if (y0 < z0) { i1=0; j1=0; k1=1; i2=0; j2=1; k2=1; }
+        else if (x0 < z0) { i1=0; j1=1; k1=0; i2=0; j2=1; k2=1; }
+        else { i1=0; j1=1; k1=0; i2=1; j2=1; k2=0; }
+      }
+      let x1 = x0 - i1 + G3;
+      let y1 = y0 - j1 + G3;
+      let z1 = z0 - k1 + G3;
+      let x2 = x0 - i2 + 2.0 * G3;
+      let y2 = y0 - j2 + 2.0 * G3;
+      let z2 = z0 - k2 + 2.0 * G3;
+      let x3 = x0 - 1.0 + 3.0 * G3;
+      let y3 = y0 - 1.0 + 3.0 * G3;
+      let z3 = z0 - 1.0 + 3.0 * G3;
+      let ii = i & 255;
+      let jj = j & 255;
+      let kk = k & 255;
+      let gi0 = this.perm[ii + this.perm[jj + this.perm[kk]]] % 12;
+      let gi1 = this.perm[ii + i1 + this.perm[jj + j1 + this.perm[kk + k1]]] % 12;
+      let gi2 = this.perm[ii + i2 + this.perm[jj + j2 + this.perm[kk + k2]]] % 12;
+      let gi3 = this.perm[ii + 1 + this.perm[jj + 1 + this.perm[kk + 1]]] % 12;
+      let t0 = 0.6 - x0*x0 - y0*y0 - z0*z0;
+      let n0 = t0 < 0 ? 0 : (t0 *= t0, t0 * t0 * this.dot(this.grad3[gi0], x0, y0, z0));
+      let t1 = 0.6 - x1*x1 - y1*y1 - z1*z1;
+      let n1 = t1 < 0 ? 0 : (t1 *= t1, t1 * t1 * this.dot(this.grad3[gi1], x1, y1, z1));
+      let t2 = 0.6 - x2*x2 - y2*y2 - z2*z2;
+      let n2 = t2 < 0 ? 0 : (t2 *= t2, t2 * t2 * this.dot(this.grad3[gi2], x2, y2, z2));
+      let t3 = 0.6 - x3*x3 - y3*y3 - z3*z3;
+      let n3 = t3 < 0 ? 0 : (t3 *= t3, t3 * t3 * this.dot(this.grad3[gi3], x3, y3, z3));
+      return 32.0 * (n0 + n1 + n2 + n3);
+    }
+  }
+
+  // Configuration
+  const PARTICLE_COUNT = 15000;
+  const PARTICLE_SIZE = 2.5;
+  const SPREAD = 12;
+  const MOUSE_INFLUENCE_RADIUS = 3.0;
+  const MOUSE_REPEL_STRENGTH = 0.8;
+
+  // Scene setup
+  const container = document.getElementById("art-particle-canvas");
+  if (!container) throw new Error("Canvas container not found");
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
+
+  const camera = new THREE.PerspectiveCamera(
+    60,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000
+  );
+  camera.position.z = 20;
+
+  const renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    powerPreference: "high-performance",
+  });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+
+  // Initialize noise
+  const noise = new SimplexNoise();
+
+  // Create particle system with instanced geometry
+  const geometry = new THREE.BufferGeometry();
+
+  // Initial positions - distributed in a spherical cloud
+  const positions = new Float32Array(PARTICLE_COUNT * 3);
+  const originalPositions = new Float32Array(PARTICLE_COUNT * 3);
+  const velocities = new Float32Array(PARTICLE_COUNT * 3);
+  const sizes = new Float32Array(PARTICLE_COUNT);
+  const opacities = new Float32Array(PARTICLE_COUNT);
+  const randomOffsets = new Float32Array(PARTICLE_COUNT);
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    // Spherical distribution with some randomness
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = Math.pow(Math.random(), 0.5) * SPREAD;
+
+    const x = r * Math.sin(phi) * Math.cos(theta);
+    const y = r * Math.sin(phi) * Math.sin(theta);
+    const z = r * Math.cos(phi) * 0.3; // Flatten slightly
+
+    positions[i * 3] = x;
+    positions[i * 3 + 1] = y;
+    positions[i * 3 + 2] = z;
+
+    originalPositions[i * 3] = x;
+    originalPositions[i * 3 + 1] = y;
+    originalPositions[i * 3 + 2] = z;
+
+    velocities[i * 3] = 0;
+    velocities[i * 3 + 1] = 0;
+    velocities[i * 3 + 2] = 0;
+
+    sizes[i] = Math.random() * PARTICLE_SIZE + 0.5;
+    opacities[i] = Math.random() * 0.5 + 0.3;
+    randomOffsets[i] = Math.random() * 1000;
+  }
+
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+  geometry.setAttribute("opacity", new THREE.BufferAttribute(opacities, 1));
+  geometry.setAttribute("randomOffset", new THREE.BufferAttribute(randomOffsets, 1));
+
+  // Custom shader material for particles
+  const vertexShader = `
+    attribute float size;
+    attribute float opacity;
+    attribute float randomOffset;
+
+    uniform float uTime;
+    uniform vec2 uMouse;
+    uniform float uMouseInfluence;
+
+    varying float vOpacity;
+    varying float vDistanceFromCenter;
+
+    // Simplex noise function
+    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+    vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+    vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+    float snoise(vec3 v) {
+      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+      vec3 i  = floor(v + dot(v, C.yyy));
+      vec3 x0 = v - i + dot(i, C.xxx);
+      vec3 g = step(x0.yzx, x0.xyz);
+      vec3 l = 1.0 - g;
+      vec3 i1 = min(g.xyz, l.zxy);
+      vec3 i2 = max(g.xyz, l.zxy);
+      vec3 x1 = x0 - i1 + C.xxx;
+      vec3 x2 = x0 - i2 + C.yyy;
+      vec3 x3 = x0 - D.yyy;
+      i = mod289(i);
+      vec4 p = permute(permute(permute(
+                i.z + vec4(0.0, i1.z, i2.z, 1.0))
+              + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+              + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+      float n_ = 0.142857142857;
+      vec3 ns = n_ * D.wyz - D.xzx;
+      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+      vec4 x_ = floor(j * ns.z);
+      vec4 y_ = floor(j - 7.0 * x_);
+      vec4 x = x_ *ns.x + ns.yyyy;
+      vec4 y = y_ *ns.x + ns.yyyy;
+      vec4 h = 1.0 - abs(x) - abs(y);
+      vec4 b0 = vec4(x.xy, y.xy);
+      vec4 b1 = vec4(x.zw, y.zw);
+      vec4 s0 = floor(b0)*2.0 + 1.0;
+      vec4 s1 = floor(b1)*2.0 + 1.0;
+      vec4 sh = -step(h, vec4(0.0));
+      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+      vec3 p0 = vec3(a0.xy, h.x);
+      vec3 p1 = vec3(a0.zw, h.y);
+      vec3 p2 = vec3(a1.xy, h.z);
+      vec3 p3 = vec3(a1.zw, h.w);
+      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+      p0 *= norm.x;
+      p1 *= norm.y;
+      p2 *= norm.z;
+      p3 *= norm.w;
+      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+      m = m * m;
+      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+    }
+
+    void main() {
+      vOpacity = opacity;
+
+      // Calculate noise-based displacement
+      float noiseScale = 0.15;
+      float timeScale = 0.3;
+
+      vec3 noisePos = position * noiseScale + vec3(randomOffset * 0.01);
+      float noiseX = snoise(noisePos + vec3(uTime * timeScale, 0.0, 0.0));
+      float noiseY = snoise(noisePos + vec3(0.0, uTime * timeScale, 100.0));
+      float noiseZ = snoise(noisePos + vec3(0.0, 0.0, uTime * timeScale + 200.0));
+
+      vec3 displacement = vec3(noiseX, noiseY, noiseZ) * 1.5;
+      vec3 newPosition = position + displacement;
+
+      // Mouse influence - repel particles
+      vec4 worldPos = modelMatrix * vec4(newPosition, 1.0);
+      vec4 viewPos = viewMatrix * worldPos;
+
+      // Project mouse to 3D space at particle depth
+      float mouseZ = viewPos.z;
+      vec3 mousePos3D = vec3(uMouse.x * 15.0, uMouse.y * 10.0, 0.0);
+
+      float distToMouse = distance(newPosition.xy, mousePos3D.xy);
+      float mouseEffect = smoothstep(${MOUSE_INFLUENCE_RADIUS.toFixed(1)}, 0.0, distToMouse) * uMouseInfluence;
+
+      if (distToMouse < ${MOUSE_INFLUENCE_RADIUS.toFixed(1)} && uMouseInfluence > 0.0) {
+        vec2 repelDir = normalize(newPosition.xy - mousePos3D.xy);
+        newPosition.xy += repelDir * mouseEffect * ${MOUSE_REPEL_STRENGTH.toFixed(1)};
+        // Add slight z movement for depth effect
+        newPosition.z += mouseEffect * 0.5;
+      }
+
+      // Distance from center for fading
+      vDistanceFromCenter = length(position.xy) / ${SPREAD.toFixed(1)};
+
+      vec4 mvPosition = modelViewMatrix * vec4(newPosition, 1.0);
+      gl_Position = projectionMatrix * mvPosition;
+
+      // Size attenuation
+      gl_PointSize = size * (200.0 / -mvPosition.z);
+      gl_PointSize *= (1.0 - vDistanceFromCenter * 0.3);
+    }
+  `;
+
+  const fragmentShader = `
+    varying float vOpacity;
+    varying float vDistanceFromCenter;
+
+    void main() {
+      // Create circular particle with soft edge
+      vec2 center = gl_PointCoord - vec2(0.5);
+      float dist = length(center);
+
+      // Soft circular falloff
+      float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+      alpha *= vOpacity;
+
+      // Fade particles at edges
+      alpha *= (1.0 - vDistanceFromCenter * 0.5);
+
+      // Slight color variation based on distance
+      vec3 color = mix(
+        vec3(0.9, 0.9, 1.0),  // Slightly blue-white
+        vec3(0.7, 0.7, 0.8),  // Dimmer at edges
+        vDistanceFromCenter
+      );
+
+      if (alpha < 0.01) discard;
+
+      gl_FragColor = vec4(color, alpha);
+    }
+  `;
+
+  const material = new THREE.ShaderMaterial({
+    vertexShader,
+    fragmentShader,
+    uniforms: {
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0, 0) },
+      uMouseInfluence: { value: 0 },
+    },
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+  });
+
+  const particles = new THREE.Points(geometry, material);
+  scene.add(particles);
+
+  // Mouse tracking
+  let mouseX = 0;
+  let mouseY = 0;
+  let targetMouseInfluence = 0;
+  let currentMouseInfluence = 0;
+  let isMouseInView = false;
+
+  // Handle mouse movement
+  function handleMouseMove(e: MouseEvent) {
+    const rect = container!.getBoundingClientRect();
+    mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    targetMouseInfluence = 1;
+    isMouseInView = true;
+  }
+
+  function handleMouseLeave() {
+    targetMouseInfluence = 0;
+    isMouseInView = false;
+  }
+
+  container.addEventListener("mousemove", handleMouseMove);
+  container.addEventListener("mouseleave", handleMouseLeave);
+
+  // Touch support
+  container.addEventListener("touchmove", (e) => {
+    if (e.touches.length > 0) {
+      const touch = e.touches[0];
+      const rect = container!.getBoundingClientRect();
+      mouseX = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseY = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+      targetMouseInfluence = 1;
+    }
+  });
+
+  container.addEventListener("touchend", () => {
+    targetMouseInfluence = 0;
+  });
+
+  // Animation
+  const clock = new THREE.Clock();
+  let animationId: number;
+
+  function animate() {
+    animationId = requestAnimationFrame(animate);
+
+    const elapsed = clock.getElapsedTime();
+
+    // Smooth mouse influence transition
+    currentMouseInfluence += (targetMouseInfluence - currentMouseInfluence) * 0.1;
+
+    // Update uniforms
+    material.uniforms.uTime.value = elapsed;
+    material.uniforms.uMouse.value.set(mouseX, mouseY);
+    material.uniforms.uMouseInfluence.value = currentMouseInfluence;
+
+    // Gentle camera movement
+    camera.position.x = Math.sin(elapsed * 0.1) * 0.5;
+    camera.position.y = Math.cos(elapsed * 0.15) * 0.3;
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+  }
+
+  animate();
+
+  // Handle resize
+  function handleResize() {
+    if (!container) return;
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  }
+
+  window.addEventListener("resize", handleResize);
+
+  // Intersection observer for performance - pause when not visible
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (!animationId) animate();
+        } else {
+          if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = 0;
+          }
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  observer.observe(container);
+
+  // Cleanup on page navigation
+  document.addEventListener("astro:before-swap", () => {
+    if (animationId) cancelAnimationFrame(animationId);
+    observer.disconnect();
+    renderer.dispose();
+    geometry.dispose();
+    material.dispose();
+  });
+</script>
+
+<style>
+  .art-particle-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  #art-particle-canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  #art-particle-canvas canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+</style>

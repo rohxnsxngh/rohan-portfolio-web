@@ -2,6 +2,7 @@
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 
 const artworks = [
   {
@@ -31,28 +32,48 @@ const artworks = [
   <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
+        <!-- HERO SECTION WITH PARTICLE EFFECT -->
+        <div class="hero-section relative w-full h-screen overflow-hidden">
+          <!-- Particle background -->
+          <ArtParticleViewer />
+
+          <!-- Dark overlay -->
+          <div class="hero-overlay absolute inset-0 bg-black/70 pointer-events-none"></div>
+
+          <!-- Hero content -->
+          <div class="hero-content absolute inset-0 flex flex-col items-center justify-center z-10">
+            <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none text-center">
+              <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
+            </h1>
+            <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
+              // CREATIVE CORNER
+            </p>
+            <p class="hero-description text-primary/60 text-center max-w-xl mt-4 px-6">
+              Hand-drawn illustrations, digital explorations, and visual experiments
+            </p>
+
+            <!-- Scroll indicator -->
+            <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+              <span class="text-primary/40 text-xs font-mono tracking-wider">SCROLL</span>
+              <svg class="w-5 h-5 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
         <div class="relative overflow-hidden">
           <!-- Tech grid overlay for texture -->
           <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
           <!-- Main Content -->
           <div class="relative z-10 sm:px-20 px-6 py-12">
-            <!-- BOLD HEADER SECTION -->
+            <!-- Gallery header -->
             <div class="header-section mb-16">
-              <h1 class="art-title font-mono font-black tracking-tighter leading-none select-none">
-                <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
-              </h1>
-              <div class="accent-line mt-6"></div>
-            </div>
-
-            <!-- Intro Section -->
-            <div class="intro-section mb-16 max-w-3xl">
-              <p class="intro-label font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
-                // CREATIVE CORNER
-              </p>
-              <p class="intro-text text-lg sm:text-xl text-primary/70 leading-relaxed">
-                Hand-drawn illustrations and visual experiments.
-              </p>
+              <h2 class="section-title font-mono font-bold text-2xl sm:text-3xl text-primary/90 mb-4">
+                Gallery
+              </h2>
+              <div class="accent-line"></div>
             </div>
 
             <!-- Gallery Section -->
@@ -121,56 +142,44 @@ const artworks = [
 </Layout>
 
 <style>
-  /* Tech grid background */
-  .tech-grid {
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
+  /* ===== HERO SECTION ===== */
+  .hero-section {
+    min-height: 100vh;
+    background: #000000;
   }
 
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
+  .hero-overlay {
+    transition: opacity 0.3s ease;
   }
 
-  /* BOLD ART TITLE */
-  .art-title {
-    font-size: clamp(4rem, 18vw, 16rem);
+  .hero-content {
+    pointer-events: none;
+  }
+
+  /* Hero title - large dramatic text */
+  .hero-title {
+    font-size: clamp(6rem, 25vw, 20rem);
     line-height: 0.85;
     letter-spacing: -0.08em;
     color: #ffffff;
     text-transform: uppercase;
-    opacity: 0;
-    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
-      0 6px 45px rgba(0, 0, 0, 0.7);
-  }
-
-  @keyframes titleReveal {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+      0 6px 45px rgba(0, 0, 0, 0.7),
+      0 0 100px rgba(255, 255, 255, 0.1);
   }
 
   /* Individual character animations */
-  .art-title .char {
+  .hero-title .char {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
     animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
+  .char-1 { animation-delay: 0.2s; }
+  .char-2 { animation-delay: 0.35s; }
+  .char-3 { animation-delay: 0.5s; }
 
   @keyframes charReveal {
     0% {
@@ -186,26 +195,58 @@ const artworks = [
     }
   }
 
+  .hero-subtitle {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+    animation-delay: 0.7s;
+  }
+
+  .hero-description {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+    animation-delay: 0.9s;
+  }
+
+  .scroll-indicator {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+    animation-delay: 1.2s;
+  }
+
+  /* ===== GALLERY SECTION ===== */
+  /* Tech grid background */
+  .tech-grid {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: gridPan 60s linear infinite;
+  }
+
+  @keyframes gridPan {
+    0% { background-position: 0 0; }
+    100% { background-position: 100px 100px; }
+  }
+
+  /* Section title */
+  .section-title {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
   /* Accent line */
   .accent-line {
-    height: 3px;
+    height: 2px;
     width: 0;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.5s;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
+    animation: lineExpand 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.3s;
   }
 
   @keyframes lineExpand {
     to {
-      width: 200px;
+      width: 120px;
     }
-  }
-
-  /* INTRO SECTION */
-  .intro-section {
-    opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.6s;
   }
 
   @keyframes fadeInUp {
