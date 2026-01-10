@@ -5,16 +5,18 @@ interface Props {
   className?: string;
   opacity?: number; // 0-1, controls overall particle brightness
   listenToRobotEvents?: boolean; // Listen to robotMouseMove events (for homepage)
+  mouseRadius?: number; // Radius of mouse distortion effect (default 3.0)
 }
 
 const {
   className = "",
   opacity = 1.0,
-  listenToRobotEvents = false
+  listenToRobotEvents = false,
+  mouseRadius = 3.0
 } = Astro.props;
 ---
 
-<div class={`art-particle-container ${className}`} data-opacity={opacity}>
+<div class={`art-particle-container ${className}`} data-opacity={opacity} data-mouse-radius={mouseRadius}>
   <div class="art-particle-canvas-inner"></div>
 </div>
 
@@ -30,9 +32,10 @@ const {
   const container = document.querySelector(".art-particle-canvas-inner") as HTMLElement;
   if (!container) throw new Error("Canvas container not found");
 
-  // Get opacity from parent data attribute
+  // Get opacity and mouse radius from parent data attributes
   const parentContainer = container.closest('.art-particle-container') as HTMLElement;
   const OPACITY_MULTIPLIER = parseFloat(parentContainer?.dataset.opacity || '1.0');
+  const MOUSE_RADIUS_FROM_PROP = parseFloat(parentContainer?.dataset.mouseRadius || '3.0');
 
   // Always listen for robot events - they only fire on the homepage anyway
   const LISTEN_TO_ROBOT_EVENTS = true;
@@ -119,7 +122,7 @@ const {
   const PARTICLE_COUNT = 15000;
   const PARTICLE_SIZE = 2.5;
   const SPREAD = 12;
-  const MOUSE_INFLUENCE_RADIUS = 3.0;
+  const MOUSE_INFLUENCE_RADIUS = MOUSE_RADIUS_FROM_PROP;
   const MOUSE_REPEL_STRENGTH = 0.8;
 
   // Scene setup
@@ -424,9 +427,9 @@ const {
     };
 
     // Listen to all page-specific robot/keyboard events
-    const moveEvents = ['robotMouseMove', 'projectsRobotMouseMove', 'blogRobotMouseMove', 'blogKeyboardMouseMove', 'contactRobotMouseMove'];
-    const leaveEvents = ['robotMouseLeave', 'projectsRobotMouseLeave', 'blogRobotMouseLeave', 'blogKeyboardMouseLeave', 'contactRobotMouseLeave'];
-    const inactiveEvents = ['robotMouseInactive', 'projectsRobotMouseInactive', 'blogRobotMouseInactive', 'blogKeyboardMouseInactive', 'contactRobotMouseInactive'];
+    const moveEvents = ['robotMouseMove', 'projectsRobotMouseMove', 'blogRobotMouseMove', 'blogKeyboardMouseMove', 'contactRobotMouseMove', 'researchMouseMove', 'forgeMouseMove'];
+    const leaveEvents = ['robotMouseLeave', 'projectsRobotMouseLeave', 'blogRobotMouseLeave', 'blogKeyboardMouseLeave', 'contactRobotMouseLeave', 'researchMouseLeave', 'forgeMouseLeave'];
+    const inactiveEvents = ['robotMouseInactive', 'projectsRobotMouseInactive', 'blogRobotMouseInactive', 'blogKeyboardMouseInactive', 'contactRobotMouseInactive', 'researchMouseInactive', 'forgeMouseInactive'];
 
     moveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseMove));
     leaveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseInactive));
