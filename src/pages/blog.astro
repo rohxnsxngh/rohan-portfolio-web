@@ -3,6 +3,7 @@ import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
 import BlogRobotViewer from "../components/BlogRobotViewer.astro";
+import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 import { calculateReadingTime, formatReadingTime } from "../utils/readingTime";
 
 import { getCollection } from "astro:content";
@@ -100,8 +101,13 @@ if (otherArticles.length > 0) {
       class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
       id="hero-section"
     >
-      <!-- FULL PAGE KEYBOARD BACKGROUND -->
-      <div class="robot-background-container absolute inset-0 z-0" id="robot-container">
+      <!-- PARTICLE EFFECT - Lowest layer -->
+      <div class="particle-background absolute inset-0 z-0">
+        <ArtParticleViewer className="blog-particles" opacity={0.25} listenToRobotEvents={true} />
+      </div>
+
+      <!-- FULL PAGE KEYBOARD BACKGROUND - Above particles -->
+      <div class="robot-background-container absolute inset-0 z-[1]" id="robot-container">
         <div class="robot-frame-fullscreen w-full h-full">
           <div class="w-full h-full robot-viewer" id="robot-viewer">
             <BlogRobotViewer />
@@ -113,10 +119,10 @@ if (otherArticles.length > 0) {
       </div>
 
       <!-- Tech grid overlay for texture -->
-      <div class="absolute inset-0 tech-grid opacity-10 z-[5] pointer-events-none"></div>
+      <div class="absolute inset-0 tech-grid opacity-10 z-[6] pointer-events-none"></div>
 
       <!-- Main content - layered on top -->
-      <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
+      <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
         <div class="max-w-7xl mx-auto">
           <!-- Small intro label -->
           <div class="label-intro mb-6 sm:mb-8">
@@ -612,6 +618,16 @@ if (otherArticles.length > 0) {
 
   .cta-secondary:hover {
     text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* ===== PARTICLE BACKGROUND ===== */
+  .particle-background {
+    opacity: 0.7;
+    transition: opacity 0.5s ease;
+  }
+
+  .hero-section.mouse-active .particle-background {
+    opacity: 1;
   }
 
   /* ===== KEYBOARD AS FULL BACKGROUND ===== */

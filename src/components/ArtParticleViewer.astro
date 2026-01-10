@@ -314,13 +314,10 @@ const {
       // Apply global opacity multiplier
       alpha *= uOpacityMultiplier;
 
-      // Warm color gradient: deep red-orange at center → lighter yellow-orange at edges
-      vec3 innerColor = vec3(0.6, 0.15, 0.05);   // Deep red-orange (darker)
-      vec3 outerColor = vec3(0.9, 0.5, 0.15);    // Yellow-orange (lighter)
+      // Neutral gradient: almost black at center → soft white at edges
+      vec3 innerColor = vec3(0.08, 0.08, 0.1);   // Very dark (almost black, slight blue tint)
+      vec3 outerColor = vec3(0.7, 0.7, 0.75);    // Soft white/light gray
       vec3 color = mix(innerColor, outerColor, vDistanceFromCenter);
-
-      // Reduce overall brightness for background feel
-      color *= 0.7;
 
       if (alpha < 0.01) discard;
 
@@ -384,9 +381,10 @@ const {
     targetMouseInfluence = 0;
   });
 
-  // Listen to robot mouse events (for homepage integration)
+  // Listen to robot mouse events from all pages (home, projects, blog, contact)
   if (LISTEN_TO_ROBOT_EVENTS) {
-    document.addEventListener('robotMouseMove', (e: any) => {
+    // Handler for mouse move events
+    const handleRobotMouseMove = (e: any) => {
       if (e.detail) {
         const { x, y } = e.detail; // Normalized 0-1 coordinates
         // Convert from 0-1 to -1 to 1 range
@@ -395,17 +393,22 @@ const {
         targetMouseInfluence = 1;
         isMouseInView = true;
       }
-    });
+    };
 
-    document.addEventListener('robotMouseLeave', () => {
+    // Handler for mouse leave/inactive events
+    const handleRobotMouseInactive = () => {
       targetMouseInfluence = 0;
       isMouseInView = false;
-    });
+    };
 
-    document.addEventListener('robotMouseInactive', () => {
-      targetMouseInfluence = 0;
-      isMouseInView = false;
-    });
+    // Listen to all page-specific robot/keyboard events
+    const moveEvents = ['robotMouseMove', 'projectsRobotMouseMove', 'blogRobotMouseMove', 'blogKeyboardMouseMove', 'contactRobotMouseMove'];
+    const leaveEvents = ['robotMouseLeave', 'projectsRobotMouseLeave', 'blogRobotMouseLeave', 'blogKeyboardMouseLeave', 'contactRobotMouseLeave'];
+    const inactiveEvents = ['robotMouseInactive', 'projectsRobotMouseInactive', 'blogRobotMouseInactive', 'blogKeyboardMouseInactive', 'contactRobotMouseInactive'];
+
+    moveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseMove));
+    leaveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseInactive));
+    inactiveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseInactive));
   }
 
   // Animation
