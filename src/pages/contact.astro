@@ -3,33 +3,133 @@ import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
 import ObfuscatedEmail from "../components/ObfuscatedEmail.astro";
+import ContactRobotViewer from "../components/ContactRobotViewer.astro";
 ---
 
 <Layout title="Contact">
-  <div class="min-h-screen flex flex-col bg-secondary">
-    <div class="flex-grow">
-      <Navbar>
-        <div class="relative overflow-hidden">
-          <!-- Tech grid overlay for texture -->
-          <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+  <Navbar>
+    <!-- HERO SECTION - Full page robot background -->
+    <div
+      class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
+      id="hero-section"
+    >
+      <!-- FULL PAGE ROBOT BACKGROUND -->
+      <div class="robot-background-container absolute inset-0 z-0" id="robot-container">
+        <div class="robot-frame-fullscreen w-full h-full">
+          <div class="w-full h-full robot-viewer" id="robot-viewer">
+            <ContactRobotViewer />
+          </div>
+        </div>
 
-          <!-- Main Content -->
-          <div class="relative z-10 sm:px-20 px-6 py-12">
-            <!-- BOLD HEADER SECTION -->
-            <div class="header-section mb-16">
-              <h1 class="contact-title font-mono font-black tracking-tighter leading-none select-none">
-                <span class="char char-1">C</span><span class="char char-2">O</span><span class="char char-3">N</span><span class="char char-4">T</span><span class="char char-5">A</span><span class="char char-6">C</span><span class="char char-7">T</span>
-              </h1>
-              <div class="accent-line mt-6"></div>
-            </div>
+        <!-- Dark overlay to dim robot by default -->
+        <div class="robot-overlay absolute inset-0 bg-black/[0.96] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+      </div>
+
+      <!-- Tech grid overlay for texture -->
+      <div class="absolute inset-0 tech-grid opacity-10 z-[5] pointer-events-none"></div>
+
+      <!-- Main content - layered on top -->
+      <div class="hero-content relative z-10 w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300" id="hero-content">
+        <div class="max-w-7xl mx-auto">
+          <!-- Small intro label -->
+          <div class="label-intro mb-6 sm:mb-8">
+            <span class="text-primary/50 font-mono text-xs sm:text-sm tracking-[0.3em] uppercase">
+              Let's Connect
+            </span>
+          </div>
+
+          <!-- MASSIVE title display -->
+          <div class="name-display mb-6 sm:mb-10">
+            <h1 class="contact-title font-mono font-black tracking-tighter leading-none select-none">
+              <span class="char char-1">C</span><span class="char char-2">O</span><span class="char char-3">N</span><span class="char char-4">T</span><span class="char char-5">A</span><span class="char char-6">C</span><span class="char char-7">T</span>
+            </h1>
+          </div>
+
+          <!-- Bold statement -->
+          <div class="statement mb-8 sm:mb-12 max-w-4xl">
+            <p class="statement-text text-primary/60 font-mono tracking-wide leading-relaxed">
+              <span class="highlight">Have a project in mind?</span> Let's talk.
+            </p>
+          </div>
+
+          <!-- CTA Section -->
+          <div class="cta-section flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center pointer-events-auto">
+            <a
+              href="#contact-content"
+              class="cta-primary group relative inline-flex items-center justify-center px-7 py-3 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+            >
+              <span class="relative z-10">GET IN TOUCH</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 ml-3 group-hover:translate-y-1 transition-transform relative z-10"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2.5"
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+              <div class="cta-shine"></div>
+            </a>
+
+            <a
+              href="/"
+              class="cta-secondary group inline-flex items-center text-primary/70 hover:text-primary font-mono text-sm sm:text-base tracking-wider transition-all duration-300"
+            >
+              Back to home
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 ml-2 group-hover:-translate-x-1 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-20 pointer-events-none">
+        <div class="scroll-content flex flex-col items-center gap-2">
+          <span class="text-primary/40 font-mono text-xs tracking-widest uppercase">Scroll</span>
+          <div class="scroll-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT FORM SECTION -->
+    <div class="relative bg-secondary" id="contact-content">
+      <!-- Tech grid overlay -->
+      <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
+
+      <!-- Main Content -->
+      <div class="relative z-10 sm:px-20 px-6 py-16">
+        <!-- Section Header -->
+        <div class="header-section mb-12">
+          <p class="intro-label font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+            // GET IN TOUCH
+          </p>
+          <div class="accent-line"></div>
+        </div>
 
             <!-- CONTACT FORM SECTION -->
             <div class="max-w-2xl">
               <!-- Intro Text -->
               <div class="intro-section mb-12">
-                <p class="intro-label font-mono text-xs sm:text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
-                  // GET IN TOUCH
-                </p>
                 <p class="intro-text text-lg sm:text-xl text-primary/70 leading-relaxed">
                   Have a project in mind, want to collaborate, or just want to say hello?
                   Drop me a message and I'll get back to you as soon as possible.
@@ -197,12 +297,12 @@ import ObfuscatedEmail from "../components/ObfuscatedEmail.astro";
           </div>
         </div>
       </Navbar>
-    </div>
     <Footer />
-  </div>
 </Layout>
 
 <style>
+  /* ===== HERO SECTION STYLES ===== */
+
   /* Tech grid background */
   .tech-grid {
     background-image:
@@ -217,15 +317,180 @@ import ObfuscatedEmail from "../components/ObfuscatedEmail.astro";
     100% { background-position: 100px 100px; }
   }
 
-  /* BOLD CONTACT TITLE */
+  /* Robot background */
+  .robot-background-container {
+    opacity: 1;
+  }
+
+  .robot-frame-fullscreen {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Overlay - dims the robot heavily, lightens on hover */
+  .robot-overlay {
+    z-index: 1;
+    transition: background 0.6s ease-out;
+  }
+
+  /* Hero content transitions */
+  .hero-content {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+  }
+
+  /* Mouse interaction states */
+  .hero-section.mouse-active .hero-content {
+    opacity: 0.05;
+    transition: opacity 0.6s ease-out;
+  }
+
+  .hero-section.mouse-active .robot-overlay {
+    background: rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .hero-section:not(.mouse-active) .hero-content {
+    transition: opacity 2s ease-in-out;
+  }
+
+  .hero-section:not(.mouse-active) .robot-overlay {
+    transition: background 2.5s ease-in-out;
+  }
+
+  /* Prevent layout shift */
+  .hero-section {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* Label intro animation */
+  .label-intro {
+    opacity: 0;
+    animation: fadeInDown 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Statement text */
+  .statement {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.6s;
+  }
+
+  .statement-text {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: 1.6;
+  }
+
+  .highlight {
+    color: #ffffff;
+    font-weight: 700;
+    position: relative;
+  }
+
+  .highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
+  }
+
+  /* CTA Section */
+  .cta-section {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+    animation-delay: 0.8s;
+  }
+
+  /* Primary CTA Button */
+  .cta-primary {
+    position: relative;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .cta-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.7s;
+  }
+
+  .cta-primary:hover .cta-shine {
+    left: 100%;
+  }
+
+  /* Secondary CTA */
+  .cta-secondary {
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.2);
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
+  }
+
+  .cta-secondary:hover {
+    text-decoration-color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards, floatUpDown 2s ease-in-out infinite;
+    animation-delay: 1.2s, 1.2s;
+  }
+
+  .scroll-arrow {
+    animation: bounceDown 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bounceDown {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes floatUpDown {
+    0%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(-5px);
+    }
+  }
+
+  .hero-section.mouse-active .scroll-indicator {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-out;
+  }
+
+  /* ===== CONTACT TITLE ===== */
   .contact-title {
-    font-size: clamp(3rem, 14vw, 12rem);
+    font-size: clamp(2rem, 12vw, 14rem);
     line-height: 0.85;
-    letter-spacing: -0.08em;
+    letter-spacing: -0.05em;
     color: #ffffff;
     text-transform: uppercase;
-    opacity: 0;
-    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
       0 6px 45px rgba(0, 0, 0, 0.7);
@@ -490,5 +755,133 @@ import ObfuscatedEmail from "../components/ObfuscatedEmail.astro";
       errorMessage.classList.remove('hidden');
       errorText.textContent = message;
     }
+
+    // ===== HERO SECTION ROBOT INTERACTION =====
+    const heroSection = document.getElementById("hero-section");
+    const robotContainer = document.getElementById("robot-container");
+
+    let mouseActive = false;
+    let mouseTimeout: number | null = null;
+
+    const handleInteraction = (clientX: number, clientY: number) => {
+      const rect = heroSection!.getBoundingClientRect();
+
+      const mouseX = (clientX - rect.left) / rect.width;
+      const mouseY = (clientY - rect.top) / rect.height;
+
+      if (!mouseActive) {
+        heroSection!.classList.add('mouse-active');
+        mouseActive = true;
+      }
+
+      if (mouseTimeout) {
+        clearTimeout(mouseTimeout);
+      }
+
+      // Dispatch position to THREE.js robot viewer
+      document.dispatchEvent(
+        new CustomEvent("contactRobotMouseMove", {
+          detail: {
+            x: mouseX,
+            y: mouseY,
+            clientX: clientX,
+            clientY: clientY
+          },
+        })
+      );
+
+      mouseTimeout = window.setTimeout(() => {
+        heroSection!.classList.remove('mouse-active');
+        mouseActive = false;
+
+        document.dispatchEvent(
+          new CustomEvent("contactRobotMouseInactive", {
+            detail: { inactive: true },
+          })
+        );
+      }, 800);
+    };
+
+    if (heroSection && robotContainer) {
+      heroSection.addEventListener("mousemove", (e) => {
+        handleInteraction(e.clientX, e.clientY);
+      });
+
+      heroSection.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      }, { passive: false });
+
+      heroSection.addEventListener("touchstart", (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          handleInteraction(touch.clientX, touch.clientY);
+        }
+      });
+
+      heroSection.addEventListener("touchend", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
+        }
+
+        document.dispatchEvent(
+          new CustomEvent("contactRobotMouseLeave", {
+            detail: { left: true },
+          })
+        );
+      });
+
+      heroSection.addEventListener("mouseleave", () => {
+        heroSection.classList.remove('mouse-active');
+        mouseActive = false;
+
+        if (mouseTimeout) {
+          clearTimeout(mouseTimeout);
+          mouseTimeout = null;
+        }
+
+        document.dispatchEvent(
+          new CustomEvent("contactRobotMouseLeave", {
+            detail: { left: true },
+          })
+        );
+      });
+
+      heroSection.addEventListener("mouseenter", () => {
+        document.dispatchEvent(
+          new CustomEvent("contactRobotMouseEnter", {
+            detail: { entered: true },
+          })
+        );
+      });
+    }
+
+    // ===== PARALLAX EFFECT ON SCROLL =====
+    let ticking = false;
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY;
+          const heroContent = document.querySelector(".hero-content");
+
+          if (heroContent && scrolled < window.innerHeight) {
+            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.7));
+            const translateY = scrolled * 0.3;
+            (heroContent as HTMLElement).style.opacity = opacity.toString();
+            (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
+          }
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
   });
 </script>
