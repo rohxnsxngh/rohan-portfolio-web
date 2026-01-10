@@ -510,6 +510,12 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
       }, 800); // Increased from 150ms to 800ms for user to admire robot
     };
 
+    // Touch tracking for scroll vs interaction detection
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = false;
+    const SCROLL_THRESHOLD = 10; // pixels of vertical movement to trigger scroll
+
     // Track mouse movement and dispatch to THREE.js scene
     if (heroSection && robotContainer) {
       // MOUSE EVENTS
@@ -517,27 +523,39 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
         handleInteraction(e.clientX, e.clientY);
       });
 
-      // TOUCH EVENTS for mobile
-      heroSection.addEventListener("touchmove", (e) => {
-        // Prevent default scroll behavior while interacting
-        e.preventDefault();
-
-        if (e.touches.length > 0) {
-          const touch = e.touches[0];
-          handleInteraction(touch.clientX, touch.clientY);
-        }
-      }, { passive: false });
-
+      // TOUCH EVENTS for mobile - allow scrolling while still enabling interaction
       heroSection.addEventListener("touchstart", (e) => {
         if (e.touches.length > 0) {
           const touch = e.touches[0];
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+          isScrolling = false;
           handleInteraction(touch.clientX, touch.clientY);
         }
-      });
+      }, { passive: true });
+
+      heroSection.addEventListener("touchmove", (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          const deltaY = Math.abs(touch.clientY - touchStartY);
+          const deltaX = Math.abs(touch.clientX - touchStartX);
+
+          // If vertical movement exceeds threshold and is greater than horizontal, allow scrolling
+          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+            isScrolling = true;
+          }
+
+          // Only trigger interaction effect if not scrolling
+          if (!isScrolling) {
+            handleInteraction(touch.clientX, touch.clientY);
+          }
+        }
+      }, { passive: true });
 
       heroSection.addEventListener("touchend", () => {
         heroSection.classList.remove('mouse-active');
         mouseActive = false;
+        isScrolling = false;
 
         if (mouseTimeout) {
           clearTimeout(mouseTimeout);

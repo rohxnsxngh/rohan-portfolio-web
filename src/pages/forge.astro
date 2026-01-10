@@ -618,6 +618,12 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
     const heroSection = document.getElementById('hero-section');
     let mouseTimeout: number | null = null;
 
+    // Touch tracking for scroll vs interaction detection
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = false;
+    const SCROLL_THRESHOLD = 10;
+
     if (heroSection) {
       // Track mouse movement over hero section
       heroSection.addEventListener('mousemove', (e) => {
@@ -643,21 +649,40 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
         document.dispatchEvent(new CustomEvent('forgeMouseLeave'));
       });
 
-      // Touch support
+      // Touch support - allow scrolling
+      heroSection.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+          isScrolling = false;
+        }
+      }, { passive: true });
+
       heroSection.addEventListener('touchmove', (e) => {
         if (e.touches.length > 0) {
           const touch = e.touches[0];
-          const rect = heroSection.getBoundingClientRect();
-          const x = (touch.clientX - rect.left) / rect.width;
-          const y = (touch.clientY - rect.top) / rect.height;
+          const deltaY = Math.abs(touch.clientY - touchStartY);
+          const deltaX = Math.abs(touch.clientX - touchStartX);
 
-          document.dispatchEvent(new CustomEvent('forgeMouseMove', {
-            detail: { x, y, clientX: touch.clientX, clientY: touch.clientY }
-          }));
+          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+            isScrolling = true;
+          }
+
+          if (!isScrolling) {
+            const rect = heroSection.getBoundingClientRect();
+            const x = (touch.clientX - rect.left) / rect.width;
+            const y = (touch.clientY - rect.top) / rect.height;
+
+            document.dispatchEvent(new CustomEvent('forgeMouseMove', {
+              detail: { x, y, clientX: touch.clientX, clientY: touch.clientY }
+            }));
+          }
         }
-      });
+      }, { passive: true });
 
       heroSection.addEventListener('touchend', () => {
+        isScrolling = false;
         document.dispatchEvent(new CustomEvent('forgeMouseLeave'));
       });
     }
