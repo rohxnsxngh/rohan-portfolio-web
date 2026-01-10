@@ -20,6 +20,11 @@ const {
 
 <script>
   import * as THREE from "three";
+  import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+  import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+  import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+  import { LuminosityShader } from "three/examples/jsm/shaders/LuminosityShader.js";
+  import { SobelOperatorShader } from "three/examples/jsm/shaders/SobelOperatorShader.js";
 
   // Get the canvas container
   const container = document.querySelector(".art-particle-canvas-inner") as HTMLElement;
@@ -342,6 +347,23 @@ const {
   const particles = new THREE.Points(geometry, material);
   scene.add(particles);
 
+  // Set up Sobel post-processing
+  const composer = new EffectComposer(renderer);
+
+  // Render pass - renders the scene
+  const renderPass = new RenderPass(scene, camera);
+  composer.addPass(renderPass);
+
+  // Grayscale pass - converts to luminosity for edge detection
+  const grayscalePass = new ShaderPass(LuminosityShader);
+  composer.addPass(grayscalePass);
+
+  // Sobel edge detection pass
+  const sobelPass = new ShaderPass(SobelOperatorShader);
+  sobelPass.uniforms['resolution'].value.x = container.clientWidth * window.devicePixelRatio;
+  sobelPass.uniforms['resolution'].value.y = container.clientHeight * window.devicePixelRatio;
+  composer.addPass(sobelPass);
+
   // Mouse tracking
   let mouseX = 0;
   let mouseY = 0;
@@ -433,7 +455,8 @@ const {
     camera.position.y = Math.cos(elapsed * 0.15) * 0.3;
     camera.lookAt(0, 0, 0);
 
-    renderer.render(scene, camera);
+    // Use composer for Sobel post-processing
+    composer.render();
   }
 
   animate();
@@ -450,6 +473,11 @@ const {
 
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Update composer and Sobel resolution
+    composer.setSize(width, height);
+    sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
+    sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
   }
 
   window.addEventListener("resize", handleResize);

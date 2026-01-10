@@ -43,6 +43,9 @@ const {
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+  import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+  import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+  import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
   // DOM elements
   const container = document.querySelector(".robot-model-viewer-container");
@@ -90,6 +93,10 @@ const {
   let raycaster: THREE.Raycaster | null = null;
   let mouseVector: THREE.Vector2 | null = null;
   let lightPosition: THREE.Vector3 = new THREE.Vector3();
+
+  // Post-processing
+  let composer: EffectComposer;
+  let sobelPass: ShaderPass;
 
   // Throttle for mouse raycasting (~30fps = 33ms)
   let lastRaycastTime = 0;
@@ -233,6 +240,87 @@ const {
       magentaAccent,
       mousePointLight
     };
+
+    // Set up Sobel post-processing with alpha preservation
+    // Create render target with alpha channel
+    const renderTarget = new THREE.WebGLRenderTarget(
+      width * window.devicePixelRatio,
+      height * window.devicePixelRatio,
+      {
+        format: THREE.RGBAFormat,
+        type: THREE.UnsignedByteType,
+      }
+    );
+
+    composer = new EffectComposer(renderer, renderTarget);
+
+    // Render pass - renders the scene with colors
+    const renderPass = new RenderPass(scene, camera);
+    renderPass.clearAlpha = 0; // Clear to transparent
+    composer.addPass(renderPass);
+
+    // Custom Sobel shader that preserves alpha from original render
+    const SobelAlphaShader = {
+      uniforms: {
+        'tDiffuse': { value: null },
+        'resolution': { value: new THREE.Vector2() }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform vec2 resolution;
+        varying vec2 vUv;
+
+        void main() {
+          vec2 texel = vec2(1.0 / resolution.x, 1.0 / resolution.y);
+
+          // Sample original for alpha
+          vec4 original = texture2D(tDiffuse, vUv);
+
+          // If fully transparent, discard (keep background visible)
+          if (original.a < 0.01) {
+            discard;
+          }
+
+          // Sobel kernels
+          float Gx00 = texture2D(tDiffuse, vUv + texel * vec2(-1, 1)).r;
+          float Gx01 = texture2D(tDiffuse, vUv + texel * vec2(-1, 0)).r * 2.0;
+          float Gx02 = texture2D(tDiffuse, vUv + texel * vec2(-1, -1)).r;
+          float Gx10 = texture2D(tDiffuse, vUv + texel * vec2(1, 1)).r;
+          float Gx11 = texture2D(tDiffuse, vUv + texel * vec2(1, 0)).r * 2.0;
+          float Gx12 = texture2D(tDiffuse, vUv + texel * vec2(1, -1)).r;
+
+          float Gy00 = texture2D(tDiffuse, vUv + texel * vec2(-1, 1)).r;
+          float Gy01 = texture2D(tDiffuse, vUv + texel * vec2(0, 1)).r * 2.0;
+          float Gy02 = texture2D(tDiffuse, vUv + texel * vec2(1, 1)).r;
+          float Gy10 = texture2D(tDiffuse, vUv + texel * vec2(-1, -1)).r;
+          float Gy11 = texture2D(tDiffuse, vUv + texel * vec2(0, -1)).r * 2.0;
+          float Gy12 = texture2D(tDiffuse, vUv + texel * vec2(1, -1)).r;
+
+          float Gx = Gx00 - Gx02 + Gx10 - Gx12 + Gx01 - Gx11;
+          float Gy = Gy00 - Gy10 + Gy02 - Gy12 + Gy01 - Gy11;
+
+          float G = sqrt(Gx * Gx + Gy * Gy);
+
+          // Blend Sobel edges with original color, preserve original alpha
+          vec3 edgeColor = vec3(G);
+          vec3 blendedColor = mix(original.rgb, edgeColor, 0.6);
+
+          gl_FragColor = vec4(blendedColor, original.a);
+        }
+      `
+    };
+
+    sobelPass = new ShaderPass(SobelAlphaShader);
+    sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
+    sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
+    composer.addPass(sobelPass);
   }
 
   // Handle window resize
@@ -256,8 +344,21 @@ const {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Render scene
-    renderer.render(scene, camera);
+    // Update composer and Sobel resolution
+    if (composer) {
+      composer.setSize(width, height);
+    }
+    if (sobelPass) {
+      sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
+      sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
+    }
+
+    // Render scene with post-processing
+    if (composer) {
+      composer.render();
+    } else {
+      renderer.render(scene, camera);
+    }
   }
 
   // Initialize everything when DOM is loaded
@@ -365,8 +466,12 @@ const {
         lastRaycastTime = performance.now();
       }
 
-      // Render
-      renderer.render(scene, camera);
+      // Render with Sobel post-processing
+      if (composer) {
+        composer.render();
+      } else {
+        renderer.render(scene, camera);
+      }
     }
 
     animate();
