@@ -9,6 +9,88 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 
 const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
+
+// Category definitions with keywords that map articles to categories
+const categoryDefinitions = [
+  {
+    id: "startups",
+    name: "Startups & Entrepreneurship",
+    icon: "rocket",
+    keywords: ["startup", "startups", "entrepreneurship", "Y Combinator", "fundraising", "co-founder", "OctaPulse", "side projects"]
+  },
+  {
+    id: "ai-ml",
+    name: "AI & Machine Learning",
+    icon: "brain",
+    keywords: ["deep learning", "machine learning", "computer vision", "model training", "autograd"]
+  },
+  {
+    id: "career",
+    name: "Career & Professional",
+    icon: "briefcase",
+    keywords: ["career", "internships", "freelancing", "consulting", "software engineering", "professional development", "corporate culture"]
+  },
+  {
+    id: "robotics",
+    name: "Robotics & Hardware",
+    icon: "cpu",
+    keywords: ["robotics", "hardware", "bio-inspired", "ocean tech", "marine", "deep tech"]
+  },
+  {
+    id: "education",
+    name: "Education & Research",
+    icon: "book",
+    keywords: ["education", "research", "CMU", "CMU 11-785"]
+  }
+];
+
+// Map articles to categories based on their tags
+function categorizeArticle(article: CollectionEntry<"blog">) {
+  const tags = article.data.tags || [];
+  const matchedCategories: string[] = [];
+
+  for (const category of categoryDefinitions) {
+    const hasMatch = tags.some(tag =>
+      category.keywords.some(keyword =>
+        tag.toLowerCase().includes(keyword.toLowerCase())
+      )
+    );
+    if (hasMatch) {
+      matchedCategories.push(category.id);
+    }
+  }
+
+  // If no category matched, put in "other"
+  return matchedCategories.length > 0 ? matchedCategories : ["other"];
+}
+
+// Group articles by category
+const articlesByCategory = new Map<string, CollectionEntry<"blog">[]>();
+
+// Initialize all categories
+categoryDefinitions.forEach(cat => articlesByCategory.set(cat.id, []));
+articlesByCategory.set("other", []);
+
+// Populate categories
+allBlogArticles.forEach(article => {
+  const categories = categorizeArticle(article);
+  categories.forEach(catId => {
+    const existing = articlesByCategory.get(catId) || [];
+    if (!existing.includes(article)) {
+      existing.push(article);
+      articlesByCategory.set(catId, existing);
+    }
+  });
+});
+
+// Filter out empty categories and "other" if empty
+const activeCategories = categoryDefinitions.filter(cat =>
+  (articlesByCategory.get(cat.id) || []).length > 0
+);
+const otherArticles = articlesByCategory.get("other") || [];
+if (otherArticles.length > 0) {
+  activeCategories.push({ id: "other", name: "Other", icon: "folder", keywords: [] });
+}
 ---
 
 <Layout>
@@ -123,60 +205,186 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       <!-- Tech grid overlay -->
       <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
-      <div class="relative z-10 sm:px-20 px-6 py-16">
-        <!-- Search Bar -->
-        <div class="mb-8 relative">
-          <div class="relative">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Search articles..."
-              class="w-full p-3 pl-10 rounded-lg border border-accent/30 bg-secondary focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent"
-            />
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <div id="searchStatus" class="text-sm mt-2 text-primary/60 hidden"></div>
-        </div>
-
-        <!-- Table of Contents - Quick Jump -->
-        <div class="toc-container mb-10 relative overflow-hidden">
-          <div class="toc-header flex items-center gap-3 mb-4">
-            <div class="toc-icon">
-              <svg class="w-5 h-5 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="relative z-10 py-16">
+        <!-- Mobile TOC Toggle Button -->
+        <button
+          id="mobileTocToggle"
+          class="mobile-toc-btn lg:hidden fixed bottom-6 right-6 z-50"
+          aria-label="Toggle table of contents"
+        >
+          <div class="mobile-toc-btn-inner">
+            <div class="mobile-toc-btn-bg"></div>
+            <div class="mobile-toc-btn-content">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
               </svg>
+              <span class="mobile-toc-label">Menu</span>
             </div>
-            <span class="text-sm font-mono text-primary/50 uppercase tracking-widest">Quick Jump</span>
-            <div class="flex-grow h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
+            <div class="mobile-toc-btn-glow"></div>
           </div>
-          <div class="toc-list flex flex-wrap gap-2" id="tocList">
-            {allBlogArticles.map((article, index) => {
-              const isComplete = article.data.status === "Complete";
-              return (
-                <button
-                  class="toc-item group"
-                  data-slug={article.slug}
-                  data-index={index}
-                >
-                  <span class="toc-number font-mono text-xs text-primary/30 mr-1.5">{String(index + 1).padStart(2, '0')}</span>
-                  <span class="toc-title">{article.data.title}</span>
-                  {isComplete && <span class="toc-status-dot"></span>}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        </button>
 
-        <!-- Blog Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="blogGrid">
+        <!-- Mobile TOC Overlay -->
+        <div id="mobileTocOverlay" class="lg:hidden fixed inset-0 bg-black/80 z-40 hidden opacity-0 transition-opacity duration-300"></div>
+
+        <!-- Main Layout: Sidebar + Content -->
+        <div class="flex gap-8 px-6 sm:px-8 lg:px-12">
+
+          <!-- Sidebar TOC -->
+          <aside id="sidebarToc" class="sidebar-toc w-80 flex-shrink-0 hidden lg:block">
+            <div class="sticky top-24">
+              <!-- Collapsed State Bar -->
+              <button id="sidebarExpandBtn" class="sidebar-expand-btn hidden">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+                <span class="expand-label">Contents</span>
+                <svg class="w-4 h-4 chevron-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <div class="sidebar-container" id="sidebarContent">
+                <!-- Sidebar Header -->
+                <div class="sidebar-header mb-6">
+                  <div class="flex items-center gap-3 mb-4">
+                    <div class="toc-icon">
+                      <svg class="w-5 h-5 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                      </svg>
+                    </div>
+                    <span class="text-sm font-mono text-primary/50 uppercase tracking-widest sidebar-title">Contents</span>
+                    <!-- Desktop Collapse Button -->
+                    <button id="sidebarCollapseBtn" class="hidden lg:flex ml-auto p-1.5 text-primary/40 hover:text-primary hover:bg-primary/10 rounded-md transition-all" title="Collapse sidebar">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <!-- Mobile Close Button -->
+                    <button id="closeMobileToc" class="lg:hidden ml-auto p-1 text-primary/60 hover:text-primary">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
+                </div>
+
+                <!-- Search Bar in Sidebar -->
+                <div class="mb-6 relative">
+                  <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search articles..."
+                    class="w-full p-3 pl-10 rounded-lg border border-accent/30 bg-secondary/50 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent text-sm font-mono"
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <div id="searchStatus" class="text-xs mb-4 text-primary/60 hidden"></div>
+
+                <!-- Category Sections -->
+                <nav class="space-y-2" id="categoryNav">
+                  {activeCategories.map((category, catIndex) => {
+                    const articles = articlesByCategory.get(category.id) || [];
+                    const articleCount = articles.length;
+
+                    return (
+                      <div class="category-section" data-category={category.id}>
+                        <!-- Category Header (Collapsible) -->
+                        <button
+                          class="category-header w-full flex items-center justify-between p-3 rounded-lg hover:bg-primary/5 transition-all group"
+                          data-expanded="true"
+                          aria-expanded="true"
+                        >
+                          <div class="flex items-center gap-3">
+                            <span class="category-icon w-8 h-8 flex items-center justify-center rounded-md bg-primary/10 text-primary/70 group-hover:bg-primary/20 transition-colors">
+                              {category.icon === "rocket" && (
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                              )}
+                              {category.icon === "brain" && (
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                              )}
+                              {category.icon === "briefcase" && (
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                              )}
+                              {category.icon === "cpu" && (
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                                </svg>
+                              )}
+                              {category.icon === "book" && (
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                              )}
+                              {category.icon === "folder" && (
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                </svg>
+                              )}
+                            </span>
+                            <span class="category-name text-sm font-mono text-primary/80 group-hover:text-primary transition-colors">{category.name}</span>
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <span class="category-count text-xs font-mono px-2 py-0.5 rounded-full bg-primary/10 text-primary/50">{articleCount}</span>
+                            <svg class="category-chevron w-4 h-4 text-primary/40 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+                        </button>
+
+                        <!-- Article List (Collapsible Content) -->
+                        <div class="category-content pl-4 mt-1 space-y-1 overflow-hidden">
+                          {articles.map((article, index) => {
+                            const isComplete = article.data.status === "Complete";
+                            const globalIndex = allBlogArticles.findIndex(a => a.slug === article.slug);
+                            return (
+                              <button
+                                class="toc-article-item w-full flex items-center gap-2 px-3 py-2 rounded-md text-left hover:bg-primary/5 transition-all group"
+                                data-slug={article.slug}
+                                data-index={globalIndex}
+                              >
+                                <span class="toc-bullet w-1.5 h-1.5 rounded-full bg-primary/20 group-hover:bg-primary/60 transition-colors flex-shrink-0"></span>
+                                <span class="toc-article-title text-xs font-mono text-primary/60 group-hover:text-primary/90 transition-colors line-clamp-1 flex-grow">{article.data.title}</span>
+                                {isComplete && <span class="toc-status-dot flex-shrink-0"></span>}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </nav>
+
+                <!-- All Articles Link -->
+                <div class="mt-6 pt-4 border-t border-primary/10">
+                  <div class="flex items-center justify-between text-xs font-mono text-primary/40">
+                    <span>{allBlogArticles.length} articles total</span>
+                    <button id="expandAllBtn" class="hover:text-primary/70 transition-colors">Expand all</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Main Content Area -->
+          <main class="flex-grow min-w-0">
+            <!-- Blog Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="blogGrid">
           {allBlogArticles.map((article) => {
             const tags: string[] = article.data.tags || [];
             const defaultStatus = "Coming Soon";
@@ -231,6 +439,8 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
               </a>
             );
           })}
+            </div>
+          </main>
         </div>
       </div>
     </div>
@@ -633,14 +843,38 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       0 0 80px rgba(255, 0, 255, 0.1);
   }
 
-  /* ===== TABLE OF CONTENTS ===== */
+  /* ===== SIDEBAR TABLE OF CONTENTS ===== */
 
-  .toc-container {
-    padding: 1.25rem;
-    border-radius: 12px;
+  .sidebar-toc {
+    z-index: 30;
+  }
+
+  .sidebar-container {
+    padding: 1.5rem;
+    border-radius: 16px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.05) 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+
+  /* Custom scrollbar for sidebar */
+  .sidebar-container::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .sidebar-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .sidebar-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+
+  .sidebar-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 
   .toc-icon {
@@ -650,51 +884,53 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .toc-item {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.5rem 0.875rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 9999px;
-    font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.7);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
+  /* Category Header */
+  .category-header {
+    border: 1px solid transparent;
   }
 
-  .toc-item::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.5s ease;
+  .category-header:hover {
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
-  .toc-item:hover::before {
-    transform: translateX(100%);
+  .category-header[data-expanded="false"] .category-chevron {
+    transform: rotate(-90deg);
   }
 
-  .toc-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.25);
+  .category-header[data-expanded="false"] + .category-content {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+    pointer-events: none;
+  }
+
+  .category-content {
+    max-height: 1000px;
+    opacity: 1;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin-top 0.2s ease;
+  }
+
+  /* Article items in sidebar */
+  .toc-article-item {
+    border: 1px solid transparent;
+  }
+
+  .toc-article-item:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .toc-article-item.active {
+    background: rgba(0, 255, 255, 0.08);
+    border-color: rgba(0, 255, 255, 0.3);
+  }
+
+  .toc-article-item.active .toc-bullet {
+    background: rgba(0, 255, 255, 0.8);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+  }
+
+  .toc-article-item.active .toc-article-title {
     color: rgba(255, 255, 255, 0.95);
-    transform: translateY(-2px);
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba(0, 255, 255, 0.1);
-  }
-
-  .toc-item:hover .toc-number {
-    color: rgba(0, 255, 255, 0.7);
-  }
-
-  .toc-title {
-    white-space: normal;
-    word-break: break-word;
   }
 
   .toc-status-dot {
@@ -702,8 +938,6 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
     height: 6px;
     background: #22c55e;
     border-radius: 50%;
-    margin-left: 0.5rem;
-    flex-shrink: 0;
     box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
     animation: pulse-dot 2s ease-in-out infinite;
   }
@@ -717,16 +951,6 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       opacity: 0.7;
       transform: scale(1.2);
     }
-  }
-
-  .toc-item.active {
-    background: rgba(0, 255, 255, 0.1);
-    border-color: rgba(0, 255, 255, 0.4);
-    color: #fff;
-  }
-
-  .toc-item.active .toc-number {
-    color: rgba(0, 255, 255, 0.9);
   }
 
   /* Highlight animation when TOC item is clicked */
@@ -754,6 +978,207 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 
   .toc-highlight .card-content {
     border-color: rgba(0, 255, 255, 0.5) !important;
+  }
+
+  /* Mobile sidebar styles */
+  .sidebar-toc.mobile-open {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    max-width: 85vw;
+    height: 100vh;
+    z-index: 50;
+    padding-top: 1rem;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(20px);
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-toc.mobile-open .sticky {
+    position: relative;
+    top: 0;
+  }
+
+  .sidebar-toc.mobile-open .sidebar-container {
+    max-height: calc(100vh - 2rem);
+    border-radius: 0;
+    border: none;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  #mobileTocOverlay.visible {
+    display: block !important;
+    opacity: 1;
+  }
+
+  /* ===== DESKTOP SIDEBAR COLLAPSE ===== */
+
+  .sidebar-expand-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.06) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    width: auto;
+  }
+
+  .sidebar-expand-btn:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .sidebar-expand-btn .expand-label {
+    opacity: 0.7;
+  }
+
+  .sidebar-expand-btn:hover .expand-label {
+    opacity: 1;
+  }
+
+  .sidebar-expand-btn .chevron-icon {
+    opacity: 0.5;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-expand-btn:hover .chevron-icon {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+
+  .sidebar-toc.collapsed {
+    width: auto !important;
+  }
+
+  .sidebar-toc.collapsed .sidebar-container {
+    display: none;
+  }
+
+  .sidebar-toc.collapsed .sidebar-expand-btn {
+    display: flex;
+  }
+
+  /* ===== MOBILE TOC BUTTON REDESIGN ===== */
+
+  .mobile-toc-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .mobile-toc-btn-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-toc-btn-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    transition: all 0.3s ease;
+  }
+
+  .mobile-toc-btn:hover .mobile-toc-btn-bg {
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+  }
+
+  .mobile-toc-btn:active .mobile-toc-btn-bg {
+    transform: scale(0.98);
+  }
+
+  .mobile-toc-btn-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .mobile-toc-label {
+    opacity: 0.9;
+  }
+
+  .mobile-toc-btn-glow {
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3));
+    background-size: 200% 200%;
+    border-radius: 18px;
+    opacity: 0;
+    z-index: -1;
+    animation: glowRotate 3s linear infinite;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-toc-btn:hover .mobile-toc-btn-glow {
+    opacity: 0.6;
+  }
+
+  @keyframes glowRotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Corner accents for mobile button */
+  .mobile-toc-btn-bg::before,
+  .mobile-toc-btn-bg::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .mobile-toc-btn-bg::before {
+    top: 4px;
+    left: 4px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 4px 0 0 0;
+  }
+
+  .mobile-toc-btn-bg::after {
+    bottom: 4px;
+    right: 4px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 4px 0;
+  }
+
+  .mobile-toc-btn:hover .mobile-toc-btn-bg::before,
+  .mobile-toc-btn:hover .mobile-toc-btn-bg::after {
+    width: 12px;
+    height: 12px;
+    border-color: rgba(255, 255, 255, 0.5);
   }
 
   /* ===== SCROLL INDICATOR ===== */
@@ -852,13 +1277,27 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       height: 20px;
     }
 
-    .toc-container {
+    .sidebar-container {
       padding: 1rem;
     }
 
-    .toc-item {
-      padding: 0.4rem 0.75rem;
-      font-size: 0.75rem;
+    .category-header {
+      padding: 0.5rem;
+    }
+
+    .toc-article-item {
+      padding: 0.375rem 0.5rem;
+    }
+
+    .toc-article-title {
+      font-size: 0.7rem;
+    }
+  }
+
+  /* Large screens - sidebar visible */
+  @media (min-width: 1024px) {
+    #mobileTocToggle {
+      display: none;
     }
   }
 </style>
@@ -1085,19 +1524,111 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       });
     }
 
-    // ===== TABLE OF CONTENTS =====
-    const tocItems = document.querySelectorAll<HTMLButtonElement>('.toc-item');
+    // ===== SIDEBAR TABLE OF CONTENTS =====
     const blogCardsArray = Array.from(blogCards);
+    const sidebarToc = document.getElementById('sidebarToc');
+    const mobileTocToggle = document.getElementById('mobileTocToggle');
+    const mobileTocOverlay = document.getElementById('mobileTocOverlay');
+    const closeMobileToc = document.getElementById('closeMobileToc');
+    const expandAllBtn = document.getElementById('expandAllBtn');
+    const sidebarCollapseBtn = document.getElementById('sidebarCollapseBtn');
+    const sidebarExpandBtn = document.getElementById('sidebarExpandBtn');
 
-    tocItems.forEach((tocItem) => {
+    // ===== DESKTOP SIDEBAR COLLAPSE/EXPAND =====
+    const SIDEBAR_COLLAPSED_KEY = 'blog-sidebar-collapsed';
+
+    // Check localStorage for saved state
+    const savedCollapsedState = localStorage.getItem(SIDEBAR_COLLAPSED_KEY);
+    if (savedCollapsedState === 'true' && sidebarToc) {
+      sidebarToc.classList.add('collapsed');
+    }
+
+    if (sidebarCollapseBtn && sidebarToc) {
+      sidebarCollapseBtn.addEventListener('click', () => {
+        sidebarToc.classList.add('collapsed');
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, 'true');
+      });
+    }
+
+    if (sidebarExpandBtn && sidebarToc) {
+      sidebarExpandBtn.addEventListener('click', () => {
+        sidebarToc.classList.remove('collapsed');
+        localStorage.setItem(SIDEBAR_COLLAPSED_KEY, 'false');
+      });
+    }
+
+    // ===== CATEGORY COLLAPSIBLE SECTIONS =====
+    const categoryHeaders = document.querySelectorAll<HTMLButtonElement>('.category-header');
+
+    categoryHeaders.forEach((header) => {
+      header.addEventListener('click', () => {
+        const isExpanded = header.getAttribute('data-expanded') === 'true';
+        header.setAttribute('data-expanded', (!isExpanded).toString());
+        header.setAttribute('aria-expanded', (!isExpanded).toString());
+      });
+    });
+
+    // Expand/Collapse All
+    if (expandAllBtn) {
+      let allExpanded = true;
+      expandAllBtn.addEventListener('click', () => {
+        allExpanded = !allExpanded;
+        categoryHeaders.forEach((header) => {
+          header.setAttribute('data-expanded', allExpanded.toString());
+          header.setAttribute('aria-expanded', allExpanded.toString());
+        });
+        expandAllBtn.textContent = allExpanded ? 'Collapse all' : 'Expand all';
+      });
+    }
+
+    // ===== MOBILE TOC TOGGLE =====
+    const openMobileToc = () => {
+      if (sidebarToc && mobileTocOverlay) {
+        sidebarToc.classList.add('mobile-open');
+        mobileTocOverlay.classList.remove('hidden');
+        setTimeout(() => mobileTocOverlay.classList.add('visible'), 10);
+        document.body.style.overflow = 'hidden';
+      }
+    };
+
+    const closeMobileTocFn = () => {
+      if (sidebarToc && mobileTocOverlay) {
+        sidebarToc.classList.remove('mobile-open');
+        mobileTocOverlay.classList.remove('visible');
+        setTimeout(() => mobileTocOverlay.classList.add('hidden'), 300);
+        document.body.style.overflow = '';
+      }
+    };
+
+    if (mobileTocToggle) {
+      mobileTocToggle.addEventListener('click', openMobileToc);
+    }
+
+    if (closeMobileToc) {
+      closeMobileToc.addEventListener('click', closeMobileTocFn);
+    }
+
+    if (mobileTocOverlay) {
+      mobileTocOverlay.addEventListener('click', closeMobileTocFn);
+    }
+
+    // ===== TOC ARTICLE CLICK TO SCROLL =====
+    const tocArticleItems = document.querySelectorAll<HTMLButtonElement>('.toc-article-item');
+
+    tocArticleItems.forEach((tocItem) => {
       tocItem.addEventListener('click', () => {
         const index = parseInt(tocItem.dataset.index || '0', 10);
         const targetCard = blogCardsArray[index];
 
         if (targetCard) {
-          tocItems.forEach(item => item.classList.remove('active'));
+          // Close mobile TOC if open
+          closeMobileTocFn();
+
+          // Update active state
+          tocArticleItems.forEach(item => item.classList.remove('active'));
           tocItem.classList.add('active');
 
+          // Scroll to card
           const cardRect = targetCard.getBoundingClientRect();
           const offset = 100;
           const scrollTo = window.scrollY + cardRect.top - offset;
@@ -1107,6 +1638,7 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
             behavior: 'smooth'
           });
 
+          // Highlight effect
           targetCard.classList.add('toc-highlight');
           setTimeout(() => {
             targetCard.classList.remove('toc-highlight');
@@ -1115,15 +1647,16 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
       });
     });
 
-    // Update active TOC item on scroll
+    // ===== UPDATE ACTIVE TOC ITEM ON SCROLL =====
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const cardIndex = blogCardsArray.indexOf(entry.target as HTMLElement);
             if (cardIndex !== -1) {
-              tocItems.forEach((item, i) => {
-                if (i === cardIndex) {
+              tocArticleItems.forEach((item) => {
+                const itemIndex = parseInt(item.dataset.index || '-1', 10);
+                if (itemIndex === cardIndex) {
                   item.classList.add('active');
                 } else {
                   item.classList.remove('active');
@@ -1139,5 +1672,12 @@ const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
 
       blogCardsArray.forEach(card => observer.observe(card));
     }
+
+    // ===== CLOSE MOBILE TOC ON ESCAPE KEY =====
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMobileTocFn();
+      }
+    });
   });
 </script>
