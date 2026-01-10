@@ -31,6 +31,9 @@ const {
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+  import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+  import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+  import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
   // DOM elements
   const container = document.querySelector(".contact-robot-viewer-container");
@@ -69,6 +72,68 @@ const {
   let raycaster: THREE.Raycaster | null = null;
   let mouseVector: THREE.Vector2 | null = null;
   let lightPosition: THREE.Vector3 = new THREE.Vector3();
+  let composer: EffectComposer;
+
+  // Custom Sobel Shader with alpha preservation - matches homepage implementation
+  const SobelAlphaShader = {
+    uniforms: {
+      'tDiffuse': { value: null },
+      'resolution': { value: new THREE.Vector2() }
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D tDiffuse;
+      uniform vec2 resolution;
+      varying vec2 vUv;
+
+      void main() {
+        vec2 texel = vec2(1.0 / resolution.x, 1.0 / resolution.y);
+
+        // Sample original for alpha
+        vec4 original = texture2D(tDiffuse, vUv);
+
+        // If fully transparent, discard (keep background visible)
+        if (original.a < 0.01) {
+          discard;
+        }
+
+        // Sobel kernels
+        float Gx00 = texture2D(tDiffuse, vUv + texel * vec2(-1, 1)).r;
+        float Gx01 = texture2D(tDiffuse, vUv + texel * vec2(-1, 0)).r * 2.0;
+        float Gx02 = texture2D(tDiffuse, vUv + texel * vec2(-1, -1)).r;
+        float Gx10 = texture2D(tDiffuse, vUv + texel * vec2(1, 1)).r;
+        float Gx11 = texture2D(tDiffuse, vUv + texel * vec2(1, 0)).r * 2.0;
+        float Gx12 = texture2D(tDiffuse, vUv + texel * vec2(1, -1)).r;
+
+        float Gy00 = texture2D(tDiffuse, vUv + texel * vec2(-1, 1)).r;
+        float Gy01 = texture2D(tDiffuse, vUv + texel * vec2(0, 1)).r * 2.0;
+        float Gy02 = texture2D(tDiffuse, vUv + texel * vec2(1, 1)).r;
+        float Gy10 = texture2D(tDiffuse, vUv + texel * vec2(-1, -1)).r;
+        float Gy11 = texture2D(tDiffuse, vUv + texel * vec2(0, -1)).r * 2.0;
+        float Gy12 = texture2D(tDiffuse, vUv + texel * vec2(1, -1)).r;
+
+        float Gx = Gx00 - Gx02 + Gx10 - Gx12 + Gx01 - Gx11;
+        float Gy = Gy00 - Gy10 + Gy02 - Gy12 + Gy01 - Gy11;
+
+        float G = sqrt(Gx * Gx + Gy * Gy);
+
+        // Amplify edges for stronger vertex visibility
+        G = clamp(G * 2.5, 0.0, 1.0);
+
+        // Blend Sobel edges with original color, preserve original alpha
+        vec3 edgeColor = vec3(G);
+        vec3 blendedColor = mix(original.rgb, original.rgb + edgeColor * 0.8, 0.75);
+
+        gl_FragColor = vec4(blendedColor, original.a);
+      }
+    `
+  };
 
   // Throttle for mouse raycasting (~30fps = 33ms)
   let lastRaycastTime = 0;
@@ -77,10 +142,9 @@ const {
 
   // Initialize scene
   function initScene() {
-    const bgColor = new THREE.Color(backgroundColor);
-
     scene = new THREE.Scene();
-    scene.background = bgColor;
+    // Transparent background for layering with particles
+    scene.background = null;
 
     camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 
@@ -91,8 +155,10 @@ const {
       antialias: !isLargeViewport,
       powerPreference: "high-performance",
       precision: "mediump",
+      alpha: true, // Enable alpha for transparent background
     });
 
+    renderer.setClearColor(0x000000, 0); // Transparent clear
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
@@ -189,13 +255,24 @@ const {
 
     // MOUSE-REACTIVE LIGHTING SYSTEM
     // Orange-warm gradient light for welcoming feel (increased range for larger scene)
-    mousePointLight = new THREE.PointLight(0xff8844, 0, 100, 1.0);
-    mousePointLight.position.set(0, 12, 18);
+    mousePointLight = new THREE.PointLight(0xff8800, 0, 100, 0.8);
+    mousePointLight.position.set(0, 5, 20);
     scene.add(mousePointLight);
 
     // Hemisphere light for ambient distribution
     hemisphereLight = new THREE.HemisphereLight(0xffaa44, 0x442200, 0);
     scene.add(hemisphereLight);
+
+    // ===== GRADIENT LIGHTING (YELLOW -> ORANGE -> RED) =====
+    // Yellow light - top position
+    const yellowLight = new THREE.PointLight(0xffee00, 0, 80, 1.0);
+    yellowLight.position.set(0, 10, 20);
+    scene.add(yellowLight);
+
+    // Red light - bottom position
+    const redLight = new THREE.PointLight(0xff2200, 0, 80, 1.0);
+    redLight.position.set(0, 0, 20);
+    scene.add(redLight);
 
     // Initialize raycaster
     raycaster = new THREE.Raycaster();
@@ -206,8 +283,32 @@ const {
       spotlight,
       cyanAccent,
       magentaAccent,
-      mousePointLight
+      mousePointLight,
+      yellowLight,
+      redLight
     };
+
+    // ===== POST-PROCESSING SETUP =====
+    // Create render target with alpha channel for proper transparency
+    const renderTarget = new THREE.WebGLRenderTarget(
+      width * Math.min(window.devicePixelRatio, 2),
+      height * Math.min(window.devicePixelRatio, 2),
+      {
+        format: THREE.RGBAFormat,
+        type: THREE.UnsignedByteType,
+      }
+    );
+
+    composer = new EffectComposer(renderer, renderTarget);
+
+    const renderPass = new RenderPass(scene, camera);
+    renderPass.clearAlpha = 0;
+    composer.addPass(renderPass);
+
+    const sobelPass = new ShaderPass(SobelAlphaShader);
+    sobelPass.uniforms['resolution'].value.x = width * Math.min(window.devicePixelRatio, 2);
+    sobelPass.uniforms['resolution'].value.y = height * Math.min(window.devicePixelRatio, 2);
+    composer.addPass(sobelPass);
   }
 
   // Handle window resize
@@ -225,10 +326,20 @@ const {
     camera.aspect = aspectRatio;
     camera.updateProjectionMatrix();
 
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const pixelRatio = Math.min(window.devicePixelRatio, 2);
 
-    renderer.render(scene, camera);
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(pixelRatio);
+
+    // Update composer and Sobel pass resolution
+    composer.setSize(width, height);
+    const sobelPass = composer.passes[1] as ShaderPass;
+    if (sobelPass && sobelPass.uniforms['resolution']) {
+      sobelPass.uniforms['resolution'].value.x = width * pixelRatio;
+      sobelPass.uniforms['resolution'].value.y = height * pixelRatio;
+    }
+
+    composer.render();
   }
 
   // Initialize everything
@@ -343,7 +454,7 @@ const {
         lastRaycastTime = performance.now();
       }
 
-      renderer.render(scene, camera);
+      composer.render();
     }
 
     animate();
@@ -361,7 +472,7 @@ const {
 
     // ===== RAYCASTING FOR MOUSE-REACTIVE LIGHTING =====
     function performRaycastUpdate(x: number, y: number) {
-      if (!mousePointLight || !hemisphereLight || !raycaster || !mouseVector || !camera || !_robot) return;
+      if (!mousePointLight || !hemisphereLight || !raycaster || !mouseVector || !camera || !_robot || !animatedLights) return;
 
       mouseVector.x = (x * 2) - 1;
       mouseVector.y = -(y * 2) + 1;
@@ -397,8 +508,20 @@ const {
       lightPosition.lerp(targetPosition, 0.25);
       mousePointLight.position.copy(lightPosition);
 
+      // Update gradient light positions to follow mouse (offset vertically)
+      if (animatedLights.yellowLight) {
+        animatedLights.yellowLight.position.x = lightPosition.x;
+        animatedLights.yellowLight.position.y = lightPosition.y + 1.2;
+        animatedLights.yellowLight.position.z = lightPosition.z;
+      }
+      if (animatedLights.redLight) {
+        animatedLights.redLight.position.x = lightPosition.x;
+        animatedLights.redLight.position.y = lightPosition.y - 1.0;
+        animatedLights.redLight.position.z = lightPosition.z;
+      }
+
       // Higher base intensity for larger scene distance
-      const baseIntensity = 50.0;
+      const baseIntensity = 15.0;
       const targetIntensity = baseIntensity * intensityMultiplier;
 
       if (mousePointLight.intensity < targetIntensity) {
@@ -407,6 +530,15 @@ const {
 
       if (hemisphereLight.intensity < 1.5) {
         hemisphereLight.intensity += 0.1;
+      }
+
+      // Update gradient lights intensity
+      const gradientTargetIntensity = 12.0 * intensityMultiplier;
+      if (animatedLights.yellowLight && animatedLights.yellowLight.intensity < gradientTargetIntensity) {
+        animatedLights.yellowLight.intensity += 1.5;
+      }
+      if (animatedLights.redLight && animatedLights.redLight.intensity < gradientTargetIntensity) {
+        animatedLights.redLight.intensity += 1.5;
       }
     }
 
@@ -429,16 +561,24 @@ const {
 
     // Fade out on inactivity
     document.addEventListener('contactRobotMouseInactive', () => {
-      if (mousePointLight && hemisphereLight) {
+      if (mousePointLight && hemisphereLight && animatedLights) {
         const fadeOut = () => {
-          if (mousePointLight && hemisphereLight) {
-            if (mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01) {
+          if (mousePointLight && hemisphereLight && animatedLights) {
+            const stillFading = mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01 ||
+              (animatedLights.yellowLight && animatedLights.yellowLight.intensity > 0.1) ||
+              (animatedLights.redLight && animatedLights.redLight.intensity > 0.1);
+
+            if (stillFading) {
               mousePointLight.intensity *= 0.92;
               hemisphereLight.intensity *= 0.92;
+              if (animatedLights.yellowLight) animatedLights.yellowLight.intensity *= 0.92;
+              if (animatedLights.redLight) animatedLights.redLight.intensity *= 0.92;
               requestAnimationFrame(fadeOut);
             } else {
               mousePointLight.intensity = 0;
               hemisphereLight.intensity = 0;
+              if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
+              if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
             }
           }
         };
@@ -448,16 +588,24 @@ const {
 
     // Fade out on mouse leave
     document.addEventListener('contactRobotMouseLeave', () => {
-      if (mousePointLight && hemisphereLight) {
+      if (mousePointLight && hemisphereLight && animatedLights) {
         const fadeOut = () => {
-          if (mousePointLight && hemisphereLight) {
-            if (mousePointLight.intensity > 0.05 || hemisphereLight.intensity > 0.01) {
+          if (mousePointLight && hemisphereLight && animatedLights) {
+            const stillFading = mousePointLight.intensity > 0.05 || hemisphereLight.intensity > 0.01 ||
+              (animatedLights.yellowLight && animatedLights.yellowLight.intensity > 0.05) ||
+              (animatedLights.redLight && animatedLights.redLight.intensity > 0.05);
+
+            if (stillFading) {
               mousePointLight.intensity *= 0.88;
               hemisphereLight.intensity *= 0.88;
+              if (animatedLights.yellowLight) animatedLights.yellowLight.intensity *= 0.88;
+              if (animatedLights.redLight) animatedLights.redLight.intensity *= 0.88;
               requestAnimationFrame(fadeOut);
             } else {
               mousePointLight.intensity = 0;
               hemisphereLight.intensity = 0;
+              if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
+              if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
             }
           }
         };
@@ -467,9 +615,11 @@ const {
 
     // Reset on mouse enter
     document.addEventListener('contactRobotMouseEnter', () => {
-      if (mousePointLight && hemisphereLight) {
+      if (mousePointLight && hemisphereLight && animatedLights) {
         mousePointLight.intensity = 0;
         hemisphereLight.intensity = 0;
+        if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
+        if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
       }
     });
   }
@@ -504,7 +654,7 @@ const {
 
   .model-display-container {
     overflow: hidden;
-    background: #000000;
+    background: transparent;
     z-index: 10;
     width: 100%;
     height: 100%;
