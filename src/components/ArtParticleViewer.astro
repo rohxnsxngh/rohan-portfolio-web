@@ -182,7 +182,7 @@ const {
     velocities[i * 3 + 2] = 0;
 
     sizes[i] = Math.random() * PARTICLE_SIZE + 0.5;
-    opacities[i] = Math.random() * 0.5 + 0.3;
+    opacities[i] = Math.random() * 0.6 + 0.4;
     randomOffsets[i] = Math.random() * 1000;
   }
 
@@ -322,9 +322,9 @@ const {
       // Apply global opacity multiplier
       alpha *= uOpacityMultiplier;
 
-      // Neutral gradient: almost black at center → soft white at edges
-      vec3 innerColor = vec3(0.08, 0.08, 0.1);   // Very dark (almost black, slight blue tint)
-      vec3 outerColor = vec3(0.7, 0.7, 0.75);    // Soft white/light gray
+      // Brighter gradient: dark at center → bright white at edges
+      vec3 innerColor = vec3(0.12, 0.12, 0.15);   // Dark (slight blue tint)
+      vec3 outerColor = vec3(0.95, 0.95, 1.0);    // Bright white/light gray
       vec3 color = mix(innerColor, outerColor, vDistanceFromCenter);
 
       if (alpha < 0.01) discard;

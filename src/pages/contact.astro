@@ -16,7 +16,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
     >
       <!-- PARTICLE EFFECT - Lowest layer -->
       <div class="particle-background absolute inset-0 z-0">
-        <ArtParticleViewer className="contact-particles" opacity={0.22} listenToRobotEvents={true} mouseRadius={6.0} />
+        <ArtParticleViewer className="contact-particles" opacity={0.35} listenToRobotEvents={true} mouseRadius={6.0} />
       </div>
 
       <!-- FULL PAGE ROBOT BACKGROUND -->
@@ -672,6 +672,10 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   }
 
   @media (max-width: 768px) {
+    .scroll-indicator {
+      display: none !important;
+    }
+
     .contact-title {
       font-size: clamp(2rem, 14vw, 8rem);
     }

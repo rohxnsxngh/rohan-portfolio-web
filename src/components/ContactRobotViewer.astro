@@ -205,15 +205,15 @@ const {
     // ===== DRAMATIC LIGHTING SETUP FOR METALLIC MATERIAL =====
 
     // Ambient light - slightly higher for metallic reflections
-    const ambientLight = new THREE.AmbientLight(0x303030, 0.15);
+    const ambientLight = new THREE.AmbientLight(0x303030, 0.09);
     scene.add(ambientLight);
 
     // KEY LIGHT - Main directional light (stronger for metallic)
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.36);
     mainLight.position.set(5, 8, 6);
     mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 2048;
-    mainLight.shadow.mapSize.height = 2048;
+    mainLight.shadow.mapSize.width = 1024;
+    mainLight.shadow.mapSize.height = 1024;
     mainLight.shadow.bias = -0.001;
     mainLight.shadow.camera.near = 0.5;
     mainLight.shadow.camera.far = 30;
@@ -224,27 +224,27 @@ const {
     scene.add(mainLight);
 
     // FILL LIGHT - Cool blue for contrast
-    const fillLight = new THREE.DirectionalLight(0x6688cc, 0.2);
+    const fillLight = new THREE.DirectionalLight(0x6688cc, 0.12);
     fillLight.position.set(-5, 3, 4);
     scene.add(fillLight);
 
     // CYAN ACCENT - Subtle glow (increased range for larger scene)
-    const cyanAccent = new THREE.PointLight(0x00ffff, 0.4, 25);
+    const cyanAccent = new THREE.PointLight(0x00ffff, 0.24, 25);
     cyanAccent.position.set(-4, 2, 5);
     scene.add(cyanAccent);
 
     // MAGENTA ACCENT - Complementary glow
-    const magentaAccent = new THREE.PointLight(0xff00ff, 0.3, 25);
+    const magentaAccent = new THREE.PointLight(0xff00ff, 0.18, 25);
     magentaAccent.position.set(4, 1, -4);
     scene.add(magentaAccent);
 
     // RIM LIGHT - Backlight for silhouette (stronger)
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.24);
     rimLight.position.set(0, 5, -8);
     scene.add(rimLight);
 
     // ANIMATED SPOTLIGHT
-    const spotlight = new THREE.SpotLight(0xffffff, 0.5);
+    const spotlight = new THREE.SpotLight(0xffffff, 0.3);
     spotlight.position.set(0, 10, 0);
     spotlight.angle = Math.PI / 6;
     spotlight.penumbra = 0.5;
@@ -432,7 +432,7 @@ const {
       // Animate lights for subtle dramatic effect
       if (animatedLights) {
         // Subtle pulse spotlight intensity
-        animatedLights.spotlight.intensity = 0.45 + Math.sin(elapsed * 0.8) * 0.15;
+        animatedLights.spotlight.intensity = 0.27 + Math.sin(elapsed * 0.8) * 0.09;
 
         // Slowly rotate cyan accent (larger orbit for bigger scene)
         const cyanAngle = elapsed * 0.2;
@@ -440,7 +440,7 @@ const {
         animatedLights.cyanAccent.position.z = Math.sin(cyanAngle) * 6;
 
         // Subtle pulse magenta accent
-        animatedLights.magentaAccent.intensity = 0.25 + Math.sin(elapsed * 1.2) * 0.1;
+        animatedLights.magentaAccent.intensity = 0.15 + Math.sin(elapsed * 1.2) * 0.06;
       }
 
       if (controls) {
@@ -521,24 +521,24 @@ const {
       }
 
       // Higher base intensity for larger scene distance
-      const baseIntensity = 15.0;
+      const baseIntensity = 9.0;
       const targetIntensity = baseIntensity * intensityMultiplier;
 
       if (mousePointLight.intensity < targetIntensity) {
-        mousePointLight.intensity += 2.0;
+        mousePointLight.intensity += 1.2;
       }
 
-      if (hemisphereLight.intensity < 1.5) {
-        hemisphereLight.intensity += 0.1;
+      if (hemisphereLight.intensity < 0.9) {
+        hemisphereLight.intensity += 0.06;
       }
 
       // Update gradient lights intensity
-      const gradientTargetIntensity = 12.0 * intensityMultiplier;
+      const gradientTargetIntensity = 7.2 * intensityMultiplier;
       if (animatedLights.yellowLight && animatedLights.yellowLight.intensity < gradientTargetIntensity) {
-        animatedLights.yellowLight.intensity += 1.5;
+        animatedLights.yellowLight.intensity += 0.9;
       }
       if (animatedLights.redLight && animatedLights.redLight.intensity < gradientTargetIntensity) {
-        animatedLights.redLight.intensity += 1.5;
+        animatedLights.redLight.intensity += 0.9;
       }
     }
 
@@ -564,9 +564,9 @@ const {
       if (mousePointLight && hemisphereLight && animatedLights) {
         const fadeOut = () => {
           if (mousePointLight && hemisphereLight && animatedLights) {
-            const stillFading = mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01 ||
-              (animatedLights.yellowLight && animatedLights.yellowLight.intensity > 0.1) ||
-              (animatedLights.redLight && animatedLights.redLight.intensity > 0.1);
+            const stillFading = mousePointLight.intensity > 0.06 || hemisphereLight.intensity > 0.006 ||
+              (animatedLights.yellowLight && animatedLights.yellowLight.intensity > 0.06) ||
+              (animatedLights.redLight && animatedLights.redLight.intensity > 0.06);
 
             if (stillFading) {
               mousePointLight.intensity *= 0.92;
@@ -591,9 +591,9 @@ const {
       if (mousePointLight && hemisphereLight && animatedLights) {
         const fadeOut = () => {
           if (mousePointLight && hemisphereLight && animatedLights) {
-            const stillFading = mousePointLight.intensity > 0.05 || hemisphereLight.intensity > 0.01 ||
-              (animatedLights.yellowLight && animatedLights.yellowLight.intensity > 0.05) ||
-              (animatedLights.redLight && animatedLights.redLight.intensity > 0.05);
+            const stillFading = mousePointLight.intensity > 0.03 || hemisphereLight.intensity > 0.006 ||
+              (animatedLights.yellowLight && animatedLights.yellowLight.intensity > 0.03) ||
+              (animatedLights.redLight && animatedLights.redLight.intensity > 0.03);
 
             if (stillFading) {
               mousePointLight.intensity *= 0.88;

@@ -177,11 +177,11 @@ const {
 
     // Optimized lighting setup for heavy robot
     // Ambient light - keep it low for drama
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.18);
     scene.add(ambientLight);
 
     // KEY LIGHT - Main directional light (strong, from top-right)
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
     mainLight.position.set(3, 5, 4);
     mainLight.castShadow = true;
     mainLight.shadow.mapSize.width = 512;
@@ -189,22 +189,22 @@ const {
     scene.add(mainLight);
 
     // FILL LIGHT - Softer light from opposite side
-    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.4);
+    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.24);
     fillLight.position.set(-3, 2, 2);
     scene.add(fillLight);
 
     // CYAN ACCENT - Point light for color pop
-    const cyanAccent = new THREE.PointLight(0x00ffff, 0.8, 10);
+    const cyanAccent = new THREE.PointLight(0x00ffff, 0.48, 10);
     cyanAccent.position.set(-2, 1, 3);
     scene.add(cyanAccent);
 
     // MAGENTA ACCENT - Point light for complementary color
-    const magentaAccent = new THREE.PointLight(0xff00ff, 0.6, 10);
+    const magentaAccent = new THREE.PointLight(0xff00ff, 0.36, 10);
     magentaAccent.position.set(2, 0.5, -2);
     scene.add(magentaAccent);
 
     // RIM LIGHT - Strong backlight for silhouette definition
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.48);
     rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
 
@@ -554,23 +554,23 @@ const {
       }
 
       // Increase light visibility (higher intensity for distant heavy robot)
-      const baseIntensity = 35.0;
+      const baseIntensity = 21.0;
       const targetIntensity = baseIntensity * intensityMultiplier;
 
       if (mousePointLight.intensity < targetIntensity) {
-        mousePointLight.intensity += 1.5;
+        mousePointLight.intensity += 0.9;
       }
 
       // Increase gradient lights
       if (animatedLights.yellowLight && animatedLights.yellowLight.intensity < targetIntensity * 0.7) {
-        animatedLights.yellowLight.intensity += 1.2;
+        animatedLights.yellowLight.intensity += 0.72;
       }
       if (animatedLights.redLight && animatedLights.redLight.intensity < targetIntensity * 0.8) {
-        animatedLights.redLight.intensity += 1.4;
+        animatedLights.redLight.intensity += 0.84;
       }
 
-      if (hemisphereLight.intensity < 0.6) {
-        hemisphereLight.intensity += 0.04;
+      if (hemisphereLight.intensity < 0.36) {
+        hemisphereLight.intensity += 0.024;
       }
     }
 
@@ -669,7 +669,7 @@ const {
 
     const fadeOut = () => {
       if (mousePointLight && hemisphereLight) {
-        const hasIntensity = mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01;
+        const hasIntensity = mousePointLight.intensity > 0.06 || hemisphereLight.intensity > 0.006;
         if (hasIntensity) {
           mousePointLight.intensity *= 0.9;
           hemisphereLight.intensity *= 0.9;

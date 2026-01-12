@@ -52,7 +52,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     >
       <!-- PARTICLE EFFECT - Lowest layer -->
       <div class="particle-background absolute inset-0 z-0">
-        <ArtParticleViewer className="projects-particles" opacity={0.22} listenToRobotEvents={true} />
+        <ArtParticleViewer className="projects-particles" opacity={0.35} listenToRobotEvents={true} />
       </div>
 
       <!-- FULL PAGE ROBOT BACKGROUND - Above particles -->
@@ -788,6 +788,10 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   }
 
   @media (max-width: 768px) {
+    .scroll-indicator {
+      display: none !important;
+    }
+
     .hero-name {
       font-size: clamp(1.8rem, 9vw, 8rem);
       letter-spacing: -0.04em;

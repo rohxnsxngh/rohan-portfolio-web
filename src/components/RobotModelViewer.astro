@@ -170,15 +170,15 @@ const {
 
     // DRAMATICALLY DIMMED LIGHTING - Create mystery and darkness
     // Ambient light - extremely low for darkness
-    const ambientLight = new THREE.AmbientLight(0x202020, 0.05);
+    const ambientLight = new THREE.AmbientLight(0x202020, 0.03);
     scene.add(ambientLight);
 
     // KEY LIGHT - Much weaker now
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 0.18);
     mainLight.position.set(3, 5, 4);
     mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 2048;
-    mainLight.shadow.mapSize.height = 2048;
+    mainLight.shadow.mapSize.width = 1024;
+    mainLight.shadow.mapSize.height = 1024;
     mainLight.shadow.bias = -0.001;
     mainLight.shadow.camera.near = 0.5;
     mainLight.shadow.camera.far = 20;
@@ -189,27 +189,27 @@ const {
     scene.add(mainLight);
 
     // FILL LIGHT - Barely visible
-    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.08);
+    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.05);
     fillLight.position.set(-3, 2, 2);
     scene.add(fillLight);
 
     // CYAN ACCENT - Very subtle
-    const cyanAccent = new THREE.PointLight(0x00ffff, 0.2, 10);
+    const cyanAccent = new THREE.PointLight(0x00ffff, 0.12, 10);
     cyanAccent.position.set(-2, 1, 3);
     scene.add(cyanAccent);
 
     // MAGENTA ACCENT - Very subtle
-    const magentaAccent = new THREE.PointLight(0xff00ff, 0.15, 10);
+    const magentaAccent = new THREE.PointLight(0xff00ff, 0.09, 10);
     magentaAccent.position.set(2, 0.5, -2);
     scene.add(magentaAccent);
 
     // RIM LIGHT - Weak backlight
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.2);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.12);
     rimLight.position.set(0, 3, -5);
     scene.add(rimLight);
 
     // ANIMATED SPOTLIGHT - Much dimmer
-    const spotlight = new THREE.SpotLight(0xffffff, 0.3);
+    const spotlight = new THREE.SpotLight(0xffffff, 0.18);
     spotlight.position.set(0, 6, 0);
     spotlight.angle = Math.PI / 6;
     spotlight.penumbra = 0.5;
@@ -459,7 +459,7 @@ const {
       // Animate lights for subtle dramatic effect (much dimmer)
       if (animatedLights) {
         // Subtle pulse spotlight intensity
-        animatedLights.spotlight.intensity = 0.25 + Math.sin(elapsed * 0.8) * 0.08;
+        animatedLights.spotlight.intensity = 0.15 + Math.sin(elapsed * 0.8) * 0.05;
 
         // Slowly rotate cyan accent
         const cyanAngle = elapsed * 0.3;
@@ -467,7 +467,7 @@ const {
         animatedLights.cyanAccent.position.z = Math.sin(cyanAngle) * 3;
 
         // Subtle pulse magenta accent
-        animatedLights.magentaAccent.intensity = 0.12 + Math.sin(elapsed * 1.2) * 0.05;
+        animatedLights.magentaAccent.intensity = 0.07 + Math.sin(elapsed * 1.2) * 0.03;
       }
 
 
@@ -566,25 +566,25 @@ const {
       }
 
       // Determine target intensity based on center proximity
-      const baseIntensity = 18.0;
+      const baseIntensity = 10.8;
       const targetIntensity = baseIntensity * intensityMultiplier;
 
       // Increase point light intensity - PRIMARY LIGHT SOURCE (orange)
       if (mousePointLight.intensity < targetIntensity) {
-        mousePointLight.intensity += 0.8;
+        mousePointLight.intensity += 0.48;
       }
 
       // Increase gradient lights (yellow slightly less, red slightly less)
       if (animatedLights.yellowLight && animatedLights.yellowLight.intensity < targetIntensity * 0.7) {
-        animatedLights.yellowLight.intensity += 0.6;
+        animatedLights.yellowLight.intensity += 0.36;
       }
       if (animatedLights.redLight && animatedLights.redLight.intensity < targetIntensity * 0.8) {
-        animatedLights.redLight.intensity += 0.7;
+        animatedLights.redLight.intensity += 0.42;
       }
 
       // Increase hemisphere light for better ambient distribution
-      if (hemisphereLight.intensity < 0.8) {
-        hemisphereLight.intensity += 0.05;
+      if (hemisphereLight.intensity < 0.48) {
+        hemisphereLight.intensity += 0.03;
       }
     }
 
@@ -612,7 +612,7 @@ const {
         const fadeOut = () => {
           if (mousePointLight && hemisphereLight) {
             // Slower fade for psychology - let user admire
-            const hasIntensity = mousePointLight.intensity > 0.1 || hemisphereLight.intensity > 0.01;
+            const hasIntensity = mousePointLight.intensity > 0.06 || hemisphereLight.intensity > 0.006;
             if (hasIntensity) {
               mousePointLight.intensity *= 0.93;
               hemisphereLight.intensity *= 0.93;
@@ -636,7 +636,7 @@ const {
       if (mousePointLight && hemisphereLight) {
         const fadeOut = () => {
           if (mousePointLight && hemisphereLight) {
-            const hasIntensity = mousePointLight.intensity > 0.05 || hemisphereLight.intensity > 0.01;
+            const hasIntensity = mousePointLight.intensity > 0.03 || hemisphereLight.intensity > 0.006;
             if (hasIntensity) {
               mousePointLight.intensity *= 0.9;
               hemisphereLight.intensity *= 0.9;

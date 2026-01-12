@@ -9,7 +9,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 >
   <!-- PARTICLE EFFECT - Lowest layer -->
   <div class="particle-background absolute inset-0 z-0">
-    <ArtParticleViewer className="home-particles" opacity={0.22} listenToRobotEvents={true} />
+    <ArtParticleViewer className="home-particles" opacity={0.35} listenToRobotEvents={true} />
   </div>
 
   <!-- FULL PAGE ROBOT BACKGROUND - Above particles -->
@@ -400,6 +400,10 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   }
 
   @media (max-width: 768px) {
+    .scroll-indicator-minimal {
+      display: none !important;
+    }
+
     .hero-name {
       font-size: clamp(4rem, 22vw, 14rem);
       letter-spacing: -0.06em;

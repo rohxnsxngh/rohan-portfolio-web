@@ -103,7 +103,7 @@ if (otherArticles.length > 0) {
     >
       <!-- PARTICLE EFFECT - Lowest layer -->
       <div class="particle-background absolute inset-0 z-0">
-        <ArtParticleViewer className="blog-particles" opacity={0.22} listenToRobotEvents={true} />
+        <ArtParticleViewer className="blog-particles" opacity={0.35} listenToRobotEvents={true} />
       </div>
 
       <!-- FULL PAGE KEYBOARD BACKGROUND - Above particles -->
@@ -1242,6 +1242,10 @@ if (otherArticles.length > 0) {
   }
 
   @media (max-width: 768px) {
+    .scroll-indicator {
+      display: none !important;
+    }
+
     .hero-name {
       font-size: clamp(1.5rem, 7.5vw, 8rem);
       letter-spacing: -0.03em;
