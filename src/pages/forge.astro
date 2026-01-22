@@ -10,7 +10,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
     <div class="flex-grow">
       <Navbar>
         <!-- HERO SECTION WITH PARTICLE EFFECT -->
-        <div class="hero-section relative w-full h-screen overflow-hidden" id="hero-section">
+        <div class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden" id="hero-section">
           <!-- Particle background with large distortion effect -->
           <ArtParticleViewer mouseRadius={6.0} />
 
@@ -18,24 +18,26 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
           <div class="hero-overlay absolute inset-0 bg-black/70 pointer-events-none"></div>
 
           <!-- Hero content -->
-          <div class="hero-content absolute inset-0 flex flex-col items-center justify-center z-10">
-            <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none text-center">
-              <span class="char char-1">F</span><span class="char char-2">O</span><span class="char char-3">R</span><span class="char char-4">G</span><span class="char char-5">E</span>
-            </h1>
-            <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
-              // EXPERIMENTS
-            </p>
-            <p class="hero-description text-primary/60 text-center max-w-xl mt-4 px-6">
-              Interactive ThreeJS experiments and visualizations
-            </p>
-
-            <!-- Scroll indicator -->
-            <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-              <span class="text-primary/40 text-xs font-mono tracking-wider">SCROLL</span>
-              <svg class="w-5 h-5 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-              </svg>
+          <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300">
+            <div class="max-w-7xl mx-auto">
+              <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">F</span><span class="char char-2">O</span><span class="char char-3">R</span><span class="char char-4">G</span><span class="char char-5">E</span>
+              </h1>
+              <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
+                // EXPERIMENTS
+              </p>
+              <p class="hero-description text-primary/60 max-w-xl mt-4">
+                Interactive ThreeJS experiments and visualizations
+              </p>
             </div>
+          </div>
+
+          <!-- Scroll indicator -->
+          <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-20 pointer-events-none">
+            <span class="text-primary/40 text-xs font-mono tracking-wider">SCROLL</span>
+            <svg class="w-5 h-5 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
           </div>
         </div>
 
@@ -179,6 +181,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   /* HERO SECTION */
   .hero-section {
     position: relative;
+    /* Removed fixed height */
   }
 
   .hero-overlay {
@@ -187,11 +190,14 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 
   /* HERO TITLE - Large centered title */
   .hero-title {
-    font-size: clamp(4rem, 20vw, 22rem);
+    font-size: clamp(2.5rem, 11vw, 16rem);
     line-height: 0.85;
     letter-spacing: -0.08em;
     color: #ffffff;
     text-transform: uppercase;
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
       0 6px 45px rgba(0, 0, 0, 0.7);
@@ -594,7 +600,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 
   /* Responsive */
   @media (max-width: 1024px) {
-    .forge-title {
+    .hero-title {
       font-size: clamp(3.5rem, 14vw, 12rem);
     }
   }
@@ -604,13 +610,13 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
       display: none !important;
     }
 
-    .forge-title {
+    .hero-title {
       font-size: clamp(3rem, 16vw, 10rem);
     }
   }
 
   @media (max-width: 640px) {
-    .forge-title {
+    .hero-title {
       font-size: clamp(2.5rem, 18vw, 8rem);
     }
   }
