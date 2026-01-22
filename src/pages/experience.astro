@@ -6,8 +6,16 @@ import Footer from "../layouts/Footer.astro";
 
 const allExperiences = await getCollection("experience");
 
-// Sort experiences by date (most recent first)
+// Sort experiences: current positions first (empty endDate), then by start date (most recent first)
 const sortedExperiences = allExperiences.sort((a, b) => {
+  const aIsCurrent = !a.data.endDate || a.data.endDate === "";
+  const bIsCurrent = !b.data.endDate || b.data.endDate === "";
+
+  // Current positions come first
+  if (aIsCurrent && !bIsCurrent) return -1;
+  if (!aIsCurrent && bIsCurrent) return 1;
+
+  // Within the same group (both current or both ended), sort by start date descending
   return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
 });
 ---
