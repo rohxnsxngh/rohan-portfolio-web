@@ -4,7 +4,6 @@ import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
 import ObfuscatedEmail from "../components/ObfuscatedEmail.astro";
 import ContactRobotViewer from "../components/ContactRobotViewer.astro";
-import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 ---
 
 <Layout title="Contact">
@@ -14,11 +13,6 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
       class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
       id="hero-section"
     >
-      <!-- PARTICLE EFFECT - Lowest layer -->
-      <div class="particle-background absolute inset-0 z-0">
-        <ArtParticleViewer className="contact-particles" opacity={0.35} listenToRobotEvents={true} mouseRadius={6.0} />
-      </div>
-
       <!-- FULL PAGE ROBOT BACKGROUND -->
       <div class="robot-background-container absolute inset-0 z-[1]" id="robot-container">
         <div class="robot-frame-fullscreen w-full h-full">

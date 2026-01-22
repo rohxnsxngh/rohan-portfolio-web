@@ -1,18 +1,12 @@
 ---
 import RobotModelViewer from "../components/RobotModelViewer.astro";
-import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 ---
 
 <div
   class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
   id="hero-section"
 >
-  <!-- PARTICLE EFFECT - Lowest layer -->
-  <div class="particle-background absolute inset-0 z-0">
-    <ArtParticleViewer className="home-particles" opacity={0.35} listenToRobotEvents={true} />
-  </div>
-
-  <!-- FULL PAGE ROBOT BACKGROUND - Above particles -->
+  <!-- FULL PAGE ROBOT BACKGROUND -->
   <div class="robot-background-container absolute inset-0 z-[1]" id="robot-container">
     <div class="robot-frame-fullscreen w-full h-full">
       <div class="w-full h-full robot-viewer" id="robot-viewer">
@@ -293,17 +287,6 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   .info-item:nth-child(1) { animation-delay: 1.3s; }
   .info-item:nth-child(2) { animation-delay: 1.4s; }
   .info-item:nth-child(3) { animation-delay: 1.5s; }
-
-  /* ===== PARTICLE BACKGROUND ===== */
-  .particle-background {
-    opacity: 0.7;
-    transition: opacity 0.5s ease;
-  }
-
-  /* Particles more visible when mouse active */
-  .hero-section.mouse-active .particle-background {
-    opacity: 1;
-  }
 
   /* ===== ROBOT AS FULL BACKGROUND ===== */
 
