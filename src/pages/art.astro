@@ -33,7 +33,7 @@ const artworks = [
     <div class="flex-grow">
       <Navbar>
         <!-- HERO SECTION WITH PARTICLE EFFECT -->
-        <div class="hero-section relative w-full h-screen overflow-hidden">
+        <div class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden" id="hero-section">
           <!-- Particle background -->
           <ArtParticleViewer />
 
@@ -41,24 +41,26 @@ const artworks = [
           <div class="hero-overlay absolute inset-0 bg-black/70 pointer-events-none"></div>
 
           <!-- Hero content -->
-          <div class="hero-content absolute inset-0 flex flex-col items-center justify-center z-10">
-            <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none text-center">
-              <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
-            </h1>
-            <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
-              // CREATIVE CORNER
-            </p>
-            <p class="hero-description text-primary/60 text-center max-w-xl mt-4 px-6">
-              Hand-drawn illustrations, digital explorations, and visual experiments
-            </p>
-
-            <!-- Scroll indicator -->
-            <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-              <span class="text-primary/40 text-xs font-mono tracking-wider">SCROLL</span>
-              <svg class="w-5 h-5 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-              </svg>
+          <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300">
+            <div class="max-w-7xl mx-auto">
+              <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
+                <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
+              </h1>
+              <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
+                // CREATIVE CORNER
+              </p>
+              <p class="hero-description text-primary/60 max-w-xl mt-4">
+                Hand-drawn illustrations, digital explorations, and visual experiments
+              </p>
             </div>
+          </div>
+
+          <!-- Scroll indicator -->
+          <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-20 pointer-events-none">
+            <span class="text-primary/40 text-xs font-mono tracking-wider">SCROLL</span>
+            <svg class="w-5 h-5 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
           </div>
         </div>
 
@@ -144,16 +146,17 @@ const artworks = [
 <style>
   /* ===== HERO SECTION ===== */
   .hero-section {
-    min-height: 100vh;
-    background: #000000;
+    position: relative;
+    /* Removed fixed height and background black to match others */
   }
 
   .hero-overlay {
     transition: opacity 0.3s ease;
+    z-index: 5;
   }
 
   .hero-content {
-    pointer-events: none;
+    /* Removed pointer-events: none; here as it's handled in the HTML class */
   }
 
   /* Hero title - large dramatic text */
@@ -472,7 +475,7 @@ const artworks = [
 
   /* RESPONSIVE */
   @media (max-width: 1024px) {
-    .art-title {
+    .hero-title {
       font-size: clamp(3.5rem, 16vw, 14rem);
     }
   }
@@ -482,7 +485,7 @@ const artworks = [
       display: none !important;
     }
 
-    .art-title {
+    .hero-title {
       font-size: clamp(3rem, 18vw, 12rem);
     }
 
@@ -494,7 +497,7 @@ const artworks = [
   }
 
   @media (max-width: 640px) {
-    .art-title {
+    .hero-title {
       font-size: clamp(2.5rem, 20vw, 10rem);
     }
   }
