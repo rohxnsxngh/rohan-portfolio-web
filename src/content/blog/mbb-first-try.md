@@ -3,7 +3,7 @@ title: "Interviewing with McKinsey and BCG"
 date: "2025-09"
 author: "Rohan Singh"
 image: "/images/blog/cmu-cv.jpg"
-status: "Coming Soon"
+status: "Complete"
 description: "Jumping into Ccnsulting, what got me interested and my experience preparing for the interviews"
 tags: ["consulting", "case studies", "BCG", "McKinsey"]
 ---
@@ -26,4 +26,6 @@ The interview process was mostly similar with some key differences. BCG has a in
 
 This seemed to work well since I moved onto the next round. I used these resources to study which are linked here. I read case studies and tried to practice with anyone who was willing to give me the time. I still think I am pretty weak when it comes to case studies but hey you live and you learn. My experiences interviewing at both McKinsey and BCG was similar since I reached the final round. It was a lot of yapping and was frankly exhausting. Also, I never felt like I hit all the correct points after an interview and I always felt slightly uneasy. I think this is common since the questions are designed to be so open-ended there are many ways you approach a possible topic. 
 
-In the end I decided to go with BCG because it was in a more favorable location, I liked the team better, as well as the pay. I am curious to see how the BCG adventure goes and I will write an another little blip once I have experienced it. Send me a message if you're curious or want to learn more, always happy to chat.
+In the end I had to make a pretty tough decision. BCG was offering a great location, a team I liked, and the pay was solid. But around the same time I got accepted into Y Combinator to pursue my own company. I thought about it for a while and honestly it came down to what I would regret more. Taking a safe corporate path when I had this incredible opportunity to build something of my own? That didn't sit right with me.
+
+So I ended up foregoing the BCG offer to join YC and go all in on my startup. It was definitely a risk but I think if you have the chance to build something and you're young enough to recover from failure, you should take the shot. Consulting will always be there but opportunities like YC don't come around every day. Send me a message if you're curious about either path, always happy to chat.

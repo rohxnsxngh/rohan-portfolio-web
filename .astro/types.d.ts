@@ -140,13 +140,6 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"cmu-deep-learning-practical.md": {
-	id: "cmu-deep-learning-practical.md";
-  slug: "cmu-deep-learning-practical";
-  body: string;
-  collection: "blog";
-  data: InferEntrySchema<"blog">
-} & { render(): Render[".md"] };
 "cmu-deep-learning.md": {
 	id: "cmu-deep-learning.md";
   slug: "cmu-deep-learning";
