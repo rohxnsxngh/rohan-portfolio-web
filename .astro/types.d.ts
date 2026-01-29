@@ -377,6 +377,13 @@ declare module 'astro:content' {
   collection: "research";
   data: InferEntrySchema<"research">
 } & { render(): Render[".md"] };
+"tinypointnext-efficient-point-cloud.md": {
+	id: "tinypointnext-efficient-point-cloud.md";
+  slug: "tinypointnext-efficient-point-cloud";
+  body: string;
+  collection: "research";
+  data: InferEntrySchema<"research">
+} & { render(): Render[".md"] };
 };
 
 	};
