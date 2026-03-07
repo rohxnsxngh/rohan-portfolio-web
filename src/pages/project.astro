@@ -95,6 +95,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
             <a
               href="#projects-display"
               class="cta-primary group relative inline-flex items-center justify-center px-7 py-3 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+              data-haptic="medium"
             >
               <span class="relative z-10">VIEW PROJECTS</span>
               <svg
@@ -116,6 +117,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
             <a
               href="/"
               class="cta-secondary group inline-flex items-center text-primary/70 hover:text-primary font-mono text-sm sm:text-base tracking-wider transition-all duration-300"
+              data-haptic="light"
             >
               Back to home
               <svg
@@ -208,7 +210,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
                   const statusDisplay = statusText[status] || "Unknown";
 
                   return (
-                    <div class="relative z-1 project-card group">
+                    <div class="relative z-1 project-card group" data-haptic="light">
                       <!-- Corner accent marks -->
                       <div class="card-corner-accent card-corner-tl"></div>
                       <div class="card-corner-accent card-corner-tr"></div>

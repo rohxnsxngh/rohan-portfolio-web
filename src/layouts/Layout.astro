@@ -267,6 +267,9 @@ const { title, description, image, frontmatter, robots } = Astro.props;
     <!-- Skip to main content link for keyboard users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <CustomCursor />
+    <script>
+      import "../scripts/haptics";
+    </script>
     <main id="main-content" class="fade-in" role="main">
       <slot />
     </main>

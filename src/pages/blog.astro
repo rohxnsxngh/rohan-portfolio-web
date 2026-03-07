@@ -146,6 +146,7 @@ if (otherArticles.length > 0) {
             <a
               href="#blog-content"
               class="cta-primary group relative inline-flex items-center justify-center px-7 py-3 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
+              data-haptic="medium"
             >
               <span class="relative z-10">READ ARTICLES</span>
               <svg
@@ -167,6 +168,7 @@ if (otherArticles.length > 0) {
             <a
               href="/"
               class="cta-secondary group inline-flex items-center text-primary/70 hover:text-primary font-mono text-sm sm:text-base tracking-wider transition-all duration-300"
+              data-haptic="light"
             >
               Back to home
               <svg
@@ -394,7 +396,7 @@ if (otherArticles.length > 0) {
             const readingTime = calculateReadingTime(article.body);
 
             return (
-              <a href={`/blog/${article.slug}`} class="group h-full relative blog-card">
+              <a href={`/blog/${article.slug}`} class="group h-full relative blog-card" data-haptic="light">
                 <!-- Corner accent marks -->
                 <div class="card-corner-accent card-corner-tl"></div>
                 <div class="card-corner-accent card-corner-tr"></div>
