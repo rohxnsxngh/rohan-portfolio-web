@@ -464,6 +464,8 @@ const artworks = [
   import gsap from 'gsap';
 
   document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.artwork-card')) return;
+
     const tl = createPageIntroTimeline();
     const chars = document.querySelectorAll('.hero-title .char');
     if (chars.length) {

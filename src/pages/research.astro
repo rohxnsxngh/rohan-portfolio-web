@@ -493,6 +493,8 @@ import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '.
 import gsap from 'gsap';
 
 document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.research-card')) return;
+
     const tl = createPageIntroTimeline();
     const chars = document.querySelectorAll('.hero-title .char');
     if (chars.length) {
@@ -506,6 +508,7 @@ document.addEventListener('astro:page-load', () => {
 });
 
 document.addEventListener('astro:page-load', () => {
+  if (!document.querySelector('.research-card')) return;
   // ===== HERO SECTION PARTICLE DISTORTION =====
   const heroSection = document.getElementById('hero-section');
   let mouseTimeout: number | null = null;

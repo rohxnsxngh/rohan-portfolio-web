@@ -559,6 +559,8 @@ import Layout from "../layouts/Layout.astro";
   import gsap from 'gsap';
 
   document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.about-title')) return;
+
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
 

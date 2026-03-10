@@ -785,6 +785,8 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   import gsap from 'gsap';
 
   document.addEventListener('astro:page-load', () => {
+    if (!document.getElementById('projects-display')) return;
+
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
 

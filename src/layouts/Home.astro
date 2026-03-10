@@ -5,6 +5,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 <div
   class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden"
   id="hero-section"
+  data-page="home"
 >
   <!-- FULL PAGE ROBOT BACKGROUND -->
   <div class="robot-background-container absolute inset-0 z-[1]" id="robot-container">
@@ -220,15 +221,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     text-decoration-color: rgba(255, 255, 255, 0.6);
   }
 
-  /* Info bar */
-  .info-bar {
-    opacity: 0;
-  }
-
-  .info-item {
-    opacity: 0;
-  }
-
   /* ===== ROBOT AS FULL BACKGROUND ===== */
 
   .robot-background-container {
@@ -261,8 +253,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   }
 
   .statement-text,
-  .label-intro span,
-  .info-bar {
+  .label-intro span {
     text-shadow:
       0 2px 15px rgba(0, 0, 0, 0.95),
       0 4px 25px rgba(0, 0, 0, 0.8);
@@ -333,10 +324,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
     .statement-text {
       font-size: clamp(0.9rem, 3vw, 1.25rem);
-    }
-
-    .info-bar {
-      margin-top: 3rem;
     }
 
     /* Less aggressive hover effect on tablet */
@@ -432,15 +419,14 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     }, 0.7);
 
     // Scroll indicator
-    tl.to('.scroll-indicator-minimal', {
-      opacity: 1,
-      duration: 1,
-      ease: 'expo.out',
-    }, 1.2);
-
-    // Info bar + items
-    tl.to('.info-bar', { opacity: 1, duration: 0.8 }, 1.0);
-    tl.to('.info-item', { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: 'expo.out' }, 1.1);
+    const scrollIndicator = document.querySelector('.scroll-indicator-minimal');
+    if (scrollIndicator) {
+      tl.to(scrollIndicator, {
+        opacity: 1,
+        duration: 1,
+        ease: 'expo.out',
+      }, 1.2);
+    }
 
     // Hero parallax via ScrollTrigger
     createHeroParallax('.hero-content');
@@ -539,7 +525,9 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   }
 
   // Use astro:page-load for View Transitions compatibility
+  // Guard: only run on the homepage
   document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('[data-page="home"]')) return;
     initHomeAnimations();
     initHomeInteractions();
   });

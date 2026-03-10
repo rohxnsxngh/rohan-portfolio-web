@@ -1715,6 +1715,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   import gsap from 'gsap';
 
   document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.experience-title')) return;
+
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
 
@@ -1732,6 +1734,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   });
 
   document.addEventListener("astro:page-load", () => {
+    if (!document.querySelector('.experience-title')) return;
     // Handle experience cards
     const cards = document.querySelectorAll(".experience-card");
 

@@ -614,6 +614,8 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
   import { haptic } from "../scripts/haptics";
 
   document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.contact-title')) return;
+
     const tl = createPageIntroTimeline();
     const chars = document.querySelectorAll('.contact-title .char');
     if (chars.length) {

@@ -549,6 +549,8 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   import gsap from 'gsap';
 
   document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.experiment-card')) return;
+
     const tl = createPageIntroTimeline();
     const chars = document.querySelectorAll('.hero-title .char');
     if (chars.length) {
@@ -563,6 +565,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   });
 
   document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.experiment-card')) return;
     // ===== HERO SECTION PARTICLE DISTORTION =====
     const heroSection = document.getElementById('hero-section');
     let mouseTimeout: number | null = null;

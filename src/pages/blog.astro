@@ -1260,6 +1260,8 @@ if (otherArticles.length > 0) {
   import gsap from 'gsap';
 
   document.addEventListener("astro:page-load", () => {
+    if (!document.getElementById('blog-content')) return;
+
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
     tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
