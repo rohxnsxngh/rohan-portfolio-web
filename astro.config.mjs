@@ -35,7 +35,7 @@ export default defineConfig({
       },
     },
     optimizeDeps: {
-      include: ['three']
+      include: ['three', 'gsap', 'lenis']
     },
     build: {
       commonjsOptions: {
@@ -46,6 +46,7 @@ export default defineConfig({
         output: {
           manualChunks: {
             'three-vendor': ['three'],
+            'gsap-vendor': ['gsap'],
           }
         }
       }

@@ -38,7 +38,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
             </div>
 
             <!-- CAREER JOURNEY TIMELINE -->
-            <div class="journey-section mb-16 opacity-0" style="animation: fadeInUp 0.8s ease-out forwards; animation-delay: 0.8s;">
+            <div class="journey-section mb-16 opacity-0">
               <div class="flex items-center gap-4 mb-8">
                 <p class="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-primary/30 uppercase">
                   Career Journey
@@ -336,81 +336,23 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     letter-spacing: -0.08em;
     color: #ffffff;
     text-transform: uppercase;
-    opacity: 0;
-    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
       0 6px 45px rgba(0, 0, 0, 0.7);
   }
 
-  @keyframes titleReveal {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Character animations */
+  /* Character animations - driven by GSAP */
   .experience-title .char {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
-  .char-4 { animation-delay: 0.20s; }
-  .char-5 { animation-delay: 0.25s; }
-  .char-6 { animation-delay: 0.30s; }
-  .char-7 { animation-delay: 0.35s; }
-  .char-8 { animation-delay: 0.40s; }
-  .char-9 { animation-delay: 0.45s; }
-  .char-10 { animation-delay: 0.50s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Accent line */
+  /* Accent line - initial state for GSAP */
   .accent-line {
     height: 3px;
     width: 0;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.6s;
-  }
-
-  @keyframes lineExpand {
-    to {
-      width: 200px;
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   /* Journey Cards Timeline */
@@ -445,10 +387,10 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     display: none;
   }
 
-  /* Journey Card Wrapper */
+  /* Journey Card Wrapper - initial state for GSAP batch reveal */
   .journey-card-wrapper {
     opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
+    transform: translateY(30px);
     position: relative;
     z-index: 1;
     flex: 1;
@@ -1326,10 +1268,10 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     background: rgba(150, 255, 150, 0.08);
   }
 
-  /* Experience Cards */
+  /* Experience Cards - initial state for GSAP batch reveal */
   .experience-card {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(30px);
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -1769,7 +1711,27 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import gsap from 'gsap';
+
+  document.addEventListener('astro:page-load', () => {
+    // GSAP intro timeline
+    const tl = createPageIntroTimeline();
+
+    const chars = document.querySelectorAll('.experience-title .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+    }
+
+    tl.add(() => animateLineExpand('.accent-line'), 0.3);
+
+    // Batch scroll reveal for journey cards and experience cards
+    batchScrollReveal('.journey-card-wrapper');
+    batchScrollReveal('.experience-card');
+  });
+
+  document.addEventListener("astro:page-load", () => {
     // Handle experience cards
     const cards = document.querySelectorAll(".experience-card");
 

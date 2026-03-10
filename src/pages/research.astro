@@ -261,68 +261,21 @@ const statusText = {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
-  .char-4 { animation-delay: 0.20s; }
-  .char-5 { animation-delay: 0.25s; }
-  .char-6 { animation-delay: 0.30s; }
-  .char-7 { animation-delay: 0.35s; }
-  .char-8 { animation-delay: 0.40s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
   }
 
   .hero-subtitle {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out 0.5s forwards;
+    transform: translateY(30px);
   }
 
   .hero-description {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out 0.7s forwards;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    transform: translateY(30px);
   }
 
   /* Section title */
   .section-title {
     opacity: 0;
-    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  @keyframes titleReveal {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   /* Accent line */
@@ -330,14 +283,6 @@ const statusText = {
     height: 3px;
     width: 0;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.6s;
-  }
-
-  @keyframes lineExpand {
-    to {
-      width: 200px;
-    }
   }
 
   /* Add Tailwind's line-clamp utility if not available in your Tailwind setup */
@@ -544,7 +489,23 @@ const statusText = {
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+import gsap from 'gsap';
+
+document.addEventListener('astro:page-load', () => {
+    const tl = createPageIntroTimeline();
+    const chars = document.querySelectorAll('.hero-title .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+    }
+    tl.add(() => animateLineExpand('.accent-line'), 0.3);
+    tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+    tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    batchScrollReveal('.research-card');
+});
+
+document.addEventListener('astro:page-load', () => {
   // ===== HERO SECTION PARTICLE DISTORTION =====
   const heroSection = document.getElementById('hero-section');
   let mouseTimeout: number | null = null;

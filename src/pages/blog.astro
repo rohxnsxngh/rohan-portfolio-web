@@ -489,60 +489,21 @@ if (otherArticles.length > 0) {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     text-shadow:
       0 0 40px rgba(255, 255, 255, 0.1),
       0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
-  /* Staggered animation delays */
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
-  .char-4 { animation-delay: 0.20s; }
-  .char-5 { animation-delay: 0.25s; }
-  .char-6 { animation-delay: 0.30s; }
-  .char-7 { animation-delay: 0.35s; }
-  .char-8 { animation-delay: 0.40s; }
-  .char-9 { animation-delay: 0.45s; }
-  .char-10 { animation-delay: 0.50s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
   /* Label intro animation */
   .label-intro {
     opacity: 0;
-    animation: fadeInDown 0.8s ease-out forwards;
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    transform: translateY(-20px);
   }
 
   /* Statement text */
   .statement {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.6s;
+    transform: translateY(30px);
   }
 
   .statement-text {
@@ -566,22 +527,10 @@ if (otherArticles.length > 0) {
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
   /* CTA Section */
   .cta-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.8s;
+    transform: translateY(30px);
   }
 
   /* Primary CTA Button */
@@ -1186,8 +1135,6 @@ if (otherArticles.length > 0) {
   /* ===== SCROLL INDICATOR ===== */
   .scroll-indicator {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards, floatUpDown 2s ease-in-out infinite;
-    animation-delay: 1.2s, 1.2s;
   }
 
   .scroll-arrow {
@@ -1309,7 +1256,24 @@ if (otherArticles.length > 0) {
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  import { createHeroParallax, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import gsap from 'gsap';
+
+  document.addEventListener("astro:page-load", () => {
+    // GSAP intro timeline
+    const tl = createPageIntroTimeline();
+    tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
+    const chars = document.querySelectorAll('.hero-name .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0.1);
+    }
+    tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+    tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+    createHeroParallax('.hero-content');
+    batchScrollReveal('.blog-card');
+
     const heroSection = document.getElementById("hero-section");
     const robotContainer = document.getElementById("robot-container");
 
@@ -1434,27 +1398,6 @@ if (otherArticles.length > 0) {
         );
       });
     }
-
-    // ===== PARALLAX EFFECT ON SCROLL =====
-    let ticking = false;
-    window.addEventListener("scroll", () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.scrollY;
-          const heroContent = document.querySelector(".hero-content");
-
-          if (heroContent && scrolled < window.innerHeight) {
-            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.7));
-            const translateY = scrolled * 0.3;
-            (heroContent as HTMLElement).style.opacity = opacity.toString();
-            (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
-          }
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
 
     // ===== BLOG CARD GLOW EFFECT =====
     const blogCards = document.querySelectorAll<HTMLElement>('.blog-card');

@@ -1,6 +1,8 @@
 ---
 import Seo from "../components/Seo.astro";
 import CustomCursor from "../components/CustomCursor.astro";
+import Preloader from "../components/Preloader.astro";
+import { ViewTransitions } from "astro:transitions";
 
 const { title, description, image, frontmatter, robots } = Astro.props;
 ---
@@ -23,8 +25,9 @@ const { title, description, image, frontmatter, robots } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
 
+    <ViewTransitions />
     <Seo {title} {description} url={Astro.url} {image} {frontmatter} {robots} />
-    
+
     <style is:global>
       @font-face {
         font-family: 'IBM Plex Mono';
@@ -78,9 +81,18 @@ const { title, description, image, frontmatter, robots } = Astro.props;
         animation: slideUp 0.5s ease-out;
       }
 
-      /* Smooth scrolling */
-      html {
-        scroll-behavior: smooth;
+      /* Lenis smooth scroll */
+      html.lenis, html.lenis body {
+        height: auto;
+      }
+      .lenis.lenis-smooth {
+        scroll-behavior: auto;
+      }
+      .lenis.lenis-smooth [data-lenis-prevent] {
+        overscroll-behavior: contain;
+      }
+      .lenis.lenis-stopped {
+        overflow: hidden;
       }
 
       /* Custom scrollbar */
@@ -266,11 +278,41 @@ const { title, description, image, frontmatter, robots } = Astro.props;
   <body class="min-h-screen">
     <!-- Skip to main content link for keyboard users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <CustomCursor />
+    <div transition:persist="cursor">
+      <CustomCursor />
+    </div>
+    <Preloader />
     <script>
       import "../scripts/haptics";
     </script>
-    <main id="main-content" class="fade-in" role="main">
+    <script>
+      import { initSmoothScroll, destroySmoothScroll } from '../scripts/smooth-scroll';
+      import { killAllScrollTriggers } from '../scripts/animations';
+      import { initMagneticButtons } from '../scripts/magnetic';
+
+      let magneticCleanup: (() => void) | null = null;
+
+      function initPage() {
+        initSmoothScroll();
+        magneticCleanup = initMagneticButtons();
+      }
+
+      // Initial load
+      initPage();
+
+      // Re-init on View Transition navigation
+      document.addEventListener('astro:before-swap', () => {
+        magneticCleanup?.();
+        magneticCleanup = null;
+        killAllScrollTriggers();
+        destroySmoothScroll();
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        initPage();
+      });
+    </script>
+    <main id="main-content" transition:animate="fade" role="main">
       <slot />
     </main>
   </body>

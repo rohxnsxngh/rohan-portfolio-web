@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import RS from "@images/RS.jpg";
 ---
 
-<nav class="fixed w-full z-50" role="navigation" aria-label="Main navigation">
+<nav class="fixed w-full z-50" role="navigation" aria-label="Main navigation" transition:persist="nav">
   <div class="sm:px-20 px-6">
     <div class="flex justify-between items-center h-14">
       <!-- Minimal Logo - far left -->
@@ -21,15 +21,15 @@ import RS from "@images/RS.jpg";
 
       <!-- Desktop Navigation - far right -->
       <div class="hidden md:flex items-center space-x-8" role="menubar">
-        <a href="/" class="nav-link" role="menuitem" data-haptic="selection">Home</a>
-        <a href="/about/" class="nav-link" role="menuitem" data-haptic="selection">About</a>
-        <a href="/experience/" class="nav-link" role="menuitem" data-haptic="selection">Experience</a>
-        <a href="/project/" class="nav-link" role="menuitem" data-haptic="selection">Projects</a>
-        <a href="/research/" class="nav-link" role="menuitem" data-haptic="selection">Research</a>
-        <a href="/forge/" class="nav-link" role="menuitem" data-haptic="selection">Forge</a>
-        <a href="/blog/" class="nav-link" role="menuitem" data-haptic="selection">Writing</a>
-        <a href="/art/" class="nav-link" role="menuitem" data-haptic="selection">Art</a>
-        <a href="/contact/" class="nav-link" role="menuitem" data-haptic="selection">Contact</a>
+        <a href="/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Home</a>
+        <a href="/about/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>About</a>
+        <a href="/experience/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Experience</a>
+        <a href="/project/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Projects</a>
+        <a href="/research/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Research</a>
+        <a href="/forge/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Forge</a>
+        <a href="/blog/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Writing</a>
+        <a href="/art/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Art</a>
+        <a href="/contact/" class="nav-link" role="menuitem" data-haptic="selection" data-magnetic>Contact</a>
       </div>
 
       <!-- Mobile menu button -->
@@ -104,7 +104,7 @@ import RS from "@images/RS.jpg";
 
 <script>
   // Mobile menu toggle with accessibility support
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 

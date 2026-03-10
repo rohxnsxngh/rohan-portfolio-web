@@ -57,6 +57,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
           href="/project"
           class="cta-primary group relative inline-flex items-center justify-center px-7 py-3 bg-primary text-secondary font-mono text-sm sm:text-base tracking-wider font-bold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/40"
           data-haptic="medium"
+          data-magnetic
         >
           <span class="relative z-10">VIEW MY WORK</span>
           <svg
@@ -138,65 +139,26 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     position: relative;
   }
 
-  /* Individual character animations */
+  /* Individual character animations - driven by GSAP */
   .hero-name .char {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     text-shadow:
       0 0 40px rgba(255, 255, 255, 0.1),
       0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
-  /* Staggered animation delays */
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
-  .char-4 { animation-delay: 0.20s; }
-  .char-5 { animation-delay: 0.25s; }
-  .char-6 { animation-delay: 0.30s; }
-  .char-7 { animation-delay: 0.35s; }
-  .char-8 { animation-delay: 0.40s; }
-  .char-9 { animation-delay: 0.45s; }
-  .char-10 { animation-delay: 0.50s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Label intro animation */
+  /* Label intro - initial state for GSAP */
   .label-intro {
     opacity: 0;
-    animation: fadeInDown 0.8s ease-out forwards;
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    transform: translateY(-20px);
   }
 
   /* Statement text */
   .statement {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.7s;
+    transform: translateY(30px);
   }
 
   .statement-text {
@@ -220,22 +182,10 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* CTA Section */
+  /* CTA Section - initial state for GSAP */
   .cta-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.9s;
+    transform: translateY(30px);
   }
 
   /* Primary CTA Button */
@@ -273,22 +223,11 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   /* Info bar */
   .info-bar {
     opacity: 0;
-    animation: fadeIn 1s ease-out forwards;
-    animation-delay: 1.2s;
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
   }
 
   .info-item {
     opacity: 0;
-    animation: fadeInUp 0.6s ease-out forwards;
   }
-
-  .info-item:nth-child(1) { animation-delay: 1.3s; }
-  .info-item:nth-child(2) { animation-delay: 1.4s; }
-  .info-item:nth-child(3) { animation-delay: 1.5s; }
 
   /* ===== ROBOT AS FULL BACKGROUND ===== */
 
@@ -351,8 +290,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   /* Scroll indicator */
   .scroll-indicator-minimal {
     opacity: 0;
-    animation: fadeIn 1.5s ease-out forwards;
-    animation-delay: 2s;
   }
 
   @keyframes scroll-dot {
@@ -446,73 +383,113 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  import { createHeroParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
+  import gsap from 'gsap';
+
+  let kineticCleanup: (() => void) | null = null;
+
+  function initHomeAnimations() {
+    // GSAP intro timeline
+    const tl = createPageIntroTimeline();
+
+    // Label intro (fade in from above)
+    tl.to('.label-intro', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'expo.out',
+    }, 0);
+
+    // Character reveal
+    const chars = document.querySelectorAll('.hero-name .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1,
+        stagger: 0.05,
+        ease: 'expo.out',
+      }, 0.1);
+    }
+
+    // Statement
+    tl.to('.statement', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'expo.out',
+    }, 0.5);
+
+    // CTA section
+    tl.to('.cta-section', {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'expo.out',
+    }, 0.7);
+
+    // Scroll indicator
+    tl.to('.scroll-indicator-minimal', {
+      opacity: 1,
+      duration: 1,
+      ease: 'expo.out',
+    }, 1.2);
+
+    // Info bar + items
+    tl.to('.info-bar', { opacity: 1, duration: 0.8 }, 1.0);
+    tl.to('.info-item', { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: 'expo.out' }, 1.1);
+
+    // Hero parallax via ScrollTrigger
+    createHeroParallax('.hero-content');
+
+    // Kinetic text effect
+    kineticCleanup?.();
+    kineticCleanup = initKineticText('.hero-name');
+  }
+
+  function initHomeInteractions() {
     const heroSection = document.getElementById("hero-section");
     const robotContainer = document.getElementById("robot-container");
 
     let mouseActive = false;
     let mouseTimeout: number | null = null;
 
-    // ===== DUAL HOVER/TOUCH ANIMATION =====
-    // Shared handler for mouse and touch events
     const handleInteraction = (clientX: number, clientY: number) => {
       const rect = heroSection!.getBoundingClientRect();
-
-      // Calculate position (0 to 1 normalized coordinates)
       const mouseX = (clientX - rect.left) / rect.width;
       const mouseY = (clientY - rect.top) / rect.height;
 
-      // Activate hover state (fade typography, lighten robot overlay)
       if (!mouseActive) {
         heroSection!.classList.add('mouse-active');
         mouseActive = true;
       }
 
-      // Clear existing timeout
-      if (mouseTimeout) {
-        clearTimeout(mouseTimeout);
-      }
+      if (mouseTimeout) clearTimeout(mouseTimeout);
 
-      // Dispatch position to THREE.js robot viewer
       document.dispatchEvent(
         new CustomEvent("robotMouseMove", {
-          detail: {
-            x: mouseX,
-            y: mouseY,
-            clientX: clientX,
-            clientY: clientY
-          },
+          detail: { x: mouseX, y: mouseY, clientX, clientY },
         })
       );
 
-      // Reset to inactive state after interaction stops (longer delay for admiration)
       mouseTimeout = window.setTimeout(() => {
         heroSection!.classList.remove('mouse-active');
         mouseActive = false;
-
-        // Notify robot viewer that interaction is inactive
-        document.dispatchEvent(
-          new CustomEvent("robotMouseInactive", {
-            detail: { inactive: true },
-          })
-        );
-      }, 800); // Increased from 150ms to 800ms for user to admire robot
+        document.dispatchEvent(new CustomEvent("robotMouseInactive", { detail: { inactive: true } }));
+      }, 800);
     };
 
-    // Touch tracking for scroll vs interaction detection
     let touchStartY = 0;
     let touchStartX = 0;
     let isScrolling = false;
-    const SCROLL_THRESHOLD = 10; // pixels of vertical movement to trigger scroll
+    const SCROLL_THRESHOLD = 10;
 
-    // Track mouse movement and dispatch to THREE.js scene
     if (heroSection && robotContainer) {
-      // MOUSE EVENTS
-      heroSection.addEventListener("mousemove", (e) => {
-        handleInteraction(e.clientX, e.clientY);
-      });
+      heroSection.addEventListener("mousemove", (e) => handleInteraction(e.clientX, e.clientY));
 
-      // TOUCH EVENTS for mobile - allow scrolling while still enabling interaction
       heroSection.addEventListener("touchstart", (e) => {
         if (e.touches.length > 0) {
           const touch = e.touches[0];
@@ -528,16 +505,8 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
           const touch = e.touches[0];
           const deltaY = Math.abs(touch.clientY - touchStartY);
           const deltaX = Math.abs(touch.clientX - touchStartX);
-
-          // If vertical movement exceeds threshold and is greater than horizontal, allow scrolling
-          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
-            isScrolling = true;
-          }
-
-          // Only trigger interaction effect if not scrolling
-          if (!isScrolling) {
-            handleInteraction(touch.clientX, touch.clientY);
-          }
+          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) isScrolling = true;
+          if (!isScrolling) handleInteraction(touch.clientX, touch.clientY);
         }
       }, { passive: true });
 
@@ -545,79 +514,39 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
         heroSection.classList.remove('mouse-active');
         mouseActive = false;
         isScrolling = false;
-
-        if (mouseTimeout) {
-          clearTimeout(mouseTimeout);
-          mouseTimeout = null;
-        }
-
-        // Notify robot viewer that touch ended
-        document.dispatchEvent(
-          new CustomEvent("robotMouseLeave", {
-            detail: { left: true },
-          })
-        );
+        if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+        document.dispatchEvent(new CustomEvent("robotMouseLeave", { detail: { left: true } }));
       });
 
-      // Remove active state when mouse leaves
       heroSection.addEventListener("mouseleave", () => {
         heroSection.classList.remove('mouse-active');
         mouseActive = false;
-
-        if (mouseTimeout) {
-          clearTimeout(mouseTimeout);
-          mouseTimeout = null;
-        }
-
-        // Notify robot viewer that mouse left
-        document.dispatchEvent(
-          new CustomEvent("robotMouseLeave", {
-            detail: { left: true },
-          })
-        );
+        if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+        document.dispatchEvent(new CustomEvent("robotMouseLeave", { detail: { left: true } }));
       });
 
-      // Reactivate on mouse enter
       heroSection.addEventListener("mouseenter", () => {
-        // Notify robot viewer that mouse entered
-        document.dispatchEvent(
-          new CustomEvent("robotMouseEnter", {
-            detail: { entered: true },
-          })
-        );
+        document.dispatchEvent(new CustomEvent("robotMouseEnter", { detail: { entered: true } }));
       });
     }
 
-    // ===== SMOOTH SCROLL FOR SCROLL INDICATOR =====
     const scrollIndicator = document.querySelector(".scroll-indicator-minimal");
     if (scrollIndicator) {
       scrollIndicator.addEventListener("click", () => {
-        window.scrollTo({
-          top: window.innerHeight,
-          behavior: "smooth",
-        });
+        window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
       });
     }
+  }
 
-    // ===== PARALLAX EFFECT ON SCROLL =====
-    let ticking = false;
-    window.addEventListener("scroll", () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.scrollY;
-          const heroContent = document.querySelector(".hero-content");
+  // Use astro:page-load for View Transitions compatibility
+  document.addEventListener('astro:page-load', () => {
+    initHomeAnimations();
+    initHomeInteractions();
+  });
 
-          if (heroContent && scrolled < window.innerHeight) {
-            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.7));
-            const translateY = scrolled * 0.3;
-            (heroContent as HTMLElement).style.opacity = opacity.toString();
-            (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
-          }
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
+  // Cleanup kinetic text on navigation
+  document.addEventListener('astro:before-swap', () => {
+    kineticCleanup?.();
+    kineticCleanup = null;
   });
 </script>

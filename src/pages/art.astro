@@ -86,7 +86,7 @@ const artworks = [
 
               <div class="gallery-grid">
                 {artworks.map((artwork, index) => (
-                  <div class="artwork-card group" style={`animation-delay: ${0.1 * index}s`}>
+                  <div class="artwork-card group">
                     <!-- Corner accents -->
                     <div class="card-corner card-corner-tl"></div>
                     <div class="card-corner card-corner-tr"></div>
@@ -177,43 +177,20 @@ const artworks = [
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .char-1 { animation-delay: 0.2s; }
-  .char-2 { animation-delay: 0.35s; }
-  .char-3 { animation-delay: 0.5s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
   }
 
   .hero-subtitle {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
-    animation-delay: 0.7s;
+    transform: translateY(30px);
   }
 
   .hero-description {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
-    animation-delay: 0.9s;
+    transform: translateY(30px);
   }
 
   .scroll-indicator {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
-    animation-delay: 1.2s;
   }
 
   /* ===== GALLERY SECTION ===== */
@@ -234,7 +211,7 @@ const artworks = [
   /* Section title */
   .section-title {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(30px);
   }
 
   /* Accent line */
@@ -242,32 +219,12 @@ const artworks = [
     height: 2px;
     width: 0;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
-    animation: lineExpand 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.3s;
-  }
-
-  @keyframes lineExpand {
-    to {
-      width: 120px;
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   /* Gallery Section */
   .gallery-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.8s;
+    transform: translateY(30px);
   }
 
   .gallery-grid {
@@ -296,7 +253,7 @@ const artworks = [
     border-radius: 12px;
     overflow: hidden;
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(30px);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -398,8 +355,7 @@ const artworks = [
   /* Coming Soon Section */
   .coming-soon-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 1s;
+    transform: translateY(30px);
   }
 
   .coming-soon-banner {
@@ -502,3 +458,23 @@ const artworks = [
     }
   }
 </style>
+
+<script>
+  import { animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import gsap from 'gsap';
+
+  document.addEventListener('astro:page-load', () => {
+    const tl = createPageIntroTimeline();
+    const chars = document.querySelectorAll('.hero-title .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+    }
+    tl.add(() => animateLineExpand('.accent-line'), 0.3);
+    tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+    tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+    batchScrollReveal('.artwork-card');
+    scrollReveal('.coming-soon-section');
+  });
+</script>
