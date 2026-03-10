@@ -784,7 +784,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   import { createHeroParallax, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.getElementById('projects-display')) return;
 
     // GSAP intro timeline

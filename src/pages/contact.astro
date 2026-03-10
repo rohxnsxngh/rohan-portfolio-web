@@ -613,7 +613,7 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
   import gsap from 'gsap';
   import { haptic } from "../scripts/haptics";
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.contact-title')) return;
 
     const tl = createPageIntroTimeline();

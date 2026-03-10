@@ -548,7 +548,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   import { animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.experiment-card')) return;
 
     const tl = createPageIntroTimeline();
@@ -564,7 +564,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
     scrollReveal('.coming-soon-section');
   });
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.experiment-card')) return;
     // ===== HERO SECTION PARTICLE DISTORTION =====
     const heroSection = document.getElementById('hero-section');

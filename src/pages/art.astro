@@ -463,7 +463,7 @@ const artworks = [
   import { animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.artwork-card')) return;
 
     const tl = createPageIntroTimeline();

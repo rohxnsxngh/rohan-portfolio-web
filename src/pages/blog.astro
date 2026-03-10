@@ -1259,7 +1259,7 @@ if (otherArticles.length > 0) {
   import { createHeroParallax, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     if (!document.getElementById('blog-content')) return;
 
     // GSAP intro timeline

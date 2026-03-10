@@ -2,7 +2,6 @@
 import Seo from "../components/Seo.astro";
 import CustomCursor from "../components/CustomCursor.astro";
 import Preloader from "../components/Preloader.astro";
-import { ViewTransitions } from "astro:transitions";
 
 const { title, description, image, frontmatter, robots } = Astro.props;
 ---
@@ -25,7 +24,6 @@ const { title, description, image, frontmatter, robots } = Astro.props;
     <title>{title}</title>
     <meta name="description" content={description} />
 
-    <ViewTransitions />
     <Seo {title} {description} url={Astro.url} {image} {frontmatter} {robots} />
 
     <style is:global>
@@ -278,39 +276,17 @@ const { title, description, image, frontmatter, robots } = Astro.props;
   <body class="min-h-screen">
     <!-- Skip to main content link for keyboard users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <div transition:persist="cursor">
-      <CustomCursor />
-    </div>
+    <CustomCursor />
     <Preloader />
     <script>
       import "../scripts/haptics";
     </script>
     <script>
-      import { initSmoothScroll, destroySmoothScroll } from '../scripts/smooth-scroll';
-      import { killAllScrollTriggers } from '../scripts/animations';
+      import { initSmoothScroll } from '../scripts/smooth-scroll';
       import { initMagneticButtons } from '../scripts/magnetic';
 
-      let magneticCleanup: (() => void) | null = null;
-
-      function initPage() {
-        initSmoothScroll();
-        magneticCleanup = initMagneticButtons();
-      }
-
-      // Initial load
-      initPage();
-
-      // Re-init on View Transition navigation
-      document.addEventListener('astro:before-swap', () => {
-        magneticCleanup?.();
-        magneticCleanup = null;
-        killAllScrollTriggers();
-        destroySmoothScroll();
-      });
-
-      document.addEventListener('astro:after-swap', () => {
-        initPage();
-      });
+      initSmoothScroll();
+      initMagneticButtons();
     </script>
     <main id="main-content" role="main">
       <slot />

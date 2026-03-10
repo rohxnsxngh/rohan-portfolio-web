@@ -445,8 +445,9 @@ const {
     );
 
     // Animation loop
+    let _animationId: number;
     function animate() {
-      requestAnimationFrame(animate);
+      _animationId = requestAnimationFrame(animate);
 
       // Update animation mixer
       const delta = clock.getDelta();
@@ -505,6 +506,18 @@ const {
     if (container) {
       resizeObserver.observe(container);
     }
+
+    // Cleanup on View Transition navigation
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(_animationId);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      renderer.dispose();
+      renderer.forceContextLoss();
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+      controls?.dispose();
+      console.debug('[RobotModelViewer] cleaned up WebGL context');
+    });
 
     // ===== INVISIBLE LIGHTING SYSTEM WITH RAYCASTING (THROTTLED) =====
     // Helper function to perform raycasting update

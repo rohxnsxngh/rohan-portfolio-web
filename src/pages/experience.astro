@@ -1714,7 +1714,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.experience-title')) return;
 
     // GSAP intro timeline
@@ -1733,7 +1733,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     batchScrollReveal('.experience-card');
   });
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     if (!document.querySelector('.experience-title')) return;
     // Handle experience cards
     const cards = document.querySelectorAll(".experience-card");

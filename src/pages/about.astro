@@ -558,7 +558,7 @@ import Layout from "../layouts/Layout.astro";
   import { animateLineExpand, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.about-title')) return;
 
     // GSAP intro timeline
@@ -585,7 +585,7 @@ import Layout from "../layouts/Layout.astro";
   });
 
   // Intersection Observer for lazy loading videos
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     const videos = document.querySelectorAll("video");
 
     if ("IntersectionObserver" in window) {

@@ -492,7 +492,7 @@ const statusText = {
 import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
 import gsap from 'gsap';
 
-document.addEventListener('astro:page-load', () => {
+document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('.research-card')) return;
 
     const tl = createPageIntroTimeline();
@@ -507,7 +507,7 @@ document.addEventListener('astro:page-load', () => {
     batchScrollReveal('.research-card');
 });
 
-document.addEventListener('astro:page-load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   if (!document.querySelector('.research-card')) return;
   // ===== HERO SECTION PARTICLE DISTORTION =====
   const heroSection = document.getElementById('hero-section');

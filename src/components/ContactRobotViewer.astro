@@ -414,8 +414,9 @@ const {
     );
 
     // Animation loop
+    let _animationId: number;
     function animate() {
-      requestAnimationFrame(animate);
+      _animationId = requestAnimationFrame(animate);
 
       const delta = clock.getDelta();
       const elapsed = clock.getElapsedTime();
@@ -469,6 +470,18 @@ const {
     if (container) {
       resizeObserver.observe(container);
     }
+
+    // Cleanup on View Transition navigation
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(_animationId);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      renderer.dispose();
+      renderer.forceContextLoss();
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+      controls?.dispose();
+      console.debug('[ContactRobotViewer] cleaned up WebGL context');
+    });
 
     // ===== RAYCASTING FOR MOUSE-REACTIVE LIGHTING =====
     function performRaycastUpdate(x: number, y: number) {

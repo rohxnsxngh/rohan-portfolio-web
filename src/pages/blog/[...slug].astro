@@ -314,7 +314,7 @@ const statusText: Record<BlogStatus, string> = {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.getElementById('reading-progress')) return;
 
     const tl = createPageIntroTimeline();

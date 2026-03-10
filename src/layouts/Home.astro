@@ -524,9 +524,9 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     }
   }
 
-  // Use astro:page-load for View Transitions compatibility
+  // Use DOMContentLoaded for View Transitions compatibility
   // Guard: only run on the homepage
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     if (!document.querySelector('[data-page="home"]')) return;
     initHomeAnimations();
     initHomeInteractions();

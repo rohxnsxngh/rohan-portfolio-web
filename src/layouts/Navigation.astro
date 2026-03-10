@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import RS from "@images/RS.jpg";
 ---
 
-<nav class="fixed w-full z-50" role="navigation" aria-label="Main navigation" transition:persist="nav">
+<nav class="fixed w-full z-50" role="navigation" aria-label="Main navigation">
   <div class="sm:px-20 px-6">
     <div class="flex justify-between items-center h-14">
       <!-- Minimal Logo - far left -->
@@ -104,7 +104,7 @@ import RS from "@images/RS.jpg";
 
 <script>
   // Mobile menu toggle with accessibility support
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 

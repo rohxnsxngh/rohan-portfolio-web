@@ -434,8 +434,9 @@ const {
     );
 
     // Animation loop
+    let _animationId: number;
     function animate() {
-      requestAnimationFrame(animate);
+      _animationId = requestAnimationFrame(animate);
 
       // Update animation mixer
       const delta = clock.getDelta();
@@ -490,6 +491,18 @@ const {
     if (container) {
       resizeObserver.observe(container);
     }
+
+    // Cleanup on View Transition navigation
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(_animationId);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      renderer.dispose();
+      renderer.forceContextLoss();
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+      controls?.dispose();
+      console.debug('[HeavyRobotModelViewer] cleaned up WebGL context');
+    });
 
     // Helper function to update lighting based on position (with throttling)
     function updateLighting(clientX: number, clientY: number, forceUpdate = false) {
