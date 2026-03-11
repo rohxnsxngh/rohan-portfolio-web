@@ -28,18 +28,6 @@ const {
   import { LuminosityShader } from "three/examples/jsm/shaders/LuminosityShader.js";
   import { SobelOperatorShader } from "three/examples/jsm/shaders/SobelOperatorShader.js";
 
-  // Get the canvas container
-  const container = document.querySelector(".art-particle-canvas-inner") as HTMLElement;
-  if (!container) throw new Error("Canvas container not found");
-
-  // Get opacity and mouse radius from parent data attributes
-  const parentContainer = container.closest('.art-particle-container') as HTMLElement;
-  const OPACITY_MULTIPLIER = parseFloat(parentContainer?.dataset.opacity || '1.0');
-  const MOUSE_RADIUS_FROM_PROP = parseFloat(parentContainer?.dataset.mouseRadius || '3.0');
-
-  // Always listen for robot events - they only fire on the homepage anyway
-  const LISTEN_TO_ROBOT_EVENTS = true;
-
   // Simplex noise implementation for organic movement
   class SimplexNoise {
     private p: number[];
@@ -118,399 +106,420 @@ const {
     }
   }
 
-  // Configuration
-  const PARTICLE_COUNT = 15000;
-  const PARTICLE_SIZE = 2.5;
-  const SPREAD = 12;
-  const MOUSE_INFLUENCE_RADIUS = MOUSE_RADIUS_FROM_PROP;
-  const MOUSE_REPEL_STRENGTH = 0.8;
+  // Track current instance for cleanup
+  let currentCleanup: (() => void) | null = null;
 
-  // Scene setup
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x000000);
-
-  const camera = new THREE.PerspectiveCamera(
-    60,
-    container.clientWidth / container.clientHeight,
-    0.1,
-    1000
-  );
-  camera.position.z = 20;
-
-  const renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    powerPreference: "high-performance",
-  });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  container.appendChild(renderer.domElement);
-
-  // Initialize noise
-  const noise = new SimplexNoise();
-
-  // Create particle system with instanced geometry
-  const geometry = new THREE.BufferGeometry();
-
-  // Initial positions - distributed in a spherical cloud
-  const positions = new Float32Array(PARTICLE_COUNT * 3);
-  const originalPositions = new Float32Array(PARTICLE_COUNT * 3);
-  const velocities = new Float32Array(PARTICLE_COUNT * 3);
-  const sizes = new Float32Array(PARTICLE_COUNT);
-  const opacities = new Float32Array(PARTICLE_COUNT);
-  const randomOffsets = new Float32Array(PARTICLE_COUNT);
-
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    // Spherical distribution with some randomness
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-    const r = Math.pow(Math.random(), 0.5) * SPREAD;
-
-    const x = r * Math.sin(phi) * Math.cos(theta);
-    const y = r * Math.sin(phi) * Math.sin(theta);
-    const z = r * Math.cos(phi) * 0.3; // Flatten slightly
-
-    positions[i * 3] = x;
-    positions[i * 3 + 1] = y;
-    positions[i * 3 + 2] = z;
-
-    originalPositions[i * 3] = x;
-    originalPositions[i * 3 + 1] = y;
-    originalPositions[i * 3 + 2] = z;
-
-    velocities[i * 3] = 0;
-    velocities[i * 3 + 1] = 0;
-    velocities[i * 3 + 2] = 0;
-
-    sizes[i] = Math.random() * PARTICLE_SIZE + 0.5;
-    opacities[i] = Math.random() * 0.6 + 0.4;
-    randomOffsets[i] = Math.random() * 1000;
-  }
-
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
-  geometry.setAttribute("opacity", new THREE.BufferAttribute(opacities, 1));
-  geometry.setAttribute("randomOffset", new THREE.BufferAttribute(randomOffsets, 1));
-
-  // Custom shader material for particles
-  const vertexShader = `
-    attribute float size;
-    attribute float opacity;
-    attribute float randomOffset;
-
-    uniform float uTime;
-    uniform vec2 uMouse;
-    uniform float uMouseInfluence;
-
-    varying float vOpacity;
-    varying float vDistanceFromCenter;
-
-    // Simplex noise function
-    vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-    vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-    vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
-    vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-
-    float snoise(vec3 v) {
-      const vec2 C = vec2(1.0/6.0, 1.0/3.0);
-      const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
-      vec3 i  = floor(v + dot(v, C.yyy));
-      vec3 x0 = v - i + dot(i, C.xxx);
-      vec3 g = step(x0.yzx, x0.xyz);
-      vec3 l = 1.0 - g;
-      vec3 i1 = min(g.xyz, l.zxy);
-      vec3 i2 = max(g.xyz, l.zxy);
-      vec3 x1 = x0 - i1 + C.xxx;
-      vec3 x2 = x0 - i2 + C.yyy;
-      vec3 x3 = x0 - D.yyy;
-      i = mod289(i);
-      vec4 p = permute(permute(permute(
-                i.z + vec4(0.0, i1.z, i2.z, 1.0))
-              + i.y + vec4(0.0, i1.y, i2.y, 1.0))
-              + i.x + vec4(0.0, i1.x, i2.x, 1.0));
-      float n_ = 0.142857142857;
-      vec3 ns = n_ * D.wyz - D.xzx;
-      vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-      vec4 x_ = floor(j * ns.z);
-      vec4 y_ = floor(j - 7.0 * x_);
-      vec4 x = x_ *ns.x + ns.yyyy;
-      vec4 y = y_ *ns.x + ns.yyyy;
-      vec4 h = 1.0 - abs(x) - abs(y);
-      vec4 b0 = vec4(x.xy, y.xy);
-      vec4 b1 = vec4(x.zw, y.zw);
-      vec4 s0 = floor(b0)*2.0 + 1.0;
-      vec4 s1 = floor(b1)*2.0 + 1.0;
-      vec4 sh = -step(h, vec4(0.0));
-      vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
-      vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
-      vec3 p0 = vec3(a0.xy, h.x);
-      vec3 p1 = vec3(a0.zw, h.y);
-      vec3 p2 = vec3(a1.xy, h.z);
-      vec3 p3 = vec3(a1.zw, h.w);
-      vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
-      p0 *= norm.x;
-      p1 *= norm.y;
-      p2 *= norm.z;
-      p3 *= norm.w;
-      vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-      m = m * m;
-      return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+  function initParticleViewer() {
+    // Clean up any previous instance first
+    if (currentCleanup) {
+      currentCleanup();
+      currentCleanup = null;
     }
 
-    void main() {
-      vOpacity = opacity;
+    // Find the container on the current page
+    const container = document.querySelector(".art-particle-canvas-inner") as HTMLElement;
+    if (!container) return; // No particle viewer on this page
 
-      // Calculate noise-based displacement
-      float noiseScale = 0.15;
-      float timeScale = 0.3;
+    // Get opacity and mouse radius from parent data attributes
+    const parentContainer = container.closest('.art-particle-container') as HTMLElement;
+    const OPACITY_MULTIPLIER = parseFloat(parentContainer?.dataset.opacity || '1.0');
+    const MOUSE_RADIUS_FROM_PROP = parseFloat(parentContainer?.dataset.mouseRadius || '3.0');
 
-      vec3 noisePos = position * noiseScale + vec3(randomOffset * 0.01);
-      float noiseX = snoise(noisePos + vec3(uTime * timeScale, 0.0, 0.0));
-      float noiseY = snoise(noisePos + vec3(0.0, uTime * timeScale, 100.0));
-      float noiseZ = snoise(noisePos + vec3(0.0, 0.0, uTime * timeScale + 200.0));
+    // Configuration
+    const PARTICLE_COUNT = 15000;
+    const PARTICLE_SIZE = 2.5;
+    const SPREAD = 12;
+    const MOUSE_INFLUENCE_RADIUS = MOUSE_RADIUS_FROM_PROP;
+    const MOUSE_REPEL_STRENGTH = 0.8;
 
-      vec3 displacement = vec3(noiseX, noiseY, noiseZ) * 1.5;
-      vec3 newPosition = position + displacement;
+    // Scene setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
 
-      // Mouse influence - repel particles
-      vec4 worldPos = modelMatrix * vec4(newPosition, 1.0);
-      vec4 viewPos = viewMatrix * worldPos;
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 20;
 
-      // Project mouse to 3D space at particle depth
-      float mouseZ = viewPos.z;
-      vec3 mousePos3D = vec3(uMouse.x * 15.0, uMouse.y * 10.0, 0.0);
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      powerPreference: "high-performance",
+    });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
 
-      float distToMouse = distance(newPosition.xy, mousePos3D.xy);
-      float mouseEffect = smoothstep(${MOUSE_INFLUENCE_RADIUS.toFixed(1)}, 0.0, distToMouse) * uMouseInfluence;
+    // Initialize noise
+    const noise = new SimplexNoise();
 
-      if (distToMouse < ${MOUSE_INFLUENCE_RADIUS.toFixed(1)} && uMouseInfluence > 0.0) {
-        vec2 repelDir = normalize(newPosition.xy - mousePos3D.xy);
-        newPosition.xy += repelDir * mouseEffect * ${MOUSE_REPEL_STRENGTH.toFixed(1)};
-        // Add slight z movement for depth effect
-        newPosition.z += mouseEffect * 0.5;
+    // Create particle system
+    const geometry = new THREE.BufferGeometry();
+
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    const originalPositions = new Float32Array(PARTICLE_COUNT * 3);
+    const velocities = new Float32Array(PARTICLE_COUNT * 3);
+    const sizes = new Float32Array(PARTICLE_COUNT);
+    const opacities = new Float32Array(PARTICLE_COUNT);
+    const randomOffsets = new Float32Array(PARTICLE_COUNT);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = Math.pow(Math.random(), 0.5) * SPREAD;
+
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi) * 0.3;
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      originalPositions[i * 3] = x;
+      originalPositions[i * 3 + 1] = y;
+      originalPositions[i * 3 + 2] = z;
+
+      velocities[i * 3] = 0;
+      velocities[i * 3 + 1] = 0;
+      velocities[i * 3 + 2] = 0;
+
+      sizes[i] = Math.random() * PARTICLE_SIZE + 0.5;
+      opacities[i] = Math.random() * 0.6 + 0.4;
+      randomOffsets[i] = Math.random() * 1000;
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute("opacity", new THREE.BufferAttribute(opacities, 1));
+    geometry.setAttribute("randomOffset", new THREE.BufferAttribute(randomOffsets, 1));
+
+    // Custom shader material
+    const vertexShader = `
+      attribute float size;
+      attribute float opacity;
+      attribute float randomOffset;
+
+      uniform float uTime;
+      uniform vec2 uMouse;
+      uniform float uMouseInfluence;
+
+      varying float vOpacity;
+      varying float vDistanceFromCenter;
+
+      vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+      vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+      vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+      vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+      float snoise(vec3 v) {
+        const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+        const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+        vec3 i  = floor(v + dot(v, C.yyy));
+        vec3 x0 = v - i + dot(i, C.xxx);
+        vec3 g = step(x0.yzx, x0.xyz);
+        vec3 l = 1.0 - g;
+        vec3 i1 = min(g.xyz, l.zxy);
+        vec3 i2 = max(g.xyz, l.zxy);
+        vec3 x1 = x0 - i1 + C.xxx;
+        vec3 x2 = x0 - i2 + C.yyy;
+        vec3 x3 = x0 - D.yyy;
+        i = mod289(i);
+        vec4 p = permute(permute(permute(
+                  i.z + vec4(0.0, i1.z, i2.z, 1.0))
+                + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+                + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+        float n_ = 0.142857142857;
+        vec3 ns = n_ * D.wyz - D.xzx;
+        vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+        vec4 x_ = floor(j * ns.z);
+        vec4 y_ = floor(j - 7.0 * x_);
+        vec4 x = x_ *ns.x + ns.yyyy;
+        vec4 y = y_ *ns.x + ns.yyyy;
+        vec4 h = 1.0 - abs(x) - abs(y);
+        vec4 b0 = vec4(x.xy, y.xy);
+        vec4 b1 = vec4(x.zw, y.zw);
+        vec4 s0 = floor(b0)*2.0 + 1.0;
+        vec4 s1 = floor(b1)*2.0 + 1.0;
+        vec4 sh = -step(h, vec4(0.0));
+        vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy;
+        vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+        vec3 p0 = vec3(a0.xy, h.x);
+        vec3 p1 = vec3(a0.zw, h.y);
+        vec3 p2 = vec3(a1.xy, h.z);
+        vec3 p3 = vec3(a1.zw, h.w);
+        vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+        p0 *= norm.x;
+        p1 *= norm.y;
+        p2 *= norm.z;
+        p3 *= norm.w;
+        vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+        m = m * m;
+        return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
       }
 
-      // Distance from center for fading
-      vDistanceFromCenter = length(position.xy) / ${SPREAD.toFixed(1)};
+      void main() {
+        vOpacity = opacity;
 
-      vec4 mvPosition = modelViewMatrix * vec4(newPosition, 1.0);
-      gl_Position = projectionMatrix * mvPosition;
+        float noiseScale = 0.15;
+        float timeScale = 0.3;
 
-      // Size attenuation
-      gl_PointSize = size * (200.0 / -mvPosition.z);
-      gl_PointSize *= (1.0 - vDistanceFromCenter * 0.3);
-    }
-  `;
+        vec3 noisePos = position * noiseScale + vec3(randomOffset * 0.01);
+        float noiseX = snoise(noisePos + vec3(uTime * timeScale, 0.0, 0.0));
+        float noiseY = snoise(noisePos + vec3(0.0, uTime * timeScale, 100.0));
+        float noiseZ = snoise(noisePos + vec3(0.0, 0.0, uTime * timeScale + 200.0));
 
-  const fragmentShader = `
-    uniform float uOpacityMultiplier;
+        vec3 displacement = vec3(noiseX, noiseY, noiseZ) * 1.5;
+        vec3 newPosition = position + displacement;
 
-    varying float vOpacity;
-    varying float vDistanceFromCenter;
+        vec4 worldPos = modelMatrix * vec4(newPosition, 1.0);
+        vec4 viewPos = viewMatrix * worldPos;
 
-    void main() {
-      // Create circular particle with soft edge
-      vec2 center = gl_PointCoord - vec2(0.5);
-      float dist = length(center);
+        vec3 mousePos3D = vec3(uMouse.x * 15.0, uMouse.y * 10.0, 0.0);
 
-      // Soft circular falloff
-      float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
-      alpha *= vOpacity;
+        float distToMouse = distance(newPosition.xy, mousePos3D.xy);
+        float mouseEffect = smoothstep(${MOUSE_INFLUENCE_RADIUS.toFixed(1)}, 0.0, distToMouse) * uMouseInfluence;
 
-      // Fade particles at edges
-      alpha *= (1.0 - vDistanceFromCenter * 0.6);
+        if (distToMouse < ${MOUSE_INFLUENCE_RADIUS.toFixed(1)} && uMouseInfluence > 0.0) {
+          vec2 repelDir = normalize(newPosition.xy - mousePos3D.xy);
+          newPosition.xy += repelDir * mouseEffect * ${MOUSE_REPEL_STRENGTH.toFixed(1)};
+          newPosition.z += mouseEffect * 0.5;
+        }
 
-      // Apply global opacity multiplier
-      alpha *= uOpacityMultiplier;
+        vDistanceFromCenter = length(position.xy) / ${SPREAD.toFixed(1)};
 
-      // Brighter gradient: dark at center → bright white at edges
-      vec3 innerColor = vec3(0.12, 0.12, 0.15);   // Dark (slight blue tint)
-      vec3 outerColor = vec3(0.95, 0.95, 1.0);    // Bright white/light gray
-      vec3 color = mix(innerColor, outerColor, vDistanceFromCenter);
+        vec4 mvPosition = modelViewMatrix * vec4(newPosition, 1.0);
+        gl_Position = projectionMatrix * mvPosition;
 
-      if (alpha < 0.01) discard;
+        gl_PointSize = size * (200.0 / -mvPosition.z);
+        gl_PointSize *= (1.0 - vDistanceFromCenter * 0.3);
+      }
+    `;
 
-      gl_FragColor = vec4(color, alpha);
-    }
-  `;
+    const fragmentShader = `
+      uniform float uOpacityMultiplier;
 
-  const material = new THREE.ShaderMaterial({
-    vertexShader,
-    fragmentShader,
-    uniforms: {
-      uTime: { value: 0 },
-      uMouse: { value: new THREE.Vector2(0, 0) },
-      uMouseInfluence: { value: 0 },
-      uOpacityMultiplier: { value: OPACITY_MULTIPLIER },
-    },
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
+      varying float vOpacity;
+      varying float vDistanceFromCenter;
 
-  const particles = new THREE.Points(geometry, material);
-  scene.add(particles);
+      void main() {
+        vec2 center = gl_PointCoord - vec2(0.5);
+        float dist = length(center);
 
-  // Set up Sobel post-processing
-  const composer = new EffectComposer(renderer);
+        float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+        alpha *= vOpacity;
 
-  // Render pass - renders the scene
-  const renderPass = new RenderPass(scene, camera);
-  composer.addPass(renderPass);
+        alpha *= (1.0 - vDistanceFromCenter * 0.6);
 
-  // Grayscale pass - converts to luminosity for edge detection
-  const grayscalePass = new ShaderPass(LuminosityShader);
-  composer.addPass(grayscalePass);
+        alpha *= uOpacityMultiplier;
 
-  // Sobel edge detection pass
-  const sobelPass = new ShaderPass(SobelOperatorShader);
-  sobelPass.uniforms['resolution'].value.x = container.clientWidth * window.devicePixelRatio;
-  sobelPass.uniforms['resolution'].value.y = container.clientHeight * window.devicePixelRatio;
-  composer.addPass(sobelPass);
+        vec3 innerColor = vec3(0.12, 0.12, 0.15);
+        vec3 outerColor = vec3(0.95, 0.95, 1.0);
+        vec3 color = mix(innerColor, outerColor, vDistanceFromCenter);
 
-  // Mouse tracking
-  let mouseX = 0;
-  let mouseY = 0;
-  let targetMouseInfluence = 0;
-  let currentMouseInfluence = 0;
-  let isMouseInView = false;
+        if (alpha < 0.01) discard;
 
-  // Handle mouse movement
-  function handleMouseMove(e: MouseEvent) {
-    const rect = container!.getBoundingClientRect();
-    mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    targetMouseInfluence = 1;
-    isMouseInView = true;
-  }
+        gl_FragColor = vec4(color, alpha);
+      }
+    `;
 
-  function handleMouseLeave() {
-    targetMouseInfluence = 0;
-    isMouseInView = false;
-  }
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        uTime: { value: 0 },
+        uMouse: { value: new THREE.Vector2(0, 0) },
+        uMouseInfluence: { value: 0 },
+        uOpacityMultiplier: { value: OPACITY_MULTIPLIER },
+      },
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
 
-  container.addEventListener("mousemove", handleMouseMove);
-  container.addEventListener("mouseleave", handleMouseLeave);
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
 
-  // Touch support
-  container.addEventListener("touchmove", (e) => {
-    if (e.touches.length > 0) {
-      const touch = e.touches[0];
-      const rect = container!.getBoundingClientRect();
-      mouseX = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
-      mouseY = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+    // Set up Sobel post-processing
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+    const grayscalePass = new ShaderPass(LuminosityShader);
+    composer.addPass(grayscalePass);
+    const sobelPass = new ShaderPass(SobelOperatorShader);
+    sobelPass.uniforms['resolution'].value.x = container.clientWidth * window.devicePixelRatio;
+    sobelPass.uniforms['resolution'].value.y = container.clientHeight * window.devicePixelRatio;
+    composer.addPass(sobelPass);
+
+    // Mouse tracking
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetMouseInfluence = 0;
+    let currentMouseInfluence = 0;
+    let isMouseInView = false;
+
+    function handleMouseMove(e: MouseEvent) {
+      const rect = container.getBoundingClientRect();
+      mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
       targetMouseInfluence = 1;
+      isMouseInView = true;
     }
-  });
 
-  container.addEventListener("touchend", () => {
-    targetMouseInfluence = 0;
-  });
+    function handleMouseLeave() {
+      targetMouseInfluence = 0;
+      isMouseInView = false;
+    }
 
-  // Listen to robot mouse events from all pages (home, projects, blog, contact)
-  if (LISTEN_TO_ROBOT_EVENTS) {
-    // Handler for mouse move events
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseleave", handleMouseLeave);
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const rect = container.getBoundingClientRect();
+        mouseX = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+        mouseY = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+        targetMouseInfluence = 1;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      targetMouseInfluence = 0;
+    };
+
+    container.addEventListener("touchmove", handleTouchMove);
+    container.addEventListener("touchend", handleTouchEnd);
+
+    // Listen to page-specific mouse events
     const handleRobotMouseMove = (e: any) => {
       if (e.detail) {
-        const { x, y } = e.detail; // Normalized 0-1 coordinates
-        // Convert from 0-1 to -1 to 1 range
+        const { x, y } = e.detail;
         mouseX = x * 2 - 1;
-        mouseY = -(y * 2 - 1); // Invert Y
+        mouseY = -(y * 2 - 1);
         targetMouseInfluence = 1;
         isMouseInView = true;
       }
     };
 
-    // Handler for mouse leave/inactive events
     const handleRobotMouseInactive = () => {
       targetMouseInfluence = 0;
       isMouseInView = false;
     };
 
-    // Listen to all page-specific robot/keyboard events
-    const moveEvents = ['robotMouseMove', 'projectsRobotMouseMove', 'blogRobotMouseMove', 'blogKeyboardMouseMove', 'contactRobotMouseMove', 'researchMouseMove', 'forgeMouseMove'];
-    const leaveEvents = ['robotMouseLeave', 'projectsRobotMouseLeave', 'blogRobotMouseLeave', 'blogKeyboardMouseLeave', 'contactRobotMouseLeave', 'researchMouseLeave', 'forgeMouseLeave'];
-    const inactiveEvents = ['robotMouseInactive', 'projectsRobotMouseInactive', 'blogRobotMouseInactive', 'blogKeyboardMouseInactive', 'contactRobotMouseInactive', 'researchMouseInactive', 'forgeMouseInactive'];
+    const moveEvents = ['robotMouseMove', 'projectsRobotMouseMove', 'blogRobotMouseMove', 'blogKeyboardMouseMove', 'contactRobotMouseMove', 'researchMouseMove', 'forgeMouseMove', 'artMouseMove', 'aboutMouseMove', 'experienceMouseMove'];
+    const leaveEvents = ['robotMouseLeave', 'projectsRobotMouseLeave', 'blogRobotMouseLeave', 'blogKeyboardMouseLeave', 'contactRobotMouseLeave', 'researchMouseLeave', 'forgeMouseLeave', 'artMouseLeave', 'aboutMouseLeave', 'experienceMouseLeave'];
+    const inactiveEvents = ['robotMouseInactive', 'projectsRobotMouseInactive', 'blogRobotMouseInactive', 'blogKeyboardMouseInactive', 'contactRobotMouseInactive', 'researchMouseInactive', 'forgeMouseInactive', 'artMouseInactive', 'aboutMouseInactive', 'experienceMouseInactive'];
 
     moveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseMove));
     leaveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseInactive));
     inactiveEvents.forEach(evt => document.addEventListener(evt, handleRobotMouseInactive));
-  }
 
-  // Animation
-  const clock = new THREE.Clock();
-  let animationId: number;
+    // Animation
+    const clock = new THREE.Clock();
+    let animationId: number;
+    let _disposing = false;
 
-  function animate() {
-    animationId = requestAnimationFrame(animate);
+    function animate() {
+      if (_disposing) return;
+      animationId = requestAnimationFrame(animate);
 
-    const elapsed = clock.getElapsedTime();
+      const elapsed = clock.getElapsedTime();
 
-    // Smooth mouse influence transition
-    currentMouseInfluence += (targetMouseInfluence - currentMouseInfluence) * 0.1;
+      currentMouseInfluence += (targetMouseInfluence - currentMouseInfluence) * 0.1;
 
-    // Update uniforms
-    material.uniforms.uTime.value = elapsed;
-    material.uniforms.uMouse.value.set(mouseX, mouseY);
-    material.uniforms.uMouseInfluence.value = currentMouseInfluence;
+      material.uniforms.uTime.value = elapsed;
+      material.uniforms.uMouse.value.set(mouseX, mouseY);
+      material.uniforms.uMouseInfluence.value = currentMouseInfluence;
 
-    // Gentle camera movement
-    camera.position.x = Math.sin(elapsed * 0.1) * 0.5;
-    camera.position.y = Math.cos(elapsed * 0.15) * 0.3;
-    camera.lookAt(0, 0, 0);
+      camera.position.x = Math.sin(elapsed * 0.1) * 0.5;
+      camera.position.y = Math.cos(elapsed * 0.15) * 0.3;
+      camera.lookAt(0, 0, 0);
 
-    // Use composer for Sobel post-processing
-    composer.render();
-  }
+      composer.render();
+    }
 
-  animate();
+    animate();
 
-  // Handle resize
-  function handleResize() {
-    if (!container) return;
+    // Handle resize
+    function handleResize() {
+      if (_disposing || !container) return;
 
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
 
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
+      if (!width || !height) return;
 
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
 
-    // Update composer and Sobel resolution
-    composer.setSize(width, height);
-    sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
-    sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
-  }
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  window.addEventListener("resize", handleResize);
+      composer.setSize(width, height);
+      sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
+      sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
+    }
 
-  // Intersection observer for performance - pause when not visible
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          if (!animationId) animate();
-        } else {
-          if (animationId) {
-            cancelAnimationFrame(animationId);
-            animationId = 0;
+    window.addEventListener("resize", handleResize);
+
+    // Intersection observer for performance
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (!animationId) animate();
+          } else {
+            if (animationId) {
+              cancelAnimationFrame(animationId);
+              animationId = 0;
+            }
           }
-        }
-      });
-    },
-    { threshold: 0.1 }
-  );
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-  observer.observe(container);
+    observer.observe(container);
 
-  // Cleanup on page navigation
-  document.addEventListener("astro:before-swap", () => {
-    if (animationId) cancelAnimationFrame(animationId);
-    observer.disconnect();
-    renderer.dispose();
-    geometry.dispose();
-    material.dispose();
+    // Store cleanup function for this instance
+    currentCleanup = () => {
+      _disposing = true;
+      if (animationId) cancelAnimationFrame(animationId);
+      observer.disconnect();
+      window.removeEventListener("resize", handleResize);
+
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+      container.removeEventListener("touchmove", handleTouchMove as any);
+      container.removeEventListener("touchend", handleTouchEnd);
+
+      moveEvents.forEach(evt => document.removeEventListener(evt, handleRobotMouseMove));
+      leaveEvents.forEach(evt => document.removeEventListener(evt, handleRobotMouseInactive));
+      inactiveEvents.forEach(evt => document.removeEventListener(evt, handleRobotMouseInactive));
+
+      renderer.dispose();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
+      geometry.dispose();
+      material.dispose();
+    };
+  }
+
+  // Initialize on every page load (initial + View Transition navigations)
+  document.addEventListener('astro:page-load', () => {
+    initParticleViewer();
+  });
+
+  // Clean up before page swap
+  document.addEventListener('astro:before-swap', () => {
+    if (currentCleanup) {
+      currentCleanup();
+      currentCleanup = null;
+    }
   });
 </script>
 

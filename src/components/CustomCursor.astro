@@ -6,6 +6,7 @@
   <div id="cursor-dot"></div>
   <div id="cursor-outline"></div>
   <canvas id="cursor-canvas"></canvas>
+  <div id="cursor-label"></div>
 </div>
 
 <style>
@@ -83,6 +84,29 @@
   *:link,
   *:visited {
     cursor: none !important;
+  }
+
+  #cursor-label {
+    position: fixed;
+    transform: translate(-50%, calc(-50% + 30px));
+    z-index: 10002;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+
+  #cursor-label.visible {
+    opacity: 1;
   }
 
   /* Hide on mobile */
@@ -176,6 +200,7 @@
     const outline = document.getElementById('cursor-outline');
     const canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement;
     const ctx = canvas?.getContext('2d');
+    const cursorLabel = document.getElementById('cursor-label');
 
   // Pixelated block system
   interface PixelBlock {
@@ -274,12 +299,21 @@
     if (target.closest(interactiveElements)) {
       document.body.classList.add('cursor-hover');
     }
+    // Cursor label on data-cursor-label elements
+    const labelTarget = target.closest('[data-cursor-label]') as HTMLElement | null;
+    if (labelTarget && cursorLabel) {
+      cursorLabel.textContent = labelTarget.getAttribute('data-cursor-label') || '';
+      cursorLabel.classList.add('visible');
+    }
   });
 
   document.addEventListener('mouseout', (e) => {
     const target = e.target as HTMLElement;
     if (target.closest(interactiveElements)) {
       document.body.classList.remove('cursor-hover');
+    }
+    if (target.closest('[data-cursor-label]') && cursorLabel) {
+      cursorLabel.classList.remove('visible');
     }
   });
 
@@ -316,6 +350,11 @@
     if (outline) {
       outline.style.left = `${outlineX}px`;
       outline.style.top = `${outlineY}px`;
+    }
+
+    if (cursorLabel) {
+      cursorLabel.style.left = `${outlineX}px`;
+      cursorLabel.style.top = `${outlineY}px`;
     }
 
     // Draw canvas effects (pixelated blocks)

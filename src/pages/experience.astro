@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
+import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 
 const allExperiences = await getCollection("experience");
 
@@ -24,19 +25,43 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
+        <!-- HERO SECTION WITH PARTICLE EFFECT -->
+        <div class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden" id="hero-section">
+          <!-- Particle background -->
+          <ArtParticleViewer mouseRadius={6.0} />
+
+          <!-- Dark overlay -->
+          <div class="hero-overlay absolute inset-0 bg-black/70 pointer-events-none"></div>
+
+          <!-- Hero content -->
+          <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300">
+            <div class="max-w-7xl mx-auto">
+              <h1 class="experience-title font-mono font-black tracking-tighter leading-none select-none" transition:name="page-title" transition:animate="fade">
+                <span class="char char-1">E</span><span class="char char-2">X</span><span class="char char-3">P</span><span class="char char-4">E</span><span class="char char-5">R</span><span class="char char-6">I</span><span class="char char-7">E</span><span class="char char-8">N</span><span class="char char-9">C</span><span class="char char-10">E</span>
+              </h1>
+              <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
+                // CAREER TIMELINE
+              </p>
+              <p class="hero-description text-primary/60 max-w-xl mt-4">
+                From NVIDIA to Tesla to founding startups — a journey through engineering
+              </p>
+            </div>
+          </div>
+
+          <!-- Scroll indicator -->
+          <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-20 pointer-events-none">
+            <span class="text-primary/40 text-xs font-mono tracking-wider">SCROLL</span>
+            <svg class="w-5 h-5 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+        </div>
+
         <div class="relative overflow-hidden">
           <!-- Tech grid overlay -->
           <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
           <div class="relative z-10 sm:px-20 px-6 py-12">
-            <!-- BOLD HEADER -->
-            <div class="header-section mb-12">
-              <h1 class="experience-title font-mono font-black tracking-tighter leading-none select-none">
-                <span class="char char-1">E</span><span class="char char-2">X</span><span class="char char-3">P</span><span class="char char-4">E</span><span class="char char-5">R</span><span class="char char-6">I</span><span class="char char-7">E</span><span class="char char-8">N</span><span class="char char-9">C</span><span class="char char-10">E</span>
-              </h1>
-              <div class="accent-line mt-6"></div>
-            </div>
-
             <!-- CAREER JOURNEY TIMELINE -->
             <div class="journey-section mb-16 opacity-0">
               <div class="flex items-center gap-4 mb-8">
@@ -56,7 +81,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                 <!-- Journey Cards Grid -->
                 <div class="journey-cards-grid">
                   <!-- OctaPulse - Current + YC -->
-                  <div class="journey-card-wrapper" data-haptic="light" style="animation-delay: 1s;" data-company="octapulse">
+                  <div class="journey-card-wrapper" data-haptic="light" data-cursor-label="Explore" style="animation-delay: 1s;" data-company="octapulse">
                     <div class="journey-card group">
                       <div class="journey-corner journey-corner-tl"></div>
                       <div class="journey-corner journey-corner-tr"></div>
@@ -78,7 +103,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                   </div>
 
                   <!-- Quaternion Studios - Current -->
-                  <div class="journey-card-wrapper" data-haptic="light" style="animation-delay: 1.1s;" data-company="quaternion studios">
+                  <div class="journey-card-wrapper" data-haptic="light" data-cursor-label="Explore" style="animation-delay: 1.1s;" data-company="quaternion studios">
                     <div class="journey-card group">
                       <div class="journey-corner journey-corner-tl"></div>
                       <div class="journey-corner journey-corner-tr"></div>
@@ -97,7 +122,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                   </div>
 
                   <!-- ASML -->
-                  <div class="journey-card-wrapper" data-haptic="light" style="animation-delay: 1.2s;" data-company="asml">
+                  <div class="journey-card-wrapper" data-haptic="light" data-cursor-label="Explore" style="animation-delay: 1.2s;" data-company="asml">
                     <div class="journey-card group">
                       <div class="journey-corner journey-corner-tl"></div>
                       <div class="journey-corner journey-corner-tr"></div>
@@ -115,7 +140,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                   </div>
 
                   <!-- Toyota -->
-                  <div class="journey-card-wrapper" data-haptic="light" style="animation-delay: 1.3s;" data-company="toyota">
+                  <div class="journey-card-wrapper" data-haptic="light" data-cursor-label="Explore" style="animation-delay: 1.3s;" data-company="toyota">
                     <div class="journey-card group">
                       <div class="journey-corner journey-corner-tl"></div>
                       <div class="journey-corner journey-corner-tr"></div>
@@ -133,7 +158,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                   </div>
 
                   <!-- Tesla 2023 -->
-                  <div class="journey-card-wrapper" data-haptic="light" style="animation-delay: 1.4s;" data-company="tesla">
+                  <div class="journey-card-wrapper" data-haptic="light" data-cursor-label="Explore" style="animation-delay: 1.4s;" data-company="tesla">
                     <div class="journey-card group">
                       <div class="journey-corner journey-corner-tl"></div>
                       <div class="journey-corner journey-corner-tr"></div>
@@ -151,7 +176,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                   </div>
 
                   <!-- Tesla 2022 -->
-                  <div class="journey-card-wrapper" data-haptic="light" style="animation-delay: 1.5s;" data-company="tesla">
+                  <div class="journey-card-wrapper" data-haptic="light" data-cursor-label="Explore" style="animation-delay: 1.5s;" data-company="tesla">
                     <div class="journey-card group">
                       <div class="journey-corner journey-corner-tl"></div>
                       <div class="journey-corner journey-corner-tr"></div>
@@ -169,7 +194,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
                   </div>
 
                   <!-- NVIDIA -->
-                  <div class="journey-card-wrapper" data-haptic="light" style="animation-delay: 1.6s;" data-company="nvidia">
+                  <div class="journey-card-wrapper" data-haptic="light" data-cursor-label="Explore" style="animation-delay: 1.6s;" data-company="nvidia">
                     <div class="journey-card group">
                       <!-- Corner accents -->
                       <div class="journey-corner journey-corner-tl"></div>
@@ -224,7 +249,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
                   return (
                     <div
-                      class="experience-card group" data-haptic="light"
+                      class="experience-card group" data-haptic="light" data-cursor-label="Read"
                       data-index={index}
                       data-company={experience.data.company.toLowerCase()}
                       style={`animation-delay: ${1.2 + index * 0.1}s;`}
@@ -315,6 +340,25 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 </Layout>
 
 <style>
+  /* HERO SECTION */
+  .hero-section {
+    position: relative;
+  }
+
+  .hero-overlay {
+    z-index: 5;
+  }
+
+  .hero-subtitle {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .hero-description {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
   /* Tech grid background */
   .tech-grid {
     background-image:
@@ -331,11 +375,14 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
   /* BOLD EXPERIENCE TITLE */
   .experience-title {
-    font-size: clamp(3rem, 12vw, 12rem);
+    font-size: clamp(2.5rem, 11vw, 16rem);
     line-height: 0.85;
-    letter-spacing: -0.08em;
+    letter-spacing: -0.06em;
     color: #ffffff;
     text-transform: uppercase;
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
       0 6px 45px rgba(0, 0, 0, 0.7);
@@ -378,13 +425,44 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     }
   }
 
-  /* Connecting Line - Removed */
+  /* Connecting Line - Vertical (mobile) */
   .journey-connector-vertical {
-    display: none;
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+      180deg,
+      rgba(150, 255, 150, 0.4),
+      rgba(255, 100, 100, 0.4),
+      rgba(0, 255, 255, 0.4)
+    );
+    transform-origin: top;
+    z-index: 0;
   }
 
+  /* Connecting Line - Horizontal (desktop) */
   .journey-connector {
-    display: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    transform: translateY(-50%);
+    background: linear-gradient(
+      90deg,
+      rgba(255, 102, 0, 0.4),
+      rgba(100, 200, 255, 0.4),
+      rgba(0, 255, 255, 0.4),
+      rgba(255, 150, 150, 0.4),
+      rgba(255, 100, 100, 0.4),
+      rgba(255, 100, 100, 0.4),
+      rgba(150, 255, 150, 0.4)
+    );
+    transform-origin: left;
+    z-index: 0;
   }
 
   /* Journey Card Wrapper - initial state for GSAP batch reveal */
@@ -1013,12 +1091,12 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     opacity: 1 !important;
   }
 
-  /* Specific Glow Colors - Subtle, natural intensity */
+  /* Specific Glow Colors - Boosted intensity */
   .green-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(150, 255, 150, 0.25),
       rgba(150, 255, 150, 0.15),
-      rgba(150, 255, 150, 0.08),
       transparent 50%
     );
   }
@@ -1026,8 +1104,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .red-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 100, 100, 0.25),
       rgba(255, 100, 100, 0.15),
-      rgba(255, 100, 100, 0.08),
       transparent 50%
     );
   }
@@ -1035,8 +1113,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .red-soft-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 150, 150, 0.25),
       rgba(255, 150, 150, 0.15),
-      rgba(255, 150, 150, 0.08),
       transparent 50%
     );
   }
@@ -1044,8 +1122,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .cyan-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(0, 255, 255, 0.25),
       rgba(0, 255, 255, 0.15),
-      rgba(0, 255, 255, 0.08),
       transparent 50%
     );
   }
@@ -1053,8 +1131,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .cyan-soft-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(100, 200, 255, 0.25),
       rgba(100, 200, 255, 0.15),
-      rgba(100, 200, 255, 0.08),
       transparent 50%
     );
   }
@@ -1062,8 +1140,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .lime-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(150, 255, 150, 0.25),
       rgba(150, 255, 150, 0.15),
-      rgba(150, 255, 150, 0.08),
       transparent 50%
     );
   }
@@ -1071,8 +1149,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .orange-glow {
     background: radial-gradient(
       400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 102, 0, 0.30),
       rgba(255, 102, 0, 0.18),
-      rgba(255, 102, 0, 0.1),
       transparent 50%
     );
   }
@@ -1403,9 +1481,9 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     z-index: 5;
     background: radial-gradient(
       600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 102, 0, 0.15),
-      rgba(255, 170, 68, 0.1),
-      rgba(255, 68, 68, 0.05),
+      rgba(255, 102, 0, 0.30),
+      rgba(255, 170, 68, 0.20),
+      rgba(255, 68, 68, 0.10),
       transparent 40%
     );
   }
@@ -1543,6 +1621,10 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   }
 
   @media (max-width: 768px) {
+    .scroll-indicator {
+      display: none !important;
+    }
+
     .experience-title {
       font-size: clamp(2rem, 12vw, 8rem);
     }
@@ -1711,10 +1793,13 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 </style>
 
 <script>
-  import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.experience-title')) return;
 
     // GSAP intro timeline
@@ -1726,14 +1811,110 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
     }
 
-    tl.add(() => animateLineExpand('.accent-line'), 0.3);
+    // Hero subtitle and description
+    tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+    tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
 
-    // Batch scroll reveal for journey cards and experience cards
+    // Hero scroll-split effect
+    const heroSection = document.getElementById('hero-section');
+    const heroOverlay = document.querySelector('.hero-overlay') as HTMLElement;
+    const allChars = Array.from(document.querySelectorAll('.experience-title .char'));
+    const halfLen = Math.ceil(allChars.length / 2);
+    const leftChars = allChars.slice(0, halfLen);
+    const rightChars = allChars.slice(halfLen);
+
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const splitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroSection,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+      splitTl.fromTo(leftChars, { x: 0, opacity: 1 }, { x: '-30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo(rightChars, { x: 0, opacity: 1 }, { x: '30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-subtitle', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-description', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      splitTl.fromTo('.scroll-indicator', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.3 }, 0);
+      if (heroOverlay) {
+        splitTl.fromTo(heroOverlay, { opacity: 0.7 }, { opacity: 0.2, ease: 'none' }, 0);
+      }
+    }
+
+    // Continuous glow pulse on hero chars
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.call(() => {
+        const glowChars = document.querySelectorAll('.experience-title .char');
+        if (glowChars.length) {
+          gsap.to(glowChars, {
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
+            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
+          });
+        }
+      });
+    }
+
+    // Reveal the journey section via scroll
+    scrollReveal('.journey-section');
+
+    // Animate the connector lines (draw in) on scroll
+    const horizontalConnector = document.querySelector('.journey-connector') as HTMLElement;
+    const verticalConnector = document.querySelector('.journey-connector-vertical') as HTMLElement;
+
+    if (horizontalConnector) {
+      gsap.set(horizontalConnector, { scaleX: 0 });
+      gsap.to(horizontalConnector, {
+        scaleX: 1, duration: 1.2, ease: 'expo.out',
+        scrollTrigger: { trigger: horizontalConnector, start: 'top 85%', toggleActions: 'play none none none' },
+      });
+    }
+
+    if (verticalConnector) {
+      gsap.set(verticalConnector, { scaleY: 0 });
+      gsap.to(verticalConnector, {
+        scaleY: 1, duration: 1.2, ease: 'expo.out',
+        scrollTrigger: { trigger: verticalConnector, start: 'top 85%', toggleActions: 'play none none none' },
+      });
+    }
+
+    // Batch scroll reveal for journey cards
     batchScrollReveal('.journey-card-wrapper');
-    batchScrollReveal('.experience-card');
+
+    // 3D tilt card reveals for experience cards — alternating directions
+    const experienceCards = document.querySelectorAll('.experience-card');
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (experienceCards.length && !prefersReduced) {
+      experienceCards.forEach((card, i) => {
+        const fromLeft = i % 2 === 0;
+        gsap.set(card, {
+          opacity: 0,
+          x: fromLeft ? -60 : 60,
+          rotateY: fromLeft ? 3 : -3,
+          transformPerspective: 1000,
+        });
+
+        gsap.to(card, {
+          opacity: 1,
+          x: 0,
+          rotateY: 0,
+          duration: 0.8,
+          ease: 'expo.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+          },
+        });
+      });
+    } else {
+      batchScrollReveal('.experience-card');
+    }
   });
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.experience-title')) return;
     // Handle experience cards
     const cards = document.querySelectorAll(".experience-card");
@@ -1902,6 +2083,73 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       }
 
       animateGlow();
+    });
+  });
+
+  // Hero section particle interaction
+  document.addEventListener('astro:page-load', () => {
+    const heroSection = document.getElementById('hero-section');
+    if (!heroSection || !document.querySelector('.experience-title')) return;
+
+    let mouseTimeout: number | null = null;
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = false;
+    const SCROLL_THRESHOLD = 10;
+
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+
+      document.dispatchEvent(new CustomEvent('experienceMouseMove', {
+        detail: { x, y, clientX: e.clientX, clientY: e.clientY }
+      }));
+
+      if (mouseTimeout) clearTimeout(mouseTimeout);
+      mouseTimeout = window.setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('experienceMouseInactive'));
+      }, 800);
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
+      document.dispatchEvent(new CustomEvent('experienceMouseLeave'));
+    });
+
+    heroSection.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        isScrolling = false;
+      }
+    }, { passive: true });
+
+    heroSection.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const deltaY = Math.abs(touch.clientY - touchStartY);
+        const deltaX = Math.abs(touch.clientX - touchStartX);
+
+        if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+          isScrolling = true;
+        }
+
+        if (!isScrolling) {
+          const rect = heroSection.getBoundingClientRect();
+          const x = (touch.clientX - rect.left) / rect.width;
+          const y = (touch.clientY - rect.top) / rect.height;
+
+          document.dispatchEvent(new CustomEvent('experienceMouseMove', {
+            detail: { x, y, clientX: touch.clientX, clientY: touch.clientY }
+          }));
+        }
+      }
+    }, { passive: true });
+
+    heroSection.addEventListener('touchend', () => {
+      isScrolling = false;
+      document.dispatchEvent(new CustomEvent('experienceMouseLeave'));
     });
   });
 </script>

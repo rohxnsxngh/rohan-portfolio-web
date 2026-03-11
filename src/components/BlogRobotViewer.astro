@@ -260,8 +260,13 @@ const {
     composer.addPass(sobelPass);
   }
 
+  let _disposing = false;
+
   function handleResize() {
+    if (_disposing) return;
     const { width: newWidth, height: newHeight, aspectRatio: newAspectRatio } = getContainerSize();
+    // Guard against zero dimensions (happens during View Transitions)
+    if (!newWidth || !newHeight) return;
     width = newWidth;
     height = newHeight;
     aspectRatio = newAspectRatio;
@@ -386,6 +391,7 @@ const {
 
     let _animationId: number;
     function animate() {
+      if (_disposing) return;
       _animationId = requestAnimationFrame(animate);
 
       const delta = clock.getDelta();
@@ -419,6 +425,7 @@ const {
 
     // Cleanup on View Transition navigation
     document.addEventListener('astro:before-swap', () => {
+      _disposing = true;
       cancelAnimationFrame(_animationId);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
@@ -631,11 +638,8 @@ const {
     // Page will immediately show the contained state
   });
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
+  // Initialize on page load (supports View Transitions)
+  document.addEventListener("astro:page-load", init);
 </script>
 
 <style>

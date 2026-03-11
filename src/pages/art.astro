@@ -43,7 +43,7 @@ const artworks = [
           <!-- Hero content -->
           <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300">
             <div class="max-w-7xl mx-auto">
-              <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
+              <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none" transition:name="page-title" transition:animate="fade">
                 <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
               </h1>
               <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
@@ -462,8 +462,11 @@ const artworks = [
 <script>
   import { animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.artwork-card')) return;
 
     const tl = createPageIntroTimeline();
@@ -476,7 +479,112 @@ const artworks = [
     tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
     tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
     tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+
+    // Hero scroll-split effect
+    const heroSection = document.getElementById('hero-section');
+    const heroOverlay = document.querySelector('.hero-overlay') as HTMLElement;
+    const allChars = Array.from(document.querySelectorAll('.hero-title .char'));
+    const halfLen = Math.ceil(allChars.length / 2);
+    const leftChars = allChars.slice(0, halfLen);
+    const rightChars = allChars.slice(halfLen);
+
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const splitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroSection,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+      splitTl.fromTo(leftChars, { x: 0, opacity: 1 }, { x: '-30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo(rightChars, { x: 0, opacity: 1 }, { x: '30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-subtitle', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-description', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      splitTl.fromTo('.scroll-indicator', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.3 }, 0);
+      if (heroOverlay) {
+        splitTl.fromTo(heroOverlay, { opacity: 0.7 }, { opacity: 0.2, ease: 'none' }, 0);
+      }
+    }
+
+    // Continuous glow pulse on hero chars
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.call(() => {
+        const glowChars = document.querySelectorAll('.hero-title .char');
+        if (glowChars.length) {
+          gsap.to(glowChars, {
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
+            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
+          });
+        }
+      });
+    }
+
     batchScrollReveal('.artwork-card');
     scrollReveal('.coming-soon-section');
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.artwork-card')) return;
+
+    // ===== HERO SECTION PARTICLE DISTORTION =====
+    const heroSection = document.getElementById('hero-section');
+    let mouseTimeout: number | null = null;
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = false;
+    const SCROLL_THRESHOLD = 10;
+
+    if (heroSection) {
+      heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        document.dispatchEvent(new CustomEvent('artMouseMove', {
+          detail: { x, y, clientX: e.clientX, clientY: e.clientY }
+        }));
+        if (mouseTimeout) clearTimeout(mouseTimeout);
+        mouseTimeout = window.setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('artMouseInactive'));
+        }, 800);
+      });
+
+      heroSection.addEventListener('mouseleave', () => {
+        document.dispatchEvent(new CustomEvent('artMouseLeave'));
+      });
+
+      heroSection.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+          isScrolling = false;
+        }
+      }, { passive: true });
+
+      heroSection.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          const deltaY = Math.abs(touch.clientY - touchStartY);
+          const deltaX = Math.abs(touch.clientX - touchStartX);
+          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+            isScrolling = true;
+          }
+          if (!isScrolling) {
+            const rect = heroSection.getBoundingClientRect();
+            const x = (touch.clientX - rect.left) / rect.width;
+            const y = (touch.clientY - rect.top) / rect.height;
+            document.dispatchEvent(new CustomEvent('artMouseMove', {
+              detail: { x, y, clientX: touch.clientX, clientY: touch.clientY }
+            }));
+          }
+        }
+      }, { passive: true });
+
+      heroSection.addEventListener('touchend', () => {
+        isScrolling = false;
+        document.dispatchEvent(new CustomEvent('artMouseLeave'));
+      });
+    }
   });
 </script>

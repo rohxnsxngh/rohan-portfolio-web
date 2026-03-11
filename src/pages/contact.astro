@@ -22,7 +22,7 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
         </div>
 
         <!-- Dark overlay to dim robot by default -->
-        <div class="robot-overlay absolute inset-0 bg-black/[0.96] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+        <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none transition-all duration-500" id="robot-dim"></div>
       </div>
 
       <!-- Tech grid overlay for texture -->
@@ -40,7 +40,7 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
 
           <!-- MASSIVE title display -->
           <div class="name-display mb-6 sm:mb-10">
-            <h1 class="contact-title font-mono font-black tracking-tighter leading-none select-none">
+            <h1 class="contact-title font-mono font-black tracking-tighter leading-none select-none" transition:name="page-title" transition:animate="fade">
               <span class="char char-1">C</span><span class="char char-2">O</span><span class="char char-3">N</span><span class="char char-4">T</span><span class="char char-5">A</span><span class="char char-6">C</span><span class="char char-7">T</span>
             </h1>
           </div>
@@ -609,14 +609,18 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
 </style>
 
 <script>
-  import { animateLineExpand, createHeroParallax, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { animateLineExpand, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { haptic } from "../scripts/haptics";
 
-  document.addEventListener('DOMContentLoaded', () => {
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.contact-title')) return;
 
     const tl = createPageIntroTimeline();
+    tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
     const chars = document.querySelectorAll('.contact-title .char');
     if (chars.length) {
       gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
@@ -624,8 +628,50 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
     }
     tl.add(() => animateLineExpand('.accent-line'), 0.3);
     tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
-    tl.to('.contact-form', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
-    createHeroParallax('.hero-content');
+    tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+
+    // Hero scroll-split effect
+    const heroSection = document.getElementById('hero-section');
+    const robotOverlay = document.getElementById('robot-dim');
+    const allChars = Array.from(document.querySelectorAll('.contact-title .char'));
+    const halfLen = Math.ceil(allChars.length / 2);
+    const leftChars = allChars.slice(0, halfLen);
+    const rightChars = allChars.slice(halfLen);
+
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const splitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroSection,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+      splitTl.fromTo(leftChars, { x: 0, opacity: 1 }, { x: '-30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo(rightChars, { x: 0, opacity: 1 }, { x: '30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.label-intro', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.statement', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      splitTl.fromTo('.cta-section', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      if (robotOverlay) {
+        splitTl.fromTo(robotOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.85)' }, { backgroundColor: 'rgba(0, 0, 0, 0.3)', ease: 'none' }, 0);
+      }
+    }
+
+    // Continuous glow pulse on hero chars
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.call(() => {
+        const glowChars = document.querySelectorAll('.contact-title .char');
+        if (glowChars.length) {
+          gsap.to(glowChars, {
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
+            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
+          });
+        }
+      });
+    }
+
+    scrollReveal('.contact-form');
     scrollReveal('.alt-contact');
 
     const form = document.getElementById('contact-form') as HTMLFormElement;
@@ -704,7 +750,6 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
     }
 
     // ===== HERO SECTION ROBOT INTERACTION =====
-    const heroSection = document.getElementById("hero-section");
     const robotContainer = document.getElementById("robot-container");
 
     let mouseActive = false;

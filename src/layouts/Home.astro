@@ -16,7 +16,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     </div>
 
     <!-- Dark overlay to dim robot heavily by default (almost invisible) -->
-    <div class="robot-overlay absolute inset-0 bg-black/[0.98] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+    <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none transition-all duration-500" id="robot-dim"></div>
   </div>
 
   <!-- Tech grid overlay for texture -->
@@ -35,7 +35,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
       <!-- MASSIVE name display -->
       <div class="name-display mb-6 sm:mb-10">
-        <h1 class="hero-name font-mono font-black tracking-tighter leading-none select-none">
+        <h1 class="hero-name font-mono font-black tracking-tighter leading-none select-none" transition:name="page-title" transition:animate="fade">
           <div class="name-line">
             <span class="char char-1">R</span><span class="char char-2">O</span><span class="char char-3">H</span><span class="char char-4">A</span><span class="char char-5">N</span>
           </div>
@@ -349,7 +349,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
     /* Slightly more visible robot on mobile - but still dim */
     .robot-overlay {
-      background: rgba(0, 0, 0, 0.96) !important;
+      background: rgba(0, 0, 0, 0.88) !important;
     }
 
     /* Enable touch interaction on mobile */
@@ -373,6 +373,9 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   import { createHeroParallax, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
 
@@ -428,8 +431,54 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       }, 1.2);
     }
 
-    // Hero parallax via ScrollTrigger
-    createHeroParallax('.hero-content');
+    // Hero scroll-split effect — ROHAN slides left, SINGH slides right
+    const nameLines = document.querySelectorAll('.hero-name .name-line');
+    const heroSection = document.getElementById('hero-section');
+    const robotOverlay = document.getElementById('robot-dim');
+
+    if (nameLines.length >= 2 && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const splitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroSection,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+
+      // ROHAN slides left
+      splitTl.fromTo(nameLines[0], { x: 0, opacity: 1 }, { x: '-30vw', opacity: 0, ease: 'none' }, 0);
+      // SINGH slides right
+      splitTl.fromTo(nameLines[1], { x: 0, opacity: 1 }, { x: '30vw', opacity: 0, ease: 'none' }, 0);
+      // Label, statement, CTA fade out faster
+      splitTl.fromTo('.label-intro', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.statement', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      splitTl.fromTo('.cta-section', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      // Robot overlay dims from 0.85 to 0.3
+      if (robotOverlay) {
+        splitTl.to(robotOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.3)', ease: 'none' }, 0);
+      }
+    } else {
+      // Fallback: standard hero parallax for reduced motion
+      createHeroParallax('.hero-content');
+    }
+
+    // Continuous hero glow pulse — subtle living, breathing typography
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.call(() => {
+        const glowChars = document.querySelectorAll('.hero-name .char');
+        if (glowChars.length) {
+          gsap.to(glowChars, {
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
+            duration: 2,
+            stagger: 0.15,
+            yoyo: true,
+            repeat: -1,
+            ease: 'sine.inOut',
+          });
+        }
+      });
+    }
 
     // Kinetic text effect
     kineticCleanup?.();
@@ -524,9 +573,9 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     }
   }
 
-  // Use DOMContentLoaded for View Transitions compatibility
+  // Use astro:page-load for View Transitions compatibility
   // Guard: only run on the homepage
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('[data-page="home"]')) return;
     initHomeAnimations();
     initHomeInteractions();

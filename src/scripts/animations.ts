@@ -225,3 +225,146 @@ export function createPageIntroTimeline(): gsap.core.Timeline {
 export function killAllScrollTriggers(): void {
   ScrollTrigger.getAll().forEach((st) => st.kill());
 }
+
+/**
+ * Scrub-linked text reveal — splits text into words and reveals each
+ * from low to full opacity as the user scrolls through the section.
+ */
+export function scrubTextReveal(
+  selector: string,
+  opts: { start?: string; end?: string } = {}
+): void {
+  const elements = document.querySelectorAll(selector);
+  if (!elements.length) return;
+
+  if (prefersReducedMotion()) {
+    elements.forEach((el) => { (el as HTMLElement).style.opacity = '1'; });
+    return;
+  }
+
+  elements.forEach((el) => {
+    const text = el.textContent || '';
+    const words = text.split(/\s+/).filter(Boolean);
+    el.innerHTML = words
+      .map((word) => `<span class="scrub-word" style="display:inline-block;opacity:0.2">${word}</span>`)
+      .join(' ');
+
+    const wordSpans = el.querySelectorAll('.scrub-word');
+
+    gsap.to(wordSpans, {
+      opacity: 1,
+      stagger: 0.05,
+      scrollTrigger: {
+        trigger: el,
+        start: opts.start ?? 'top 80%',
+        end: opts.end ?? 'bottom 40%',
+        scrub: true,
+      },
+    });
+  });
+}
+
+/**
+ * Scale-based batch reveal with bounce easing — cards scale from 0.85 → 1.0.
+ */
+export function batchScaleReveal(
+  selector: string,
+  opts: AnimationOpts & { start?: string } = {}
+): void {
+  const elements = document.querySelectorAll(selector);
+  if (!elements.length) return;
+
+  if (prefersReducedMotion()) {
+    gsap.set(elements, { opacity: 1, scale: 1, y: 0 });
+    return;
+  }
+
+  gsap.set(elements, { opacity: 0, scale: 0.85, y: 30 });
+
+  ScrollTrigger.batch(elements, {
+    onEnter: (batch) => {
+      gsap.to(batch, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: opts.duration ?? 0.8,
+        stagger: opts.stagger ?? 0.1,
+        ease: opts.ease ?? 'back.out(1.7)',
+      });
+    },
+    start: opts.start ?? 'top 85%',
+  });
+}
+
+/**
+ * Multi-layer parallax — moves multiple elements at different scroll speeds.
+ */
+export function createMultiLayerParallax(
+  layers: { selector: string; speed: number }[]
+): ScrollTrigger[] {
+  if (prefersReducedMotion()) return [];
+
+  const triggers: ScrollTrigger[] = [];
+
+  layers.forEach(({ selector, speed }) => {
+    const el = document.querySelector(selector);
+    if (!el) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: el.closest('section, .relative, div') || el,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: true,
+      onUpdate: (self) => {
+        const yOffset = (self.progress - 0.5) * speed * window.innerHeight;
+        gsap.set(el, { y: yOffset });
+      },
+    });
+
+    triggers.push(trigger);
+  });
+
+  return triggers;
+}
+
+/**
+ * Pinned section reveal — pins a section and reveals children sequentially
+ * as user scrolls through.
+ */
+export function createPinnedReveal(
+  pinSelector: string,
+  contentSelector: string,
+  opts: { scrubDuration?: number } = {}
+): ScrollTrigger | null {
+  const pin = document.querySelector(pinSelector);
+  const items = document.querySelectorAll(contentSelector);
+  if (!pin || !items.length) return null;
+
+  if (prefersReducedMotion()) {
+    gsap.set(items, { opacity: 1, y: 0 });
+    return null;
+  }
+
+  gsap.set(items, { opacity: 0, y: 50 });
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: pin,
+      start: 'top top',
+      end: `+=${(opts.scrubDuration ?? items.length) * 100}%`,
+      pin: true,
+      scrub: 1,
+    },
+  });
+
+  items.forEach((item, i) => {
+    tl.to(item, {
+      opacity: 1,
+      y: 0,
+      duration: 1,
+      ease: 'expo.out',
+    }, i * 0.5);
+  });
+
+  return tl.scrollTrigger || null;
+}
