@@ -1257,13 +1257,18 @@ if (otherArticles.length > 0) {
 
 <script>
   import { batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
   gsap.registerPlugin(ScrollTrigger);
 
+  let kineticCleanup: (() => void) | null = null;
+
   document.addEventListener('astro:page-load', () => {
     if (!document.getElementById('blog-content')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
@@ -1318,6 +1323,8 @@ if (otherArticles.length > 0) {
     }
 
     batchScrollReveal('.blog-card');
+
+    kineticCleanup = initKineticText('.hero-name');
 
     const robotContainer = document.getElementById("robot-container");
 

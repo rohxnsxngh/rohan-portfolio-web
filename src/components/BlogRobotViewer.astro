@@ -292,7 +292,10 @@ const {
     }
   }
 
+  let currentCleanup: (() => void) | null = null;
+
   function init() {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
     initScene();
 
     const manager = new THREE.LoadingManager();
@@ -423,18 +426,19 @@ const {
     const resizeObserver = new ResizeObserver(() => handleResize());
     if (container) resizeObserver.observe(container);
 
-    // Cleanup on View Transition navigation
-    document.addEventListener('astro:before-swap', () => {
+    // Store cleanup function (called on navigation or re-init)
+    currentCleanup = () => {
       _disposing = true;
       cancelAnimationFrame(_animationId);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
       renderer.dispose();
-      renderer.forceContextLoss();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
       renderer.domElement?.parentNode?.removeChild(renderer.domElement);
       controls?.dispose();
-      console.debug('[BlogRobotViewer] cleaned up WebGL context');
-    });
+    };
 
     // Helper function to update lighting based on position (with throttling)
     function updateLighting(clientX: number, clientY: number, forceUpdate = false) {
@@ -640,6 +644,9 @@ const {
 
   // Initialize on page load (supports View Transitions)
   document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", () => {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+  });
 </script>
 
 <style>

@@ -608,13 +608,18 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 
 <script>
   import { animateLineExpand, scrollReveal, createMultiLayerParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
   gsap.registerPlugin(ScrollTrigger);
 
+  let kineticCleanup: (() => void) | null = null;
+
   document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.about-title')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
@@ -686,6 +691,8 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
         { selector: '.profile-container', speed: -0.3 },
       ]);
     }
+
+    kineticCleanup = initKineticText('.about-title');
   });
 
   // Hero section particle interaction

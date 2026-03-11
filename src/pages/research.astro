@@ -490,13 +490,18 @@ const statusText = {
 
 <script>
 import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+import { initKineticText } from '../scripts/kinetic-text';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+let kineticCleanup: (() => void) | null = null;
+
 document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.research-card')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
     const tl = createPageIntroTimeline();
     const chars = document.querySelectorAll('.hero-title .char');
@@ -550,6 +555,8 @@ document.addEventListener('astro:page-load', () => {
     }
 
     batchScrollReveal('.research-card');
+
+    kineticCleanup = initKineticText('.hero-title');
 });
 
 document.addEventListener('astro:page-load', () => {

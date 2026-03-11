@@ -1794,13 +1794,18 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
 <script>
   import { batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
   gsap.registerPlugin(ScrollTrigger);
 
+  let kineticCleanup: (() => void) | null = null;
+
   document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.experience-title')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
@@ -1912,6 +1917,8 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     } else {
       batchScrollReveal('.experience-card');
     }
+
+    kineticCleanup = initKineticText('.experience-title');
   });
 
   document.addEventListener('astro:page-load', () => {

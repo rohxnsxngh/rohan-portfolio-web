@@ -610,14 +610,19 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
 
 <script>
   import { animateLineExpand, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { haptic } from "../scripts/haptics";
 
   gsap.registerPlugin(ScrollTrigger);
 
+  let kineticCleanup: (() => void) | null = null;
+
   document.addEventListener('astro:page-load', () => {
     if (!document.querySelector('.contact-title')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
     const tl = createPageIntroTimeline();
     tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
@@ -673,6 +678,8 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
 
     scrollReveal('.contact-form');
     scrollReveal('.alt-contact');
+
+    kineticCleanup = initKineticText('.contact-title');
 
     const form = document.getElementById('contact-form') as HTMLFormElement;
     const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;

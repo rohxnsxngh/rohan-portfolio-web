@@ -385,8 +385,11 @@ const {
     }
   }
 
+  let currentCleanup: (() => void) | null = null;
+
   // Initialize everything when DOM is loaded
   function init() {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
     initScene();
 
     // Loading manager for tracking progress
@@ -515,18 +518,19 @@ const {
       resizeObserver.observe(container);
     }
 
-    // Cleanup on View Transition navigation
-    document.addEventListener('astro:before-swap', () => {
+    // Store cleanup function (called on navigation or re-init)
+    currentCleanup = () => {
       _disposing = true;
       cancelAnimationFrame(_animationId);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
       renderer.dispose();
-      renderer.forceContextLoss();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
       renderer.domElement?.parentNode?.removeChild(renderer.domElement);
       controls?.dispose();
-      console.debug('[RobotModelViewer] cleaned up WebGL context');
-    });
+    };
 
     // ===== INVISIBLE LIGHTING SYSTEM WITH RAYCASTING (THROTTLED) =====
     // Helper function to perform raycasting update
@@ -690,6 +694,9 @@ const {
 
   // Initialize on page load (supports View Transitions)
   document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", () => {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+  });
 </script>
 
 <style>

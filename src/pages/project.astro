@@ -782,13 +782,18 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
 <script>
   import { batchScaleReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
   gsap.registerPlugin(ScrollTrigger);
 
+  let kineticCleanup: (() => void) | null = null;
+
   document.addEventListener('astro:page-load', () => {
     if (!document.getElementById('projects-display')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
@@ -847,6 +852,8 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
     // Scale reveal with bounce easing for project cards
     batchScaleReveal('.project-card');
+
+    kineticCleanup = initKineticText('.hero-name');
 
     // Robot interaction handlers
     const robotContainer = document.getElementById("robot-container");
