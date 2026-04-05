@@ -1,5 +1,5 @@
-<!-- Preloader: shows on first visit per session -->
-<div id="preloader" class="preloader" aria-hidden="true">
+<!-- Preloader: shows on first visit per session. Starts hidden; module script reveals on first load. -->
+<div id="preloader" class="preloader hidden" aria-hidden="true">
   <div class="preloader-content">
     <div class="preloader-counter" id="preloader-counter">0</div>
     <div class="preloader-initials">
@@ -115,6 +115,9 @@
       document.dispatchEvent(new CustomEvent('preloader:complete'));
       return;
     }
+
+    // Show the preloader (it starts hidden to prevent flash on View Transition navigations)
+    preloader.classList.remove('hidden');
 
     // Check reduced motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

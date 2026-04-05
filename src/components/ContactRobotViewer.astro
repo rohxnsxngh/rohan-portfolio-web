@@ -35,27 +35,28 @@ const {
   import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
   import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
-  // DOM elements
-  const container = document.querySelector(".contact-robot-viewer-container");
-  const modelContainer = document.getElementById("contact-robot-container");
-  const progressBar = document.getElementById("contact-progress-bar");
-  const loadingContainer = modelContainer?.querySelector(".loading-container");
+  // DOM elements — re-queried in init() to survive View Transition DOM swaps
+  let container: Element | null = null;
+  let modelContainer: HTMLElement | null = null;
+  let progressBar: HTMLElement | null = null;
+  let loadingContainer: Element | null | undefined = null;
 
   // Get container dimensions
   const getContainerSize = () => {
     if (!container) {
-      throw new Error("Container not found");
+      return { width: 0, height: 0, aspectRatio: 1 };
     }
     const rect = container.getBoundingClientRect();
     return {
       width: rect.width,
       height: rect.height,
-      aspectRatio: rect.width / rect.height,
+      aspectRatio: rect.width / rect.height || 1,
     };
   };
 
-  // Get container properties
-  let { width, height, aspectRatio } = getContainerSize();
+  let width = 0;
+  let height = 0;
+  let aspectRatio = 1;
   const backgroundColor = "#000000";
 
   // Variables
@@ -350,10 +351,26 @@ const {
   }
 
   let currentCleanup: (() => void) | null = null;
+  let eventAbort: AbortController | null = null;
 
   // Initialize everything
   function init() {
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+
+    // Re-query DOM elements (fresh references after View Transition swap)
+    container = document.querySelector(".contact-robot-viewer-container");
+    modelContainer = document.getElementById("contact-robot-container");
+    progressBar = document.getElementById("contact-progress-bar");
+    loadingContainer = modelContainer?.querySelector(".loading-container");
+
+    if (!container || !modelContainer) return;
+
+    ({ width, height, aspectRatio } = getContainerSize());
+    if (!width || !height) return;
+
+    _disposing = false;
+    clock = new THREE.Clock();
+
     initScene();
 
     // Loading manager

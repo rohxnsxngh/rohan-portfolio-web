@@ -36,22 +36,25 @@ const {
   import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
   import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
-  const container = document.querySelector(".blog-robot-viewer-container");
-  const modelContainer = document.getElementById("blog-robot-container");
-  const progressBar = document.getElementById("blog-progress-bar");
-  const loadingContainer = document.querySelector(".blog-robot-viewer-container .loading-container");
+  // DOM elements — re-queried in init() to survive View Transition DOM swaps
+  let container: Element | null = null;
+  let modelContainer: HTMLElement | null = null;
+  let progressBar: HTMLElement | null = null;
+  let loadingContainer: Element | null = null;
 
   const getContainerSize = () => {
-    if (!container) throw new Error("Container not found");
+    if (!container) return { width: 0, height: 0, aspectRatio: 1 };
     const rect = container.getBoundingClientRect();
     return {
       width: rect.width,
       height: rect.height,
-      aspectRatio: rect.width / rect.height,
+      aspectRatio: rect.width / rect.height || 1,
     };
   };
 
-  let { width, height, aspectRatio } = getContainerSize();
+  let width = 0;
+  let height = 0;
+  let aspectRatio = 1;
 
   let keyboard: THREE.Group;
   let mixer: THREE.AnimationMixer;
@@ -293,9 +296,28 @@ const {
   }
 
   let currentCleanup: (() => void) | null = null;
+  let eventAbort: AbortController | null = null;
 
   function init() {
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+
+    eventAbort?.abort();
+    eventAbort = new AbortController();
+
+    // Re-query DOM elements (fresh references after View Transition swap)
+    container = document.querySelector(".blog-robot-viewer-container");
+    modelContainer = document.getElementById("blog-robot-container");
+    progressBar = document.getElementById("blog-progress-bar");
+    loadingContainer = document.querySelector(".blog-robot-viewer-container .loading-container");
+
+    if (!container || !modelContainer) return;
+
+    ({ width, height, aspectRatio } = getContainerSize());
+    if (!width || !height) return;
+
+    _disposing = false;
+    clock = new THREE.Clock();
+
     initScene();
 
     const manager = new THREE.LoadingManager();

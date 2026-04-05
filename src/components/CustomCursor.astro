@@ -64,28 +64,6 @@
     image-rendering: crisp-edges;
   }
 
-  /* Hide default cursor completely - override all cursor styles */
-  *,
-  *::before,
-  *::after,
-  body,
-  body *,
-  a,
-  a *,
-  button,
-  button *,
-  [role="button"],
-  input,
-  textarea,
-  select,
-  *:hover,
-  *:active,
-  *:focus,
-  *:link,
-  *:visited {
-    cursor: none !important;
-  }
-
   #cursor-label {
     position: fixed;
     transform: translate(-50%, calc(-50% + 30px));
@@ -154,6 +132,46 @@
   }
 </style>
 
+<!-- Global (unscoped) styles: cursor hiding must apply to ALL elements across pages,
+     not just those inside this component. Without is:global, Astro scopes these rules
+     to data-astro-cid-xxx attributes, which new page elements after View Transitions lack. -->
+<style is:global>
+  /* Hide system cursor globally on desktop */
+  @media (hover: hover) and (pointer: fine) {
+    *,
+    *::before,
+    *::after,
+    body,
+    body *,
+    a,
+    a *,
+    button,
+    button *,
+    [role="button"],
+    input,
+    textarea,
+    select,
+    *:hover,
+    *:active,
+    *:focus,
+    *:link,
+    *:visited {
+      cursor: none !important;
+    }
+  }
+
+  /* Restore cursor on mobile */
+  @media (hover: none) and (pointer: coarse) {
+    body,
+    body *,
+    body *:hover,
+    body *:active,
+    body *:focus {
+      cursor: auto !important;
+    }
+  }
+</style>
+
 <script>
   // Check if device is mobile
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -166,27 +184,6 @@
       customCursor.style.display = 'none';
     }
   } else {
-    // Force cursor: none on all elements via JavaScript
-    const enforceCursorNone = () => {
-      document.body.style.cursor = 'none';
-      const allElements = document.querySelectorAll('*');
-      allElements.forEach((el) => {
-        (el as HTMLElement).style.cursor = 'none';
-      });
-    };
-
-    // Enforce on load
-    enforceCursorNone();
-
-    // Re-enforce when DOM changes (for dynamically added elements)
-    const observer = new MutationObserver(() => {
-      enforceCursorNone();
-    });
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
     // Cursor state
     let mouseX = 0;
     let mouseY = 0;

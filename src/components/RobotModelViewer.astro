@@ -47,33 +47,28 @@ const {
   import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
   import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
-  // DOM elements
-  const container = document.querySelector(".robot-model-viewer-container");
-  const modelContainer = document.getElementById("robot-animation-container");
-  const progressBar = document.getElementById("progress-bar");
-  const loadingContainer = document.querySelector("div.loading-container");
+  // DOM elements — re-queried in init() to survive View Transition DOM swaps
+  let container: Element | null = null;
+  let modelContainer: HTMLElement | null = null;
+  let progressBar: HTMLElement | null = null;
+  let loadingContainer: Element | null = null;
 
   // Get container dimensions
   const getContainerSize = () => {
     if (!container) {
-      throw new Error("Container not found");
+      return { width: 0, height: 0, aspectRatio: 1 };
     }
     const rect = container.getBoundingClientRect();
-    if (!rect) {
-      throw new Error("Container not found");
-    }
     return {
       width: rect.width,
       height: rect.height,
-      aspectRatio: rect.width / rect.height,
+      aspectRatio: rect.width / rect.height || 1,
     };
   };
 
-  // Get container properties
-  let { width, height, aspectRatio } = getContainerSize();
-  if (!width || !height || !aspectRatio) {
-    throw new Error("Container size not found");
-  }
+  let width = 0;
+  let height = 0;
+  let aspectRatio = 1;
   const backgroundColor = "#000000";
   const robotColor = "#000000";
   const robotEmissive = "#000000";
@@ -386,10 +381,31 @@ const {
   }
 
   let currentCleanup: (() => void) | null = null;
+  let eventAbort: AbortController | null = null;
 
   // Initialize everything when DOM is loaded
   function init() {
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+    // Abort previous document-level event listeners to prevent accumulation
+    eventAbort?.abort();
+    eventAbort = new AbortController();
+
+    // Re-query DOM elements (fresh references after View Transition swap)
+    container = document.querySelector(".robot-model-viewer-container");
+    modelContainer = document.getElementById("robot-animation-container");
+    progressBar = document.getElementById("progress-bar");
+    loadingContainer = document.querySelector("div.loading-container");
+
+    // Skip init if this page doesn't have the robot viewer
+    if (!container || !modelContainer) return;
+
+    // Get fresh container dimensions
+    ({ width, height, aspectRatio } = getContainerSize());
+    if (!width || !height) return;
+
+    _disposing = false;
+    clock = new THREE.Clock();
+
     initScene();
 
     // Loading manager for tracking progress
@@ -615,6 +631,8 @@ const {
     }
 
     // Listen for mouse movement events from Home.astro (with throttling)
+    // Use AbortController signal so listeners are cleaned up on navigation
+    const { signal } = eventAbort!;
     document.addEventListener('robotMouseMove', (e: any) => {
       if (e.detail && mousePointLight && hemisphereLight && raycaster && mouseVector && camera && _robot) {
         const { x, y } = e.detail; // Normalized 0-1 coordinates
@@ -630,7 +648,7 @@ const {
         pendingMousePosition = null;
         performRaycastUpdate(x, y);
       }
-    });
+    }, { signal });
 
     // Slowly fade out light when mouse becomes inactive (slow for admiration)
     document.addEventListener('robotMouseInactive', () => {
@@ -655,7 +673,7 @@ const {
         };
         fadeOut();
       }
-    });
+    }, { signal });
 
     // Fade out when mouse leaves (slightly faster than inactive)
     document.addEventListener('robotMouseLeave', () => {
@@ -679,7 +697,7 @@ const {
         };
         fadeOut();
       }
-    });
+    }, { signal });
 
     // Reset light when mouse enters
     document.addEventListener('robotMouseEnter', () => {
@@ -689,12 +707,14 @@ const {
         if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
         if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
       }
-    });
+    }, { signal });
   }
 
   // Initialize on page load (supports View Transitions)
   document.addEventListener("astro:page-load", init);
   document.addEventListener("astro:before-swap", () => {
+    eventAbort?.abort();
+    eventAbort = null;
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
   });
 </script>

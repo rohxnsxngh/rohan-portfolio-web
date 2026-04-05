@@ -378,10 +378,40 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
+  let glowTween: gsap.core.Tween | null = null;
+  let introTimeline: gsap.core.Timeline | null = null;
+
+  function cleanupHomeAnimations() {
+    // Kill accumulated GSAP tweens on home elements to prevent stale inline styles
+    const chars = document.querySelectorAll('.hero-name .char');
+    const nameLines = document.querySelectorAll('.hero-name .name-line');
+    if (chars.length) {
+      gsap.killTweensOf(chars);
+      gsap.set(chars, { clearProps: 'all' });
+    }
+    if (nameLines.length) {
+      gsap.killTweensOf(nameLines);
+      gsap.set(nameLines, { clearProps: 'all' });
+    }
+    gsap.killTweensOf('.label-intro');
+    gsap.killTweensOf('.statement');
+    gsap.killTweensOf('.cta-section');
+    gsap.killTweensOf('.scroll-indicator-minimal');
+
+    if (glowTween) { glowTween.kill(); glowTween = null; }
+    if (introTimeline) { introTimeline.kill(); introTimeline = null; }
+
+    kineticCleanup?.();
+    kineticCleanup = null;
+  }
 
   function initHomeAnimations() {
+    // Clean up any leftover GSAP state from previous navigation
+    cleanupHomeAnimations();
+
     // GSAP intro timeline
-    const tl = createPageIntroTimeline();
+    introTimeline = createPageIntroTimeline();
+    const tl = introTimeline;
 
     // Label intro (fade in from above)
     tl.to('.label-intro', {
@@ -468,7 +498,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       tl.call(() => {
         const glowChars = document.querySelectorAll('.hero-name .char');
         if (glowChars.length) {
-          gsap.to(glowChars, {
+          glowTween = gsap.to(glowChars, {
             textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
             duration: 2,
             stagger: 0.15,
@@ -481,7 +511,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     }
 
     // Kinetic text effect
-    kineticCleanup?.();
     kineticCleanup = initKineticText('.hero-name');
   }
 
@@ -581,9 +610,8 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     initHomeInteractions();
   });
 
-  // Cleanup kinetic text on navigation
+  // Full cleanup on navigation — kill all GSAP tweens, ScrollTriggers, kinetic text
   document.addEventListener('astro:before-swap', () => {
-    kineticCleanup?.();
-    kineticCleanup = null;
+    cleanupHomeAnimations();
   });
 </script>

@@ -375,7 +375,22 @@ const { title, description, image, frontmatter, robots } = Astro.props;
       // Cleanup before page swap (View Transitions)
       document.addEventListener('astro:before-swap', () => {
         console.log('[Layout] astro:before-swap fired — cleaning up');
+
+        // Kill all ScrollTriggers first
         killAllScrollTriggers();
+
+        // Kill ALL active GSAP tweens and timelines to prevent stale inline styles
+        // and accumulated repeat:-1 tweens from leaking across navigations
+        gsap.globalTimeline.getChildren(true, true, true).forEach((child: any) => {
+          child.kill();
+        });
+
+        // Clear GSAP inline styles from animated elements so View Transition
+        // captures clean state (no leftover opacity:0, transform, etc.)
+        document.querySelectorAll('.char, .name-line, .hero-name, .label-intro, .statement, .cta-section, .scroll-indicator-minimal, .scroll-indicator, .hero-subtitle, .hero-description, .hero-overlay, [class*="title"] .char').forEach(el => {
+          gsap.set(el, { clearProps: 'all' });
+        });
+
         destroySmoothScroll();
       });
 
@@ -395,11 +410,11 @@ const { title, description, image, frontmatter, robots } = Astro.props;
           gsap.set(overlay, { scaleY: 0 });
         }
 
-        // Safety: ensure preloader is gone
+        // Safety: ensure preloader is gone (fallback for edge cases)
         const preloader = document.getElementById('preloader');
-        if (preloader && !preloader.classList.contains('hidden')) {
+        if (preloader && !preloader.classList.contains('hidden') && preloader.style.display !== 'none') {
           console.warn('[Layout] Preloader still visible on page-load! Force hiding.');
-          preloader.style.display = 'none';
+          preloader.classList.add('hidden');
         }
 
         // Debug: check what might be covering the screen
