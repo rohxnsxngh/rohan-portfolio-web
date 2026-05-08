@@ -73,7 +73,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
               <!-- Glow overlay that follows mouse -->
               <div class="glow-overlay"></div>
 
-              <div class="experiment-window slide-up">
+              <div class="experiment-window">
                 <div class="experiment-preview">
                   <div class="cube-container">
                     <div class="cube"></div>
@@ -108,7 +108,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
               <!-- Glow overlay that follows mouse -->
               <div class="glow-overlay"></div>
 
-              <div class="experiment-window slide-up">
+              <div class="experiment-window">
                 <div class="experiment-preview coming-soon-preview">
                   <div class="coming-soon-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -140,7 +140,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
               <!-- Glow overlay that follows mouse -->
               <div class="glow-overlay"></div>
 
-              <div class="experiment-window slide-up">
+              <div class="experiment-window">
                 <div class="experiment-preview coming-soon-preview">
                   <div class="coming-soon-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -223,6 +223,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   /* Section title */
   .section-title {
     opacity: 0;
+    transform: translateY(30px);
   }
 
   /* Accent line */
@@ -610,6 +611,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
       });
     }
 
+    scrollReveal('.section-title');
     batchScrollReveal('.experiment-card');
     scrollReveal('.coming-soon-section');
 

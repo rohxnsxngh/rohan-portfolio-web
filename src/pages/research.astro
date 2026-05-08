@@ -489,7 +489,7 @@ const statusText = {
 </style>
 
 <script>
-import { animateLineExpand, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+import { animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
 import { initKineticText } from '../scripts/kinetic-text';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -554,6 +554,7 @@ document.addEventListener('astro:page-load', () => {
       });
     }
 
+    scrollReveal('.section-title');
     batchScrollReveal('.research-card');
 
     kineticCleanup = initKineticText('.hero-title');
