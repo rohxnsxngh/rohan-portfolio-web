@@ -43,7 +43,7 @@ const artworks = [
           <!-- Hero content -->
           <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300">
             <div class="max-w-7xl mx-auto">
-              <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none">
+              <h1 class="hero-title font-mono font-black tracking-tighter leading-none select-none" transition:name="page-title" transition:animate="fade">
                 <span class="char char-1">A</span><span class="char char-2">R</span><span class="char char-3">T</span>
               </h1>
               <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
@@ -86,7 +86,7 @@ const artworks = [
 
               <div class="gallery-grid">
                 {artworks.map((artwork, index) => (
-                  <div class="artwork-card group" style={`animation-delay: ${0.1 * index}s`}>
+                  <div class="artwork-card group">
                     <!-- Corner accents -->
                     <div class="card-corner card-corner-tl"></div>
                     <div class="card-corner card-corner-tr"></div>
@@ -177,43 +177,28 @@ const artworks = [
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  .char-1 { animation-delay: 0.2s; }
-  .char-2 { animation-delay: 0.35s; }
-  .char-3 { animation-delay: 0.5s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
   }
 
   .hero-subtitle {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
-    animation-delay: 0.7s;
+    transform: translateY(30px);
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.95),
+      0 4px 20px rgba(0, 0, 0, 0.85);
   }
 
   .hero-description {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
-    animation-delay: 0.9s;
+    transform: translateY(30px);
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.95),
+      0 4px 20px rgba(0, 0, 0, 0.85);
   }
 
   .scroll-indicator {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
-    animation-delay: 1.2s;
   }
 
   /* ===== GALLERY SECTION ===== */
@@ -234,7 +219,7 @@ const artworks = [
   /* Section title */
   .section-title {
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(30px);
   }
 
   /* Accent line */
@@ -242,32 +227,12 @@ const artworks = [
     height: 2px;
     width: 0;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
-    animation: lineExpand 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.3s;
-  }
-
-  @keyframes lineExpand {
-    to {
-      width: 120px;
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   /* Gallery Section */
   .gallery-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.8s;
+    transform: translateY(30px);
   }
 
   .gallery-grid {
@@ -296,7 +261,7 @@ const artworks = [
     border-radius: 12px;
     overflow: hidden;
     opacity: 0;
-    animation: fadeInUp 0.8s ease-out forwards;
+    transform: translateY(30px);
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -398,8 +363,7 @@ const artworks = [
   /* Coming Soon Section */
   .coming-soon-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 1s;
+    transform: translateY(30px);
   }
 
   .coming-soon-banner {
@@ -502,3 +466,142 @@ const artworks = [
     }
   }
 </style>
+
+<script>
+  import { animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let kineticCleanup: (() => void) | null = null;
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.artwork-card')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
+
+    const tl = createPageIntroTimeline();
+    const chars = document.querySelectorAll('.hero-title .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+    }
+    tl.add(() => animateLineExpand('.accent-line'), 0.3);
+    tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+    tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+
+    // Hero scroll-split effect
+    const heroSection = document.getElementById('hero-section');
+    const heroOverlay = document.querySelector('.hero-overlay') as HTMLElement;
+    const allChars = Array.from(document.querySelectorAll('.hero-title .char'));
+    const halfLen = Math.ceil(allChars.length / 2);
+    const leftChars = allChars.slice(0, halfLen);
+    const rightChars = allChars.slice(halfLen);
+
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const splitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroSection,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+      splitTl.fromTo(leftChars, { x: 0, opacity: 1 }, { x: '-30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo(rightChars, { x: 0, opacity: 1 }, { x: '30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-subtitle', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-description', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      splitTl.fromTo('.scroll-indicator', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.3 }, 0);
+      if (heroOverlay) {
+        splitTl.fromTo(heroOverlay, { opacity: 0.7 }, { opacity: 0.2, ease: 'none' }, 0);
+      }
+    }
+
+    // Continuous glow pulse on hero chars
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.call(() => {
+        const glowChars = document.querySelectorAll('.hero-title .char');
+        if (glowChars.length) {
+          gsap.to(glowChars, {
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
+            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
+          });
+        }
+      });
+    }
+
+    scrollReveal('.section-title');
+    scrollReveal('.gallery-section');
+    batchScrollReveal('.artwork-card');
+    scrollReveal('.coming-soon-section');
+
+    kineticCleanup = initKineticText('.hero-title');
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.artwork-card')) return;
+
+    // ===== HERO SECTION PARTICLE DISTORTION =====
+    const heroSection = document.getElementById('hero-section');
+    let mouseTimeout: number | null = null;
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = false;
+    const SCROLL_THRESHOLD = 10;
+
+    if (heroSection) {
+      heroSection.addEventListener('mousemove', (e) => {
+        const rect = heroSection.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        document.dispatchEvent(new CustomEvent('artMouseMove', {
+          detail: { x, y, clientX: e.clientX, clientY: e.clientY }
+        }));
+        if (mouseTimeout) clearTimeout(mouseTimeout);
+        mouseTimeout = window.setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('artMouseInactive'));
+        }, 800);
+      });
+
+      heroSection.addEventListener('mouseleave', () => {
+        document.dispatchEvent(new CustomEvent('artMouseLeave'));
+      });
+
+      heroSection.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+          isScrolling = false;
+        }
+      }, { passive: true });
+
+      heroSection.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          const touch = e.touches[0];
+          const deltaY = Math.abs(touch.clientY - touchStartY);
+          const deltaX = Math.abs(touch.clientX - touchStartX);
+          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+            isScrolling = true;
+          }
+          if (!isScrolling) {
+            const rect = heroSection.getBoundingClientRect();
+            const x = (touch.clientX - rect.left) / rect.width;
+            const y = (touch.clientY - rect.top) / rect.height;
+            document.dispatchEvent(new CustomEvent('artMouseMove', {
+              detail: { x, y, clientX: touch.clientX, clientY: touch.clientY }
+            }));
+          }
+        }
+      }, { passive: true });
+
+      heroSection.addEventListener('touchend', () => {
+        isScrolling = false;
+        document.dispatchEvent(new CustomEvent('artMouseLeave'));
+      });
+    }
+  });
+</script>

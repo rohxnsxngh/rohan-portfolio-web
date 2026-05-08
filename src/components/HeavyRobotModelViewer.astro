@@ -46,37 +46,28 @@ const {
   import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
   import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
-  // DOM elements
-  const container = document.querySelector(
-    ".heavy-robot-model-viewer-container"
-  );
-  const modelContainer = document.getElementById(
-    "heavy-robot-animation-container"
-  );
-  const progressBar = document.getElementById("heavy-progress-bar");
-  const loadingContainer = modelContainer?.querySelector(".loading-container");
+  // DOM elements — re-queried in init() to survive View Transition DOM swaps
+  let container: Element | null = null;
+  let modelContainer: HTMLElement | null = null;
+  let progressBar: HTMLElement | null = null;
+  let loadingContainer: Element | null | undefined = null;
 
   // Get container dimensions
   const getContainerSize = () => {
     if (!container) {
-      throw new Error("Container not found");
+      return { width: 0, height: 0, aspectRatio: 1 };
     }
     const rect = container.getBoundingClientRect();
-    if (!rect) {
-      throw new Error("Container not found");
-    }
     return {
       width: rect.width,
       height: rect.height,
-      aspectRatio: rect.width / rect.height,
+      aspectRatio: rect.width / rect.height || 1,
     };
   };
 
-  // Get container properties
-  let { width, height, aspectRatio } = getContainerSize();
-  if (!width || !height || !aspectRatio) {
-    throw new Error("Container size not found");
-  }
+  let width = 0;
+  let height = 0;
+  let aspectRatio = 1;
   const backgroundColor = "#000000";
   const robotColor = "#444444";
   const robotEmissive = "#111111";
@@ -310,13 +301,20 @@ const {
     composer.addPass(sobelPass);
   }
 
+  let _disposing = false;
+
   // Handle window resize
   function handleResize() {
+    if (_disposing) return;
+
     const {
       width: newWidth,
       height: newHeight,
       aspectRatio: newAspectRatio,
     } = getContainerSize();
+
+    // Guard against zero dimensions (happens during View Transitions)
+    if (!newWidth || !newHeight) return;
 
     // Update variables
     width = newWidth;
@@ -348,8 +346,27 @@ const {
     }
   }
 
+  let currentCleanup: (() => void) | null = null;
+  let eventAbort: AbortController | null = null;
+
   // Initialize everything when DOM is loaded
   function init() {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+
+    // Re-query DOM elements (fresh references after View Transition swap)
+    container = document.querySelector(".heavy-robot-model-viewer-container");
+    modelContainer = document.getElementById("heavy-robot-animation-container");
+    progressBar = document.getElementById("heavy-progress-bar");
+    loadingContainer = modelContainer?.querySelector(".loading-container");
+
+    if (!container || !modelContainer) return;
+
+    ({ width, height, aspectRatio } = getContainerSize());
+    if (!width || !height) return;
+
+    _disposing = false;
+    clock = new THREE.Clock();
+
     initScene();
 
     // Loading manager for tracking progress
@@ -434,8 +451,10 @@ const {
     );
 
     // Animation loop
+    let _animationId: number;
     function animate() {
-      requestAnimationFrame(animate);
+      if (_disposing) return;
+      _animationId = requestAnimationFrame(animate);
 
       // Update animation mixer
       const delta = clock.getDelta();
@@ -490,6 +509,20 @@ const {
     if (container) {
       resizeObserver.observe(container);
     }
+
+    // Store cleanup function (called on navigation or re-init)
+    currentCleanup = () => {
+      _disposing = true;
+      cancelAnimationFrame(_animationId);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      renderer.dispose();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+      controls?.dispose();
+    };
 
     // Helper function to update lighting based on position (with throttling)
     function updateLighting(clientX: number, clientY: number, forceUpdate = false) {
@@ -687,12 +720,11 @@ const {
     fadeOut();
   }
 
-  // Initialize when DOM is loaded
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
+  // Initialize on page load (supports View Transitions)
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", () => {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+  });
 </script>
 
 <style>

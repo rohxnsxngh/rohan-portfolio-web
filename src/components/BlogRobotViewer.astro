@@ -36,22 +36,25 @@ const {
   import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
   import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
-  const container = document.querySelector(".blog-robot-viewer-container");
-  const modelContainer = document.getElementById("blog-robot-container");
-  const progressBar = document.getElementById("blog-progress-bar");
-  const loadingContainer = document.querySelector(".blog-robot-viewer-container .loading-container");
+  // DOM elements — re-queried in init() to survive View Transition DOM swaps
+  let container: Element | null = null;
+  let modelContainer: HTMLElement | null = null;
+  let progressBar: HTMLElement | null = null;
+  let loadingContainer: Element | null = null;
 
   const getContainerSize = () => {
-    if (!container) throw new Error("Container not found");
+    if (!container) return { width: 0, height: 0, aspectRatio: 1 };
     const rect = container.getBoundingClientRect();
     return {
       width: rect.width,
       height: rect.height,
-      aspectRatio: rect.width / rect.height,
+      aspectRatio: rect.width / rect.height || 1,
     };
   };
 
-  let { width, height, aspectRatio } = getContainerSize();
+  let width = 0;
+  let height = 0;
+  let aspectRatio = 1;
 
   let keyboard: THREE.Group;
   let mixer: THREE.AnimationMixer;
@@ -260,8 +263,13 @@ const {
     composer.addPass(sobelPass);
   }
 
+  let _disposing = false;
+
   function handleResize() {
+    if (_disposing) return;
     const { width: newWidth, height: newHeight, aspectRatio: newAspectRatio } = getContainerSize();
+    // Guard against zero dimensions (happens during View Transitions)
+    if (!newWidth || !newHeight) return;
     width = newWidth;
     height = newHeight;
     aspectRatio = newAspectRatio;
@@ -287,7 +295,29 @@ const {
     }
   }
 
+  let currentCleanup: (() => void) | null = null;
+  let eventAbort: AbortController | null = null;
+
   function init() {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+
+    eventAbort?.abort();
+    eventAbort = new AbortController();
+
+    // Re-query DOM elements (fresh references after View Transition swap)
+    container = document.querySelector(".blog-robot-viewer-container");
+    modelContainer = document.getElementById("blog-robot-container");
+    progressBar = document.getElementById("blog-progress-bar");
+    loadingContainer = document.querySelector(".blog-robot-viewer-container .loading-container");
+
+    if (!container || !modelContainer) return;
+
+    ({ width, height, aspectRatio } = getContainerSize());
+    if (!width || !height) return;
+
+    _disposing = false;
+    clock = new THREE.Clock();
+
     initScene();
 
     const manager = new THREE.LoadingManager();
@@ -384,8 +414,10 @@ const {
       }
     );
 
+    let _animationId: number;
     function animate() {
-      requestAnimationFrame(animate);
+      if (_disposing) return;
+      _animationId = requestAnimationFrame(animate);
 
       const delta = clock.getDelta();
 
@@ -415,6 +447,20 @@ const {
     window.addEventListener("resize", handleResize);
     const resizeObserver = new ResizeObserver(() => handleResize());
     if (container) resizeObserver.observe(container);
+
+    // Store cleanup function (called on navigation or re-init)
+    currentCleanup = () => {
+      _disposing = true;
+      cancelAnimationFrame(_animationId);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      renderer.dispose();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+      controls?.dispose();
+    };
 
     // Helper function to update lighting based on position (with throttling)
     function updateLighting(clientX: number, clientY: number, forceUpdate = false) {
@@ -618,11 +664,11 @@ const {
     // Page will immediately show the contained state
   });
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
+  // Initialize on page load (supports View Transitions)
+  document.addEventListener("astro:page-load", init);
+  document.addEventListener("astro:before-swap", () => {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+  });
 </script>
 
 <style>

@@ -44,7 +44,7 @@ const encodedDomain = btoa(domain);
 
 <script>
   // Decode and set up email links on page load
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     const emailLinks = document.querySelectorAll<HTMLAnchorElement>('.obfuscated-email');
 
     emailLinks.forEach((link) => {

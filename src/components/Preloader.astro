@@ -1,0 +1,221 @@
+<!-- Preloader: shows on first visit per session. Starts hidden; module script reveals on first load. -->
+<div id="preloader" class="preloader hidden" aria-hidden="true">
+  <div class="preloader-content">
+    <div class="preloader-counter" id="preloader-counter">0</div>
+    <div class="preloader-initials">
+      <span class="preloader-char">R</span><span class="preloader-char">O</span><span class="preloader-char">H</span><span class="preloader-char">A</span><span class="preloader-char">N</span>
+    </div>
+    <div class="preloader-line"></div>
+    <div class="preloader-subtitle">PORTFOLIO</div>
+  </div>
+  <!-- Curtain columns for dramatic exit -->
+  <div class="preloader-curtain" id="preloader-curtain">
+    <div class="curtain-col"></div>
+    <div class="curtain-col"></div>
+    <div class="curtain-col"></div>
+    <div class="curtain-col"></div>
+    <div class="curtain-col"></div>
+  </div>
+</div>
+
+<style>
+  .preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .preloader.hidden {
+    display: none;
+  }
+
+  .preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    z-index: 2;
+    position: relative;
+  }
+
+  .preloader-counter {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(0.875rem, 2vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.3em;
+    font-weight: 300;
+  }
+
+  .preloader-initials {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    color: #ffffff;
+    display: flex;
+    gap: 0.1em;
+  }
+
+  .preloader-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .preloader-line {
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffffff, transparent);
+  }
+
+  .preloader-subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.625rem;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.5em;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .preloader-curtain {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    z-index: 1;
+  }
+
+  .curtain-col {
+    flex: 1;
+    background: #000000;
+    transform-origin: top;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  function runPreloader() {
+    const preloader = document.getElementById('preloader');
+    if (!preloader) {
+      console.log('[Preloader] No preloader element found');
+      return;
+    }
+
+    console.log('[Preloader] Starting. sessionStorage:', sessionStorage.getItem('preloader-shown'));
+
+    // Only show on first visit per session
+    if (sessionStorage.getItem('preloader-shown')) {
+      console.log('[Preloader] Already shown this session, hiding immediately');
+      preloader.classList.add('hidden');
+      document.dispatchEvent(new CustomEvent('preloader:complete'));
+      return;
+    }
+
+    // Show the preloader (it starts hidden to prevent flash on View Transition navigations)
+    preloader.classList.remove('hidden');
+
+    // Check reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      console.log('[Preloader] Reduced motion, hiding immediately');
+      preloader.classList.add('hidden');
+      sessionStorage.setItem('preloader-shown', '1');
+      document.dispatchEvent(new CustomEvent('preloader:complete'));
+      return;
+    }
+
+    const chars = preloader.querySelectorAll('.preloader-char');
+    const line = preloader.querySelector('.preloader-line');
+    const counter = document.getElementById('preloader-counter');
+    const subtitle = preloader.querySelector('.preloader-subtitle');
+    const curtainCols = preloader.querySelectorAll('.curtain-col');
+    const content = preloader.querySelector('.preloader-content');
+
+    console.log('[Preloader] Elements found:', {
+      chars: chars.length,
+      line: !!line,
+      counter: !!counter,
+      subtitle: !!subtitle,
+      curtainCols: curtainCols.length,
+      content: !!content,
+    });
+
+    const counterObj = { value: 0 };
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        console.log('[Preloader] Timeline complete, dispatching preloader:complete');
+        sessionStorage.setItem('preloader-shown', '1');
+        document.dispatchEvent(new CustomEvent('preloader:complete'));
+      },
+    });
+
+    // Safety timeout — force-hide preloader if animation takes too long
+    setTimeout(() => {
+      if (preloader && preloader.style.display !== 'none' && !preloader.classList.contains('hidden')) {
+        console.warn('[Preloader] Safety timeout: force hiding after 5s');
+        preloader.style.display = 'none';
+        sessionStorage.setItem('preloader-shown', '1');
+        document.dispatchEvent(new CustomEvent('preloader:complete'));
+      }
+    }, 5000);
+
+    // Counter 0 → 100 concurrent with char reveal
+    tl.to(counterObj, {
+      value: 100,
+      duration: 1.5,
+      ease: 'power2.out',
+      onUpdate: () => {
+        if (counter) counter.textContent = Math.round(counterObj.value).toString();
+      },
+    }, 0);
+
+    // Staggered character reveal
+    tl.to(chars, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.08,
+      ease: 'expo.out',
+    }, 0);
+
+    // Line expand
+    tl.to(line, {
+      width: '120px',
+      duration: 0.6,
+      ease: 'expo.out',
+    }, 0.5);
+
+    // Subtitle fade in
+    tl.to(subtitle, {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: 'expo.out',
+    }, 0.8);
+
+    // Fade out content
+    tl.to(content, {
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.in',
+    }, '+=0.3');
+
+    // Curtain columns slide up with stagger
+    tl.to(curtainCols, {
+      scaleY: 0,
+      duration: 0.6,
+      stagger: 0.08,
+      ease: 'expo.inOut',
+    }, '-=0.1');
+
+    tl.set(preloader, { display: 'none' });
+  }
+
+  // Run on initial load
+  runPreloader();
+</script>

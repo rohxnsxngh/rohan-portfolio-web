@@ -2,25 +2,51 @@
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
+import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 ---
 
 <Layout title="About">
   <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
+        <!-- HERO SECTION WITH PARTICLE EFFECT -->
+        <div class="hero-section relative min-h-screen bg-secondary flex items-center justify-center overflow-hidden" id="hero-section">
+          <!-- Particle background -->
+          <ArtParticleViewer mouseRadius={6.0} />
+
+          <!-- Dark overlay -->
+          <div class="hero-overlay absolute inset-0 bg-black/70 pointer-events-none"></div>
+
+          <!-- Hero content -->
+          <div class="hero-content relative z-[10] w-full px-4 sm:px-6 lg:px-8 pointer-events-none transition-opacity duration-300">
+            <div class="max-w-7xl mx-auto">
+              <h1 class="about-title font-mono font-black tracking-tighter leading-none select-none" transition:name="page-title" transition:animate="fade">
+                <span class="char char-1">A</span><span class="char char-2">B</span><span class="char char-3">O</span><span class="char char-4">U</span><span class="char char-5">T</span>
+              </h1>
+              <p class="hero-subtitle font-mono text-primary/50 text-sm sm:text-base tracking-[0.3em] uppercase mt-6">
+                // THE STORY
+              </p>
+              <p class="hero-description text-primary/60 max-w-xl mt-4">
+                Engineer, builder, and creator — building the future one project at a time
+              </p>
+            </div>
+          </div>
+
+          <!-- Scroll indicator -->
+          <div class="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce z-20 pointer-events-none">
+            <span class="text-primary/40 text-xs font-mono tracking-wider">SCROLL</span>
+            <svg class="w-5 h-5 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+          </div>
+        </div>
+
         <div class="relative overflow-hidden">
           <!-- Tech grid overlay for texture -->
           <div class="absolute inset-0 tech-grid opacity-10 z-0 pointer-events-none"></div>
 
           <!-- Main Content -->
           <div class="relative z-10 sm:px-20 px-6 py-12">
-            <!-- BOLD HEADER SECTION -->
-            <div class="header-section mb-16">
-              <h1 class="about-title font-mono font-black tracking-tighter leading-none select-none">
-                <span class="char char-1">A</span><span class="char char-2">B</span><span class="char char-3">O</span><span class="char char-4">U</span><span class="char char-5">T</span>
-              </h1>
-              <div class="accent-line mt-6"></div>
-            </div>
 
             <!-- HERO SECTION WITH PROFILE -->
             <div class="hero-grid grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
@@ -200,6 +226,33 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style>
+  /* HERO SECTION */
+  .hero-section {
+    position: relative;
+  }
+
+  .hero-overlay {
+    z-index: 5;
+  }
+
+  .hero-subtitle {
+    opacity: 0;
+    transform: translateY(30px);
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.95),
+      0 4px 20px rgba(0, 0, 0, 0.85);
+  }
+
+  .hero-description {
+    opacity: 0;
+    transform: translateY(30px);
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.95),
+      0 4px 20px rgba(0, 0, 0, 0.85);
+  }
+
   /* Tech grid background */
   .tech-grid {
     background-image:
@@ -216,77 +269,37 @@ import Layout from "../layouts/Layout.astro";
 
   /* BOLD ABOUT TITLE */
   .about-title {
-    font-size: clamp(4rem, 16vw, 14rem);
+    font-size: clamp(2.5rem, 11vw, 16rem);
     line-height: 0.85;
-    letter-spacing: -0.08em;
+    letter-spacing: -0.06em;
     color: #ffffff;
     text-transform: uppercase;
-    opacity: 0;
-    animation: titleReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    font-weight: 900;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
     text-shadow:
       0 3px 25px rgba(0, 0, 0, 0.9),
       0 6px 45px rgba(0, 0, 0, 0.7);
   }
 
-  @keyframes titleReveal {
-    from {
-      opacity: 0;
-      transform: translateY(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Individual character animations */
+  /* Individual character animations - driven by GSAP */
   .about-title .char {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
-  .char-4 { animation-delay: 0.20s; }
-  .char-5 { animation-delay: 0.25s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Accent line */
+  /* Accent line - initial state for GSAP */
   .accent-line {
     height: 3px;
     width: 0;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.5s;
-  }
-
-  @keyframes lineExpand {
-    to {
-      width: 200px;
-    }
   }
 
   /* PROFILE SECTION */
   .profile-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.6s;
+    transform: translateY(30px);
   }
 
   .profile-container {
@@ -339,58 +352,20 @@ import Layout from "../layouts/Layout.astro";
     transform: scale(1.02);
   }
 
-  /* INTRO SECTION */
+  /* INTRO SECTION - initial state for GSAP */
   .intro-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.8s;
-  }
-
-  .intro-label {
-    opacity: 0;
-    animation: fadeIn 0.8s ease-out forwards;
-    animation-delay: 1s;
-  }
-
-  .intro-name {
-    opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 1.1s;
-  }
-
-  .intro-tagline {
-    opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 1.3s;
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
+    transform: translateY(30px);
   }
 
   /* STORY SECTIONS */
   .story-block {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
+    transform: translateY(30px);
     padding: 2rem;
     border-left: 2px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.6s ease;
+    transition: border-left-color 0.6s ease, padding-left 0.6s ease, background 0.6s ease;
   }
-
-  .story-block:nth-child(1) { animation-delay: 1.4s; }
-  .story-block:nth-child(3) { animation-delay: 1.6s; }
-  .story-block:nth-child(4) { animation-delay: 1.8s; }
 
   .story-block:hover {
     border-left-color: rgba(255, 255, 255, 0.4);
@@ -492,17 +467,10 @@ import Layout from "../layouts/Layout.astro";
     text-decoration-color: rgba(100, 150, 255, 0.9);
   }
 
-  /* VIDEO SECTION */
+  /* VIDEO SECTION - initial state for GSAP */
   .videos-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 1.5s;
-  }
-
-  .video-caption {
-    opacity: 0;
-    animation: fadeIn 0.8s ease-out forwards;
-    animation-delay: 1.6s;
+    transform: translateY(30px);
   }
 
   .video-wrapper {
@@ -549,11 +517,10 @@ import Layout from "../layouts/Layout.astro";
     box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
   }
 
-  /* CTA SECTION */
+  /* CTA SECTION - initial state for GSAP */
   .cta-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 2s;
+    transform: translateY(30px);
   }
 
   .cta-button {
@@ -614,13 +581,17 @@ import Layout from "../layouts/Layout.astro";
   /* RESPONSIVE */
   @media (max-width: 1024px) {
     .about-title {
-      font-size: clamp(3.5rem, 14vw, 12rem);
+      font-size: clamp(2.5rem, 10vw, 10rem);
     }
   }
 
   @media (max-width: 768px) {
+    .scroll-indicator {
+      display: none !important;
+    }
+
     .about-title {
-      font-size: clamp(3rem, 16vw, 10rem);
+      font-size: clamp(2rem, 12vw, 8rem);
     }
 
     .story-text {
@@ -634,7 +605,7 @@ import Layout from "../layouts/Layout.astro";
 
   @media (max-width: 640px) {
     .about-title {
-      font-size: clamp(2.5rem, 18vw, 8rem);
+      font-size: clamp(1.8rem, 14vw, 6rem);
     }
 
     .profile-container {
@@ -644,8 +615,163 @@ import Layout from "../layouts/Layout.astro";
 </style>
 
 <script>
+  import { animateLineExpand, scrollReveal, createMultiLayerParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let kineticCleanup: (() => void) | null = null;
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.about-title')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
+
+    // GSAP intro timeline
+    const tl = createPageIntroTimeline();
+
+    // Char reveal for title
+    const chars = document.querySelectorAll('.about-title .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+    }
+
+    // Hero subtitle and description
+    tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+    tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+
+    // Hero scroll-split effect
+    const heroSection = document.getElementById('hero-section');
+    const heroOverlay = document.querySelector('.hero-overlay') as HTMLElement;
+    const allChars = Array.from(document.querySelectorAll('.about-title .char'));
+    const halfLen = Math.ceil(allChars.length / 2);
+    const leftChars = allChars.slice(0, halfLen);
+    const rightChars = allChars.slice(halfLen);
+
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const splitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroSection,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+      splitTl.fromTo(leftChars, { x: 0, opacity: 1 }, { x: '-30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo(rightChars, { x: 0, opacity: 1 }, { x: '30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-subtitle', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.hero-description', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      splitTl.fromTo('.scroll-indicator', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.3 }, 0);
+      if (heroOverlay) {
+        splitTl.fromTo(heroOverlay, { opacity: 0.7 }, { opacity: 0.2, ease: 'none' }, 0);
+      }
+    }
+
+    // Continuous glow pulse on hero chars
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.call(() => {
+        const glowChars = document.querySelectorAll('.about-title .char');
+        if (glowChars.length) {
+          gsap.to(glowChars, {
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
+            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
+          });
+        }
+      });
+    }
+
+    // Profile and intro sections
+    scrollReveal('.profile-section');
+    scrollReveal('.intro-section');
+
+    // Scroll reveals for below-fold content
+    scrollReveal('.story-block', { stagger: 0.2 });
+    scrollReveal('.videos-section');
+    scrollReveal('.cta-section');
+
+    // Profile image parallax
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      createMultiLayerParallax([
+        { selector: '.profile-container', speed: -0.3 },
+      ]);
+    }
+
+    kineticCleanup = initKineticText('.about-title');
+  });
+
+  // Hero section particle interaction
+  document.addEventListener('astro:page-load', () => {
+    const heroSection = document.getElementById('hero-section');
+    if (!heroSection || !document.querySelector('.about-title')) return;
+
+    let mouseTimeout: number | null = null;
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isScrolling = false;
+    const SCROLL_THRESHOLD = 10;
+
+    heroSection.addEventListener('mousemove', (e) => {
+      const rect = heroSection.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+
+      document.dispatchEvent(new CustomEvent('aboutMouseMove', {
+        detail: { x, y, clientX: e.clientX, clientY: e.clientY }
+      }));
+
+      if (mouseTimeout) clearTimeout(mouseTimeout);
+      mouseTimeout = window.setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('aboutMouseInactive'));
+      }, 800);
+    });
+
+    heroSection.addEventListener('mouseleave', () => {
+      document.dispatchEvent(new CustomEvent('aboutMouseLeave'));
+    });
+
+    heroSection.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        isScrolling = false;
+      }
+    }, { passive: true });
+
+    heroSection.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const deltaY = Math.abs(touch.clientY - touchStartY);
+        const deltaX = Math.abs(touch.clientX - touchStartX);
+
+        if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+          isScrolling = true;
+        }
+
+        if (!isScrolling) {
+          const rect = heroSection.getBoundingClientRect();
+          const x = (touch.clientX - rect.left) / rect.width;
+          const y = (touch.clientY - rect.top) / rect.height;
+
+          document.dispatchEvent(new CustomEvent('aboutMouseMove', {
+            detail: { x, y, clientX: touch.clientX, clientY: touch.clientY }
+          }));
+        }
+      }
+    }, { passive: true });
+
+    heroSection.addEventListener('touchend', () => {
+      isScrolling = false;
+      document.dispatchEvent(new CustomEvent('aboutMouseLeave'));
+    });
+  });
+
   // Intersection Observer for lazy loading videos
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener('astro:page-load', () => {
     const videos = document.querySelectorAll("video");
 
     if ("IntersectionObserver" in window) {

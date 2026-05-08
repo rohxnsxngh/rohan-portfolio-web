@@ -58,7 +58,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
         </div>
 
         <!-- Dark overlay to dim robot heavily by default -->
-        <div class="robot-overlay absolute inset-0 bg-black/[0.98] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+        <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none transition-all duration-500" id="robot-dim"></div>
       </div>
 
       <!-- Tech grid overlay for texture -->
@@ -76,7 +76,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
           <!-- MASSIVE title display -->
           <div class="name-display mb-6 sm:mb-10">
-            <h1 class="hero-name font-mono font-black tracking-tighter leading-none select-none">
+            <h1 class="hero-name font-mono font-black tracking-tighter leading-none select-none" transition:name="page-title" transition:animate="fade">
               <div class="name-line">
                 <span class="char char-1">P</span><span class="char char-2">R</span><span class="char char-3">O</span><span class="char char-4">J</span><span class="char char-5">E</span><span class="char char-6">C</span><span class="char char-7">T</span><span class="char char-8">S</span>
               </div>
@@ -210,7 +210,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
                   const statusDisplay = statusText[status] || "Unknown";
 
                   return (
-                    <div class="relative z-1 project-card group" data-haptic="light">
+                    <div class="relative z-1 project-card group" data-haptic="light" data-cursor-label="View">
                       <!-- Corner accent marks -->
                       <div class="card-corner-accent card-corner-tl"></div>
                       <div class="card-corner-accent card-corner-tr"></div>
@@ -368,63 +368,26 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     position: relative;
   }
 
-  /* Individual character animations */
+  /* Individual character animations - driven by GSAP */
   .hero-name .char {
     display: inline-block;
     opacity: 0;
     transform: translateY(100px) scale(0.8);
-    animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     text-shadow:
       0 0 40px rgba(255, 255, 255, 0.1),
       0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
-  /* Staggered animation delays */
-  .char-1 { animation-delay: 0.05s; }
-  .char-2 { animation-delay: 0.10s; }
-  .char-3 { animation-delay: 0.15s; }
-  .char-4 { animation-delay: 0.20s; }
-  .char-5 { animation-delay: 0.25s; }
-  .char-6 { animation-delay: 0.30s; }
-  .char-7 { animation-delay: 0.35s; }
-  .char-8 { animation-delay: 0.40s; }
-
-  @keyframes charReveal {
-    0% {
-      opacity: 0;
-      transform: translateY(100px) scale(0.8);
-    }
-    60% {
-      transform: translateY(-10px) scale(1.02);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Label intro animation */
+  /* Label intro - initial state for GSAP */
   .label-intro {
     opacity: 0;
-    animation: fadeInDown 0.8s ease-out forwards;
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    transform: translateY(-20px);
   }
 
   /* Statement text */
   .statement {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.5s;
+    transform: translateY(30px);
   }
 
   .statement-text {
@@ -448,22 +411,10 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.5), transparent);
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* CTA Section */
+  /* CTA Section - initial state for GSAP */
   .cta-section {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards;
-    animation-delay: 0.7s;
+    transform: translateY(30px);
   }
 
   /* Primary CTA Button */
@@ -701,9 +652,9 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     z-index: 50;
     background: radial-gradient(
       600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 102, 0, 0.2),
-      rgba(255, 170, 68, 0.15),
-      rgba(255, 68, 68, 0.08),
+      rgba(255, 102, 0, 0.30),
+      rgba(255, 170, 68, 0.20),
+      rgba(255, 68, 68, 0.10),
       transparent 40%
     );
     mix-blend-mode: screen;
@@ -732,8 +683,6 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   /* ===== SCROLL INDICATOR ===== */
   .scroll-indicator {
     opacity: 0;
-    animation: fadeInUp 1s ease-out forwards, floatUpDown 2s ease-in-out infinite;
-    animation-delay: 1.2s, 1.2s;
   }
 
   .scroll-arrow {
@@ -808,7 +757,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     }
 
     .robot-overlay {
-      background: rgba(0, 0, 0, 0.96) !important;
+      background: rgba(0, 0, 0, 0.88) !important;
     }
 
     .hero-section.mouse-active .hero-content {
@@ -832,178 +781,150 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 </style>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const heroSection = document.getElementById("hero-section");
+  import { batchScaleReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { initKineticText } from '../scripts/kinetic-text';
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let kineticCleanup: (() => void) | null = null;
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.getElementById('projects-display')) return;
+
+    if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
+
+    // GSAP intro timeline
+    const tl = createPageIntroTimeline();
+
+    tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
+
+    const chars = document.querySelectorAll('.hero-name .char');
+    if (chars.length) {
+      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0.1);
+    }
+
+    tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+    tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+
+    // Hero scroll-split effect — chars split left/right on scroll
+    const heroSection = document.getElementById('hero-section');
+    const robotOverlay = document.getElementById('robot-dim');
+    const allChars = Array.from(document.querySelectorAll('.hero-name .char'));
+    const halfLen = Math.ceil(allChars.length / 2);
+    const leftChars = allChars.slice(0, halfLen);
+    const rightChars = allChars.slice(halfLen);
+
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const splitTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: heroSection,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true,
+        },
+      });
+      splitTl.fromTo(leftChars, { x: 0, opacity: 1 }, { x: '-30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo(rightChars, { x: 0, opacity: 1 }, { x: '30vw', opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.label-intro', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
+      splitTl.fromTo('.statement', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      splitTl.fromTo('.cta-section', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
+      if (robotOverlay) {
+        splitTl.fromTo(robotOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.85)' }, { backgroundColor: 'rgba(0, 0, 0, 0.3)', ease: 'none' }, 0);
+      }
+    }
+
+    // Continuous glow pulse on hero chars
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.call(() => {
+        const glowChars = document.querySelectorAll('.hero-name .char');
+        if (glowChars.length) {
+          gsap.to(glowChars, {
+            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
+            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
+          });
+        }
+      });
+    }
+
+    // Scale reveal with bounce easing for project cards
+    batchScaleReveal('.project-card');
+
+    kineticCleanup = initKineticText('.hero-name');
+
+    // Robot interaction handlers
     const robotContainer = document.getElementById("robot-container");
 
     let mouseActive = false;
     let mouseTimeout: number | null = null;
 
-    // ===== DUAL HOVER/TOUCH ANIMATION =====
     const handleInteraction = (clientX: number, clientY: number) => {
       const rect = heroSection!.getBoundingClientRect();
-
-      // Calculate position (0 to 1 normalized coordinates)
       const mouseX = (clientX - rect.left) / rect.width;
       const mouseY = (clientY - rect.top) / rect.height;
 
-      // Activate hover state (fade typography, lighten robot overlay)
-      if (!mouseActive) {
-        heroSection!.classList.add('mouse-active');
-        mouseActive = true;
-      }
+      if (!mouseActive) { heroSection!.classList.add('mouse-active'); mouseActive = true; }
+      if (mouseTimeout) clearTimeout(mouseTimeout);
 
-      // Clear existing timeout
-      if (mouseTimeout) {
-        clearTimeout(mouseTimeout);
-      }
+      document.dispatchEvent(new CustomEvent("projectsRobotMouseMove", { detail: { x: mouseX, y: mouseY, clientX, clientY } }));
 
-      // Dispatch position to THREE.js robot viewer
-      document.dispatchEvent(
-        new CustomEvent("projectsRobotMouseMove", {
-          detail: {
-            x: mouseX,
-            y: mouseY,
-            clientX: clientX,
-            clientY: clientY
-          },
-        })
-      );
-
-      // Reset to inactive state after interaction stops
       mouseTimeout = window.setTimeout(() => {
         heroSection!.classList.remove('mouse-active');
         mouseActive = false;
-
-        document.dispatchEvent(
-          new CustomEvent("projectsRobotMouseInactive", {
-            detail: { inactive: true },
-          })
-        );
+        document.dispatchEvent(new CustomEvent("projectsRobotMouseInactive", { detail: { inactive: true } }));
       }, 800);
     };
 
-    // Touch tracking for scroll vs interaction detection
-    let touchStartY = 0;
-    let touchStartX = 0;
-    let isScrolling = false;
+    let touchStartY = 0, touchStartX = 0, isScrolling = false;
     const SCROLL_THRESHOLD = 10;
 
-    // Track mouse/touch movement
     if (heroSection && robotContainer) {
-      // MOUSE EVENTS
-      heroSection.addEventListener("mousemove", (e) => {
-        handleInteraction(e.clientX, e.clientY);
-      });
+      heroSection.addEventListener("mousemove", (e) => handleInteraction(e.clientX, e.clientY));
 
-      // TOUCH EVENTS for mobile - allow scrolling
       heroSection.addEventListener("touchstart", (e) => {
         if (e.touches.length > 0) {
-          const touch = e.touches[0];
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-          isScrolling = false;
-          handleInteraction(touch.clientX, touch.clientY);
+          const t = e.touches[0]; touchStartX = t.clientX; touchStartY = t.clientY; isScrolling = false;
+          handleInteraction(t.clientX, t.clientY);
         }
       }, { passive: true });
 
       heroSection.addEventListener("touchmove", (e) => {
         if (e.touches.length > 0) {
-          const touch = e.touches[0];
-          const deltaY = Math.abs(touch.clientY - touchStartY);
-          const deltaX = Math.abs(touch.clientX - touchStartX);
-
-          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
-            isScrolling = true;
-          }
-
-          if (!isScrolling) {
-            handleInteraction(touch.clientX, touch.clientY);
-          }
+          const t = e.touches[0];
+          if (Math.abs(t.clientY - touchStartY) > SCROLL_THRESHOLD && Math.abs(t.clientY - touchStartY) > Math.abs(t.clientX - touchStartX)) isScrolling = true;
+          if (!isScrolling) handleInteraction(t.clientX, t.clientY);
         }
       }, { passive: true });
 
       heroSection.addEventListener("touchend", () => {
-        heroSection.classList.remove('mouse-active');
-        mouseActive = false;
-        isScrolling = false;
-
-        if (mouseTimeout) {
-          clearTimeout(mouseTimeout);
-          mouseTimeout = null;
-        }
-
-        document.dispatchEvent(
-          new CustomEvent("projectsRobotMouseLeave", {
-            detail: { left: true },
-          })
-        );
+        heroSection.classList.remove('mouse-active'); mouseActive = false; isScrolling = false;
+        if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+        document.dispatchEvent(new CustomEvent("projectsRobotMouseLeave", { detail: { left: true } }));
       });
 
-      // Remove active state when mouse leaves
       heroSection.addEventListener("mouseleave", () => {
-        heroSection.classList.remove('mouse-active');
-        mouseActive = false;
-
-        if (mouseTimeout) {
-          clearTimeout(mouseTimeout);
-          mouseTimeout = null;
-        }
-
-        document.dispatchEvent(
-          new CustomEvent("projectsRobotMouseLeave", {
-            detail: { left: true },
-          })
-        );
+        heroSection.classList.remove('mouse-active'); mouseActive = false;
+        if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+        document.dispatchEvent(new CustomEvent("projectsRobotMouseLeave", { detail: { left: true } }));
       });
 
-      // Reactivate on mouse enter
       heroSection.addEventListener("mouseenter", () => {
-        document.dispatchEvent(
-          new CustomEvent("projectsRobotMouseEnter", {
-            detail: { entered: true },
-          })
-        );
+        document.dispatchEvent(new CustomEvent("projectsRobotMouseEnter", { detail: { entered: true } }));
       });
     }
 
-    // ===== PARALLAX EFFECT ON SCROLL =====
-    let ticking = false;
-    window.addEventListener("scroll", () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const scrolled = window.scrollY;
-          const heroContent = document.querySelector(".hero-content");
-
-          if (heroContent && scrolled < window.innerHeight) {
-            const opacity = Math.max(0, 1 - scrolled / (window.innerHeight * 0.7));
-            const translateY = scrolled * 0.3;
-            (heroContent as HTMLElement).style.opacity = opacity.toString();
-            (heroContent as HTMLElement).style.transform = `translateY(${translateY}px)`;
-          }
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
-
-    // ===== PROJECT CARD GLOW EFFECT =====
-    const projectCards = document.querySelectorAll<HTMLElement>('.project-card');
-
-    projectCards.forEach((card) => {
+    // Project card glow effect
+    document.querySelectorAll<HTMLElement>('.project-card').forEach((card) => {
       const glowOverlay = card.querySelector<HTMLElement>('.glow-overlay');
       if (!glowOverlay) return;
-
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-        glowOverlay.style.setProperty('--mouse-x', `${x}%`);
-        glowOverlay.style.setProperty('--mouse-y', `${y}%`);
+        glowOverlay.style.setProperty('--mouse-x', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+        glowOverlay.style.setProperty('--mouse-y', `${((e.clientY - rect.top) / rect.height) * 100}%`);
       });
-
       card.addEventListener('mouseleave', () => {
         glowOverlay.style.setProperty('--mouse-x', '50%');
         glowOverlay.style.setProperty('--mouse-y', '50%');

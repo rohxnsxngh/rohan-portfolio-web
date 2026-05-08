@@ -1,9 +1,15 @@
 ---
 import { Image } from "astro:assets";
 import RS from "@images/RS.jpg";
+
+const currentPath = Astro.url.pathname;
+function isActive(href: string) {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
 ---
 
-<nav class="fixed w-full z-50" role="navigation" aria-label="Main navigation">
+<nav class="fixed w-full z-50" role="navigation" aria-label="Main navigation" transition:persist>
   <div class="sm:px-20 px-6">
     <div class="flex justify-between items-center h-14">
       <!-- Minimal Logo - far left -->
@@ -21,15 +27,15 @@ import RS from "@images/RS.jpg";
 
       <!-- Desktop Navigation - far right -->
       <div class="hidden md:flex items-center space-x-8" role="menubar">
-        <a href="/" class="nav-link" role="menuitem" data-haptic="selection">Home</a>
-        <a href="/about/" class="nav-link" role="menuitem" data-haptic="selection">About</a>
-        <a href="/experience/" class="nav-link" role="menuitem" data-haptic="selection">Experience</a>
-        <a href="/project/" class="nav-link" role="menuitem" data-haptic="selection">Projects</a>
-        <a href="/research/" class="nav-link" role="menuitem" data-haptic="selection">Research</a>
-        <a href="/forge/" class="nav-link" role="menuitem" data-haptic="selection">Forge</a>
-        <a href="/blog/" class="nav-link" role="menuitem" data-haptic="selection">Writing</a>
-        <a href="/art/" class="nav-link" role="menuitem" data-haptic="selection">Art</a>
-        <a href="/contact/" class="nav-link" role="menuitem" data-haptic="selection">Contact</a>
+        <a href="/" class={`nav-link ${isActive('/') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Home</a>
+        <a href="/about/" class={`nav-link ${isActive('/about') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>About</a>
+        <a href="/experience/" class={`nav-link ${isActive('/experience') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Experience</a>
+        <a href="/project/" class={`nav-link ${isActive('/project') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Projects</a>
+        <a href="/research/" class={`nav-link ${isActive('/research') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Research</a>
+        <a href="/forge/" class={`nav-link ${isActive('/forge') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Forge</a>
+        <a href="/blog/" class={`nav-link ${isActive('/blog') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Writing</a>
+        <a href="/art/" class={`nav-link ${isActive('/art') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Art</a>
+        <a href="/contact/" class={`nav-link ${isActive('/contact') ? 'nav-active' : ''}`} role="menuitem" data-haptic="selection" data-magnetic>Contact</a>
       </div>
 
       <!-- Mobile menu button -->
@@ -74,6 +80,21 @@ import RS from "@images/RS.jpg";
 <style>
   .nav-link {
     @apply text-primary/30 hover:text-primary/70 transition-colors duration-300 text-xs font-mono tracking-wider;
+    position: relative;
+  }
+
+  .nav-link.nav-active {
+    @apply text-primary/70;
+  }
+
+  .nav-link.nav-active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.1));
   }
 
   .mobile-nav-link {
@@ -104,7 +125,7 @@ import RS from "@images/RS.jpg";
 
 <script>
   // Mobile menu toggle with accessibility support
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -125,6 +146,22 @@ import RS from "@images/RS.jpg";
           mobileMenuButton.focus();
         }
       });
+    }
+
+    // Update active nav state (needed since nav is persisted across transitions)
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll<HTMLAnchorElement>('.nav-link');
+    navLinks.forEach((link) => {
+      const href = link.getAttribute('href') || '';
+      const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+      link.classList.toggle('nav-active', isActive);
+    });
+
+    // Close mobile menu on navigation
+    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+      mobileMenu.classList.add('hidden');
+      mobileMenu.classList.remove('show');
+      if (mobileMenuButton) mobileMenuButton.setAttribute('aria-expanded', 'false');
     }
   });
 </script>

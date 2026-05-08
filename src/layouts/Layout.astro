@@ -1,6 +1,8 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import Seo from "../components/Seo.astro";
 import CustomCursor from "../components/CustomCursor.astro";
+import Preloader from "../components/Preloader.astro";
 
 const { title, description, image, frontmatter, robots } = Astro.props;
 ---
@@ -24,7 +26,8 @@ const { title, description, image, frontmatter, robots } = Astro.props;
     <meta name="description" content={description} />
 
     <Seo {title} {description} url={Astro.url} {image} {frontmatter} {robots} />
-    
+    <ViewTransitions />
+
     <style is:global>
       @font-face {
         font-family: 'IBM Plex Mono';
@@ -78,9 +81,18 @@ const { title, description, image, frontmatter, robots } = Astro.props;
         animation: slideUp 0.5s ease-out;
       }
 
-      /* Smooth scrolling */
-      html {
-        scroll-behavior: smooth;
+      /* Lenis smooth scroll */
+      html.lenis, html.lenis body {
+        height: auto;
+      }
+      .lenis.lenis-smooth {
+        scroll-behavior: auto;
+      }
+      .lenis.lenis-smooth [data-lenis-prevent] {
+        overscroll-behavior: contain;
+      }
+      .lenis.lenis-stopped {
+        overflow: hidden;
       }
 
       /* Custom scrollbar */
@@ -261,16 +273,176 @@ const { title, description, image, frontmatter, robots } = Astro.props;
           --fallback-b3: #1a1a1a;
         }
       }
+
+      /* ===== VIEW TRANSITION OVERLAY ===== */
+      .transition-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        background: #000000;
+        pointer-events: none;
+        transform: scaleY(0);
+        transform-origin: bottom;
+      }
+
+      /* ===== CUSTOM VIEW TRANSITION ANIMATIONS ===== */
+      ::view-transition-old(root) {
+        animation: vt-slide-out 0.4s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+      }
+
+      ::view-transition-new(root) {
+        animation: vt-slide-in 0.4s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+        animation-delay: 0.15s;
+      }
+
+      @keyframes vt-slide-out {
+        0% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+      }
+
+      @keyframes vt-slide-in {
+        0% {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Reduced motion: instant swap */
+      @media (prefers-reduced-motion: reduce) {
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+          animation: none !important;
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen">
     <!-- Skip to main content link for keyboard users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <CustomCursor />
+    <CustomCursor transition:persist="custom-cursor-singleton" />
+    <Preloader />
+    <div class="transition-overlay" id="transition-overlay"></div>
     <script>
       import "../scripts/haptics";
     </script>
-    <main id="main-content" class="fade-in" role="main">
+    <script>
+      import { initSmoothScroll, destroySmoothScroll } from '../scripts/smooth-scroll';
+      import { initMagneticButtons } from '../scripts/magnetic';
+      import { killAllScrollTriggers, scrollReveal } from '../scripts/animations';
+      import gsap from 'gsap';
+
+      console.log('[Layout] Script loaded');
+
+      // Track whether first navigation has happened (skip overlay on initial load)
+      let hasNavigated = false;
+
+      // Transition overlay animation — only during actual View Transition navigations
+      document.addEventListener('astro:before-preparation', () => {
+        console.log('[Layout] astro:before-preparation fired, hasNavigated:', hasNavigated);
+        if (!hasNavigated) return; // Skip on initial page load
+        const overlay = document.getElementById('transition-overlay');
+        if (overlay) {
+          console.log('[Layout] Animating overlay IN (scaleY 0→1)');
+          gsap.fromTo(overlay,
+            { scaleY: 0, transformOrigin: 'bottom' },
+            { scaleY: 1, duration: 0.4, ease: 'expo.inOut' }
+          );
+        }
+      });
+
+      document.addEventListener('astro:after-swap', () => {
+        console.log('[Layout] astro:after-swap fired');
+        const overlay = document.getElementById('transition-overlay');
+        if (overlay) {
+          console.log('[Layout] Animating overlay OUT (scaleY 1→0)');
+          gsap.fromTo(overlay,
+            { scaleY: 1, transformOrigin: 'top' },
+            { scaleY: 0, duration: 0.4, ease: 'expo.inOut', delay: 0.05 }
+          );
+        }
+      });
+
+      // Cleanup before page swap (View Transitions)
+      document.addEventListener('astro:before-swap', () => {
+        console.log('[Layout] astro:before-swap fired — cleaning up');
+
+        // Kill all ScrollTriggers first
+        killAllScrollTriggers();
+
+        // Kill ALL active GSAP tweens and timelines to prevent stale inline styles
+        // and accumulated repeat:-1 tweens from leaking across navigations
+        gsap.globalTimeline.getChildren(true, true, true).forEach((child: any) => {
+          child.kill();
+        });
+
+        // Clear GSAP inline styles from animated elements so View Transition
+        // captures clean state (no leftover opacity:0, transform, etc.)
+        document.querySelectorAll('.char, .name-line, .hero-name, .label-intro, .statement, .cta-section, .scroll-indicator-minimal, .scroll-indicator, .hero-subtitle, .hero-description, .hero-overlay, [class*="title"] .char').forEach(el => {
+          gsap.set(el, { clearProps: 'all' });
+        });
+
+        destroySmoothScroll();
+      });
+
+      // Init on every page load (initial + View Transition navigations)
+      document.addEventListener('astro:page-load', () => {
+        console.log('[Layout] astro:page-load fired, URL:', window.location.pathname);
+
+        // Mark that we've loaded — future navigations will use overlay
+        hasNavigated = true;
+
+        // Safety: ensure transition overlay is definitely hidden
+        const overlay = document.getElementById('transition-overlay');
+        if (overlay) {
+          const overlayTransform = getComputedStyle(overlay).transform;
+          console.log('[Layout] Overlay current transform:', overlayTransform);
+          // Force it hidden if it's somehow stuck
+          gsap.set(overlay, { scaleY: 0 });
+        }
+
+        // Safety: ensure preloader is gone (fallback for edge cases)
+        const preloader = document.getElementById('preloader');
+        if (preloader && !preloader.classList.contains('hidden') && preloader.style.display !== 'none') {
+          console.warn('[Layout] Preloader still visible on page-load! Force hiding.');
+          preloader.classList.add('hidden');
+        }
+
+        // Debug: check what might be covering the screen
+        const allFixed = document.querySelectorAll('*');
+        allFixed.forEach(el => {
+          const style = getComputedStyle(el);
+          if (style.position === 'fixed' && style.zIndex && parseInt(style.zIndex) > 100) {
+            const rect = (el as HTMLElement).getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0 && style.opacity !== '0' && style.display !== 'none' && style.visibility !== 'hidden') {
+              const transform = style.transform;
+              console.log(`[Layout] Fixed high-z element: ${(el as HTMLElement).id || el.tagName}.${(el as HTMLElement).className.split(' ')[0]}`, {
+                zIndex: style.zIndex,
+                opacity: style.opacity,
+                transform: transform,
+                size: `${rect.width}x${rect.height}`,
+              });
+            }
+          }
+        });
+
+        initSmoothScroll();
+        initMagneticButtons();
+        scrollReveal('.footer-reveal');
+
+        console.log('[Layout] Page init complete');
+      });
+    </script>
+    <main id="main-content" role="main">
       <slot />
     </main>
   </body>

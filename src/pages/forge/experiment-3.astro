@@ -291,12 +291,8 @@ import Footer from "../../layouts/Footer.astro";
     });
   }
 
-  // Initialize when DOM is loaded
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initThreeJS);
-  } else {
-    initThreeJS();
-  }
+  // Initialize on page load (supports View Transitions)
+  document.addEventListener('astro:page-load', initThreeJS);
 </script>
 
 <style>
