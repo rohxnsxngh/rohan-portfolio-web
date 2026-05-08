@@ -329,7 +329,7 @@ const { title, description, image, frontmatter, robots } = Astro.props;
   <body class="min-h-screen">
     <!-- Skip to main content link for keyboard users -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <CustomCursor transition:persist />
+    <CustomCursor transition:persist="custom-cursor-singleton" />
     <Preloader />
     <div class="transition-overlay" id="transition-overlay"></div>
     <script>

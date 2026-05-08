@@ -9,7 +9,12 @@
   <div id="cursor-label"></div>
 </div>
 
-<style>
+<!-- All cursor styles are global. Astro scopes selectors to a data-astro-cid attribute,
+     but `transition:persist` moves this element across pages where the cid may transiently
+     not match the freshly-injected style block — that race is what causes the cursor to
+     disappear and the system cursor to return. IDs are unique to this component, so
+     scoping was unnecessary anyway. -->
+<style is:global>
   #custom-cursor {
     pointer-events: none;
     position: fixed;
@@ -87,22 +92,8 @@
     opacity: 1;
   }
 
-  /* Hide on mobile */
-  @media (hover: none) and (pointer: coarse) {
-    #custom-cursor {
-      display: none !important;
-    }
-
-    body,
-    body *,
-    body *:hover,
-    body *:active,
-    body *:focus {
-      cursor: auto !important;
-    }
-  }
-
-  /* States */
+  /* Hover/click states — body classes are toggled by the script, and now match
+     because the rule isn't scoped to CustomCursor's cid. */
   body.cursor-hover #cursor-outline {
     width: 64px;
     height: 64px;
@@ -130,12 +121,7 @@
     width: 8px;
     height: 8px;
   }
-</style>
 
-<!-- Global (unscoped) styles: cursor hiding must apply to ALL elements across pages,
-     not just those inside this component. Without is:global, Astro scopes these rules
-     to data-astro-cid-xxx attributes, which new page elements after View Transitions lack. -->
-<style is:global>
   /* Hide system cursor globally on desktop */
   @media (hover: hover) and (pointer: fine) {
     *,
@@ -162,6 +148,10 @@
 
   /* Restore cursor on mobile */
   @media (hover: none) and (pointer: coarse) {
+    #custom-cursor {
+      display: none !important;
+    }
+
     body,
     body *,
     body *:hover,
@@ -193,11 +183,13 @@
     let outlineY = 0;
     let isInitialized = false;
 
-    const dot = document.getElementById('cursor-dot');
-    const outline = document.getElementById('cursor-outline');
-    const canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement;
-    const ctx = canvas?.getContext('2d');
-    const cursorLabel = document.getElementById('cursor-label');
+    // Refs are MUTABLE — view transitions can swap the cursor element, in which
+    // case the references below need to be re-pointed at the fresh DOM nodes.
+    let dot = document.getElementById('cursor-dot');
+    let outline = document.getElementById('cursor-outline');
+    let canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement | null;
+    let ctx = canvas?.getContext('2d') ?? null;
+    let cursorLabel = document.getElementById('cursor-label');
 
   // Pixelated block system
   interface PixelBlock {
@@ -355,8 +347,10 @@
     }
 
     // Draw canvas effects (pixelated blocks)
-    if (ctx && canvas) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Capture into a const so TS can narrow inside the forEach callback (ctx is `let`).
+    const ctx2d = ctx;
+    if (ctx2d && canvas) {
+      ctx2d.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw pixelated blocks
       pixelBlocks.forEach((block, index) => {
@@ -368,21 +362,21 @@
         }
 
         const alpha = block.life * 0.35;
-        ctx.globalAlpha = alpha;
-        ctx.fillStyle = '#FFFFFF';
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 1;
+        ctx2d.globalAlpha = alpha;
+        ctx2d.fillStyle = '#FFFFFF';
+        ctx2d.strokeStyle = '#FFFFFF';
+        ctx2d.lineWidth = 1;
 
         // Draw different block types
         if (block.type === 'solid') {
-          ctx.fillRect(
+          ctx2d.fillRect(
             Math.floor(block.x / block.size) * block.size,
             Math.floor(block.y / block.size) * block.size,
             block.size,
             block.size
           );
         } else if (block.type === 'hollow') {
-          ctx.strokeRect(
+          ctx2d.strokeRect(
             Math.floor(block.x / block.size) * block.size,
             Math.floor(block.y / block.size) * block.size,
             block.size,
@@ -391,11 +385,11 @@
         } else if (block.type === 'dot') {
           const centerX = Math.floor(block.x / block.size) * block.size + block.size / 2;
           const centerY = Math.floor(block.y / block.size) * block.size + block.size / 2;
-          ctx.fillRect(centerX - 1, centerY - 1, 2, 2);
+          ctx2d.fillRect(centerX - 1, centerY - 1, 2, 2);
         }
       });
 
-      ctx.globalAlpha = 1;
+      ctx2d.globalAlpha = 1;
     }
 
     requestAnimationFrame(animate);
@@ -409,6 +403,39 @@
     if (document.hidden) {
       pixelBlocks.length = 0;
     }
+  });
+
+  // After a view-transition swap, re-point refs at whatever cursor element is now
+  // in the live DOM (persist may have moved the original, or — if the auto persist
+  // key drifted — Astro may have rendered a fresh one). Re-apply the visible-state
+  // class and inline positions so the cursor doesn't pop back to opacity:0.
+  document.addEventListener('astro:after-swap', () => {
+    dot = document.getElementById('cursor-dot');
+    outline = document.getElementById('cursor-outline');
+    canvas = document.getElementById('cursor-canvas') as HTMLCanvasElement | null;
+    ctx = canvas?.getContext('2d') ?? null;
+    cursorLabel = document.getElementById('cursor-label');
+
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    if (isInitialized) {
+      if (dot) {
+        dot.classList.add('cursor-initialized');
+        dot.style.left = `${cursorX}px`;
+        dot.style.top = `${cursorY}px`;
+      }
+      if (outline) {
+        outline.classList.add('cursor-initialized');
+        outline.style.left = `${outlineX}px`;
+        outline.style.top = `${outlineY}px`;
+      }
+    }
+
+    // Body classes don't survive body replacement — clear stuck states.
+    document.body.classList.remove('cursor-hover', 'cursor-click');
   });
 
   // Cursor will be shown on first mouse move via cursor-initialized class
