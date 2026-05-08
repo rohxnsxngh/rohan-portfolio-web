@@ -73,11 +73,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
               <!-- Timeline Container -->
               <div class="career-timeline-wrapper relative">
-                <!-- Horizontal connector line (desktop/tablet) -->
-                <div class="journey-connector hidden lg:block"></div>
-                <!-- Vertical connector line (mobile) -->
-                <div class="journey-connector-vertical lg:hidden"></div>
-
                 <!-- Journey Cards Grid -->
                 <div class="journey-cards-grid">
                   <!-- OctaPulse - Current + YC -->
@@ -352,11 +347,19 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   .hero-subtitle {
     opacity: 0;
     transform: translateY(30px);
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.95),
+      0 4px 20px rgba(0, 0, 0, 0.85);
   }
 
   .hero-description {
     opacity: 0;
     transform: translateY(30px);
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.95),
+      0 4px 20px rgba(0, 0, 0, 0.85);
   }
 
   /* Tech grid background */
@@ -423,46 +426,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
       justify-content: space-between;
       align-items: center;
     }
-  }
-
-  /* Connecting Line - Vertical (mobile) */
-  .journey-connector-vertical {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    transform: translateX(-50%);
-    background: linear-gradient(
-      180deg,
-      rgba(150, 255, 150, 0.4),
-      rgba(255, 100, 100, 0.4),
-      rgba(0, 255, 255, 0.4)
-    );
-    transform-origin: top;
-    z-index: 0;
-  }
-
-  /* Connecting Line - Horizontal (desktop) */
-  .journey-connector {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 2px;
-    transform: translateY(-50%);
-    background: linear-gradient(
-      90deg,
-      rgba(255, 102, 0, 0.4),
-      rgba(100, 200, 255, 0.4),
-      rgba(0, 255, 255, 0.4),
-      rgba(255, 150, 150, 0.4),
-      rgba(255, 100, 100, 0.4),
-      rgba(255, 100, 100, 0.4),
-      rgba(150, 255, 150, 0.4)
-    );
-    transform-origin: left;
-    z-index: 0;
   }
 
   /* Journey Card Wrapper - initial state for GSAP batch reveal */
@@ -1863,26 +1826,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
     // Reveal the journey section via scroll
     scrollReveal('.journey-section');
-
-    // Animate the connector lines (draw in) on scroll
-    const horizontalConnector = document.querySelector('.journey-connector') as HTMLElement;
-    const verticalConnector = document.querySelector('.journey-connector-vertical') as HTMLElement;
-
-    if (horizontalConnector) {
-      gsap.set(horizontalConnector, { scaleX: 0 });
-      gsap.to(horizontalConnector, {
-        scaleX: 1, duration: 1.2, ease: 'expo.out',
-        scrollTrigger: { trigger: horizontalConnector, start: 'top 85%', toggleActions: 'play none none none' },
-      });
-    }
-
-    if (verticalConnector) {
-      gsap.set(verticalConnector, { scaleY: 0 });
-      gsap.to(verticalConnector, {
-        scaleY: 1, duration: 1.2, ease: 'expo.out',
-        scrollTrigger: { trigger: verticalConnector, start: 'top 85%', toggleActions: 'play none none none' },
-      });
-    }
 
     // Batch scroll reveal for journey cards
     batchScrollReveal('.journey-card-wrapper');
