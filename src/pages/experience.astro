@@ -1792,7 +1792,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     const leftChars = allChars.slice(0, halfLen);
     const rightChars = allChars.slice(halfLen);
 
-    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
       const splitTl = gsap.timeline({
         scrollTrigger: {
           trigger: heroSection,
@@ -1812,7 +1812,7 @@ const sortedExperiences = allExperiences.sort((a, b) => {
     }
 
     // Continuous glow pulse on hero chars
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
       tl.call(() => {
         const glowChars = document.querySelectorAll('.experience-title .char');
         if (glowChars.length) {

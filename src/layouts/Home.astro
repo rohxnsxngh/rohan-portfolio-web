@@ -466,7 +466,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     const heroSection = document.getElementById('hero-section');
     const robotOverlay = document.getElementById('robot-dim');
 
-    if (nameLines.length >= 2 && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (nameLines.length >= 2 && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
       const splitTl = gsap.timeline({
         scrollTrigger: {
           trigger: heroSection,
@@ -494,7 +494,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     }
 
     // Continuous hero glow pulse — subtle living, breathing typography
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
       tl.call(() => {
         const glowChars = document.querySelectorAll('.hero-name .char');
         if (glowChars.length) {
