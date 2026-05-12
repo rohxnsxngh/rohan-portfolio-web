@@ -324,6 +324,77 @@ const { title, description, image, frontmatter, robots } = Astro.props;
           animation: none !important;
         }
       }
+
+      /* ===== MOBILE HERO INTRO (CSS-only, no GSAP) =====
+         On phones (< 768px) the GSAP intro tweens are skipped in JS — these
+         keyframes take over so the chars/subtitle/description still animate
+         in, but via the compositor instead of allocating tween objects per
+         element. Cheaper memory and CPU on weaker devices. */
+      @keyframes mobileCharReveal {
+        0%   { opacity: 0; transform: translateY(100px) scale(0.8); }
+        60%  { transform: translateY(-10px) scale(1.02); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      @keyframes mobileFadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes mobileFadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+
+      @keyframes mobileLineExpand {
+        from { width: 0; }
+        to   { width: 200px; }
+      }
+
+      @media (max-width: 767px) {
+        .char {
+          animation: mobileCharReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .char-1  { animation-delay: 0.05s; }
+        .char-2  { animation-delay: 0.10s; }
+        .char-3  { animation-delay: 0.15s; }
+        .char-4  { animation-delay: 0.20s; }
+        .char-5  { animation-delay: 0.25s; }
+        .char-6  { animation-delay: 0.30s; }
+        .char-7  { animation-delay: 0.35s; }
+        .char-8  { animation-delay: 0.40s; }
+        .char-9  { animation-delay: 0.45s; }
+        .char-10 { animation-delay: 0.50s; }
+
+        .hero-subtitle    { animation: mobileFadeInUp 0.8s ease-out 0.5s forwards; }
+        .hero-description { animation: mobileFadeInUp 0.8s ease-out 0.7s forwards; }
+        .scroll-indicator,
+        .scroll-indicator-minimal { animation: mobileFadeIn 0.8s ease-out 1s forwards; }
+        .accent-line      { animation: mobileLineExpand 1.2s ease-out 0.3s forwards; }
+
+        /* Home-specific elements */
+        .label-intro { animation: mobileFadeInUp 0.8s ease-out 0s forwards; }
+        .statement   { animation: mobileFadeInUp 0.8s ease-out 0.5s forwards; }
+        .cta-section { animation: mobileFadeInUp 0.8s ease-out 0.7s forwards; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .char,
+          .hero-subtitle,
+          .hero-description,
+          .scroll-indicator,
+          .scroll-indicator-minimal,
+          .accent-line,
+          .label-intro,
+          .statement,
+          .cta-section {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+            width: auto;
+          }
+          .accent-line { width: 200px; }
+        }
+      }
     </style>
   </head>
   <body class="min-h-screen">

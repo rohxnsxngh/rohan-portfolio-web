@@ -625,16 +625,22 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
     if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
     const tl = createPageIntroTimeline();
-    tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
-    const chars = document.querySelectorAll('.contact-title .char');
-    if (chars.length) {
-      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+
+    // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
+    // handle the intro instead — no per-element tween objects allocated.
+    if (isDesktop) {
+      tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
+      const chars = document.querySelectorAll('.contact-title .char');
+      if (chars.length) {
+        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+      }
+      tl.add(() => animateLineExpand('.accent-line'), 0.3);
+      tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+      tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+      tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
     }
-    tl.add(() => animateLineExpand('.accent-line'), 0.3);
-    tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
-    tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
-    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
 
     // Hero scroll-split effect
     const heroSection = document.getElementById('hero-section');
@@ -644,7 +650,7 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
     const leftChars = allChars.slice(0, halfLen);
     const rightChars = allChars.slice(halfLen);
 
-    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && isDesktop) {
       const splitTl = gsap.timeline({
         scrollTrigger: {
           trigger: heroSection,
@@ -664,7 +670,7 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
     }
 
     // Continuous glow pulse on hero chars
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && isDesktop) {
       tl.call(() => {
         const glowChars = document.querySelectorAll('.contact-title .char');
         if (glowChars.length) {

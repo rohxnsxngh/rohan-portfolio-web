@@ -797,18 +797,23 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
 
-    tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
+    // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
+    // handle the intro instead — no per-element tween objects allocated.
+    if (isDesktop) {
+      tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
 
-    const chars = document.querySelectorAll('.hero-name .char');
-    if (chars.length) {
-      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0.1);
+      const chars = document.querySelectorAll('.hero-name .char');
+      if (chars.length) {
+        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0.1);
+      }
+
+      tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+      tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+      tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
     }
-
-    tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
-    tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
-    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
 
     // Hero scroll-split effect — chars split left/right on scroll
     const heroSection = document.getElementById('hero-section');
@@ -818,7 +823,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     const leftChars = allChars.slice(0, halfLen);
     const rightChars = allChars.slice(halfLen);
 
-    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && isDesktop) {
       const splitTl = gsap.timeline({
         scrollTrigger: {
           trigger: heroSection,
@@ -838,7 +843,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     }
 
     // Continuous glow pulse on hero chars
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && isDesktop) {
       tl.call(() => {
         const glowChars = document.querySelectorAll('.hero-name .char');
         if (glowChars.length) {

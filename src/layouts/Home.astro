@@ -412,53 +412,58 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     // GSAP intro timeline
     introTimeline = createPageIntroTimeline();
     const tl = introTimeline;
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
 
-    // Label intro (fade in from above)
-    tl.to('.label-intro', {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: 'expo.out',
-    }, 0);
-
-    // Character reveal
-    const chars = document.querySelectorAll('.hero-name .char');
-    if (chars.length) {
-      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-      tl.to(chars, {
+    // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
+    // handle the intro instead — no per-element tween objects allocated.
+    if (isDesktop) {
+      // Label intro (fade in from above)
+      tl.to('.label-intro', {
         opacity: 1,
         y: 0,
-        scale: 1,
-        duration: 1,
-        stagger: 0.05,
+        duration: 0.8,
         ease: 'expo.out',
-      }, 0.1);
-    }
+      }, 0);
 
-    // Statement
-    tl.to('.statement', {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      ease: 'expo.out',
-    }, 0.5);
+      // Character reveal
+      const chars = document.querySelectorAll('.hero-name .char');
+      if (chars.length) {
+        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+        tl.to(chars, {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1,
+          stagger: 0.05,
+          ease: 'expo.out',
+        }, 0.1);
+      }
 
-    // CTA section
-    tl.to('.cta-section', {
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      ease: 'expo.out',
-    }, 0.7);
-
-    // Scroll indicator
-    const scrollIndicator = document.querySelector('.scroll-indicator-minimal');
-    if (scrollIndicator) {
-      tl.to(scrollIndicator, {
+      // Statement
+      tl.to('.statement', {
         opacity: 1,
+        y: 0,
         duration: 1,
         ease: 'expo.out',
-      }, 1.2);
+      }, 0.5);
+
+      // CTA section
+      tl.to('.cta-section', {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'expo.out',
+      }, 0.7);
+
+      // Scroll indicator
+      const scrollIndicator = document.querySelector('.scroll-indicator-minimal');
+      if (scrollIndicator) {
+        tl.to(scrollIndicator, {
+          opacity: 1,
+          duration: 1,
+          ease: 'expo.out',
+        }, 1.2);
+      }
     }
 
     // Hero scroll-split effect — ROHAN slides left, SINGH slides right

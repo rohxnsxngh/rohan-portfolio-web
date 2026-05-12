@@ -1772,17 +1772,22 @@ const sortedExperiences = allExperiences.sort((a, b) => {
 
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
 
-    const chars = document.querySelectorAll('.experience-title .char');
-    if (chars.length) {
-      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+    // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
+    // handle the intro instead — no per-element tween objects allocated.
+    if (isDesktop) {
+      const chars = document.querySelectorAll('.experience-title .char');
+      if (chars.length) {
+        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
+        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
+      }
+
+      // Hero subtitle and description
+      tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
+      tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
+      tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
     }
-
-    // Hero subtitle and description
-    tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
-    tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
-    tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
 
     // Hero scroll-split effect
     const heroSection = document.getElementById('hero-section');
