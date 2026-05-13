@@ -29,7 +29,7 @@ const {
   class={`robot-model-viewer-container group ${className}`}
   style={`--width: ${width}; --height: ${height};`}
 >
-  <div id="robot-animation-container" class="model-display-container">
+  <div id="robot-animation-container" class="model-display-container" data-cursor-press>
     <div class="loading-container">
       <progress id="progress-bar" value="0" max="100"></progress>
     </div>
@@ -77,6 +77,12 @@ const {
   // Variables
   let _robot: THREE.Group;
   let _mixerRobot: THREE.AnimationMixer;
+  // Hold-to-play state: animation only advances while user is pressing on
+  // the container. `playFactor` lerps toward `targetPlay` each frame so
+  // the play/pause transition is smooth instead of a hard cut.
+  let playFactor = 0;
+  let targetPlay = 0;
+  const holdReleaseHandlers: { evt: string; fn: (e: Event) => void; target: EventTarget }[] = [];
   let controls: OrbitControls;
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
@@ -399,6 +405,25 @@ const {
     // Skip init if this page doesn't have the robot viewer
     if (!container || !modelContainer) return;
 
+    // ===== HOLD-TO-PLAY =====
+    // pointerdown on the container starts playback; pointerup/cancel anywhere
+    // (or tab going hidden) stops it. Listening on window for release means
+    // dragging off the viewer still ends the hold cleanly.
+    const onPointerDown = () => { targetPlay = 1; };
+    const onPointerRelease = () => { targetPlay = 0; };
+    const onVisibilityChange = () => { if (document.hidden) targetPlay = 0; };
+    modelContainer.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointerup', onPointerRelease);
+    window.addEventListener('pointercancel', onPointerRelease);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    holdReleaseHandlers.length = 0;
+    holdReleaseHandlers.push(
+      { evt: 'pointerdown', fn: onPointerDown, target: modelContainer },
+      { evt: 'pointerup', fn: onPointerRelease, target: window },
+      { evt: 'pointercancel', fn: onPointerRelease, target: window },
+      { evt: 'visibilitychange', fn: onVisibilityChange, target: document },
+    );
+
     // Get fresh container dimensions
     ({ width, height, aspectRatio } = getContainerSize());
     if (!width || !height) return;
@@ -476,12 +501,15 @@ const {
       if (_disposing) return;
       _animationId = requestAnimationFrame(animate);
 
-      // Update animation mixer
+      // Update animation mixer — scaled by playFactor (0 paused, 1 full speed).
+      // playFactor lerps toward targetPlay so press/release feel smooth.
       const delta = clock.getDelta();
       const elapsed = clock.getElapsedTime();
 
+      playFactor += (targetPlay - playFactor) * 0.15;
+      if (playFactor < 0.0005) playFactor = 0; // snap to clean 0 when paused
       if (_mixerRobot) {
-        _mixerRobot.update(delta);
+        _mixerRobot.update(delta * playFactor);
       }
 
       // Animate lights for subtle dramatic effect (much dimmer)
@@ -540,6 +568,13 @@ const {
       cancelAnimationFrame(_animationId);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
+      // Drop hold-to-play listeners so they don't accumulate across navigations
+      for (const h of holdReleaseHandlers) {
+        h.target.removeEventListener(h.evt, h.fn as EventListener);
+      }
+      holdReleaseHandlers.length = 0;
+      targetPlay = 0;
+      playFactor = 0;
       renderer.dispose();
       if (renderer.getContext()) {
         renderer.forceContextLoss();

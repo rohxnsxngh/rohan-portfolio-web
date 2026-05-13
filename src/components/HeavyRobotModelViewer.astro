@@ -28,7 +28,7 @@ const {
   <!-- Grid overlay for texture -->
   <div class="grid-overlay"></div>
 
-  <div id="heavy-robot-animation-container" class="model-display-container">
+  <div id="heavy-robot-animation-container" class="model-display-container" data-cursor-press>
     <div class="loading-container">
       <progress id="heavy-progress-bar" value="0" max="100"></progress>
     </div>
@@ -76,6 +76,10 @@ const {
   // Variables
   let _robot: THREE.Group;
   let _mixerRobot: THREE.AnimationMixer;
+  // Hold-to-play state: mixer delta is scaled by playFactor (0 paused → 1 full).
+  let playFactor = 0;
+  let targetPlay = 0;
+  const holdReleaseHandlers: { evt: string; fn: (e: Event) => void; target: EventTarget }[] = [];
   let controls: OrbitControls;
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
@@ -361,6 +365,22 @@ const {
 
     if (!container || !modelContainer) return;
 
+    // ===== HOLD-TO-PLAY =====
+    const onPointerDown = () => { targetPlay = 1; };
+    const onPointerRelease = () => { targetPlay = 0; };
+    const onVisibilityChange = () => { if (document.hidden) targetPlay = 0; };
+    modelContainer.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointerup', onPointerRelease);
+    window.addEventListener('pointercancel', onPointerRelease);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    holdReleaseHandlers.length = 0;
+    holdReleaseHandlers.push(
+      { evt: 'pointerdown', fn: onPointerDown, target: modelContainer },
+      { evt: 'pointerup', fn: onPointerRelease, target: window },
+      { evt: 'pointercancel', fn: onPointerRelease, target: window },
+      { evt: 'visibilitychange', fn: onVisibilityChange, target: document },
+    );
+
     ({ width, height, aspectRatio } = getContainerSize());
     if (!width || !height) return;
 
@@ -456,12 +476,14 @@ const {
       if (_disposing) return;
       _animationId = requestAnimationFrame(animate);
 
-      // Update animation mixer
+      // Update animation mixer — scaled by playFactor (0 paused, 1 full speed).
       const delta = clock.getDelta();
       const elapsed = clock.getElapsedTime();
 
+      playFactor += (targetPlay - playFactor) * 0.15;
+      if (playFactor < 0.0005) playFactor = 0;
       if (_mixerRobot) {
-        _mixerRobot.update(delta);
+        _mixerRobot.update(delta * playFactor);
       }
 
       // Subtle light animations (optimized for performance)
@@ -516,6 +538,12 @@ const {
       cancelAnimationFrame(_animationId);
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
+      for (const h of holdReleaseHandlers) {
+        h.target.removeEventListener(h.evt, h.fn as EventListener);
+      }
+      holdReleaseHandlers.length = 0;
+      targetPlay = 0;
+      playFactor = 0;
       renderer.dispose();
       if (renderer.getContext()) {
         renderer.forceContextLoss();

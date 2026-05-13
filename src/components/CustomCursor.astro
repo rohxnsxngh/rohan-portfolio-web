@@ -122,6 +122,26 @@
     height: 8px;
   }
 
+  /* Press-target state — hovering over [data-cursor-press] elements
+     (currently the 3D model viewers). Distinct from cursor-hover: filled
+     center hints "click and hold to play". */
+  body.cursor-press #cursor-outline {
+    width: 56px;
+    height: 56px;
+    border-color: rgba(255, 255, 255, 1);
+    border-width: 2px;
+    background: rgba(255, 255, 255, 0.06);
+    transform: translate(-50%, -50%) rotate(45deg) scale(1.1);
+    opacity: 0.85;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+  }
+
+  body.cursor-press #cursor-dot {
+    width: 6px;
+    height: 6px;
+    opacity: 1;
+  }
+
   /* Hide system cursor globally on desktop */
   @media (hover: hover) and (pointer: fine) {
     *,
@@ -294,6 +314,10 @@
       cursorLabel.textContent = labelTarget.getAttribute('data-cursor-label') || '';
       cursorLabel.classList.add('visible');
     }
+    // Press-target state for 3D model viewers
+    if (target.closest('[data-cursor-press]')) {
+      document.body.classList.add('cursor-press');
+    }
   });
 
   document.addEventListener('mouseout', (e) => {
@@ -303,6 +327,9 @@
     }
     if (target.closest('[data-cursor-label]') && cursorLabel) {
       cursorLabel.classList.remove('visible');
+    }
+    if (target.closest('[data-cursor-press]')) {
+      document.body.classList.remove('cursor-press');
     }
   });
 
@@ -435,7 +462,7 @@
     }
 
     // Body classes don't survive body replacement — clear stuck states.
-    document.body.classList.remove('cursor-hover', 'cursor-click');
+    document.body.classList.remove('cursor-hover', 'cursor-click', 'cursor-press');
   });
 
   // Cursor will be shown on first mouse move via cursor-initialized class
