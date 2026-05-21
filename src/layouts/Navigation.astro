@@ -9,7 +9,7 @@ function isActive(href: string) {
 }
 ---
 
-<nav class="fixed w-full z-50" role="navigation" aria-label="Main navigation" transition:persist>
+<nav class="nav-root fixed w-full z-50" role="navigation" aria-label="Main navigation" transition:persist>
   <div class="sm:px-20 px-6">
     <div class="flex justify-between items-center h-14">
       <!-- Minimal Logo - far left -->
@@ -78,6 +78,25 @@ function isActive(href: string) {
 </div>
 
 <style>
+  /* Gradient scrim behind the navbar — keeps links legible when 3D/particle
+     content scrolls underneath without adding a visible "bar". */
+  .nav-root::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 96px;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.25) 55%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
   .nav-link {
     @apply text-primary/30 hover:text-primary/70 transition-colors duration-300 text-xs font-mono tracking-wider;
     position: relative;
