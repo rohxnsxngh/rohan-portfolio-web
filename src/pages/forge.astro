@@ -91,8 +91,8 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
               </div>
             </a>
 
-            <!-- Experiment 2 - Coming Soon -->
-            <div class="group experiment-card coming-soon-card">
+            <!-- Experiment 2 -->
+            <a href="/forge/experiment-2" class="group experiment-card" data-haptic="light">
               <!-- Corner accent marks -->
               <div class="card-corner-accent card-corner-tl"></div>
               <div class="card-corner-accent card-corner-tr"></div>
@@ -109,19 +109,20 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
               <div class="glow-overlay"></div>
 
               <div class="experiment-window">
-                <div class="experiment-preview coming-soon-preview">
-                  <div class="coming-soon-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
-                  </div>
+                <div class="experiment-preview">
+                  <div class="fractal-orb"></div>
                 </div>
                 <div class="experiment-info">
-                  <h3 class="text-xl font-mono text-primary/50 mb-2">Coming Soon</h3>
-                  <p class="text-primary/40 font-mono text-sm">New experiment in development</p>
+                  <h3 class="text-xl font-mono text-primary mb-2">Quaternion Fractal</h3>
+                  <p class="text-primary/70 font-mono text-sm">Raymarched sphere-fold with live lighting &amp; color</p>
+                </div>
+                <div class="experiment-overlay">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
                 </div>
               </div>
-            </div>
+            </a>
 
             <!-- Experiment 3 - Coming Soon -->
             <div class="group experiment-card coming-soon-card">
@@ -459,6 +460,37 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 
   .experiment-info {
     @apply p-4;
+  }
+
+  /* Fractal orb preview (Quaternion Fractal card) */
+  .fractal-orb {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.9), transparent 40%),
+      conic-gradient(from 0deg, #ff2079, #faff00, #00e5ff, #05ffa1, #ff2079);
+    background-size: 100% 100%, 220% 220%;
+    filter: blur(0.4px) saturate(1.2);
+    box-shadow:
+      0 0 30px rgba(0, 229, 255, 0.35),
+      0 0 60px rgba(255, 32, 121, 0.25),
+      inset 0 0 24px rgba(0, 0, 0, 0.55);
+    animation: orbSpin 8s linear infinite, orbPulse 4s ease-in-out infinite;
+  }
+
+  .experiment-card:hover .fractal-orb {
+    animation-duration: 3s, 2s;
+  }
+
+  @keyframes orbSpin {
+    0% { background-position: 30% 28%, 0% 50%; }
+    100% { background-position: 30% 28%, 220% 50%; }
+  }
+
+  @keyframes orbPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0, 229, 255, 0.35), 0 0 60px rgba(255, 32, 121, 0.25), inset 0 0 24px rgba(0, 0, 0, 0.55); }
+    50% { transform: scale(1.08); box-shadow: 0 0 44px rgba(0, 229, 255, 0.5), 0 0 90px rgba(255, 32, 121, 0.35), inset 0 0 24px rgba(0, 0, 0, 0.5); }
   }
 
   /* Coming Soon Card Styles */

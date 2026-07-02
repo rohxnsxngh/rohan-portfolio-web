@@ -354,6 +354,13 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
+"mogo-modular-soft-robotics.md": {
+	id: "mogo-modular-soft-robotics.md";
+  slug: "mogo-modular-soft-robotics";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
 "phoneme-recognition.md": {
 	id: "phoneme-recognition.md";
   slug: "phoneme-recognition";

@@ -1,0 +1,697 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../layouts/Navigation.astro";
+import Footer from "../../layouts/Footer.astro";
+---
+
+<Layout title="Quaternion Fractal - The Forge" description="A raymarched sphere-fold fractal with live lighting and color controls">
+  <Navbar>
+    <div class="min-h-screen bg-secondary">
+      <!-- Header -->
+      <div class="pt-16 pb-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <a href="/forge" class="inline-flex items-center text-primary/60 hover:text-primary transition-colors font-mono text-sm mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Forge
+              </a>
+              <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Quaternion Fractal</h1>
+              <p class="text-primary/70 font-mono">Raymarched sphere-fold SDF with live lighting &amp; color</p>
+            </div>
+            <div class="hidden sm:flex items-center space-x-3">
+              <button id="play-pause" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+                Pause
+              </button>
+              <button id="autorotate-toggle" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+                Auto-Rotate
+              </button>
+              <button id="randomize" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+                Randomize
+              </button>
+              <button id="reset-all" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ThreeJS Container -->
+      <div class="px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+          <div id="threejs-container" class="w-full h-[600px] border border-primary/20 rounded-lg overflow-hidden bg-black">
+            <div class="loading-container">
+              <div class="loading-spinner"></div>
+              <p class="text-primary/60 font-mono text-sm mt-4">Compiling shader...</p>
+            </div>
+          </div>
+
+          <!-- Quick controls (mobile-friendly) -->
+          <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div class="p-4 border border-primary/10 rounded-lg bg-primary/5">
+              <h3 class="text-lg font-mono text-primary mb-2">Controls</h3>
+              <div class="grid grid-cols-2 gap-3 text-sm font-mono text-primary/70">
+                <div>
+                  <p><strong>Drag:</strong> Rotate object</p>
+                  <p><strong>Space:</strong> Play / Pause</p>
+                  <p><strong>A:</strong> Toggle auto-rotate</p>
+                </div>
+                <div>
+                  <p><strong>X:</strong> Randomize</p>
+                  <p><strong>R:</strong> Reset all</p>
+                  <p><strong>Frame Rate:</strong> <span id="fps-counter">-- FPS</span></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 border border-primary/10 rounded-lg bg-primary/5">
+              <h3 class="text-lg font-mono text-primary mb-2">Color Presets</h3>
+              <div id="preset-row" class="flex flex-wrap gap-2">
+                <!-- preset chips injected here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- COLORING -->
+          <div class="mt-4 p-4 border border-primary/10 rounded-lg bg-primary/5">
+            <h3 class="text-lg font-mono text-primary mb-3">// Coloring</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Palette Stop A</label>
+                <input type="color" id="pal-a" value="#0d0221" class="color-input" />
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Palette Stop B</label>
+                <input type="color" id="pal-b" value="#ff2079" class="color-input" />
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Palette Stop C</label>
+                <input type="color" id="pal-c" value="#00e5ff" class="color-input" />
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Palette Stop D</label>
+                <input type="color" id="pal-d" value="#faff00" class="color-input" />
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Ink Gain</label>
+                <input type="range" id="ink-gain" min="0.2" max="4" step="0.05" value="1.35" class="w-full accent-primary" />
+                <span class="slider-val">1.35</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Color Flow Speed</label>
+                <input type="range" id="color-speed" min="0" max="6" step="0.1" value="1" class="w-full accent-primary" />
+                <span class="slider-val">1.0x</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Color Banding</label>
+                <input type="range" id="glow-base" min="0.05" max="1.2" step="0.005" value="0.282" class="w-full accent-primary" />
+                <span class="slider-val">0.282</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Background</label>
+                <input type="color" id="bg-color" value="#000000" class="color-input" />
+              </div>
+            </div>
+          </div>
+
+          <!-- LIGHTING & FORM -->
+          <div class="mt-4 p-4 border border-primary/10 rounded-lg bg-primary/5">
+            <h3 class="text-lg font-mono text-primary mb-3">// Lighting &amp; Form</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Glow Intensity</label>
+                <input type="range" id="glow-intensity" min="0" max="0.25" step="0.002" value="0.04" class="w-full accent-primary" />
+                <span class="slider-val">0.040</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Fractal Detail (iterations)</label>
+                <input type="range" id="iterations" min="1" max="10" step="1" value="5" class="w-full accent-primary" />
+                <span class="slider-val">5</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Ray Quality (steps)</label>
+                <input type="range" id="max-steps" min="24" max="100" step="1" value="80" class="w-full accent-primary" />
+                <span class="slider-val">80</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Shape (cube → tetra)</label>
+                <input type="range" id="shape-morph" min="0" max="1" step="0.01" value="0" class="w-full accent-primary" />
+                <span class="slider-val">cube</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Fold X</label>
+                <input type="range" id="fold-x" min="0.2" max="3" step="0.01" value="1.7" class="w-full accent-primary" />
+                <span class="slider-val">1.70</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Fold Y</label>
+                <input type="range" id="fold-y" min="0.2" max="3" step="0.01" value="0.5" class="w-full accent-primary" />
+                <span class="slider-val">0.50</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Fold Z</label>
+                <input type="range" id="fold-z" min="0.2" max="3" step="0.01" value="0.7" class="w-full accent-primary" />
+                <span class="slider-val">0.70</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Shape Size</label>
+                <input type="range" id="shape-size" min="0.8" max="2.4" step="0.01" value="1.45" class="w-full accent-primary" />
+                <span class="slider-val">1.45</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- MOTION & CAMERA -->
+          <div class="mt-4 p-4 border border-primary/10 rounded-lg bg-primary/5">
+            <h3 class="text-lg font-mono text-primary mb-3">// Motion &amp; Camera</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Churn Speed</label>
+                <input type="range" id="anim-speed" min="0" max="1" step="0.01" value="0.15" class="w-full accent-primary" />
+                <span class="slider-val">0.15</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Auto-Rotate Speed</label>
+                <input type="range" id="idle-speed" min="0" max="1.2" step="0.01" value="0.25" class="w-full accent-primary" />
+                <span class="slider-val">0.25</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Zoom</label>
+                <input type="range" id="zoom" min="3.5" max="14" step="0.1" value="7" class="w-full accent-primary" />
+                <span class="slider-val">7.0</span>
+              </div>
+              <div class="flex flex-col">
+                <label class="text-sm font-mono text-primary/70 mb-1">Perspective</label>
+                <input type="range" id="perspective" min="1" max="4" step="0.05" value="2.2" class="w-full accent-primary" />
+                <span class="slider-val">2.20</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Technical Details -->
+          <div class="mt-4 p-4 border border-primary/10 rounded-lg bg-primary/5">
+            <h3 class="text-lg font-mono text-primary mb-2">Technical Features</h3>
+            <p class="text-sm font-mono text-primary/70 leading-relaxed">
+              A full-screen quad drives a GLSL raymarcher that folds space through an iterated sphere-fold
+              (Mandelbox-style) fractal, intersected with a cube or tetrahedron distance bound. Light accumulates
+              along each ray with a single reflection bounce, and a four-stop palette maps accumulated energy to
+              color. Every slider here pipes straight into a shader uniform — no recompile — so lighting, fold
+              geometry, and palette all respond in real time. Ported from the Quaternion Studios hero centerpiece.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Navbar>
+  <Footer />
+</Layout>
+
+<script>
+  import * as THREE from "three";
+
+  // ---------------------------------------------------------------------------
+  // Shader — raymarched sphere-fold fractal bounded by a cube/tetra SDF.
+  // Adapted from the Quaternion Studios hero "quaternion object". Every visual
+  // parameter is a live uniform so the control panel needs no recompile.
+  // ---------------------------------------------------------------------------
+  const VERT = `void main() { gl_Position = vec4(position, 1.0); }`;
+
+  const FRAG = `
+    #define MAX_ITERATIONS 10
+    #define MAX_STEPS 100
+    precision highp float;
+    uniform float u_time; uniform vec2 u_resolution;
+    uniform mat3 u_rot; uniform float u_zoom; uniform float u_perspective;
+    uniform float u_animSpeed; uniform float u_shapeSize; uniform int u_iterations;
+    uniform float u_maxSteps; uniform float u_shape;
+    uniform vec3 u_fold; uniform float u_glowIntensity; uniform float u_glowBase;
+    uniform float u_inkGain; uniform float u_colorSpeed;
+    uniform vec3 u_palA; uniform vec3 u_palB; uniform vec3 u_palC; uniform vec3 u_palD;
+
+    vec3 g_tint;
+
+    vec3 palette4(float t) {
+      t = fract(t) * 4.0;
+      if (t < 1.0) return mix(u_palA, u_palB, t);
+      if (t < 2.0) return mix(u_palB, u_palC, t - 1.0);
+      if (t < 3.0) return mix(u_palC, u_palD, t - 2.0);
+      return mix(u_palD, u_palA, t - 3.0);
+    }
+    mat2 rot2(float a) { float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
+
+    float sdfCube(vec3 p, float r) {
+      vec3 q = abs(p) - vec3(r);
+      return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+    }
+    float sdfTetra(vec3 p, float r) {
+      float d = max(max(-p.x - p.y - p.z, p.x + p.y - p.z), max(-p.x + p.y + p.z, p.x - p.y + p.z));
+      return (d - r) / sqrt(3.0);
+    }
+    float boundSDF(vec3 p, float r) {
+      return mix(sdfCube(p, r), sdfTetra(p, r), u_shape);
+    }
+
+    float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9098, 78.013))) * 43758.5453); }
+
+    float sceneSDF(vec3 sp) {
+      vec3 p = sp; float t = u_time * u_animSpeed;
+      p.xz *= rot2(t); p.xy *= rot2(t * 0.7);
+      float bound = boundSDF(p, u_shapeSize);
+      vec4 q = vec4(p, 1.0);
+      mat2 fxy = rot2(0.7 + sin(u_time * 0.05) * 0.1); mat2 fxz = rot2(0.5);
+      for (int k = 0; k < MAX_ITERATIONS; k++) {
+        if (k >= u_iterations) break;
+        float r2 = dot(q.xyz, q.xyz);
+        float sphereFold = max(1.4 / max(r2, -0.8), 1.1);
+        q *= sphereFold; q.xyz = abs(q.xyz) - u_fold; q.xy *= fxy; q.xz *= fxz; q *= 1.4;
+      }
+      g_tint = q.xyz * log(q.w + 1.0);
+      float fractal = (length(q.xyz) - 1.2) / q.w;
+      return max(bound, fractal);
+    }
+    vec3 estimateNormal(vec3 p) {
+      vec2 e = vec2(1.0, -1.0) * 0.501;
+      return normalize(e.xyy * sceneSDF(p + e.xyy) + e.yyx * sceneSDF(p + e.yyx) + e.yxy * sceneSDF(p + e.yxy) + e.xxx * sceneSDF(p + e.xxx));
+    }
+    float renderRay(vec3 ro, vec3 rd, float jitter) {
+      float td = jitter; int bounce = 1; float light = 0.0;
+      for (int march = 0; march < MAX_STEPS; march++) {
+        if (float(march) > u_maxSteps) break;
+        vec3 pos = ro + rd * td; float dist = sceneSDF(pos);
+        g_tint = cos(g_tint * u_glowBase); g_tint *= g_tint;
+        if (march > 1) { float dsq = dot(pos, pos); float atten = exp(-dsq * 0.25); light += u_glowIntensity * dot(g_tint, vec3(0.3333)) * atten; }
+        if (dist < 0.0002) { if (bounce > 1) break; vec3 n = estimateNormal(pos); rd = reflect(rd, n); light *= (1.1 + 0.1 * exp(float(bounce))); td += 0.02; bounce++; }
+        td += dist * 0.8; if (td > u_zoom + 4.0) break;
+      }
+      return light;
+    }
+    void main() {
+      vec2 fc = gl_FragCoord.xy;
+      vec2 uv = (2.0 * fc - u_resolution.xy) / u_resolution.y;
+      float jitter = hash(uv) * 0.1;
+      vec3 ro = vec3(0.0, 0.0, -u_zoom); vec3 rd = normalize(vec3(uv, u_perspective));
+      ro = u_rot * ro; rd = u_rot * rd;
+      float light = renderRay(ro, rd, jitter); light *= light;
+      float ink = clamp(light * u_inkGain, 0.0, 1.0);
+      float t = uv.x * 0.4 + uv.y * 0.25 + light * 0.35 + u_time * 0.04 * u_colorSpeed;
+      gl_FragColor = vec4(palette4(t), ink);
+    }
+  `;
+
+  // Four-stop palettes (sRGB hex → passed through untouched, matching source look)
+  const PRESETS: Record<string, string[]> = {
+    Neon: ["#0d0221", "#ff2079", "#00e5ff", "#faff00"],
+    Ink: ["#14172a", "#282d48", "#4a5288", "#8d93b8"],
+    Mono: ["#111111", "#333333", "#666666", "#999999"],
+    Magma: ["#000004", "#51127c", "#b73779", "#fcffa4"],
+    Ocean: ["#03045e", "#0077b6", "#00b4d8", "#caf0f8"],
+    Acid: ["#011a01", "#3fff00", "#aaff00", "#f6ff00"],
+    Sunset: ["#2b0a3d", "#8e2de2", "#ff6a00", "#ffd200"],
+    Vaporwave: ["#1a0033", "#ff71ce", "#01cdfe", "#05ffa1"],
+    Ember: ["#03071e", "#6a040f", "#e85d04", "#ffba08"],
+  };
+
+  const DEFAULTS = {
+    inkGain: 1.35, colorSpeed: 1, glowBase: 0.282, glowIntensity: 0.04,
+    iterations: 5, maxSteps: 80, shapeMorph: 0, foldX: 1.7, foldY: 0.5, foldZ: 0.7,
+    shapeSize: 1.45, animSpeed: 0.15, idleSpeed: 0.25, zoom: 7, perspective: 2.2,
+    palette: "Neon", bg: "#000000",
+  };
+
+  let scene: THREE.Scene, camera: THREE.OrthographicCamera, renderer: THREE.WebGLRenderer;
+  let material: THREE.ShaderMaterial, mesh: THREE.Mesh;
+  let uniforms: Record<string, THREE.IUniform>;
+  let rafId = 0;
+  let isAnimating = true, autoRotate = true;
+  let idleSpeed = DEFAULTS.idleSpeed;
+  let DPR = 1;
+
+  // rotation state (quaternion-driven, drag + idle spin)
+  const current = new THREE.Quaternion();
+  const target = new THREE.Quaternion();
+  const idleAxis = new THREE.Vector3(0.35, 0.82, 0.2).normalize();
+  const idleStep = new THREE.Quaternion();
+  const rotM4 = new THREE.Matrix4();
+  const yAxis = new THREE.Vector3(0, 1, 0);
+  const xAxis = new THREE.Vector3(1, 0, 0);
+  const dragStep = new THREE.Quaternion();
+
+  let frameCount = 0, lastFpsT = 0;
+  let prefersReducedMotion = false;
+
+  const hexToVec3 = (hex: string) => {
+    const c = new THREE.Color(hex);
+    return new THREE.Vector3(c.r, c.g, c.b);
+  };
+
+  function initThree() {
+    const container = document.getElementById("threejs-container");
+    if (!container) return;
+    prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    container.innerHTML = "";
+
+    scene = new THREE.Scene();
+    camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
+    } catch {
+      container.innerHTML = '<p class="text-primary/60 font-mono text-sm p-6">WebGL is unavailable on this device.</p>';
+      return;
+    }
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(DPR);
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+    renderer.domElement.style.display = "block";
+    renderer.domElement.style.cursor = "grab";
+    renderer.domElement.style.touchAction = "pan-y";
+
+    const pal = PRESETS[DEFAULTS.palette];
+    uniforms = {
+      u_time: { value: 0 },
+      u_resolution: { value: new THREE.Vector2(container.clientWidth * DPR, container.clientHeight * DPR) },
+      u_rot: { value: new THREE.Matrix3() },
+      u_zoom: { value: DEFAULTS.zoom },
+      u_perspective: { value: DEFAULTS.perspective },
+      u_animSpeed: { value: DEFAULTS.animSpeed },
+      u_shapeSize: { value: DEFAULTS.shapeSize },
+      u_iterations: { value: DEFAULTS.iterations },
+      u_maxSteps: { value: DEFAULTS.maxSteps },
+      u_shape: { value: DEFAULTS.shapeMorph },
+      u_fold: { value: new THREE.Vector3(DEFAULTS.foldX, DEFAULTS.foldY, DEFAULTS.foldZ) },
+      u_glowIntensity: { value: DEFAULTS.glowIntensity },
+      u_glowBase: { value: DEFAULTS.glowBase },
+      u_inkGain: { value: DEFAULTS.inkGain },
+      u_colorSpeed: { value: DEFAULTS.colorSpeed },
+      u_palA: { value: hexToVec3(pal[0]) }, u_palB: { value: hexToVec3(pal[1]) },
+      u_palC: { value: hexToVec3(pal[2]) }, u_palD: { value: hexToVec3(pal[3]) },
+    };
+
+    material = new THREE.ShaderMaterial({ vertexShader: VERT, fragmentShader: FRAG, uniforms });
+    mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+    scene.add(mesh);
+
+    target.setFromEuler(new THREE.Euler(0.6, 1.1, 0.3));
+    current.copy(target);
+
+    renderer.setClearColor(new THREE.Color(DEFAULTS.bg), 1);
+
+    setupDrag(renderer.domElement);
+    setupControls();
+    buildPresetChips();
+    window.addEventListener("resize", onResize);
+
+    lastT = 0;
+    animate();
+  }
+
+  let lastT = 0;
+  function animate() {
+    rafId = requestAnimationFrame(animate);
+    const now = performance.now();
+    const dt = lastT === 0 ? 0.016 : Math.min((now - lastT) / 1000, 0.05);
+    lastT = now;
+
+    if (isAnimating) uniforms.u_time.value += dt;
+
+    if (autoRotate && !prefersReducedMotion) {
+      idleStep.setFromAxisAngle(idleAxis, dt * idleSpeed);
+      target.premultiply(idleStep);
+    }
+    current.slerp(target, 0.1);
+    rotM4.makeRotationFromQuaternion(current);
+    (uniforms.u_rot.value as THREE.Matrix3).setFromMatrix4(rotM4);
+
+    renderer.render(scene, camera);
+
+    // fps
+    frameCount++;
+    if (now - lastFpsT > 1000) {
+      const el = document.getElementById("fps-counter");
+      if (el) el.textContent = `${Math.round((frameCount * 1000) / (now - lastFpsT))} FPS`;
+      frameCount = 0; lastFpsT = now;
+    }
+  }
+
+  function onResize() {
+    const container = document.getElementById("threejs-container");
+    if (!container || !renderer) return;
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    uniforms.u_resolution.value.set(container.clientWidth * DPR, container.clientHeight * DPR);
+  }
+
+  function setupDrag(el: HTMLElement) {
+    let dragging = false, lastX = 0, lastY = 0;
+    const down = (x: number, y: number) => { dragging = true; lastX = x; lastY = y; el.style.cursor = "grabbing"; };
+    const move = (x: number, y: number) => {
+      if (!dragging) return;
+      const dx = (x - lastX) * 0.01, dy = (y - lastY) * 0.01;
+      lastX = x; lastY = y;
+      dragStep.setFromAxisAngle(yAxis, dx); target.premultiply(dragStep);
+      dragStep.setFromAxisAngle(xAxis, dy); target.premultiply(dragStep);
+    };
+    const up = () => { dragging = false; el.style.cursor = "grab"; };
+    el.addEventListener("mousedown", (e) => down(e.clientX, e.clientY));
+    window.addEventListener("mousemove", (e) => move(e.clientX, e.clientY));
+    window.addEventListener("mouseup", up);
+    el.addEventListener("touchstart", (e) => { if (e.touches.length) down(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    el.addEventListener("touchmove", (e) => { if (e.touches.length) move(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    window.addEventListener("touchend", up);
+  }
+
+  // ---- control wiring -------------------------------------------------------
+  function fmt(v: number, d: number) { return v.toFixed(d); }
+
+  // bind a range slider to a uniform, with a formatted value label
+  function bindRange(id: string, apply: (v: number) => void, label: (v: number) => string) {
+    const input = document.getElementById(id) as HTMLInputElement | null;
+    if (!input) return;
+    const span = input.nextElementSibling as HTMLElement | null;
+    const handler = () => { const v = parseFloat(input.value); apply(v); if (span) span.textContent = label(v); };
+    input.addEventListener("input", handler);
+    handler();
+  }
+
+  function bindColor(id: string, apply: (hex: string) => void) {
+    const input = document.getElementById(id) as HTMLInputElement | null;
+    if (!input) return;
+    input.addEventListener("input", () => apply(input.value));
+  }
+
+  function setupControls() {
+    bindRange("ink-gain", (v) => (uniforms.u_inkGain.value = v), (v) => fmt(v, 2));
+    bindRange("color-speed", (v) => (uniforms.u_colorSpeed.value = v), (v) => `${fmt(v, 1)}x`);
+    bindRange("glow-base", (v) => (uniforms.u_glowBase.value = v), (v) => fmt(v, 3));
+    bindRange("glow-intensity", (v) => (uniforms.u_glowIntensity.value = v), (v) => fmt(v, 3));
+    bindRange("iterations", (v) => (uniforms.u_iterations.value = Math.round(v)), (v) => `${Math.round(v)}`);
+    bindRange("max-steps", (v) => (uniforms.u_maxSteps.value = Math.round(v)), (v) => `${Math.round(v)}`);
+    bindRange("shape-morph", (v) => (uniforms.u_shape.value = v), (v) => (v < 0.5 ? (v < 0.02 ? "cube" : `${fmt(v, 2)}`) : (v > 0.98 ? "tetra" : `${fmt(v, 2)}`)));
+    bindRange("fold-x", (v) => ((uniforms.u_fold.value as THREE.Vector3).x = v), (v) => fmt(v, 2));
+    bindRange("fold-y", (v) => ((uniforms.u_fold.value as THREE.Vector3).y = v), (v) => fmt(v, 2));
+    bindRange("fold-z", (v) => ((uniforms.u_fold.value as THREE.Vector3).z = v), (v) => fmt(v, 2));
+    bindRange("shape-size", (v) => (uniforms.u_shapeSize.value = v), (v) => fmt(v, 2));
+    bindRange("anim-speed", (v) => (uniforms.u_animSpeed.value = v), (v) => fmt(v, 2));
+    bindRange("idle-speed", (v) => (idleSpeed = v), (v) => fmt(v, 2));
+    bindRange("zoom", (v) => (uniforms.u_zoom.value = v), (v) => fmt(v, 1));
+    bindRange("perspective", (v) => (uniforms.u_perspective.value = v), (v) => fmt(v, 2));
+
+    bindColor("pal-a", (h) => (uniforms.u_palA.value as THREE.Vector3).copy(hexToVec3(h)));
+    bindColor("pal-b", (h) => (uniforms.u_palB.value as THREE.Vector3).copy(hexToVec3(h)));
+    bindColor("pal-c", (h) => (uniforms.u_palC.value as THREE.Vector3).copy(hexToVec3(h)));
+    bindColor("pal-d", (h) => (uniforms.u_palD.value as THREE.Vector3).copy(hexToVec3(h)));
+    bindColor("bg-color", (h) => renderer.setClearColor(new THREE.Color(h), 1));
+
+    // buttons
+    const playBtn = document.getElementById("play-pause");
+    playBtn?.addEventListener("click", () => { isAnimating = !isAnimating; playBtn.textContent = isAnimating ? "Pause" : "Play"; });
+
+    const autoBtn = document.getElementById("autorotate-toggle");
+    const syncAutoBtn = () => { if (autoBtn) { autoBtn.textContent = autoRotate ? "Auto-Rotate" : "Auto-Rotate Off"; autoBtn.classList.toggle("active-btn", autoRotate); } };
+    autoBtn?.addEventListener("click", () => { autoRotate = !autoRotate; syncAutoBtn(); });
+    syncAutoBtn();
+
+    document.getElementById("randomize")?.addEventListener("click", randomize);
+    document.getElementById("reset-all")?.addEventListener("click", resetAll);
+
+    document.addEventListener("keydown", onKey);
+  }
+
+  function onKey(e: KeyboardEvent) {
+    const tag = (e.target as HTMLElement)?.tagName;
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+    switch (e.code) {
+      case "Space": e.preventDefault(); document.getElementById("play-pause")?.dispatchEvent(new Event("click")); break;
+      case "KeyA": document.getElementById("autorotate-toggle")?.dispatchEvent(new Event("click")); break;
+      case "KeyX": randomize(); break;
+      case "KeyR": resetAll(); break;
+    }
+  }
+
+  // set a slider's value + fire its input handler so uniform + label update
+  function setSlider(id: string, value: number) {
+    const input = document.getElementById(id) as HTMLInputElement | null;
+    if (!input) return;
+    input.value = String(value);
+    input.dispatchEvent(new Event("input"));
+  }
+  function setColor(id: string, hex: string) {
+    const input = document.getElementById(id) as HTMLInputElement | null;
+    if (!input) return;
+    input.value = hex;
+    input.dispatchEvent(new Event("input"));
+  }
+
+  function applyPreset(name: string) {
+    const pal = PRESETS[name];
+    if (!pal) return;
+    setColor("pal-a", pal[0]); setColor("pal-b", pal[1]);
+    setColor("pal-c", pal[2]); setColor("pal-d", pal[3]);
+    document.querySelectorAll<HTMLElement>(".preset-chip").forEach((c) => c.classList.toggle("active-chip", c.dataset.preset === name));
+  }
+
+  function buildPresetChips() {
+    const row = document.getElementById("preset-row");
+    if (!row) return;
+    row.innerHTML = "";
+    Object.keys(PRESETS).forEach((name) => {
+      const chip = document.createElement("button");
+      chip.className = "preset-chip";
+      chip.dataset.preset = name;
+      chip.textContent = name;
+      const [a, b, c, d] = PRESETS[name];
+      chip.style.background = `linear-gradient(90deg, ${a}, ${b}, ${c}, ${d})`;
+      chip.addEventListener("click", () => applyPreset(name));
+      row.appendChild(chip);
+    });
+    document.querySelector<HTMLElement>(`.preset-chip[data-preset="${DEFAULTS.palette}"]`)?.classList.add("active-chip");
+  }
+
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
+  function randomize() {
+    const names = Object.keys(PRESETS);
+    applyPreset(names[Math.floor(Math.random() * names.length)]);
+    setSlider("fold-x", +rand(0.9, 2.6).toFixed(2));
+    setSlider("fold-y", +rand(0.3, 1.6).toFixed(2));
+    setSlider("fold-z", +rand(0.3, 1.8).toFixed(2));
+    setSlider("iterations", Math.round(rand(3, 8)));
+    setSlider("glow-base", +rand(0.12, 0.7).toFixed(3));
+    setSlider("glow-intensity", +rand(0.02, 0.14).toFixed(3));
+    setSlider("ink-gain", +rand(0.9, 2.6).toFixed(2));
+    setSlider("shape-morph", Math.random() < 0.5 ? 0 : +rand(0, 1).toFixed(2));
+    setSlider("color-speed", +rand(0.4, 3).toFixed(1));
+    setSlider("shape-size", +rand(1.2, 1.9).toFixed(2));
+    // reorient so the new form is framed nicely
+    target.setFromEuler(new THREE.Euler(rand(0, 6.28), rand(0, 6.28), rand(0, 6.28)));
+  }
+
+  function resetAll() {
+    applyPreset(DEFAULTS.palette);
+    setColor("bg-color", DEFAULTS.bg);
+    setSlider("ink-gain", DEFAULTS.inkGain);
+    setSlider("color-speed", DEFAULTS.colorSpeed);
+    setSlider("glow-base", DEFAULTS.glowBase);
+    setSlider("glow-intensity", DEFAULTS.glowIntensity);
+    setSlider("iterations", DEFAULTS.iterations);
+    setSlider("max-steps", DEFAULTS.maxSteps);
+    setSlider("shape-morph", DEFAULTS.shapeMorph);
+    setSlider("fold-x", DEFAULTS.foldX);
+    setSlider("fold-y", DEFAULTS.foldY);
+    setSlider("fold-z", DEFAULTS.foldZ);
+    setSlider("shape-size", DEFAULTS.shapeSize);
+    setSlider("anim-speed", DEFAULTS.animSpeed);
+    setSlider("idle-speed", DEFAULTS.idleSpeed);
+    setSlider("zoom", DEFAULTS.zoom);
+    setSlider("perspective", DEFAULTS.perspective);
+    target.setFromEuler(new THREE.Euler(0.6, 1.1, 0.3));
+  }
+
+  function cleanup() {
+    cancelAnimationFrame(rafId);
+    window.removeEventListener("resize", onResize);
+    document.removeEventListener("keydown", onKey);
+    if (mesh) { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }
+    if (renderer) renderer.dispose();
+  }
+
+  document.addEventListener("astro:page-load", initThree);
+  document.addEventListener("astro:before-swap", cleanup);
+</script>
+
+<style>
+  .loading-container {
+    @apply flex flex-col items-center justify-center h-full;
+  }
+  .loading-spinner {
+    @apply w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin;
+  }
+  #threejs-container { position: relative; }
+  #threejs-container canvas { display: block; }
+
+  input[type="range"] {
+    height: 4px;
+    border-radius: 2px;
+    background: rgb(var(--primary) / 0.2);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: rgb(var(--primary));
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px rgb(var(--primary) / 0.5);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: rgb(var(--primary));
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .slider-val {
+    @apply text-xs font-mono text-primary/50 mt-1;
+  }
+
+  .color-input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 34px;
+    background: transparent;
+    border: 1px solid rgb(var(--primary) / 0.2);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 2px;
+  }
+  .color-input::-webkit-color-swatch-wrapper { padding: 0; }
+  .color-input::-webkit-color-swatch { border: none; border-radius: 4px; }
+  .color-input::-moz-color-swatch { border: none; border-radius: 4px; }
+
+  .preset-chip {
+    @apply font-mono text-xs text-white px-3 py-1.5 rounded-md border border-white/20;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    background-size: 100% 100%;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .preset-chip:hover { transform: translateY(-2px); }
+  .preset-chip.active-chip {
+    border-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6), 0 0 12px rgba(255, 255, 255, 0.25);
+  }
+
+  .active-btn {
+    background: rgb(var(--primary) / 0.15);
+    border-color: rgb(var(--primary) / 0.5);
+  }
+</style>
