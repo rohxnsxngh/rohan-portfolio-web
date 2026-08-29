@@ -20,3 +20,27 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 .vercel/
+
+# ===== Heavy media =====
+# The repo is already ~490MB of history. Keep new large binaries out of it.
+#
+# gitignore only applies to UNTRACKED paths, so everything already committed
+# (public/videos/*.mp4, the experience photos) stays tracked and keeps
+# deploying — this only stops NEW ones being added by a broad `git add -A`.
+# To deliberately add one anyway: git add -f <path>
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.psd
+*.ai
+*.tif
+*.tiff
+*.zip
+
+# 3D models are the deliberate exception — the site cannot render its viewers
+# without them, so they are never swept up by the rules above.
+!*.glb
+!*.gltf
+!public/models/**
