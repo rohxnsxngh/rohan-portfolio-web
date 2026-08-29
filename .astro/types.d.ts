@@ -168,6 +168,13 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"full-stack-autonomous-fish-farm.md": {
+	id: "full-stack-autonomous-fish-farm.md";
+  slug: "full-stack-autonomous-fish-farm";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "hardware-vs-software-startups.md": {
 	id: "hardware-vs-software-startups.md";
   slug: "hardware-vs-software-startups";
@@ -203,6 +210,13 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"running-octapulse-yc-w26.md": {
+	id: "running-octapulse-yc-w26.md";
+  slug: "running-octapulse-yc-w26";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "side-project-to-company.md": {
 	id: "side-project-to-company.md";
   slug: "side-project-to-company";
@@ -213,6 +227,13 @@ declare module 'astro:content' {
 "software-rotational-programs.md": {
 	id: "software-rotational-programs.md";
   slug: "software-rotational-programs";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"what-autonomy-means-fish-farm.md": {
+	id: "what-autonomy-means-fish-farm.md";
+  slug: "what-autonomy-means-fish-farm";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
