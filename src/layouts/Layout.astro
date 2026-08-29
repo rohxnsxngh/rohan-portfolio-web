@@ -4,7 +4,21 @@ import Seo from "../components/Seo.astro";
 import CustomCursor from "../components/CustomCursor.astro";
 import Preloader from "../components/Preloader.astro";
 
-const { title, description, image, frontmatter, robots } = Astro.props;
+// Defaults for pages that render <Layout> bare, such as the homepage. These
+// used to be hardcoded a second time further down the head, which emitted two
+// <title> and two <meta name="description"> tags per page; centralising them
+// here keeps one of each and still gives untitled pages real content.
+const DEFAULT_TITLE = 'Rohan Singh';
+const DEFAULT_DESCRIPTION =
+  'Rohan Singh — software engineer with a background in mechanical engineering. Projects, research, writing and experience in robotics, computer vision and deep tech.';
+
+const {
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  image,
+  frontmatter,
+  robots,
+} = Astro.props;
 ---
 
 <html lang="en" class="bg-secondary text-primary" data-theme="dark">
@@ -17,7 +31,7 @@ const { title, description, image, frontmatter, robots } = Astro.props;
       content="width=device-width, initial-scale=1.0"
     />
     <meta name="generator" content={Astro.generator} />
-    <title>{title ?? "Rohan Singh"}</title>
+    <title>{title}</title>
     <meta name="description" content={description} />
 
     <!-- Preloaded because the font is otherwise only discovered once the CSS
