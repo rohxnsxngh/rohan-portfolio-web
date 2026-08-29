@@ -8,7 +8,11 @@ import { calculateReadingTime, formatReadingTime } from "../utils/readingTime";
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
 
-const allBlogArticles: CollectionEntry<"blog">[] = await getCollection("blog");
+const allBlogArticles: CollectionEntry<"blog">[] = (await getCollection("blog"))
+  // Newest first. Without this the list renders in collection order, which is
+  // alphabetical by slug, so a newly published post lands wherever its filename
+  // happens to fall and looks like it was never added.
+  .sort((a, b) => String(b.data.date).localeCompare(String(a.data.date)));
 
 // Category definitions with keywords that map articles to categories
 const categoryDefinitions = [

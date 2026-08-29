@@ -10,7 +10,7 @@ github: "https://github.com/rohansi2-cmu/tinypointnext"
 
 # TinyPointNeXt: Efficient Point Cloud Processing for Human Detection
 
-TinyPointNeXt is a specialized implementation and analysis of the PointNeXt architecture, optimized for dynamic object segmentation and human detection in 3D point cloud data. This project demonstrates how strategic architectural modifications and training procedures can significantly reduce model parameters while maintaining—or even improving—classification accuracy for real-time human detection in complex environments.
+TinyPointNeXt is a specialized implementation and analysis of the PointNeXt architecture, optimized for dynamic object segmentation and human detection in 3D point cloud data. This project demonstrates how strategic architectural modifications and training procedures can significantly reduce model parameters while maintaining (or even improving) classification accuracy for real-time human detection in complex environments.
 
 ![Dynamic Object Segmentation in Point Clouds](@images/project/PointnextCustomDataset.jpg)
 

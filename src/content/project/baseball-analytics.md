@@ -9,7 +9,7 @@ github: "https://github.com/rohxnsxngh/Machine-Learning-MEEN/tree/main/Project"
 # demo: "https://baseball-analytics.demo.com"
 ---
 
-In the world of baseball, data has always played a critical role in shaping strategies, evaluating players, and even predicting game outcomes. Our **Baseball Analytics Platform** was built with this in mind, blending machine learning, real-time analytics, and visualization tools to bring deeper insights into the sport. Developed as part of **Texas A&M’s MEEN 423 course**, this project wasn’t just about crunching numbers—it was about understanding the nuances of the game through data-driven analysis.
+In the world of baseball, data has always played a critical role in shaping strategies, evaluating players, and even predicting game outcomes. Our **Baseball Analytics Platform** was built with this in mind, blending machine learning, real-time analytics, and visualization tools to bring deeper insights into the sport. Developed as part of **Texas A&M’s MEEN 423 course**, this project wasn’t just about crunching numbers; it was about understanding the nuances of the game through data-driven analysis.
 
 #### **The Core Idea: Predicting Umpire Calls with ML**  
 
@@ -23,7 +23,7 @@ The platform integrates **real-time game data**, **historical player statistics*
 
 ![Machine Learning Analysis 1](@images/project/MachineLearningBaseball1.png)
 
-Our models, including **RandomForestClassifier** and specialized pitch prediction algorithms, were fine-tuned using **cross-validation techniques and hyperparameter optimization**. These models didn’t just predict plays—they provided **decision boundary visualizations** and **feature importance analysis**, helping users understand **why** certain plays were more likely to occur.  
+Our models, including **RandomForestClassifier** and specialized pitch prediction algorithms, were fine-tuned using **cross-validation techniques and hyperparameter optimization**. These models didn’t just predict plays; they provided **decision boundary visualizations** and **feature importance analysis**, helping users understand **why** certain plays were more likely to occur.  
 
 ![Machine Learning Analysis 2](@images/project/MachineLearningBaseball2.png)
 
@@ -51,7 +51,7 @@ While the current platform already offers **valuable insights**, there's plenty 
 
 #### **Final Thoughts**  
 
-This project was more than just an academic exercise—it was a real-world application of machine learning in sports, blending technical innovation with the excitement of the game. Whether for **coaches, analysts, or baseball enthusiasts**, the Baseball Analytics Platform provides a **data-driven approach** to understanding and enhancing the sport we love.  
+This project was more than just an academic exercise; it was a real-world application of machine learning in sports, blending technical innovation with the excitement of the game. Whether for **coaches, analysts, or baseball enthusiasts**, the Baseball Analytics Platform provides a **data-driven approach** to understanding and enhancing the sport we love.  
 
 Check out the **[GitHub repository](https://github.com/rohxnsxngh/Machine-Learning-MEEN/tree/main/Project)** for the code and technical details.
 

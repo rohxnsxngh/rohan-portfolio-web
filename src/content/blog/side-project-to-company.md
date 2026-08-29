@@ -14,13 +14,13 @@ But here is the thing nobody tells you. Most side projects should stay side proj
 
 ## Start With Something You Actually Care About
 
-I think the most important thing when building a side project is picking something you are genuinely passionate about. If you pick something you do not like, the chances of you pushing past the initial honeymoon phase are small. But if you pick something that actually motivates you to open your laptop, to start designing, to dive into research at midnight when you should be sleeping—that is infinitely more valuable than building something you think will sell.
+I think the most important thing when building a side project is picking something you are genuinely passionate about. If you pick something you do not like, the chances of you pushing past the initial honeymoon phase are small. But if you pick something that actually motivates you to open your laptop, to start designing, to dive into research at midnight when you should be sleeping: that is infinitely more valuable than building something you think will sell.
 
 This matters because side projects are hard. Nobody is paying you. Nobody is waiting for your deliverable. The only thing keeping you going is your own interest. If that interest is not real, you will quit the moment things get difficult. And things always get difficult.
 
 Quaternion Studios began because I was genuinely obsessed with WebGL and Three.js after my Tesla internship. I was posting projects on Reddit not to build a business, but because I thought the stuff was cool and wanted feedback. One day someone DM'd me asking if I could build something for them. That turned into a client. Then another. I had accidentally started a business, but only because I had started with something I actually cared about.
 
-OctaPulse was similar. I grew up in Goa, India, surrounded by the ocean. When I learned about the problems in fish farming—that most farms have less data visibility than a 1990s retail store, that wild fisheries are at their limit, that aquaculture produces 52% of global seafood—something clicked. This was not just interesting. It felt important. That feeling is what carried me through the hard parts.
+OctaPulse was similar. I grew up in Goa, India, surrounded by the ocean. When I learned about the problems in fish farming (that most farms have less data visibility than a 1990s retail store, that wild fisheries are at their limit, that aquaculture produces 52% of global seafood), something clicked. This was not just interesting. It felt important. That feeling is what carried me through the hard parts.
 
 ## The Signal That Matters
 
@@ -32,7 +32,7 @@ The temptation is to dismiss these signals. Someone asks if they can pay you for
 
 Life is an adventure. Side quests are part of an adventure. Lean into experiences. Lean into the idea that every single day of your life should be different.
 
-I recently heard Mike Krieger, the co-founder of Instagram and now CPO of Anthropic, speak about his career. He said that for a long time his mission was to make sure no two years of his life were similar. He wanted to experience things. I think that is one of the most valuable insights into living a full life—getting out of your comfort zone, gaining those breadths of experience, doing things that scare you a little.
+I recently heard Mike Krieger, the co-founder of Instagram and now CPO of Anthropic, speak about his career. He said that for a long time his mission was to make sure no two years of his life were similar. He wanted to experience things. I think that is one of the most valuable insights into living a full life: getting out of your comfort zone, gaining those breadths of experience, doing things that scare you a little.
 
 This mindset is how side projects get going. You follow your curiosity. You lean into the signals. You let yourself be pulled in unexpected directions.
 
@@ -64,7 +64,7 @@ There is no formula for this, but there are patterns.
 
 **People keep asking to pay you.** If strangers are reaching out asking to give you money for something you built for fun, pay attention. That is not normal. Most side projects get polite compliments at best.
 
-**You cannot stop thinking about it.** Side projects are supposed to be fun. You work on them when you feel like it. But some projects do not let you put them down. You think about them in the shower, while you are supposed to be doing other work, when you are falling asleep. This is a good sign, but also a warning—obsession is necessary but not sufficient.
+**You cannot stop thinking about it.** Side projects are supposed to be fun. You work on them when you feel like it. But some projects do not let you put them down. You think about them in the shower, while you are supposed to be doing other work, when you are falling asleep. This is a good sign, but also a warning: obsession is necessary but not sufficient.
 
 **The problem gets bigger the more you look at it.** Bad side projects shrink when you examine them. Good ones do the opposite. Each layer reveals a bigger opportunity. When I started learning about aquaculture, every new thing I learned made the problem seem larger and more important.
 
@@ -76,7 +76,7 @@ I want to be honest about the mistakes I made.
 
 **I waited too long on some things and not long enough on others.** With Quaternion Studios, I probably could have scaled faster if I had committed earlier. With other projects, I committed too early to ideas that were not ready. The pattern I noticed is that I was better at recognizing good ideas intellectually than I was at feeling when they were ready.
 
-**I underestimated how much the team matters.** When you are running a side project alone, you are the only variable. When you start building a company, the team becomes everything. Finding the right co-founder, the right early employees, the right advisors—these things matter more than almost anything else.
+**I underestimated how much the team matters.** When you are running a side project alone, you are the only variable. When you start building a company, the team becomes everything. Finding the right co-founder, the right early employees, the right advisors: these things matter more than almost anything else.
 
 **I overestimated how much the idea matters.** Ideas are cheap. Execution is expensive. A mediocre idea with great execution will beat a great idea with mediocre execution almost every time. The idea is the starting point, not the destination.
 
@@ -88,7 +88,7 @@ If you are trying to decide whether to turn your side project into a company:
 
 **Is the problem big enough?** Companies need big problems, because building a company is hard and you need a payoff that justifies the effort.
 
-**Are you the right person to solve it?** Do you have some unfair advantage—some insight, skill, or connection—that makes you better positioned than others?
+**Are you the right person to solve it?** Do you have some unfair advantage (some insight, skill, or connection) that makes you better positioned than others?
 
 **Can you afford to try?** Do you have savings? A support system? Can you survive six months of uncertainty?
 
@@ -102,7 +102,7 @@ But that is also what makes it worth doing. Side projects are fun, but they stay
 
 That is not guaranteed. Most companies fail. But the possibility is there, and that is enough reason to try.
 
-If you have a side project that will not let you go, that keeps getting bigger the more you look at it, that people keep asking to pay you for—maybe it is time to stop calling it a side project.
+If you have a side project that will not let you go, that keeps getting bigger the more you look at it, that people keep asking to pay you for: maybe it is time to stop calling it a side project.
 
 Maybe it is time to see what it can become.
 

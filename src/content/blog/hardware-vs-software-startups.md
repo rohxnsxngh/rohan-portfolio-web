@@ -8,7 +8,7 @@ description: "The unique challenges of building a robotics startup compared to p
 tags: ["startup", "robotics", "hardware", "entrepreneurship", "OctaPulse"]
 ---
 
-I have built both kinds of companies. Quaternion Studios is mostly software—WebGL, AI, digital products. OctaPulse is hardware and robotics—cameras, enclosures, edge computing devices that have to survive in fish farms. The difference is not just in what you build. It is in how you think, how you move, and how you fail.
+I have built both kinds of companies. Quaternion Studios is mostly software: WebGL, AI, digital products. OctaPulse is hardware and robotics: cameras, enclosures, edge computing devices that have to survive in fish farms. The difference is not just in what you build. It is in how you think, how you move, and how you fail.
 
 Here is what nobody tells you: hardware is not just harder than software. It is a fundamentally different game with different rules.
 
@@ -34,7 +34,7 @@ According to CB Insights, 97% of hardware startups fail to deliver their product
 
 Fitbit, which became a massive success, spent 15 months in what they called "manufacturing and QA abyss" and was "pretty close to being dead" multiple times. And that was a company that eventually figured it out.
 
-The margin for error is just smaller. In software, you can sometimes survive being wrong about a lot of things as long as you are right about a few key things. In hardware, a single critical mistake—a component that does not scale, a design that is not manufacturable, a supply chain that falls apart—can kill the company.
+The margin for error is just smaller. In software, you can sometimes survive being wrong about a lot of things as long as you are right about a few key things. In hardware, a single critical mistake (a component that does not scale, a design that is not manufacturable, a supply chain that falls apart) can kill the company.
 
 ## Prototyping Is Not Manufacturing
 
@@ -42,7 +42,7 @@ This is the mistake that kills the most hardware startups. They build a prototyp
 
 Prototyping and 3D printing are not the same as mass production. A part that works beautifully when you make one of them might be impossible to make when you need a thousand. The tolerances are different. The materials are different. The assembly process is different.
 
-Design for Manufacturability—DFM—is a discipline that most software founders have never heard of. It is the art of designing products that can actually be built at volume, with acceptable defect rates, at reasonable cost. Ignoring DFM is like ignoring scalability in software architecture. It will not matter when you have ten users, but it will destroy you when you try to grow.
+Design for Manufacturability (DFM) is a discipline that most software founders have never heard of. It is the art of designing products that can actually be built at volume, with acceptable defect rates, at reasonable cost. Ignoring DFM is like ignoring scalability in software architecture. It will not matter when you have ten users, but it will destroy you when you try to grow.
 
 At OctaPulse, we had to learn this. Our early prototypes were hand-assembled, which was fine for testing but impossible to scale. We had to redesign significant portions of the system to make them manufacturable, which meant more time and more money before we could ship.
 
@@ -54,7 +54,7 @@ When you pitch a software startup, investors ask about your market, your team, y
 
 When you pitch a hardware startup, investors ask all of that plus a bunch of questions software founders never think about. What is your BOM cost? What is your manufacturing strategy? Who are your suppliers? What certifications do you need? What is your timeline to production? What happens if a key component becomes unavailable?
 
-Many hardware founders hear some version of "we love the technology, but come back when you have proven it at scale." The irony is that you need funding to achieve scale in the first place. This chicken-and-egg problem forces hardware startups toward creative financing—government grants, strategic corporate partners, debt financing, crowdfunding—in ways that software startups rarely need.
+Many hardware founders hear some version of "we love the technology, but come back when you have proven it at scale." The irony is that you need funding to achieve scale in the first place. This chicken-and-egg problem forces hardware startups toward creative financing (government grants, strategic corporate partners, debt financing, crowdfunding) in ways that software startups rarely need.
 
 The most notable trend in 2024-2025 is that late-stage and M&A activity in robotics has surged while early-stage funding has declined. It is getting harder to raise seed rounds for hardware, which means the bar for what you need to prove before raising is higher.
 
@@ -88,7 +88,7 @@ Hardware startups also bring more diverse exit options than software. You can be
 
 The best hardware startups today are not pure hardware companies. They are hybrid companies that combine hardware with software to create value that neither could achieve alone.
 
-At OctaPulse, the hardware—the cameras, the enclosures, the edge computing devices—is necessary but not sufficient. The real value is in the software that runs on that hardware: the computer vision models, the phenotyping algorithms, the data analytics that help fish farmers make better decisions. The hardware is the platform. The software is the intelligence.
+At OctaPulse, the hardware (the cameras, the enclosures, the edge computing devices) is necessary but not sufficient. The real value is in the software that runs on that hardware: the computer vision models, the phenotyping algorithms, the data analytics that help fish farmers make better decisions. The hardware is the platform. The software is the intelligence.
 
 This hybrid approach changes the economics. You still have the defensibility of hardware, but you also have the margin structure of software. You can charge for the hardware upfront and then charge recurring fees for the software and data services. This makes the business model more attractive to investors and more sustainable long-term.
 

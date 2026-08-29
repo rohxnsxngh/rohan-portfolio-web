@@ -8,9 +8,9 @@ description: "What it actually felt like to run a hardware and computer vision c
 tags: ["Y Combinator", "OctaPulse", "aquaculture", "hardware", "computer vision"]
 ---
 
-Our Y Combinator company page describes OctaPulse in a single line: "CV and robotics to automate quality inspection in fish farms." Every word of that is accurate. Everything interesting is missing from it.
+Our one line is that we are building the robotics layer for the ocean and seafood. Every word of that is accurate. Everything interesting is missing from it.
 
-OctaPulse is two people. Paul Grech is CEO, I am CTO, we founded the company in 2025, and we run it out of Pittsburgh, a city with no coastline. We went through Y Combinator in the Winter 2026 batch. Getting in is a separate story. This is the one about what happened afterward.
+OctaPulse is two people. Paul Grech and I founded the company in 2025, and we run it out of Pittsburgh, a city with no coastline. We went through Y Combinator in the Winter 2026 batch. Getting in is a separate story. This is the one about what happened afterward.
 
 ![Rohan and Paul standing beside a YC lobby check-in screen showing both of their headshots, each captioned "OctaPulse (W26)", with a counter at the top reading 75.4646995 days](@images/experience/octapulse/42DEAF7C-EA45-4DB2-AD07-AFBB0227D2AB.JPG)
 
@@ -32,7 +32,7 @@ A cohort of trout does not grow faster because we are in a batch. A farm crew do
 
 The number we chose to report was how many individual fish we had photographed and turned into rows of data. It is countable, nobody can argue it upward, and it goes flat immediately if we are not physically getting to farms.
 
-That weekly counter is a slice of a much longer program. Our own program-review deck for Riverence — the customer named on our YC page as North America's largest trout producer — puts the total to date at roughly 11,000 fish imaged, grown out from an initial hundred-fish pilot. One photograph on a calibrated mat with an AprilTag scale reference becomes twenty or more objective traits for that animal. One row per fish.
+That weekly counter is a slice of a much longer program. Our own program-review deck for Riverence (the customer named on our YC page as North America's largest trout producer) puts the total to date at roughly 11,000 fish imaged, grown out from an initial hundred-fish pilot. One photograph on a calibrated mat with an AprilTag scale reference becomes twenty or more objective traits for that animal. One row per fish.
 
 What I like less is what sits underneath it. The model card for our phenotyping model says the quiet part out loud: because those labels came from SAM3 auto-labeling approved in bulk, the metrics "measure agreement with those auto-labels rather than with ground truth" unless a human-labeled holdout was used.
 
@@ -60,7 +60,7 @@ Our portable capture rig is a tripod holding the camera at nadir over a ring lig
 
 The capture gate is the same instinct. An image only fires once a trout has been held still for a settle interval and the frame has been hand-free for several consecutive detections, so an operator's hand never occludes a measurement.
 
-Our confidence floors are deliberately asymmetric — 0.6 for a trout, 0.35 for a hand — because a missed hand silently corrupts a measurement while a false hand costs a few frames of delay.
+Our confidence floors are deliberately asymmetric, 0.6 for a trout and 0.35 for a hand, because a missed hand silently corrupts a measurement while a false hand costs a few frames of delay.
 
 **Pick the side of the error you can recover from.** That came out of rewriting our capture deduplication, and it generalizes further than I expected: a duplicate is a visible row you can filter, and a miss is invisible and gone.
 
@@ -70,7 +70,7 @@ You do not learn that in a group office hour.
 
 Some of these happened inside the batch and some after it. The pattern does not change.
 
-On 2 June 2026 a perfectly healthy camera dropped off our private network for about three days, and diagnosing it required physically traveling to the plant LAN. We now run a watchdog that checks every two minutes whether the private-network client is genuinely running and the node is genuinely online — not merely whether the process is alive — and reboots the camera if it is still unreachable after fifteen minutes.
+On 2 June 2026 a perfectly healthy camera dropped off our private network for about three days, and diagnosing it required physically traveling to the plant LAN. We now run a watchdog that checks every two minutes whether the private-network client is genuinely running and the node is genuinely online (not merely whether the process is alive), and reboots the camera if it is still unreachable after fifteen minutes.
 
 Our camera apps now hard-fail at startup if their device ID or API URL is missing. That is a deliberate loss of convenience, added after a silent fallback masked a bug in which every camera in the fleet identified itself as camera 1.
 
@@ -98,7 +98,7 @@ The decision I can point to is whether to build our own labeling and training pl
 
 It also compounded with things that were already in motion. We were named a 2025 Seafood Industry Climate Award recipient by the Acme Smoked Fish Foundation, announced in late January 2026, with a $70,000 grant, recognised for automated technology that identifies deformities and reduces waste in fin-fish aquaculture operations.
 
-After it, in March 2026, The Silicon Valley Post named us to two of its "Top Startups in YC W26" lists — top bio and health, and top robotics and drone.
+After it, in March 2026, The Silicon Valley Post named us to two of its "Top Startups in YC W26" lists: top bio and health, and top robotics and drone.
 
 None of that is the same as a company that works. It is evidence that other people find the direction credible, which is worth something and is not worth everything.
 
@@ -106,13 +106,13 @@ None of that is the same as a company that works. It is evidence that other peop
 
 It could not give us a human-labeled holdout set either. It could not get us washdown-rated hardware, which is still an open purchasing question rather than a solved engineering one.
 
-And it could not tell us how to grip a wet fillet. In simulation, our scripted pick scores 50 out of 50 on a rigid box proxy and 0 out of 5 on both deformable fillet models — an in-house demonstration rather than a real-arm result, but a clear one that the deformable problem, not the pipeline, is the hard part.
+And it could not tell us how to grip a wet fillet. In simulation, our scripted pick scores 50 out of 50 on a rigid box proxy and 0 out of 5 on both deformable fillet models. That is an in-house demonstration rather than a real-arm result, but a clear one that the deformable problem, not the pipeline, is the hard part.
 
 That is the part I want to be clear about. Extraordinary tempo does not change what a biological system is willing to do, or what a food plant is willing to have bolted above its line.
 
 What the tempo did do was make our excuses expensive. When you have to say a number out loud every week, the gap between what you have built and what you have claimed gets very small very fast.
 
-I grew up in Goa, with the ocean as ordinary background. I did not expect the work to look like this — resolver configs, watchdog timers, and the exact confidence floor below which a real trout stops existing.
+I grew up in Goa, with the ocean as ordinary background. I did not expect the work to look like this: resolver configs, watchdog timers, and the exact confidence floor below which a real trout stops existing.
 
 But this is what caring about the ocean actually costs, and I would rather be doing this than talking about it.
 

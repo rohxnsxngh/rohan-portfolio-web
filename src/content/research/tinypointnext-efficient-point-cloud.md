@@ -19,7 +19,7 @@ Point cloud processing has emerged as a critical capability for autonomous syste
 
 The proliferation of LiDAR sensors in autonomous vehicles, mobile robots, and surveillance systems has created an urgent demand for efficient 3D point cloud processing algorithms. Unlike structured image data, point clouds present unique computational challenges: they are unordered, sparse, and exhibit significant variation in point density across spatial regions. These characteristics necessitate specialized neural network architectures capable of extracting meaningful features from irregular geometric data.
 
-Human detection in dynamic environments represents a particularly critical application domain. Autonomous vehicles must reliably identify pedestrians to ensure safety; service robots require accurate human localization for effective interaction; and industrial automation systems depend on human detection for collaborative workspace management. The latency requirements for these applications are stringent—detection delays measured in milliseconds can have significant safety implications.
+Human detection in dynamic environments represents a particularly critical application domain. Autonomous vehicles must reliably identify pedestrians to ensure safety; service robots require accurate human localization for effective interaction; and industrial automation systems depend on human detection for collaborative workspace management. The latency requirements for these applications are stringent: detection delays measured in milliseconds can have significant safety implications.
 
 Current state-of-the-art point cloud processing networks, while achieving impressive accuracy benchmarks, often exhibit computational demands incompatible with real-time deployment on embedded platforms. The PointNeXt architecture (Qian et al., 2022), for instance, demonstrates excellent performance on standard benchmarks but requires substantial computational resources that may exceed the capabilities of mobile robotic platforms.
 
@@ -63,7 +63,7 @@ Our approach complements these methods by providing an efficient classification 
 
 A point cloud $\mathcal{P} = \{p_i\}_{i=1}^{N}$ consists of $N$ unordered points, where each point $p_i \in \mathbb{R}^{d}$ contains spatial coordinates and optional feature channels (e.g., intensity, color, normals). For LiDAR-based sensing, points typically include 3D coordinates $(x, y, z)$ and reflectance intensity $r$, yielding $d = 4$.
 
-The fundamental challenge in point cloud processing arises from the lack of inherent ordering—any permutation of points represents the same underlying scene. Neural network architectures must therefore exhibit permutation invariance to ensure consistent outputs regardless of input ordering.
+The fundamental challenge in point cloud processing arises from the lack of inherent ordering; any permutation of points represents the same underlying scene. Neural network architectures must therefore exhibit permutation invariance to ensure consistent outputs regardless of input ordering.
 
 ### B. PointNeXt Architecture
 
