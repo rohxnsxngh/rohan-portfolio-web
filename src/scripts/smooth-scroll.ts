@@ -5,15 +5,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
+let tickerFn: ((time: number) => void) | null = null;
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function initSmoothScroll(): Lenis {
-  if (lenis) {
-    lenis.destroy();
-  }
+  destroySmoothScroll();
 
   lenis = new Lenis({
     duration: prefersReducedMotion() ? 0 : 1.2,
@@ -26,9 +25,10 @@ export function initSmoothScroll(): Lenis {
   lenis.on('scroll', ScrollTrigger.update);
 
   // Use GSAP ticker for unified RAF loop
-  gsap.ticker.add((time) => {
+  tickerFn = (time: number) => {
     lenis?.raf(time * 1000);
-  });
+  };
+  gsap.ticker.add(tickerFn);
 
   gsap.ticker.lagSmoothing(0);
 
@@ -36,6 +36,10 @@ export function initSmoothScroll(): Lenis {
 }
 
 export function destroySmoothScroll(): void {
+  if (tickerFn) {
+    gsap.ticker.remove(tickerFn);
+    tickerFn = null;
+  }
   if (lenis) {
     lenis.destroy();
     lenis = null;

@@ -37,6 +37,9 @@ const {
 
 <!-- Use client:only to ensure this script runs only in the browser -->
 <script>
+  import { onPageReady } from '../scripts/pageReady';
+  import { createRobotLightRig, ROBOT_EXPOSURE } from '../scripts/robotLightRig';
+  import { bindOnce } from '../scripts/bindOnce';
   // Import Three.js properly using ES modules
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -170,38 +173,15 @@ const {
     // Force an initial update to apply these settings
     // controls.update();
 
-    // Optimized lighting setup for heavy robot
-    // Ambient light - keep it low for drama
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.18);
-    scene.add(ambientLight);
-
-    // KEY LIGHT - Main directional light (strong, from top-right)
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
-    mainLight.position.set(3, 5, 4);
-    mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 512;
-    mainLight.shadow.mapSize.height = 512;
-    scene.add(mainLight);
-
-    // FILL LIGHT - Softer light from opposite side
-    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.24);
-    fillLight.position.set(-3, 2, 2);
-    scene.add(fillLight);
-
-    // CYAN ACCENT - Point light for color pop
-    const cyanAccent = new THREE.PointLight(0x00ffff, 0.48, 10);
-    cyanAccent.position.set(-2, 1, 3);
-    scene.add(cyanAccent);
-
-    // MAGENTA ACCENT - Point light for complementary color
-    const magentaAccent = new THREE.PointLight(0xff00ff, 0.36, 10);
-    magentaAccent.position.set(2, 0.5, -2);
-    scene.add(magentaAccent);
-
-    // RIM LIGHT - Strong backlight for silhouette definition
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.48);
-    rimLight.position.set(0, 3, -5);
-    scene.add(rimLight);
+    // Shared lighting rig — see src/scripts/robotLightRig.ts. This page is the
+    // brightest of the four because the model is the subject rather than a
+    // backdrop. No overhead spotlight: this robot is framed at Z=-75, well
+    // outside the reach of a spot anchored near the origin.
+    const { cyanAccent, magentaAccent } = createRobotLightRig(scene, {
+      exposure: ROBOT_EXPOSURE.project,
+      spotlight: false,
+      shadowMapSize: 512,
+    });
 
     // GRADIENT LIGHTING: Yellow (top) -> Orange (center) -> Red (bottom)
     // Note: Heavy robot is at Z=-75, so lights need much larger distance/range
@@ -352,10 +332,17 @@ const {
 
   let currentCleanup: (() => void) | null = null;
   let eventAbort: AbortController | null = null;
+  let dracoLoader: DRACOLoader | null = null;
+  let loadedGeometries: THREE.BufferGeometry[] = [];
+  let loadedMaterials: THREE.Material[] = [];
+  let loadedTextures: THREE.Texture[] = [];
 
   // Initialize everything when DOM is loaded
   function init() {
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+    // Abort previous document-level event listeners to prevent accumulation
+    eventAbort?.abort();
+    eventAbort = new AbortController();
 
     // Re-query DOM elements (fresh references after View Transition swap)
     container = document.querySelector(".heavy-robot-model-viewer-container");
@@ -405,16 +392,20 @@ const {
     };
 
     // Configure Draco loader for compressed models
-    const dracoLoader = new DRACOLoader();
+    dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     dracoLoader.preload();
 
     // Load robot model with Draco support
     const loader = new GLTFLoader(manager);
     loader.setDRACOLoader(dracoLoader);
+    loadedGeometries = [];
+    loadedMaterials = [];
+    loadedTextures = [];
     loader.load(
       "/models/kuma_heavy_robot_draco.glb", // Draco-compressed model
       async (glb) => {
+        if (_disposing) return;
         _robot = glb.scene;
 
         // Create material with customized properties
@@ -425,10 +416,12 @@ const {
           shininess: 20, // Higher shininess for a metallic look
           flatShading: false, // Smooth shading for a more polished appearance
         });
+        loadedMaterials.push(newMaterial);
 
         // Apply material to all meshes in the model
         _robot.traverse((o) => {
           if (o instanceof THREE.Mesh) {
+            loadedGeometries.push(o.geometry);
             // Override the material
             o.material = newMaterial;
             o.castShadow = true;
@@ -544,6 +537,16 @@ const {
       holdReleaseHandlers.length = 0;
       targetPlay = 0;
       playFactor = 0;
+      if (mouseTimeout) clearTimeout(mouseTimeout);
+      loadedGeometries.forEach((g) => g.dispose());
+      loadedMaterials.forEach((m) => m.dispose());
+      loadedTextures.forEach((t) => t.dispose());
+      loadedGeometries = [];
+      loadedMaterials = [];
+      loadedTextures = [];
+      dracoLoader?.dispose();
+      dracoLoader = null;
+      composer?.dispose();
       renderer.dispose();
       if (renderer.getContext()) {
         renderer.forceContextLoss();
@@ -635,6 +638,9 @@ const {
       }
     }
 
+    // Scoped to eventAbort's signal so listeners don't accumulate across navigations.
+    const { signal } = eventAbort!;
+
     // Mouse event handlers for lighting system
     if (modelContainer && mouseVector && raycaster) {
       modelContainer.addEventListener('mouseenter', () => {
@@ -645,17 +651,17 @@ const {
           if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
           if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
         }
-      });
+      }, { signal });
 
       modelContainer.addEventListener('mouseleave', () => {
         isMouseOver = false;
         fadeOutLights();
-      });
+      }, { signal });
 
       modelContainer.addEventListener('mousemove', (event) => {
         if (!isMouseOver) return;
         updateLighting(event.clientX, event.clientY);
-      });
+      }, { signal });
 
       // Touch event handlers for mobile support
       modelContainer.addEventListener('touchstart', (event) => {
@@ -668,19 +674,19 @@ const {
           event.preventDefault();
           updateLighting(event.touches[0].clientX, event.touches[0].clientY);
         }
-      });
+      }, { signal, passive: false });
 
       modelContainer.addEventListener('touchmove', (event) => {
         if (event.touches.length > 0) {
           event.preventDefault();
           updateLighting(event.touches[0].clientX, event.touches[0].clientY);
         }
-      });
+      }, { signal, passive: false });
 
       modelContainer.addEventListener('touchend', () => {
         isMouseOver = false;
         fadeOutLights();
-      });
+      }, { signal });
     }
 
     // Fade out lights when mouse is inactive
@@ -693,26 +699,26 @@ const {
             fadeOutLights();
           }
         }, 2000);
-      });
+      }, { signal });
     }
 
     // ===== LISTEN FOR PAGE-LEVEL EVENTS (for hero section integration) =====
-    // This allows the model to respond to mouse events from the hero overlay
+    // This allows the model to respond to mouse events from the hero overlay.
     document.addEventListener('projectsRobotMouseMove', (e: any) => {
       if (e.detail && mousePointLight && hemisphereLight && raycaster && mouseVector && camera && _robot) {
         const { clientX, clientY } = e.detail;
         updateLighting(clientX, clientY);
       }
-    });
+    }, { signal });
 
     document.addEventListener('projectsRobotMouseInactive', () => {
       fadeOutLights();
-    });
+    }, { signal });
 
     document.addEventListener('projectsRobotMouseLeave', () => {
       isMouseOver = false;
       fadeOutLights();
-    });
+    }, { signal });
 
     document.addEventListener('projectsRobotMouseEnter', () => {
       isMouseOver = true;
@@ -722,7 +728,7 @@ const {
         if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
         if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
       }
-    });
+    }, { signal });
   }
 
   function fadeOutLights() {
@@ -749,9 +755,16 @@ const {
   }
 
   // Initialize on page load (supports View Transitions)
-  document.addEventListener("astro:page-load", init);
-  document.addEventListener("astro:before-swap", () => {
-    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+  // Guarded: this component's script is inlined into the bundle of every page
+  // that uses it, so it re-executes on navigation and would otherwise stack up
+  // an extra init() — and an extra WebGL context — per route visited.
+  bindOnce('heavy-robot-model-viewer', () => {
+    onPageReady(init);
+    document.addEventListener("astro:before-swap", () => {
+      eventAbort?.abort();
+      eventAbort = null;
+      if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+    });
   });
 </script>
 

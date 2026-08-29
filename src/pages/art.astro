@@ -175,6 +175,13 @@ const artworks = [
   /* Individual character animations */
   .hero-title .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state is skipped on client-side navigations: the header
+     carries transition:name="page-title" and is snapshotted for the morph
+     before the intro animation runs, so it has to already be visible. A full
+     page load still gets the staggered character reveal. */
+  html:not(.spa-nav) .hero-title .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
   }
@@ -468,7 +475,8 @@ const artworks = [
 </style>
 
 <script>
-  import { animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { onPageReady } from '../scripts/pageReady';
+  import { addHeroCharIntro, animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -476,8 +484,18 @@ const artworks = [
   gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
+  // Hoisted so astro:before-swap can clear a pending hero-interaction timeout
+  // left over from navigating away mid-hover.
+  let artMouseTimeout: number | null = null;
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('astro:before-swap', () => {
+    if (artMouseTimeout) {
+      clearTimeout(artMouseTimeout);
+      artMouseTimeout = null;
+    }
+  });
+
+  onPageReady(() => {
     if (!document.querySelector('.artwork-card')) return;
 
     if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
@@ -488,11 +506,9 @@ const artworks = [
     // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
     // handle the intro instead — no per-element tween objects allocated.
     if (isDesktop) {
-      const chars = document.querySelectorAll('.hero-title .char');
-      if (chars.length) {
-        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
-      }
+      // Skipped on client-side navigations — the header is being morphed
+      // between routes by the shared page-title view transition instead.
+      addHeroCharIntro(tl, document.querySelectorAll('.hero-title .char'), 0);
       tl.add(() => animateLineExpand('.accent-line'), 0.3);
       tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
       tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
@@ -547,12 +563,11 @@ const artworks = [
     kineticCleanup = initKineticText('.hero-title');
   });
 
-  document.addEventListener('astro:page-load', () => {
+  onPageReady(() => {
     if (!document.querySelector('.artwork-card')) return;
 
     // ===== HERO SECTION PARTICLE DISTORTION =====
     const heroSection = document.getElementById('hero-section');
-    let mouseTimeout: number | null = null;
     let touchStartY = 0;
     let touchStartX = 0;
     let isScrolling = false;
@@ -566,8 +581,8 @@ const artworks = [
         document.dispatchEvent(new CustomEvent('artMouseMove', {
           detail: { x, y, clientX: e.clientX, clientY: e.clientY }
         }));
-        if (mouseTimeout) clearTimeout(mouseTimeout);
-        mouseTimeout = window.setTimeout(() => {
+        if (artMouseTimeout) clearTimeout(artMouseTimeout);
+        artMouseTimeout = window.setTimeout(() => {
           document.dispatchEvent(new CustomEvent('artMouseInactive'));
         }, 800);
       });

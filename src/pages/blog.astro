@@ -487,6 +487,13 @@ if (otherArticles.length > 0) {
   /* Individual character animations */
   .hero-name .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state is skipped on client-side navigations: the header
+     carries transition:name="page-title" and is snapshotted for the morph
+     before the intro animation runs, so it has to already be visible. A full
+     page load still gets the staggered character reveal. */
+  html:not(.spa-nav) .hero-name .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
     text-shadow:
@@ -805,6 +812,7 @@ if (otherArticles.length > 0) {
     border-radius: 16px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.05) 100%);
     border: 1px solid rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     max-height: calc(100vh - 120px);
     overflow-y: auto;
@@ -943,6 +951,7 @@ if (otherArticles.length > 0) {
     z-index: 50;
     padding-top: 1rem;
     background: rgba(0, 0, 0, 0.95);
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     transform: translateX(0);
     transition: transform 0.3s ease;
@@ -982,6 +991,7 @@ if (otherArticles.length > 0) {
     letter-spacing: 0.1em;
     cursor: pointer;
     transition: all 0.3s ease;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     width: auto;
   }
@@ -1044,6 +1054,7 @@ if (otherArticles.length > 0) {
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(20, 20, 20, 0.95) 100%);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 16px;
+    -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
     transition: all 0.3s ease;
   }
@@ -1256,7 +1267,8 @@ if (otherArticles.length > 0) {
 </style>
 
 <script>
-  import { batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { onPageReady } from '../scripts/pageReady';
+  import { addHeroCharIntro, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -1264,9 +1276,25 @@ if (otherArticles.length > 0) {
   gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
+  // Scopes the mobile-TOC keydown listener and the scroll-spy
+  // IntersectionObserver so they're torn down on every navigation instead of
+  // accumulating on the persistent `document` object.
+  let blogAbort: AbortController | null = null;
+  let blogTocObserver: IntersectionObserver | null = null;
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('astro:before-swap', () => {
+    blogAbort?.abort();
+    blogAbort = null;
+    blogTocObserver?.disconnect();
+    blogTocObserver = null;
+  });
+
+  onPageReady(() => {
     if (!document.getElementById('blog-content')) return;
+
+    blogAbort?.abort();
+    blogAbort = new AbortController();
+    const { signal: blogSignal } = blogAbort;
 
     if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
 
@@ -1278,11 +1306,9 @@ if (otherArticles.length > 0) {
     // handle the intro instead — no per-element tween objects allocated.
     if (isDesktop) {
       tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
-      const chars = document.querySelectorAll('.hero-name .char');
-      if (chars.length) {
-        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0.1);
-      }
+      // Skipped on client-side navigations — the header is being morphed
+      // between routes by the shared page-title view transition instead.
+      addHeroCharIntro(tl, document.querySelectorAll('.hero-name .char'), 0.1);
       tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
       tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
       tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
@@ -1672,8 +1698,9 @@ if (otherArticles.length > 0) {
     });
 
     // ===== UPDATE ACTIVE TOC ITEM ON SCROLL =====
+    blogTocObserver?.disconnect();
     if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
+      blogTocObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const cardIndex = blogCardsArray.indexOf(entry.target as HTMLElement);
@@ -1694,7 +1721,7 @@ if (otherArticles.length > 0) {
         threshold: 0
       });
 
-      blogCardsArray.forEach(card => observer.observe(card));
+      blogCardsArray.forEach(card => blogTocObserver!.observe(card));
     }
 
     // ===== CLOSE MOBILE TOC ON ESCAPE KEY =====
@@ -1702,6 +1729,6 @@ if (otherArticles.length > 0) {
       if (e.key === 'Escape') {
         closeMobileTocFn();
       }
-    });
+    }, { signal: blogSignal });
   });
 </script>

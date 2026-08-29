@@ -99,18 +99,32 @@
 <script>
   import gsap from 'gsap';
 
+  // sessionStorage access can throw synchronously (Safari private browsing,
+  // storage-partitioned/ITP-restricted contexts, locked-down iframes) —
+  // mirrors the try/catch convention already used in src/scripts/animationState.ts
+  // so a storage exception can't abort the whole preloader script.
+  function getPreloaderShown(): boolean {
+    try {
+      return !!sessionStorage.getItem('preloader-shown');
+    } catch {
+      return false;
+    }
+  }
+
+  function setPreloaderShown(): void {
+    try {
+      sessionStorage.setItem('preloader-shown', '1');
+    } catch {
+      // Silently fail if sessionStorage is not available
+    }
+  }
+
   function runPreloader() {
     const preloader = document.getElementById('preloader');
-    if (!preloader) {
-      console.log('[Preloader] No preloader element found');
-      return;
-    }
-
-    console.log('[Preloader] Starting. sessionStorage:', sessionStorage.getItem('preloader-shown'));
+    if (!preloader) return;
 
     // Only show on first visit per session
-    if (sessionStorage.getItem('preloader-shown')) {
-      console.log('[Preloader] Already shown this session, hiding immediately');
+    if (getPreloaderShown()) {
       preloader.classList.add('hidden');
       document.dispatchEvent(new CustomEvent('preloader:complete'));
       return;
@@ -121,9 +135,8 @@
 
     // Check reduced motion
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      console.log('[Preloader] Reduced motion, hiding immediately');
       preloader.classList.add('hidden');
-      sessionStorage.setItem('preloader-shown', '1');
+      setPreloaderShown();
       document.dispatchEvent(new CustomEvent('preloader:complete'));
       return;
     }
@@ -135,31 +148,21 @@
     const curtainCols = preloader.querySelectorAll('.curtain-col');
     const content = preloader.querySelector('.preloader-content');
 
-    console.log('[Preloader] Elements found:', {
-      chars: chars.length,
-      line: !!line,
-      counter: !!counter,
-      subtitle: !!subtitle,
-      curtainCols: curtainCols.length,
-      content: !!content,
-    });
-
     const counterObj = { value: 0 };
 
     const tl = gsap.timeline({
       onComplete: () => {
-        console.log('[Preloader] Timeline complete, dispatching preloader:complete');
-        sessionStorage.setItem('preloader-shown', '1');
+        clearTimeout(safetyTimeoutId);
+        setPreloaderShown();
         document.dispatchEvent(new CustomEvent('preloader:complete'));
       },
     });
 
     // Safety timeout — force-hide preloader if animation takes too long
-    setTimeout(() => {
+    const safetyTimeoutId = setTimeout(() => {
       if (preloader && preloader.style.display !== 'none' && !preloader.classList.contains('hidden')) {
-        console.warn('[Preloader] Safety timeout: force hiding after 5s');
         preloader.style.display = 'none';
-        sessionStorage.setItem('preloader-shown', '1');
+        setPreloaderShown();
         document.dispatchEvent(new CustomEvent('preloader:complete'));
       }
     }, 5000);
@@ -216,6 +219,12 @@
     tl.set(preloader, { display: 'none' });
   }
 
-  // Run on initial load
-  runPreloader();
+  // Run once. This component lives in the layout, so its script is inlined
+  // into every page's hoisted bundle and re-executes when navigating to a
+  // route whose bundle has not run yet — which restarted the whole intro
+  // sequence mid-session.
+  if (!(window as any).__preloaderRan) {
+    (window as any).__preloaderRan = true;
+    runPreloader();
+  }
 </script>

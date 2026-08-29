@@ -5,7 +5,12 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://rohansingh.io",
+  // Must be the domain the site is actually served from: `site` is what the
+  // sitemap lists and what Astro.site resolves OG/Twitter image URLs against.
+  // This previously pointed at rohansingh.io, which now 301s to an unrelated
+  // site — so the sitemap advertised URLs on a domain this site does not own
+  // and every social preview requested its image from there.
+  site: "https://www.rohxnsxngh.com",
   integrations: [
     tailwind(),
     sitemap(),

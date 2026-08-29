@@ -187,8 +187,18 @@
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     || (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches);
 
-  // Exit early if mobile
-  if (isMobile) {
+  // This component sits in the layout, so Astro inlines its script into every
+  // page's hoisted bundle. Navigating to a route whose bundle has not run yet
+  // re-executes it — which used to start another rAF trail loop and another
+  // full set of document listeners drawing into the same canvas, once per
+  // route visited. The cursor element itself is transition:persist'ed, so the
+  // first initialisation stays valid; later copies must stand down.
+  const alreadyBound = !!(window as any).__cursorBound;
+  (window as any).__cursorBound = true;
+
+  if (alreadyBound) {
+    // Already initialised by an earlier page bundle — nothing to do.
+  } else if (isMobile) {
     const customCursor = document.getElementById('custom-cursor');
     if (customCursor) {
       customCursor.style.display = 'none';
@@ -463,6 +473,11 @@
 
     // Body classes don't survive body replacement — clear stuck states.
     document.body.classList.remove('cursor-hover', 'cursor-click', 'cursor-press');
+
+    // A card carrying [data-cursor-label] can be removed from the DOM by a
+    // click-triggered navigation before its mouseout fires, leaving the label
+    // (and the previous page's text) stuck visible on the persisted cursor root.
+    cursorLabel?.classList.remove('visible');
   });
 
   // Cursor will be shown on first mouse move via cursor-initialized class

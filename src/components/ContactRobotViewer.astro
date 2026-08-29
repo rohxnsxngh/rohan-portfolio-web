@@ -27,6 +27,9 @@ const {
 </div>
 
 <script>
+  import { onPageReady } from '../scripts/pageReady';
+  import { createRobotLightRig, ROBOT_EXPOSURE } from '../scripts/robotLightRig';
+  import { bindOnce } from '../scripts/bindOnce';
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
   import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
@@ -72,6 +75,9 @@ const {
   let scene: THREE.Scene;
   let clock = new THREE.Clock();
   let animatedLights: any;
+  // Exposure-scaled base intensity of the rig's spotlight, captured at
+  // creation so the animation loop can pulse around it.
+  let spotlightBase = 0;
   let mousePointLight: THREE.PointLight | null = null;
   let hemisphereLight: THREE.HemisphereLight | null = null;
   let raycaster: THREE.Raycaster | null = null;
@@ -210,56 +216,15 @@ const {
     // ===== DRAMATIC LIGHTING SETUP FOR METALLIC MATERIAL =====
 
     // Ambient light - slightly higher for metallic reflections
-    const ambientLight = new THREE.AmbientLight(0x303030, 0.09);
-    scene.add(ambientLight);
+    // Shared lighting rig — see src/scripts/robotLightRig.ts. This viewer
+    // frames the model further out than the others, so the rig positions are
+    // scaled to match rather than re-tuned by hand.
+    const { spotlight, cyanAccent, magentaAccent } = createRobotLightRig(scene, {
+      exposure: ROBOT_EXPOSURE.contact,
+      scale: 1.6,
+    });
+    spotlightBase = spotlight?.intensity ?? 0;
 
-    // KEY LIGHT - Main directional light (stronger for metallic)
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.36);
-    mainLight.position.set(5, 8, 6);
-    mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 1024;
-    mainLight.shadow.mapSize.height = 1024;
-    mainLight.shadow.bias = -0.001;
-    mainLight.shadow.camera.near = 0.5;
-    mainLight.shadow.camera.far = 30;
-    mainLight.shadow.camera.left = -10;
-    mainLight.shadow.camera.right = 10;
-    mainLight.shadow.camera.top = 10;
-    mainLight.shadow.camera.bottom = -10;
-    scene.add(mainLight);
-
-    // FILL LIGHT - Cool blue for contrast
-    const fillLight = new THREE.DirectionalLight(0x6688cc, 0.12);
-    fillLight.position.set(-5, 3, 4);
-    scene.add(fillLight);
-
-    // CYAN ACCENT - Subtle glow (increased range for larger scene)
-    const cyanAccent = new THREE.PointLight(0x00ffff, 0.24, 25);
-    cyanAccent.position.set(-4, 2, 5);
-    scene.add(cyanAccent);
-
-    // MAGENTA ACCENT - Complementary glow
-    const magentaAccent = new THREE.PointLight(0xff00ff, 0.18, 25);
-    magentaAccent.position.set(4, 1, -4);
-    scene.add(magentaAccent);
-
-    // RIM LIGHT - Backlight for silhouette (stronger)
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.24);
-    rimLight.position.set(0, 5, -8);
-    scene.add(rimLight);
-
-    // ANIMATED SPOTLIGHT
-    const spotlight = new THREE.SpotLight(0xffffff, 0.3);
-    spotlight.position.set(0, 10, 0);
-    spotlight.angle = Math.PI / 6;
-    spotlight.penumbra = 0.5;
-    spotlight.decay = 2;
-    spotlight.distance = 20;
-    spotlight.castShadow = true;
-    scene.add(spotlight);
-
-    // MOUSE-REACTIVE LIGHTING SYSTEM
-    // Orange-warm gradient light for welcoming feel (increased range for larger scene)
     mousePointLight = new THREE.PointLight(0xff8800, 0, 100, 0.8);
     mousePointLight.position.set(0, 5, 20);
     scene.add(mousePointLight);
@@ -356,10 +321,16 @@ const {
 
   let currentCleanup: (() => void) | null = null;
   let eventAbort: AbortController | null = null;
+  let dracoLoader: DRACOLoader | null = null;
+  let loadedGeometries: THREE.BufferGeometry[] = [];
+  let loadedMaterials: THREE.Material[] = [];
 
   // Initialize everything
   function init() {
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+    // Abort previous document-level event listeners to prevent accumulation
+    eventAbort?.abort();
+    eventAbort = new AbortController();
 
     // Re-query DOM elements (fresh references after View Transition swap)
     container = document.querySelector(".contact-robot-viewer-container");
@@ -409,16 +380,19 @@ const {
     };
 
     // Configure Draco loader
-    const dracoLoader = new DRACOLoader();
+    dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     dracoLoader.preload();
 
     // Load walking robot model
     const loader = new GLTFLoader(manager);
     loader.setDRACOLoader(dracoLoader);
+    loadedGeometries = [];
+    loadedMaterials = [];
     loader.load(
       "/models/walking_robot.glb",
       async (glb) => {
+        if (_disposing) return;
         _robot = glb.scene;
 
         // Create material with customized properties (matching other robot viewers)
@@ -429,10 +403,12 @@ const {
           shininess: 15,
           flatShading: true,
         });
+        loadedMaterials.push(newMaterial);
 
         // Apply material to all meshes in the model
         _robot.traverse((o) => {
           if (o instanceof THREE.Mesh) {
+            loadedGeometries.push(o.geometry);
             o.material = newMaterial;
             o.castShadow = true;
             o.receiveShadow = true;
@@ -483,7 +459,12 @@ const {
       // Animate lights for subtle dramatic effect
       if (animatedLights) {
         // Subtle pulse spotlight intensity
-        animatedLights.spotlight.intensity = 0.27 + Math.sin(elapsed * 0.8) * 0.09;
+        // Pulse around the rig's own exposure-scaled intensity rather than a
+        // hardcoded value, so the per-page exposure actually reaches this light.
+        if (animatedLights.spotlight) {
+          animatedLights.spotlight.intensity =
+            spotlightBase * (1 + Math.sin(elapsed * 0.8) * 0.33);
+        }
 
         // Slowly rotate cyan accent (larger orbit for bigger scene)
         const cyanAngle = elapsed * 0.2;
@@ -533,6 +514,13 @@ const {
       holdReleaseHandlers.length = 0;
       targetPlay = 0;
       playFactor = 0;
+      loadedGeometries.forEach((g) => g.dispose());
+      loadedMaterials.forEach((m) => m.dispose());
+      loadedGeometries = [];
+      loadedMaterials = [];
+      dracoLoader?.dispose();
+      dracoLoader = null;
+      composer?.dispose();
       renderer.dispose();
       if (renderer.getContext()) {
         renderer.forceContextLoss();
@@ -614,6 +602,8 @@ const {
     }
 
     // Listen for contact page mouse events
+    // Scoped to eventAbort's signal so listeners don't accumulate across navigations.
+    const { signal } = eventAbort!;
     document.addEventListener('contactRobotMouseMove', (e: any) => {
       if (e.detail && mousePointLight && hemisphereLight && raycaster && mouseVector && camera && _robot) {
         const { x, y } = e.detail;
@@ -628,7 +618,7 @@ const {
         pendingMousePosition = null;
         performRaycastUpdate(x, y);
       }
-    });
+    }, { signal });
 
     // Fade out on inactivity
     document.addEventListener('contactRobotMouseInactive', () => {
@@ -655,7 +645,7 @@ const {
         };
         fadeOut();
       }
-    });
+    }, { signal });
 
     // Fade out on mouse leave
     document.addEventListener('contactRobotMouseLeave', () => {
@@ -682,7 +672,7 @@ const {
         };
         fadeOut();
       }
-    });
+    }, { signal });
 
     // Reset on mouse enter
     document.addEventListener('contactRobotMouseEnter', () => {
@@ -692,13 +682,20 @@ const {
         if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
         if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
       }
-    });
+    }, { signal });
   }
 
   // Initialize on page load (supports View Transitions)
-  document.addEventListener("astro:page-load", init);
-  document.addEventListener("astro:before-swap", () => {
-    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+  // Guarded: this component's script is inlined into the bundle of every page
+  // that uses it, so it re-executes on navigation and would otherwise stack up
+  // an extra init() — and an extra WebGL context — per route visited.
+  bindOnce('contact-robot-viewer', () => {
+    onPageReady(init);
+    document.addEventListener("astro:before-swap", () => {
+      eventAbort?.abort();
+      eventAbort = null;
+      if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+    });
   });
 </script>
 

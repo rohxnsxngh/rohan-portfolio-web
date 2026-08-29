@@ -65,6 +65,7 @@ import Footer from "../../layouts/Footer.astro";
 </Layout>
 
 <script>
+  import { onPageReady } from '../../scripts/pageReady';
   import * as THREE from "three";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
@@ -77,6 +78,8 @@ import Footer from "../../layouts/Footer.astro";
   let _animationId: number;
   let isAnimating = true;
   let time = 0;
+  let eventAbort: AbortController | null = null;
+  let contextLost = false;
 
   // Custom shader material
   const vertexShader = `
@@ -126,10 +129,32 @@ import Footer from "../../layouts/Footer.astro";
     }
   `;
 
+  function disposeThreeJS() {
+    cancelAnimationFrame(_animationId);
+    eventAbort?.abort();
+    eventAbort = null;
+    controls?.dispose();
+    if (cube) {
+      cube.geometry?.dispose();
+      (cube.material as THREE.Material)?.dispose();
+    }
+    if (renderer) {
+      renderer.dispose();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+    }
+  }
+
   // Initialize ThreeJS scene
   function initThreeJS() {
     const container = document.getElementById('threejs-container');
     if (!container) return;
+
+    disposeThreeJS();
+    contextLost = false;
+    eventAbort = new AbortController();
 
     // Clear loading content
     container.innerHTML = '';
@@ -145,11 +170,21 @@ import Footer from "../../layouts/Footer.astro";
     // Renderer setup
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
     container.appendChild(renderer.domElement);
+
+    renderer.domElement.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      contextLost = true;
+      cancelAnimationFrame(_animationId);
+    }, { signal: eventAbort.signal });
+    renderer.domElement.addEventListener('webglcontextrestored', () => {
+      contextLost = false;
+      initThreeJS();
+    }, { signal: eventAbort.signal });
 
     // Create cube with custom shader
     const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -214,6 +249,7 @@ import Footer from "../../layouts/Footer.astro";
 
   // Animation loop
   function animate() {
+    if (contextLost) return;
     _animationId = requestAnimationFrame(animate);
 
     time += 0.016; // ~60fps
@@ -239,13 +275,15 @@ import Footer from "../../layouts/Footer.astro";
 
   // Setup event listeners
   function setupEventListeners() {
+    const signal = eventAbort!.signal;
+
     // Play/Pause button
     const playPauseBtn = document.getElementById('play-pause');
     if (playPauseBtn) {
       playPauseBtn.addEventListener('click', () => {
         isAnimating = !isAnimating;
         playPauseBtn.textContent = isAnimating ? 'Pause' : 'Play';
-      });
+      }, { signal });
     }
 
     // Reset camera button
@@ -257,7 +295,7 @@ import Footer from "../../layouts/Footer.astro";
           controls.target.set(0, 0, 0);
           controls.update();
         }
-      });
+      }, { signal });
     }
 
     // Keyboard controls
@@ -278,7 +316,7 @@ import Footer from "../../layouts/Footer.astro";
           }
           break;
       }
-    });
+    }, { signal });
 
     // Window resize
     window.addEventListener('resize', () => {
@@ -288,11 +326,12 @@ import Footer from "../../layouts/Footer.astro";
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
       }
-    });
+    }, { signal });
   }
 
-  // Initialize on page load (supports View Transitions)
-  document.addEventListener('astro:page-load', initThreeJS);
+  // Initialize on page load (supports View Transitions); dispose on navigation away.
+  onPageReady(initThreeJS);
+  document.addEventListener('astro:before-swap', disposeThreeJS);
 </script>
 
 <style>

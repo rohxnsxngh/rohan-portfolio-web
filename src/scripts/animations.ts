@@ -7,6 +7,55 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/**
+ * True once the visitor has navigated client-side at least once.
+ *
+ * Set on `astro:after-swap` by the inline watchdog in Layout.astro, and read
+ * off `window` rather than kept in module scope on purpose: this module is
+ * bundled separately into every page chunk, so a freshly-executed copy would
+ * start with a stale `false` and miss the navigation that just happened.
+ *
+ * Sticky by design — after the first client-side navigation every subsequent
+ * page view in this document is also a client-side navigation.
+ */
+export function isSpaNavigation(): boolean {
+  return typeof window !== 'undefined' &&
+    document.documentElement.classList.contains('spa-nav');
+}
+
+/**
+ * Adds the staggered hero character reveal to `tl`.
+ *
+ * On a client-side navigation the reveal is skipped and the characters are
+ * simply pinned visible: the <h1> carries transition:name="page-title", so the
+ * browser is already morphing it from the previous route's header. Running the
+ * per-character intro on top of that morph animated the same text twice, which
+ * is what made route changes look like they stuttered.
+ */
+export function addHeroCharIntro(
+  tl: gsap.core.Timeline,
+  chars: NodeListOf<Element> | Element[],
+  position: number = 0
+): void {
+  const list = Array.from(chars);
+  if (!list.length) return;
+
+  if (prefersReducedMotion() || isSpaNavigation()) {
+    gsap.set(list, { opacity: 1, y: 0, scale: 1 });
+    return;
+  }
+
+  gsap.set(list, { opacity: 0, y: 100, scale: 0.8 });
+  tl.to(list, {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    duration: 1,
+    stagger: 0.05,
+    ease: 'expo.out',
+  }, position);
+}
+
 interface AnimationOpts {
   delay?: number;
   duration?: number;
@@ -224,6 +273,78 @@ export function createPageIntroTimeline(): gsap.core.Timeline {
  */
 export function killAllScrollTriggers(): void {
   ScrollTrigger.getAll().forEach((st) => st.kill());
+}
+
+/**
+ * Recomputes every ScrollTrigger's start/end against the current layout.
+ *
+ * ScrollTrigger measures trigger positions once, when the trigger is created.
+ * During a View Transition navigation the triggers for the new page are built
+ * on `astro:page-load`, before web fonts, images and the WebGL canvases have
+ * settled — so the document grows underneath them and the cached offsets end
+ * up pointing at the wrong scroll positions. Elements whose start ends up
+ * below their real position never enter, and since `scrollReveal` has already
+ * set them to `opacity: 0`, they stay invisible for the whole page view.
+ *
+ * ScrollTrigger only auto-refreshes on `resize` and on the window `load`
+ * event, and `load` does not fire again for client-side navigations, so this
+ * has to be driven manually.
+ */
+export function refreshScrollTriggers(): void {
+  // Immediately, for whatever is already laid out.
+  ScrollTrigger.refresh();
+
+  // Then again once late-arriving layout (fonts, images, canvases) settles.
+  requestAnimationFrame(() => ScrollTrigger.refresh());
+
+  if (typeof document !== 'undefined' && document.fonts) {
+    document.fonts.ready.then(() => ScrollTrigger.refresh()).catch(() => {});
+  }
+
+  const images = Array.from(document.images).filter((img) => !img.complete);
+  if (images.length) {
+    let pending = images.length;
+    const done = () => {
+      if (--pending === 0) ScrollTrigger.refresh();
+    };
+    images.forEach((img) => {
+      img.addEventListener('load', done, { once: true });
+      img.addEventListener('error', done, { once: true });
+    });
+  }
+
+  // Final catch-all for anything that resizes later still (3D model loads).
+  setTimeout(() => ScrollTrigger.refresh(), 1200);
+}
+
+/**
+ * Reveals anything a scroll trigger left behind.
+ *
+ * `scrollReveal`/`batchScrollReveal` set `opacity: 0` up front and hand the
+ * reveal to ScrollTrigger. If a trigger is mis-measured or was killed mid-flight
+ * by a fast navigation, the element is stranded invisible even though it sits in
+ * the viewport. This sweeps for that state and fades the stragglers in, so a
+ * missed trigger costs the animation rather than the content.
+ */
+export function revealStragglers(): void {
+  const candidates = document.querySelectorAll<HTMLElement>(
+    '.section-title, .footer-reveal, .research-card, .project-card, .blog-card, ' +
+    '.experience-card, .journey-card-wrapper, .artwork-card, .story-block, ' +
+    '.profile-section, .intro-section, .videos-section, .gallery-section, ' +
+    '.coming-soon-section, .contact-form, .slide-up'
+  );
+
+  candidates.forEach((el) => {
+    if (parseFloat(getComputedStyle(el).opacity) >= 0.05) return;
+
+    // Only rescue what the reader can actually see; below-the-fold elements
+    // are supposed to still be waiting.
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > window.innerHeight) return;
+    if (r.width === 0 && r.height === 0) return;
+
+    gsap.to(el, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'expo.out' });
+  });
 }
 
 /**

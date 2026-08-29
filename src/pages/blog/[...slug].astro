@@ -308,13 +308,14 @@ const statusText: Record<BlogStatus, string> = {
 </style>
 
 <script>
+  import { onPageReady } from '../../scripts/pageReady';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
   import { createPageIntroTimeline, scrollReveal } from '../../scripts/animations';
 
   gsap.registerPlugin(ScrollTrigger);
 
-  document.addEventListener('astro:page-load', () => {
+  onPageReady(() => {
     if (!document.getElementById('reading-progress')) return;
 
     const tl = createPageIntroTimeline();

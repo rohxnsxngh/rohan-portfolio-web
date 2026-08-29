@@ -285,6 +285,13 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   /* Individual character animations - driven by GSAP */
   .about-title .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state is skipped on client-side navigations: the header
+     carries transition:name="page-title" and is snapshotted for the morph
+     before the intro animation runs, so it has to already be visible. A full
+     page load still gets the staggered character reveal. */
+  html:not(.spa-nav) .about-title .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
   }
@@ -615,7 +622,8 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 </style>
 
 <script>
-  import { animateLineExpand, scrollReveal, createMultiLayerParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { onPageReady } from '../scripts/pageReady';
+  import { addHeroCharIntro, animateLineExpand, scrollReveal, createMultiLayerParallax, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -623,8 +631,26 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
+  // Scopes the hero mouse-tracking listeners and video observers so they're
+  // torn down on every navigation instead of accumulating (IntersectionObservers
+  // in particular keep their observed <video> elements — and decoded media
+  // buffers — alive forever if never disconnected).
+  let aboutAbort: AbortController | null = null;
+  let aboutMouseTimeout: number | null = null;
+  let aboutObservers: IntersectionObserver[] = [];
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('astro:before-swap', () => {
+    aboutAbort?.abort();
+    aboutAbort = null;
+    if (aboutMouseTimeout) {
+      clearTimeout(aboutMouseTimeout);
+      aboutMouseTimeout = null;
+    }
+    aboutObservers.forEach((o) => o.disconnect());
+    aboutObservers = [];
+  });
+
+  onPageReady(() => {
     if (!document.querySelector('.about-title')) return;
 
     if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
@@ -636,11 +662,9 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
     // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
     // handle the intro instead — no per-element tween objects allocated.
     if (isDesktop) {
-      const chars = document.querySelectorAll('.about-title .char');
-      if (chars.length) {
-        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
-      }
+      // Skipped on client-side navigations — the header is being morphed
+      // between routes by the shared page-title view transition instead.
+      addHeroCharIntro(tl, document.querySelectorAll('.about-title .char'), 0);
 
       // Hero subtitle and description
       tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
@@ -708,11 +732,13 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
   });
 
   // Hero section particle interaction
-  document.addEventListener('astro:page-load', () => {
+  onPageReady(() => {
     const heroSection = document.getElementById('hero-section');
     if (!heroSection || !document.querySelector('.about-title')) return;
 
-    let mouseTimeout: number | null = null;
+    aboutAbort?.abort();
+    aboutAbort = new AbortController();
+    const { signal } = aboutAbort;
     let touchStartY = 0;
     let touchStartX = 0;
     let isScrolling = false;
@@ -727,15 +753,15 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
         detail: { x, y, clientX: e.clientX, clientY: e.clientY }
       }));
 
-      if (mouseTimeout) clearTimeout(mouseTimeout);
-      mouseTimeout = window.setTimeout(() => {
+      if (aboutMouseTimeout) clearTimeout(aboutMouseTimeout);
+      aboutMouseTimeout = window.setTimeout(() => {
         document.dispatchEvent(new CustomEvent('aboutMouseInactive'));
       }, 800);
-    });
+    }, { signal });
 
     heroSection.addEventListener('mouseleave', () => {
       document.dispatchEvent(new CustomEvent('aboutMouseLeave'));
-    });
+    }, { signal });
 
     heroSection.addEventListener('touchstart', (e) => {
       if (e.touches.length > 0) {
@@ -744,7 +770,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
         touchStartY = touch.clientY;
         isScrolling = false;
       }
-    }, { passive: true });
+    }, { signal, passive: true });
 
     heroSection.addEventListener('touchmove', (e) => {
       if (e.touches.length > 0) {
@@ -766,16 +792,19 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
           }));
         }
       }
-    }, { passive: true });
+    }, { signal, passive: true });
 
     heroSection.addEventListener('touchend', () => {
       isScrolling = false;
       document.dispatchEvent(new CustomEvent('aboutMouseLeave'));
-    });
+    }, { signal });
   });
 
   // Intersection Observer for lazy loading videos
-  document.addEventListener('astro:page-load', () => {
+  onPageReady(() => {
+    aboutObservers.forEach((o) => o.disconnect());
+    aboutObservers = [];
+
     const videos = document.querySelectorAll("video");
 
     if ("IntersectionObserver" in window) {
@@ -793,6 +822,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
         },
         { threshold: 0.1 }
       );
+      aboutObservers.push(videoObserver);
 
       videos.forEach((video) => {
         videoObserver.observe(video);
@@ -812,6 +842,7 @@ import ArtParticleViewer from "../components/ArtParticleViewer.astro";
       },
       { threshold: 0 }
     );
+    aboutObservers.push(pauseObserver);
 
     videos.forEach((video) => {
       pauseObserver.observe(video);

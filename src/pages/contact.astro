@@ -487,6 +487,13 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
   /* Individual character initial state */
   .contact-title .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state is skipped on client-side navigations: the header
+     carries transition:name="page-title" and is snapshotted for the morph
+     before the intro animation runs, so it has to already be visible. A full
+     page load still gets the staggered character reveal. */
+  html:not(.spa-nav) .contact-title .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
   }
@@ -609,7 +616,8 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
 </style>
 
 <script>
-  import { animateLineExpand, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { onPageReady } from '../scripts/pageReady';
+  import { addHeroCharIntro, animateLineExpand, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -618,8 +626,18 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
   gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
+  // Hoisted so astro:before-swap can clear a pending hero-interaction timeout
+  // left over from navigating away mid-hover.
+  let contactMouseTimeout: number | null = null;
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('astro:before-swap', () => {
+    if (contactMouseTimeout) {
+      clearTimeout(contactMouseTimeout);
+      contactMouseTimeout = null;
+    }
+  });
+
+  onPageReady(() => {
     if (!document.querySelector('.contact-title')) return;
 
     if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
@@ -631,11 +649,9 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
     // handle the intro instead — no per-element tween objects allocated.
     if (isDesktop) {
       tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
-      const chars = document.querySelectorAll('.contact-title .char');
-      if (chars.length) {
-        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0);
-      }
+      // Skipped on client-side navigations — the header is being morphed
+      // between routes by the shared page-title view transition instead.
+      addHeroCharIntro(tl, document.querySelectorAll('.contact-title .char'), 0);
       tl.add(() => animateLineExpand('.accent-line'), 0.3);
       tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
       tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);

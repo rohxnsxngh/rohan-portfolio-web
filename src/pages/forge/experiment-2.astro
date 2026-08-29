@@ -210,6 +210,7 @@ import Footer from "../../layouts/Footer.astro";
 </Layout>
 
 <script>
+  import { onPageReady } from '../../scripts/pageReady';
   import * as THREE from "three";
 
   // ---------------------------------------------------------------------------
@@ -341,6 +342,7 @@ import Footer from "../../layouts/Footer.astro";
 
   let frameCount = 0, lastFpsT = 0;
   let prefersReducedMotion = false;
+  let dragAbort: AbortController | null = null;
 
   const hexToVec3 = (hex: string) => {
     const c = new THREE.Color(hex);
@@ -400,6 +402,8 @@ import Footer from "../../layouts/Footer.astro";
 
     renderer.setClearColor(new THREE.Color(DEFAULTS.bg), 1);
 
+    dragAbort?.abort();
+    dragAbort = new AbortController();
     setupDrag(renderer.domElement);
     setupControls();
     buildPresetChips();
@@ -445,6 +449,7 @@ import Footer from "../../layouts/Footer.astro";
   }
 
   function setupDrag(el: HTMLElement) {
+    const signal = dragAbort!.signal;
     let dragging = false, lastX = 0, lastY = 0;
     const down = (x: number, y: number) => { dragging = true; lastX = x; lastY = y; el.style.cursor = "grabbing"; };
     const move = (x: number, y: number) => {
@@ -455,12 +460,12 @@ import Footer from "../../layouts/Footer.astro";
       dragStep.setFromAxisAngle(xAxis, dy); target.premultiply(dragStep);
     };
     const up = () => { dragging = false; el.style.cursor = "grab"; };
-    el.addEventListener("mousedown", (e) => down(e.clientX, e.clientY));
-    window.addEventListener("mousemove", (e) => move(e.clientX, e.clientY));
-    window.addEventListener("mouseup", up);
-    el.addEventListener("touchstart", (e) => { if (e.touches.length) down(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-    el.addEventListener("touchmove", (e) => { if (e.touches.length) move(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
-    window.addEventListener("touchend", up);
+    el.addEventListener("mousedown", (e) => down(e.clientX, e.clientY), { signal });
+    window.addEventListener("mousemove", (e) => move(e.clientX, e.clientY), { signal });
+    window.addEventListener("mouseup", up, { signal });
+    el.addEventListener("touchstart", (e) => { if (e.touches.length) down(e.touches[0].clientX, e.touches[0].clientY); }, { signal, passive: true });
+    el.addEventListener("touchmove", (e) => { if (e.touches.length) move(e.touches[0].clientX, e.touches[0].clientY); }, { signal, passive: true });
+    window.addEventListener("touchend", up, { signal });
   }
 
   // ---- control wiring -------------------------------------------------------
@@ -613,11 +618,19 @@ import Footer from "../../layouts/Footer.astro";
     cancelAnimationFrame(rafId);
     window.removeEventListener("resize", onResize);
     document.removeEventListener("keydown", onKey);
+    dragAbort?.abort();
+    dragAbort = null;
     if (mesh) { mesh.geometry.dispose(); (mesh.material as THREE.Material).dispose(); }
-    if (renderer) renderer.dispose();
+    if (renderer) {
+      renderer.dispose();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+    }
   }
 
-  document.addEventListener("astro:page-load", initThree);
+  onPageReady(initThree);
   document.addEventListener("astro:before-swap", cleanup);
 </script>
 
@@ -638,6 +651,7 @@ import Footer from "../../layouts/Footer.astro";
     outline: none;
   }
   input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
     appearance: none;
     width: 16px; height: 16px;
     border-radius: 50%;

@@ -21,6 +21,8 @@ const {
 </div>
 
 <script>
+  import { onPageReady } from '../scripts/pageReady';
+  import { bindOnce } from '../scripts/bindOnce';
   import * as THREE from "three";
   import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
   import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -151,6 +153,18 @@ const {
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
+
+    // Recover gracefully if the browser reclaims this WebGL context under
+    // memory pressure (common on Safari/iOS) instead of rendering into a dead context forever.
+    let contextLost = false;
+    renderer.domElement.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      contextLost = true;
+    });
+    renderer.domElement.addEventListener('webglcontextrestored', () => {
+      contextLost = false;
+      initParticleViewer();
+    });
 
     // Initialize noise
     const noise = new SimplexNoise();
@@ -423,7 +437,7 @@ const {
     let _disposing = false;
 
     function animate() {
-      if (_disposing) return;
+      if (_disposing || contextLost) return;
       animationId = requestAnimationFrame(animate);
 
       const elapsed = clock.getElapsedTime();
@@ -509,17 +523,24 @@ const {
     };
   }
 
-  // Initialize on every page load (initial + View Transition navigations)
-  document.addEventListener('astro:page-load', () => {
-    initParticleViewer();
-  });
+  // Guarded: this viewer is used on five routes, so its script is inlined into
+  // five separate page bundles. Without the guard, moving between those routes
+  // registered a fresh listener each time and every one of them called
+  // initParticleViewer() — stacking up WebGL contexts and RAF loops until the
+  // browser began dropping the oldest contexts.
+  bindOnce('art-particle-viewer', () => {
+    // Initialize on every page load (initial + View Transition navigations)
+    onPageReady(() => {
+      initParticleViewer();
+    });
 
-  // Clean up before page swap
-  document.addEventListener('astro:before-swap', () => {
-    if (currentCleanup) {
-      currentCleanup();
-      currentCleanup = null;
-    }
+    // Clean up before page swap
+    document.addEventListener('astro:before-swap', () => {
+      if (currentCleanup) {
+        currentCleanup();
+        currentCleanup = null;
+      }
+    });
   });
 </script>
 

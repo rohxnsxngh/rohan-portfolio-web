@@ -371,6 +371,13 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   /* Individual character animations - driven by GSAP */
   .hero-name .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state is skipped on client-side navigations: the header
+     carries transition:name="page-title" and is snapshotted for the morph
+     before the intro animation runs, so it has to already be visible. A full
+     page load still gets the staggered character reveal. */
+  html:not(.spa-nav) .hero-name .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
     text-shadow:
@@ -781,7 +788,8 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 </style>
 
 <script>
-  import { batchScaleReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { onPageReady } from '../scripts/pageReady';
+  import { addHeroCharIntro, batchScaleReveal, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -789,8 +797,18 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
+  // Hoisted so astro:before-swap can clear a pending hero-interaction timeout
+  // left over from navigating away mid-hover.
+  let projectMouseTimeout: number | null = null;
 
-  document.addEventListener('astro:page-load', () => {
+  document.addEventListener('astro:before-swap', () => {
+    if (projectMouseTimeout) {
+      clearTimeout(projectMouseTimeout);
+      projectMouseTimeout = null;
+    }
+  });
+
+  onPageReady(() => {
     if (!document.getElementById('projects-display')) return;
 
     if (kineticCleanup) { kineticCleanup(); kineticCleanup = null; }
@@ -804,11 +822,9 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     if (isDesktop) {
       tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
 
-      const chars = document.querySelectorAll('.hero-name .char');
-      if (chars.length) {
-        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-        tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.05, ease: 'expo.out' }, 0.1);
-      }
+      // Skipped on client-side navigations — the header is being morphed
+      // between routes by the shared page-title view transition instead.
+      addHeroCharIntro(tl, document.querySelectorAll('.hero-name .char'), 0.1);
 
       tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
       tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
@@ -864,7 +880,6 @@ const sortedProjects = [...validProjects].sort((a, b) => {
     const robotContainer = document.getElementById("robot-container");
 
     let mouseActive = false;
-    let mouseTimeout: number | null = null;
 
     const handleInteraction = (clientX: number, clientY: number) => {
       const rect = heroSection!.getBoundingClientRect();
@@ -872,11 +887,11 @@ const sortedProjects = [...validProjects].sort((a, b) => {
       const mouseY = (clientY - rect.top) / rect.height;
 
       if (!mouseActive) { heroSection!.classList.add('mouse-active'); mouseActive = true; }
-      if (mouseTimeout) clearTimeout(mouseTimeout);
+      if (projectMouseTimeout) clearTimeout(projectMouseTimeout);
 
       document.dispatchEvent(new CustomEvent("projectsRobotMouseMove", { detail: { x: mouseX, y: mouseY, clientX, clientY } }));
 
-      mouseTimeout = window.setTimeout(() => {
+      projectMouseTimeout = window.setTimeout(() => {
         heroSection!.classList.remove('mouse-active');
         mouseActive = false;
         document.dispatchEvent(new CustomEvent("projectsRobotMouseInactive", { detail: { inactive: true } }));
@@ -906,13 +921,13 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
       heroSection.addEventListener("touchend", () => {
         heroSection.classList.remove('mouse-active'); mouseActive = false; isScrolling = false;
-        if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+        if (projectMouseTimeout) { clearTimeout(projectMouseTimeout); projectMouseTimeout = null; }
         document.dispatchEvent(new CustomEvent("projectsRobotMouseLeave", { detail: { left: true } }));
       });
 
       heroSection.addEventListener("mouseleave", () => {
         heroSection.classList.remove('mouse-active'); mouseActive = false;
-        if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+        if (projectMouseTimeout) { clearTimeout(projectMouseTimeout); projectMouseTimeout = null; }
         document.dispatchEvent(new CustomEvent("projectsRobotMouseLeave", { detail: { left: true } }));
       });
 

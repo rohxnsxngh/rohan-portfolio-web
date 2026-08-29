@@ -143,8 +143,19 @@ function isActive(href: string) {
 </style>
 
 <script>
-  // Mobile menu toggle with accessibility support
-  document.addEventListener('astro:page-load', () => {
+  import { onPageReady } from '../scripts/pageReady';
+  // Mobile menu toggle with accessibility support.
+  // Nav is transition:persist, so this astro:page-load handler fires on every
+  // navigation against the SAME DOM nodes — an AbortController lets us drop
+  // the previous navigation's listeners before adding new ones instead of
+  // accumulating duplicates forever.
+  let navAbort: AbortController | null = null;
+
+  onPageReady(() => {
+    navAbort?.abort();
+    navAbort = new AbortController();
+    const { signal } = navAbort;
+
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 
@@ -154,7 +165,7 @@ function isActive(href: string) {
         mobileMenuButton.setAttribute('aria-expanded', (!isExpanded).toString());
         mobileMenu.classList.toggle('hidden');
         mobileMenu.classList.toggle('show');
-      });
+      }, { signal });
 
       // Close menu on Escape key
       document.addEventListener('keydown', (e) => {
@@ -164,7 +175,7 @@ function isActive(href: string) {
           mobileMenu.classList.remove('show');
           mobileMenuButton.focus();
         }
-      });
+      }, { signal });
     }
 
     // Update active nav state (needed since nav is persisted across transitions)

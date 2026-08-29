@@ -143,6 +143,13 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   /* Individual character animations - driven by GSAP */
   .hero-name .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state is skipped on client-side navigations: the header
+     carries transition:name="page-title" and is snapshotted for the morph
+     before the intro animation runs, so it has to already be visible. A full
+     page load still gets the staggered character reveal. */
+  html:not(.spa-nav) .hero-name .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
     text-shadow:
@@ -370,7 +377,8 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 </style>
 
 <script>
-  import { createHeroParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { onPageReady } from '../scripts/pageReady';
+  import { addHeroCharIntro, createHeroParallax, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -380,6 +388,10 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   let kineticCleanup: (() => void) | null = null;
   let glowTween: gsap.core.Tween | null = null;
   let introTimeline: gsap.core.Timeline | null = null;
+  let splitTimeline: gsap.core.Timeline | null = null;
+  // Hoisted so astro:before-swap (via cleanupHomeAnimations) can clear a
+  // pending hero-interaction timeout left over from navigating away mid-hover.
+  let mouseTimeout: number | null = null;
 
   function cleanupHomeAnimations() {
     // Kill accumulated GSAP tweens on home elements to prevent stale inline styles
@@ -397,9 +409,13 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     gsap.killTweensOf('.statement');
     gsap.killTweensOf('.cta-section');
     gsap.killTweensOf('.scroll-indicator-minimal');
+    gsap.killTweensOf('#robot-dim');
 
     if (glowTween) { glowTween.kill(); glowTween = null; }
     if (introTimeline) { introTimeline.kill(); introTimeline = null; }
+    if (splitTimeline) { splitTimeline.kill(); splitTimeline = null; }
+
+    if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
 
     kineticCleanup?.();
     kineticCleanup = null;
@@ -425,19 +441,10 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
         ease: 'expo.out',
       }, 0);
 
-      // Character reveal
-      const chars = document.querySelectorAll('.hero-name .char');
-      if (chars.length) {
-        gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-        tl.to(chars, {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 1,
-          stagger: 0.05,
-          ease: 'expo.out',
-        }, 0.1);
-      }
+      // Character reveal. Skipped on client-side navigations — the header is
+      // being morphed between routes by the shared page-title view transition
+      // instead, and re-animating it on arrival fought that morph.
+      addHeroCharIntro(tl, document.querySelectorAll('.hero-name .char'), 0.1);
 
       // Statement
       tl.to('.statement', {
@@ -472,7 +479,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     const robotOverlay = document.getElementById('robot-dim');
 
     if (nameLines.length >= 2 && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
-      const splitTl = gsap.timeline({
+      const splitTl = splitTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: heroSection,
           start: 'top top',
@@ -524,7 +531,9 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     const robotContainer = document.getElementById("robot-container");
 
     let mouseActive = false;
-    let mouseTimeout: number | null = null;
+    // Uses the module-level `mouseTimeout` so cleanupHomeAnimations() (run on
+    // astro:before-swap) can clear a pending timer left over from navigating
+    // away mid-hover, instead of it firing against a detached hero section.
 
     const handleInteraction = (clientX: number, clientY: number) => {
       const rect = heroSection!.getBoundingClientRect();
@@ -609,7 +618,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
   // Use astro:page-load for View Transitions compatibility
   // Guard: only run on the homepage
-  document.addEventListener('astro:page-load', () => {
+  onPageReady(() => {
     if (!document.querySelector('[data-page="home"]')) return;
     initHomeAnimations();
     initHomeInteractions();

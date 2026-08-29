@@ -130,6 +130,7 @@ import Footer from "../../layouts/Footer.astro";
 </Layout>
 
 <script>
+  import { onPageReady } from '../../scripts/pageReady';
   import * as THREE from "three";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
   import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -213,6 +214,8 @@ import Footer from "../../layouts/Footer.astro";
   let isAnimating = true;
   let bloomEnabled = true;
   let wireframeMode = false;
+  let eventAbort: AbortController | null = null;
+  let contextLost = false;
 
   // Animation variables
   let amount = 20;
@@ -233,10 +236,33 @@ import Footer from "../../layouts/Footer.astro";
   let lastTime = 0;
   let fps = 0;
 
+  function disposeThreeJS() {
+    cancelAnimationFrame(_animationId);
+    eventAbort?.abort();
+    eventAbort = null;
+    controls?.dispose();
+    if (mesh) {
+      mesh.geometry?.dispose();
+      (mesh.material as THREE.Material)?.dispose();
+      mesh.dispose();
+    }
+    composer?.dispose();
+    if (renderer) {
+      renderer.dispose();
+      if (renderer.getContext()) {
+        renderer.forceContextLoss();
+      }
+      renderer.domElement?.parentNode?.removeChild(renderer.domElement);
+    }
+  }
+
   function initThreeJS() {
     const container = document.getElementById('threejs-container');
     if (!container) return;
 
+    disposeThreeJS();
+    contextLost = false;
+    eventAbort = new AbortController();
     container.innerHTML = '';
 
     // Scene setup
@@ -250,7 +276,7 @@ import Footer from "../../layouts/Footer.astro";
     camera.position.set(0, 0, amount * 1.8);
 
     // Renderer setup with enhanced settings
-    renderer = new THREE.WebGLRenderer({ 
+    renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: "high-performance"
     });
@@ -263,12 +289,24 @@ import Footer from "../../layouts/Footer.astro";
 
     container.appendChild(renderer.domElement);
 
+    // Recover gracefully if the browser reclaims this WebGL context under
+    // memory pressure (common on Safari/iOS) instead of rendering into a dead context forever.
+    renderer.domElement.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      contextLost = true;
+      cancelAnimationFrame(_animationId);
+    }, { signal: eventAbort.signal });
+    renderer.domElement.addEventListener('webglcontextrestored', () => {
+      contextLost = false;
+      initThreeJS();
+    }, { signal: eventAbort.signal });
+
     // Post-processing setup
     setupPostProcessing(container);
 
     // Create enhanced instanced mesh
     createInstancedMesh();
-    
+
     // Add cinematic lighting
     createLighting();
 
@@ -309,6 +347,8 @@ import Footer from "../../layouts/Footer.astro";
   function createInstancedMesh() {
     if (mesh) {
       scene.remove(mesh);
+      mesh.geometry?.dispose();
+      (mesh.material as THREE.Material)?.dispose();
       mesh.dispose();
     }
 
@@ -444,6 +484,7 @@ import Footer from "../../layouts/Footer.astro";
   }
 
   function animate() {
+    if (contextLost) return;
     _animationId = requestAnimationFrame(animate);
     const time = performance.now();
 
@@ -469,6 +510,8 @@ import Footer from "../../layouts/Footer.astro";
   }
 
   function setupEventListeners() {
+    const signal = eventAbort!.signal;
+
     // UI Controls
     const playPauseBtn = document.getElementById('play-pause');
     const resetBtn = document.getElementById('reset-camera');
@@ -483,20 +526,20 @@ import Footer from "../../layouts/Footer.astro";
     playPauseBtn?.addEventListener('click', () => {
       isAnimating = !isAnimating;
       playPauseBtn.textContent = isAnimating ? 'Pause' : 'Play';
-    });
+    }, { signal });
 
     resetBtn?.addEventListener('click', () => {
       camera.position.set(0, 0, amount * 1.8);
       controls.target.set(0, 0, 0);
       controls.update();
-    });
+    }, { signal });
 
     bloomBtn?.addEventListener('click', () => {
       bloomEnabled = !bloomEnabled;
       bloomBtn.textContent = bloomEnabled ? 'Bloom' : 'No Bloom';
       const statusElement = document.getElementById('bloom-status');
       if (statusElement) statusElement.textContent = bloomEnabled ? 'Enabled' : 'Disabled';
-    });
+    }, { signal });
 
     wireframeBtn?.addEventListener('click', () => {
       wireframeMode = !wireframeMode;
@@ -504,33 +547,33 @@ import Footer from "../../layouts/Footer.astro";
         (mesh.material as THREE.MeshPhongMaterial).wireframe = wireframeMode;
       }
       wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
-    });
+    }, { signal });
 
     // Slider event listeners with value display updates
     gridSizeSelect?.addEventListener('change', () => {
       amount = parseInt(gridSizeSelect.value);
       createInstancedMesh();
       updateInstanceCount();
-    });
+    }, { signal });
 
     bloomIntensitySlider?.addEventListener('input', () => {
       bloomIntensity = parseFloat(bloomIntensitySlider.value);
       bloomPass.strength = bloomIntensity;
       const label = bloomIntensitySlider.nextElementSibling;
       if (label) label.textContent = bloomIntensity.toFixed(1);
-    });
+    }, { signal });
 
     animationSpeedSlider?.addEventListener('input', () => {
       animationSpeed = parseFloat(animationSpeedSlider.value);
       const label = animationSpeedSlider.nextElementSibling;
       if (label) label.textContent = `${animationSpeed.toFixed(1)}x`;
-    });
+    }, { signal });
 
     noiseScaleSlider?.addEventListener('input', () => {
       noiseScale = parseFloat(noiseScaleSlider.value);
       const label = noiseScaleSlider.nextElementSibling;
       if (label) label.textContent = noiseScale.toFixed(1);
-    });
+    }, { signal });
 
     // Keyboard controls
     document.addEventListener('keydown', (event) => {
@@ -559,7 +602,7 @@ import Footer from "../../layouts/Footer.astro";
           if (wireframeBtn) wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
           break;
       }
-    });
+    }, { signal });
 
     // Resize handling
     window.addEventListener('resize', () => {
@@ -570,11 +613,12 @@ import Footer from "../../layouts/Footer.astro";
         renderer.setSize(container.clientWidth, container.clientHeight);
         composer.setSize(container.clientWidth, container.clientHeight);
       }
-    });
+    }, { signal });
   }
 
-  // Initialize on page load (supports View Transitions)
-  document.addEventListener('astro:page-load', initThreeJS);
+  // Initialize on page load (supports View Transitions); dispose on navigation away.
+  onPageReady(initThreeJS);
+  document.addEventListener('astro:before-swap', disposeThreeJS);
 </script>
 
 <style>
@@ -602,6 +646,7 @@ import Footer from "../../layouts/Footer.astro";
   }
 
   input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
     appearance: none;
     width: 16px;
     height: 16px;

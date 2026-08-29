@@ -38,6 +38,9 @@ const {
 
 <!-- Use client:only to ensure this script runs only in the browser -->
 <script>
+  import { onPageReady } from '../scripts/pageReady';
+  import { createRobotLightRig, ROBOT_EXPOSURE } from '../scripts/robotLightRig';
+  import { bindOnce } from '../scripts/bindOnce';
   // Import Three.js properly using ES modules
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -89,6 +92,9 @@ const {
   let scene: THREE.Scene;
   let clock = new THREE.Clock();
   let animatedLights: any;
+  // Exposure-scaled base intensity of the rig's spotlight, captured at
+  // creation so the animation loop can pulse around it.
+  let spotlightBase = 0;
   let mousePointLight: THREE.PointLight | null = null;
   let hemisphereLight: THREE.HemisphereLight | null = null;
   let raycaster: THREE.Raycaster | null = null;
@@ -169,55 +175,13 @@ const {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
 
-    // DRAMATICALLY DIMMED LIGHTING - Create mystery and darkness
-    // Ambient light - extremely low for darkness
-    const ambientLight = new THREE.AmbientLight(0x202020, 0.03);
-    scene.add(ambientLight);
-
-    // KEY LIGHT - Much weaker now
-    const mainLight = new THREE.DirectionalLight(0xffffff, 0.18);
-    mainLight.position.set(3, 5, 4);
-    mainLight.castShadow = true;
-    mainLight.shadow.mapSize.width = 1024;
-    mainLight.shadow.mapSize.height = 1024;
-    mainLight.shadow.bias = -0.001;
-    mainLight.shadow.camera.near = 0.5;
-    mainLight.shadow.camera.far = 20;
-    mainLight.shadow.camera.left = -5;
-    mainLight.shadow.camera.right = 5;
-    mainLight.shadow.camera.top = 5;
-    mainLight.shadow.camera.bottom = -5;
-    scene.add(mainLight);
-
-    // FILL LIGHT - Barely visible
-    const fillLight = new THREE.DirectionalLight(0x8899ff, 0.05);
-    fillLight.position.set(-3, 2, 2);
-    scene.add(fillLight);
-
-    // CYAN ACCENT - Very subtle
-    const cyanAccent = new THREE.PointLight(0x00ffff, 0.12, 10);
-    cyanAccent.position.set(-2, 1, 3);
-    scene.add(cyanAccent);
-
-    // MAGENTA ACCENT - Very subtle
-    const magentaAccent = new THREE.PointLight(0xff00ff, 0.09, 10);
-    magentaAccent.position.set(2, 0.5, -2);
-    scene.add(magentaAccent);
-
-    // RIM LIGHT - Weak backlight
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.12);
-    rimLight.position.set(0, 3, -5);
-    scene.add(rimLight);
-
-    // ANIMATED SPOTLIGHT - Much dimmer
-    const spotlight = new THREE.SpotLight(0xffffff, 0.18);
-    spotlight.position.set(0, 6, 0);
-    spotlight.angle = Math.PI / 6;
-    spotlight.penumbra = 0.5;
-    spotlight.decay = 2;
-    spotlight.distance = 20;
-    spotlight.castShadow = true;
-    scene.add(spotlight);
+    // Shared lighting rig — one definition for every robot viewer, scaled by a
+    // single per-page exposure. The home hero is deliberately the darkest of
+    // the four: the robot sits behind the hero copy under a heavy scrim.
+    const { spotlight, cyanAccent, magentaAccent } = createRobotLightRig(scene, {
+      exposure: ROBOT_EXPOSURE.home,
+    });
+    spotlightBase = spotlight?.intensity ?? 0;
 
     // INVISIBLE LIGHTING SYSTEM - No visible geometry, just light
     // GRADIENT LIGHTING: Yellow (top) -> Orange (center) -> Red (bottom)
@@ -388,6 +352,9 @@ const {
 
   let currentCleanup: (() => void) | null = null;
   let eventAbort: AbortController | null = null;
+  let dracoLoader: DRACOLoader | null = null;
+  let loadedGeometries: THREE.BufferGeometry[] = [];
+  let loadedMaterials: THREE.Material[] = [];
 
   // Initialize everything when DOM is loaded
   function init() {
@@ -447,16 +414,19 @@ const {
     }
 
     // Configure Draco loader for compressed models
-    const dracoLoader = new DRACOLoader();
+    dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     dracoLoader.preload();
 
     // Load robot model with Draco support
     const loader = new GLTFLoader(manager);
     loader.setDRACOLoader(dracoLoader);
+    loadedGeometries = [];
+    loadedMaterials = [];
     loader.load(
       "/models/robot_playground_draco.glb", // Draco-compressed model
       async (glb) => {
+        if (_disposing) return;
         _robot = glb.scene;
 
         // Create material with customized properties
@@ -467,10 +437,12 @@ const {
           shininess: 15,
           flatShading: true,
         });
+        loadedMaterials.push(newMaterial);
 
         // Apply material to all meshes in the model
         _robot.traverse((o) => {
           if (o instanceof THREE.Mesh) {
+            loadedGeometries.push(o.geometry);
             o.material = newMaterial;
             o.castShadow = true;
             o.receiveShadow = true;
@@ -515,7 +487,12 @@ const {
       // Animate lights for subtle dramatic effect (much dimmer)
       if (animatedLights) {
         // Subtle pulse spotlight intensity
-        animatedLights.spotlight.intensity = 0.15 + Math.sin(elapsed * 0.8) * 0.05;
+        // Pulse around the rig's own exposure-scaled intensity rather than a
+        // hardcoded value, so the per-page exposure actually reaches this light.
+        if (animatedLights.spotlight) {
+          animatedLights.spotlight.intensity =
+            spotlightBase * (1 + Math.sin(elapsed * 0.8) * 0.33);
+        }
 
         // Slowly rotate cyan accent
         const cyanAngle = elapsed * 0.3;
@@ -575,6 +552,13 @@ const {
       holdReleaseHandlers.length = 0;
       targetPlay = 0;
       playFactor = 0;
+      loadedGeometries.forEach((g) => g.dispose());
+      loadedMaterials.forEach((m) => m.dispose());
+      loadedGeometries = [];
+      loadedMaterials = [];
+      dracoLoader?.dispose();
+      dracoLoader = null;
+      composer?.dispose();
       renderer.dispose();
       if (renderer.getContext()) {
         renderer.forceContextLoss();
@@ -746,11 +730,16 @@ const {
   }
 
   // Initialize on page load (supports View Transitions)
-  document.addEventListener("astro:page-load", init);
-  document.addEventListener("astro:before-swap", () => {
-    eventAbort?.abort();
-    eventAbort = null;
-    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+  // Guarded: this component's script is inlined into the bundle of every page
+  // that uses it, so it re-executes on navigation and would otherwise stack up
+  // an extra init() — and an extra WebGL context — per route visited.
+  bindOnce('robot-model-viewer', () => {
+    onPageReady(init);
+    document.addEventListener("astro:before-swap", () => {
+      eventAbort?.abort();
+      eventAbort = null;
+      if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+    });
   });
 </script>
 

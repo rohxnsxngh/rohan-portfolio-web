@@ -4,11 +4,16 @@
 </div>
 
 <script>
-  // Add lazy loading to all markdown images
-  document.querySelectorAll('.markdown-content img').forEach(img => {
-    if (!img.hasAttribute('loading')) {
-      img.setAttribute('loading', 'lazy');
-    }
+  import { onPageReady } from '../scripts/pageReady';
+  // Runs on every navigation (not just first load) since Astro's client
+  // router only executes this module once and otherwise wouldn't lazy-load
+  // images on any blog post visited after the first.
+  onPageReady(() => {
+    document.querySelectorAll('.markdown-content img').forEach(img => {
+      if (!img.hasAttribute('loading')) {
+        img.setAttribute('loading', 'lazy');
+      }
+    });
   });
 </script>
 
