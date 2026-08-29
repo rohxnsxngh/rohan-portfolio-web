@@ -1,0 +1,514 @@
+{
+  "/images/art/antelope-canyon-painting.jpg": [
+    1024,
+    1536
+  ],
+  "/images/art/demon-masks-illustration.jpeg": [
+    2154,
+    1916
+  ],
+  "/images/art/pooh-tigger-butterfly.jpg": [
+    2054,
+    1916
+  ],
+  "/images/art/pooh-tigger-dreaming.jpg": [
+    2582,
+    1916
+  ],
+  "/images/experience/asml/coacd-eip-decomposition.png": [
+    1215,
+    745
+  ],
+  "/images/experience/asml/coacd-eip-full.png": [
+    1225,
+    811
+  ],
+  "/images/experience/asml/coacd-gripper-decomposition.png": [
+    883,
+    509
+  ],
+  "/images/experience/asml/coacd-pod-assembly.png": [
+    789,
+    457
+  ],
+  "/images/experience/asml/kinematic-pin-closeup.png": [
+    1238,
+    732
+  ],
+  "/images/experience/asml/manual-cad-decomposition.png": [
+    1246,
+    778
+  ],
+  "/images/experience/asml/point-cloud-depth-map.png": [
+    1597,
+    811
+  ],
+  "/images/experience/asml/point-cloud-eip.png": [
+    697,
+    421
+  ],
+  "/images/experience/asml/point-cloud-gripper.png": [
+    406,
+    381
+  ],
+  "/images/experience/asml/simscape-mechanics-explorer.png": [
+    1436,
+    787
+  ],
+  "/images/experience/asml/simscape-simulation-parts.png": [
+    1576,
+    922
+  ],
+  "/images/experience/asml/vhacd-decomposition.png": [
+    432,
+    272
+  ],
+  "/images/experience/asml/vhacd-eip-result.png": [
+    432,
+    313
+  ],
+  "/images/experience/nvidia/NvidiaCAD.png": [
+    1440,
+    757
+  ],
+  "/images/experience/nvidia/NvidiaLogo.png": [
+    600,
+    338
+  ],
+  "/images/experience/octapulse/photo_50575.jpg": [
+    4000,
+    2667
+  ],
+  "/images/experience/octapulse/photo_51731.jpg": [
+    3000,
+    2000
+  ],
+  "/images/experience/octapulse/photo_52203.jpg": [
+    3000,
+    2000
+  ],
+  "/images/experience/tesla/Tesla5kConveyanceDesign.png": [
+    400,
+    285
+  ],
+  "/images/experience/tesla/TeslaAestheticsFDT.png": [
+    1170,
+    1407
+  ],
+  "/images/experience/tesla/TeslaCrashDummy.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaCrashDummySideView.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaCyberRodeo.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaCyberRodeoScreen.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaCyberTruck.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaExtractionServiceCustomFrontend.png": [
+    628,
+    336
+  ],
+  "/images/experience/tesla/TeslaFDTAesthetic.png": [
+    682,
+    451
+  ],
+  "/images/experience/tesla/TeslaFDTDataDisplay.png": [
+    924,
+    510
+  ],
+  "/images/experience/tesla/TeslaFlyingY.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaLiDARControlTargets.png": [
+    398,
+    282
+  ],
+  "/images/experience/tesla/TeslaLiDARRainbow.png": [
+    840,
+    537
+  ],
+  "/images/experience/tesla/TeslaLight.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaMapWithConversion.png": [
+    634,
+    891
+  ],
+  "/images/experience/tesla/TeslaModelYWrapped.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaMoreAesthetic.png": [
+    1170,
+    1167
+  ],
+  "/images/experience/tesla/TeslaOptimus.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaRevitExtractionServiceArchitecture.png": [
+    940,
+    220
+  ],
+  "/images/experience/tesla/TeslaRoadster.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/tesla/TeslaRobotics.jpg": [
+    1920,
+    1440
+  ],
+  "/images/experience/toyota/LexusConceptCar.jpg": [
+    750,
+    448
+  ],
+  "/images/experience/toyota/ToyotaConceptCar.jpeg": [
+    640,
+    636
+  ],
+  "/images/experience/toyota/ToyotaHeadquarters.jpg": [
+    1200,
+    623
+  ],
+  "/images/profile.jpg": [
+    800,
+    800
+  ],
+  "/images/project/BiobotBaby.JPG": [
+    4032,
+    3024
+  ],
+  "/images/project/BiobotCFD.png": [
+    1388,
+    944
+  ],
+  "/images/project/BiobotCFD2.png": [
+    1920,
+    1381
+  ],
+  "/images/project/BiobotFishMotion.png": [
+    512,
+    289
+  ],
+  "/images/project/BiobotFloatTest.jpg": [
+    1600,
+    1200
+  ],
+  "/images/project/BiobotGroupPicture.JPG": [
+    4032,
+    3024
+  ],
+  "/images/project/BiobotMesh.png": [
+    1920,
+    1221
+  ],
+  "/images/project/BiobotPCB.png": [
+    1168,
+    940
+  ],
+  "/images/project/BiobotPosterDay.JPG": [
+    4032,
+    3024
+  ],
+  "/images/project/BiobotRender.jpg": [
+    512,
+    410
+  ],
+  "/images/project/BiobotSimulationTesting.png": [
+    839,
+    596
+  ],
+  "/images/project/BiobotSlides.JPG": [
+    4032,
+    3024
+  ],
+  "/images/project/BiobotSwimming.jpg": [
+    879,
+    516
+  ],
+  "/images/project/BiobotSystemOverview.png": [
+    1006,
+    600
+  ],
+  "/images/project/BiobotTBone.JPG": [
+    4032,
+    3024
+  ],
+  "/images/project/BiobotWaterPic.JPG": [
+    4032,
+    3024
+  ],
+  "/images/project/BiobotWaterside.JPG": [
+    4032,
+    3024
+  ],
+  "/images/project/HansAubsForge.png": [
+    1256,
+    530
+  ],
+  "/images/project/HansAubsHome.png": [
+    1458,
+    766
+  ],
+  "/images/project/HansAubsLab.png": [
+    1920,
+    858
+  ],
+  "/images/project/IDLHW1Spectogram.jpg": [
+    289,
+    271
+  ],
+  "/images/project/IDLHW1Spectogram2.jpg": [
+    798,
+    232
+  ],
+  "/images/project/IDLHW1Spectogram3.jpg": [
+    843,
+    226
+  ],
+  "/images/project/IDLHW2CNN.jpg": [
+    1285,
+    412
+  ],
+  "/images/project/IDLHW2FaceClassificationArchitecture.jpg": [
+    1173,
+    462
+  ],
+  "/images/project/IDLHW2FaceVerificationArchitecture.jpg": [
+    1338,
+    511
+  ],
+  "/images/project/IDLHW3AudioToPhoneme.jpg": [
+    904,
+    187
+  ],
+  "/images/project/IDLHW3CTC.jpg": [
+    591,
+    571
+  ],
+  "/images/project/IDLHW3RNN.jpg": [
+    766,
+    624
+  ],
+  "/images/project/IDLHW3RNNEncoder.jpg": [
+    1011,
+    580
+  ],
+  "/images/project/IDLHW4FullTransformer.jpg": [
+    507,
+    826
+  ],
+  "/images/project/IDLHW4TransformerLayers.jpg": [
+    760,
+    606
+  ],
+  "/images/project/IDLHW4TransformerSublayers.jpg": [
+    772,
+    606
+  ],
+  "/images/project/KinematicsProfilesMazeBot.png": [
+    751,
+    373
+  ],
+  "/images/project/LiDARMappingMazeBot.png": [
+    709,
+    301
+  ],
+  "/images/project/MachineLearningBaseball.png": [
+    464,
+    371
+  ],
+  "/images/project/MachineLearningBaseball1.png": [
+    1386,
+    571
+  ],
+  "/images/project/MachineLearningBaseball2.png": [
+    1308,
+    558
+  ],
+  "/images/project/MachineLearningBaseballMapping.png": [
+    1920,
+    840
+  ],
+  "/images/project/MachineLearningEric.png": [
+    671,
+    324
+  ],
+  "/images/project/MachineLearningMalachi.png": [
+    664,
+    321
+  ],
+  "/images/project/MazeBotGearRatio.png": [
+    284,
+    354
+  ],
+  "/images/project/MazeBotModel.png": [
+    941,
+    402
+  ],
+  "/images/project/MogoBallModule.jpg": [
+    2048,
+    1152
+  ],
+  "/images/project/MogoCADIterations.png": [
+    492,
+    618
+  ],
+  "/images/project/MogoCADModules.png": [
+    598,
+    698
+  ],
+  "/images/project/MogoConnection.jpg": [
+    2048,
+    1152
+  ],
+  "/images/project/MogoFEABending.png": [
+    935,
+    667
+  ],
+  "/images/project/MogoFEATension.png": [
+    1057,
+    645
+  ],
+  "/images/project/MogoFEATorsion.png": [
+    983,
+    719
+  ],
+  "/images/project/MogoForceGraphs.png": [
+    2002,
+    980
+  ],
+  "/images/project/MogoForceTest.jpg": [
+    1280,
+    1707
+  ],
+  "/images/project/MogoHands.jpg": [
+    1280,
+    720
+  ],
+  "/images/project/MogoHero.jpg": [
+    2048,
+    1152
+  ],
+  "/images/project/MogoInfillCrossSection.jpg": [
+    1588,
+    1592
+  ],
+  "/images/project/MogoPhase1Exploded.png": [
+    424,
+    640
+  ],
+  "/images/project/MogoSocketModule.jpg": [
+    2048,
+    1152
+  ],
+  "/images/project/MogoStanding.jpg": [
+    2048,
+    1152
+  ],
+  "/images/project/PointnextBaseline.jpg": [
+    1058,
+    473
+  ],
+  "/images/project/PointnextCustomDataset.jpg": [
+    699,
+    555
+  ],
+  "/images/project/PointnextDynamicObject.jpg": [
+    1193,
+    468
+  ],
+  "/images/project/PointnextFormula.jpg": [
+    1593,
+    187
+  ],
+  "/images/project/PointnextModel12.jpg": [
+    1053,
+    467
+  ],
+  "/images/project/PointnextModel3.jpg": [
+    1036,
+    470
+  ],
+  "/images/project/PointnextModel4.jpg": [
+    1033,
+    468
+  ],
+  "/images/project/PointnextModel5.jpg": [
+    1031,
+    482
+  ],
+  "/images/project/PointnextPipeline.jpg": [
+    1240,
+    437
+  ],
+  "/images/project/ResearchCustomStrats.jpg": [
+    633,
+    461
+  ],
+  "/images/project/ResearchUNET.jpg": [
+    448,
+    291
+  ],
+  "/images/project/Scaffolding1.jpg": [
+    1920,
+    913
+  ],
+  "/images/project/Scaffolding2.jpg": [
+    1920,
+    905
+  ],
+  "/images/project/Scaffolding3.jpg": [
+    1920,
+    907
+  ],
+  "/images/project/Scaffolding4.jpg": [
+    1920,
+    908
+  ],
+  "/images/project/Scaffolding5.jpg": [
+    1920,
+    900
+  ],
+  "/images/project/Scaffolding6.jpg": [
+    1920,
+    908
+  ],
+  "/images/project/strandbeestCAD.png": [
+    838,
+    474
+  ],
+  "/images/project/StrandbeestElectronicsDiagram.png": [
+    664,
+    430
+  ],
+  "/images/project/StrandbeestLinkagesDrawing.png": [
+    350,
+    325
+  ],
+  "/images/project/StrandBeestLinkagesMath.png": [
+    532,
+    314
+  ],
+  "/images/project/StrandbeestPrototype.png": [
+    1920,
+    1415
+  ],
+  "/images/RS.jpg": [
+    1024,
+    1024
+  ]
+}

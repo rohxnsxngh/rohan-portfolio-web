@@ -1,5 +1,6 @@
 ---
-// src/components/ProjectImage.astro - With path correction logic
+// src/components/ProjectImage.astro
+import { Image } from "astro:assets";
 
 interface Props {
   image?: string;
@@ -55,42 +56,31 @@ const imagePath = getImagePath(image);
 
 {hasRealImage ? (
   <div class="w-full h-48 overflow-hidden rounded-lg image-container" id={uniqueId}>
-    {/* Primary image attempt - with the fixed path */}
-    <img
+    {/* Served through Astro's image pipeline rather than as a raw <img>.
+        These source files are 3-4MB camera originals in public/, and the card
+        renders them into a 192px-tall box — a plain <img src> shipped the full
+        original, roughly 20x more bytes than the slot can use. `widths` +
+        `sizes` emit a srcset so the browser picks a size that matches the
+        card's real width in the 1/2/3-column grid. */}
+    <Image
       src={imagePath}
       alt={title}
+      width={828}
+      height={414}
+      widths={[414, 640, 828]}
+      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px"
+      format="webp"
+      quality={72}
       loading="lazy"
+      decoding="async"
       class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 real-image"
       onerror={`
-        // First attempt failed, try with project directory instead of projects
-        const img = this;
-        const container = document.getElementById('${uniqueId}');
-        let altPath = '';
-        
-        // Try to fix common path issues
-        if (img.src.includes('/projects/')) {
-          // Try project directory instead
-          altPath = img.src.replace('/projects/', '/project/');
-          img.src = altPath;
-        }
-        else if (img.src.includes('/project/')) {
-          // Try projects directory instead
-          altPath = img.src.replace('/project/', '/projects/');
-          img.src = altPath;
-        }
-        else {
-          // If we can't fix the path, show fallback
-          img.onerror = null;
-          img.style.display = 'none';
-          container.querySelector('.fallback').style.display = 'flex';
-        }
-        
-        // Set a final error handler for the last attempt
-        img.onerror = function() {
-          this.onerror = null;
-          this.style.display = 'none';
-          container.querySelector('.fallback').style.display = 'flex';
-        };
+        // The path-guessing retry this used to carry was dead code: every image
+        // referenced by the project collection resolves. Keep only the graceful
+        // degradation to the initials placeholder.
+        this.onerror = null;
+        this.style.display = 'none';
+        document.getElementById('${uniqueId}').querySelector('.fallback').style.display = 'flex';
       `}
     />
     <div 

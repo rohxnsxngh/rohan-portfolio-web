@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import { getImageSize } from "../../utils/imageSize";
 import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../layouts/Navigation.astro';
@@ -181,10 +183,17 @@ const statusText: Record<'completed' | 'in-progress' | 'coming-soon', string> = 
                   <div class="images-grid grid grid-cols-1 md:grid-cols-2 gap-8">
                     {project.data.images.map((image: { src: string; alt: string }) => (
                       <div class="image-wrapper group relative overflow-hidden rounded-lg">
-                        <img
+                        <Image
                           src={image.src}
                           alt={image.alt}
+                          width={getImageSize(image.src).width}
+                          height={getImageSize(image.src).height}
+                          widths={getImageSize(image.src).widths}
+                          sizes="(max-width: 767px) 100vw, 50vw"
+                          format="webp"
+                          quality={76}
                           loading="lazy"
+                          decoding="async"
                           class="w-full h-auto transform group-hover:scale-105 transition-transform duration-500 filter grayscale-[0.3] group-hover:grayscale-0"
                         />
                         <div class="image-border"></div>

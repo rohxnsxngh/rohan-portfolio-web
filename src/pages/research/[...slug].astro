@@ -1,4 +1,6 @@
 ---
+import { Image } from "astro:assets";
+import { getImageSize } from "../../utils/imageSize";
 import { getCollection, getEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../layouts/Navigation.astro";
@@ -157,10 +159,17 @@ const statusText: Record<ResearchStatus, string> = {
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {research.data.images.map((image: { src: string; alt: string }) => (
                   <div class="gallery-item group relative overflow-hidden rounded-lg border border-white/10 hover:border-white/30 transition-all duration-500">
-                    <img
+                    <Image
                       src={image.src}
                       alt={image.alt}
+                      width={getImageSize(image.src).width}
+                      height={getImageSize(image.src).height}
+                      widths={getImageSize(image.src).widths}
+                      sizes="(max-width: 767px) 100vw, 50vw"
+                      format="webp"
+                      quality={76}
                       loading="lazy"
+                      decoding="async"
                       class="w-full h-full object-cover transition-all duration-500 filter grayscale-[0.3] group-hover:grayscale-0 group-hover:scale-105"
                       style="aspect-ratio: 16/9;"
                     />

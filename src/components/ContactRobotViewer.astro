@@ -17,7 +17,7 @@ const {
   class={`contact-robot-viewer-container ${className}`}
   style={`--width: ${width}; --height: ${height};`}
 >
-  <div id="contact-robot-container" class="model-display-container" data-cursor-press data-cursor-label="HOLD TO PLAY">
+  <div id="contact-robot-container" class="model-display-container">
     <div class="loading-container">
       <progress id="contact-progress-bar" value="0" max="100"></progress>
     </div>
@@ -40,6 +40,7 @@ const {
 
   // DOM elements — re-queried in init() to survive View Transition DOM swaps
   let container: Element | null = null;
+  let visibilityObserver: IntersectionObserver | null = null;
   let modelContainer: HTMLElement | null = null;
   let progressBar: HTMLElement | null = null;
   let loadingContainer: Element | null | undefined = null;
@@ -65,10 +66,6 @@ const {
   // Variables
   let _robot: THREE.Group;
   let _mixerRobot: THREE.AnimationMixer;
-  // Hold-to-play state: mixer delta is scaled by playFactor (0 paused → 1 full).
-  let playFactor = 0;
-  let targetPlay = 0;
-  const holdReleaseHandlers: { evt: string; fn: (e: Event) => void; target: EventTarget }[] = [];
   let controls: OrbitControls;
   let camera: THREE.PerspectiveCamera;
   let renderer: THREE.WebGLRenderer;
@@ -342,21 +339,6 @@ const {
 
     if (!container || !modelContainer) return;
 
-    // ===== HOLD-TO-PLAY =====
-    const onPointerDown = () => { targetPlay = 1; };
-    const onPointerRelease = () => { targetPlay = 0; };
-    const onVisibilityChange = () => { if (document.hidden) targetPlay = 0; };
-    modelContainer.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointerup', onPointerRelease);
-    window.addEventListener('pointercancel', onPointerRelease);
-    document.addEventListener('visibilitychange', onVisibilityChange);
-    holdReleaseHandlers.length = 0;
-    holdReleaseHandlers.push(
-      { evt: 'pointerdown', fn: onPointerDown, target: modelContainer },
-      { evt: 'pointerup', fn: onPointerRelease, target: window },
-      { evt: 'pointercancel', fn: onPointerRelease, target: window },
-      { evt: 'visibilitychange', fn: onVisibilityChange, target: document },
-    );
 
     ({ width, height, aspectRatio } = getContainerSize());
     if (!width || !height) return;
@@ -440,17 +422,17 @@ const {
 
     // Animation loop
     let _animationId: number;
+    let _loopRunning = false;
     function animate() {
       if (_disposing) return;
+      if (!_loopRunning) return;
       _animationId = requestAnimationFrame(animate);
 
       const delta = clock.getDelta();
       const elapsed = clock.getElapsedTime();
 
-      playFactor += (targetPlay - playFactor) * 0.15;
-      if (playFactor < 0.0005) playFactor = 0;
       if (_mixerRobot) {
-        _mixerRobot.update(delta * playFactor);
+        _mixerRobot.update(delta);
       }
 
       // Subtle constant rotation of the robot
@@ -495,7 +477,36 @@ const {
       composer.render();
     }
 
-    animate();
+    // Only render while the canvas is actually on screen. These heroes sit
+    // above long pages, so without this the scene kept running a full
+    // composer pass every frame — model, lights and a Sobel post-process —
+    // the entire time the reader was scrolled past it.
+    function startLoop() {
+      if (_loopRunning || _disposing) return;
+      _loopRunning = true;
+      // Discard the time accumulated while paused, otherwise the first frame
+      // back gets a delta of however long the viewer was off screen and the
+      // animation jumps.
+      clock.getDelta();
+      _animationId = requestAnimationFrame(animate);
+    }
+
+    function stopLoop() {
+      _loopRunning = false;
+      if (_animationId) cancelAnimationFrame(_animationId);
+    }
+
+    // rootMargin gives the loop a head start so the model is already moving
+    // by the time it scrolls into view.
+    visibilityObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) startLoop();
+        else stopLoop();
+      },
+      { rootMargin: '200px' }
+    );
+    if (container) visibilityObserver.observe(container);
+    startLoop();
 
     // Add resize listener
     window.addEventListener("resize", handleResize);
@@ -512,14 +523,10 @@ const {
     currentCleanup = () => {
       _disposing = true;
       cancelAnimationFrame(_animationId);
+      visibilityObserver?.disconnect();
+      visibilityObserver = null;
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
-      for (const h of holdReleaseHandlers) {
-        h.target.removeEventListener(h.evt, h.fn as EventListener);
-      }
-      holdReleaseHandlers.length = 0;
-      targetPlay = 0;
-      playFactor = 0;
       loadedGeometries.forEach((g) => g.dispose());
       loadedMaterials.forEach((m) => m.dispose());
       loadedGeometries = [];

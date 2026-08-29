@@ -20,10 +20,10 @@ const { title, description, image, frontmatter, robots } = Astro.props;
     <title>{title ?? "Rohan Singh"}</title>
     <meta name="description" content={description} />
 
-    <!-- The font lives in public/ so the URL resolves in the production build.
-         It previously pointed at /src/fonts/… which only exists under the dev
-         server, so every deployed page silently fell back to the platform's
-         default monospace. -->
+    <!-- Preloaded because the font is otherwise only discovered once the CSS
+         has been fetched and parsed, which shows a flash of fallback text on
+         a cold load. Served from public/ as woff2 (39KB, vs 134KB for the ttf
+         Vite used to fingerprint out of src/fonts). -->
     <link
       rel="preload"
       href="/fonts/IBMPlexMono-Regular.woff2"
@@ -471,46 +471,6 @@ const { title, description, image, frontmatter, robots } = Astro.props;
         }
       }
 
-      /* ===== MOBILE HOLD-TO-PLAY HINT =====
-         Desktop has the cursor caption via [data-cursor-label] — that surface
-         doesn't exist on touch devices, so on mobile a small bottom-anchored
-         caption fades in over each model container and self-dismisses after
-         a few seconds. Pure CSS, no JS, runs once per page load. */
-      @media (hover: none) and (pointer: coarse) {
-        [data-cursor-press]::after {
-          content: 'TOUCH \00a0 & \00a0 HOLD';
-          position: absolute;
-          bottom: 16px;
-          left: 50%;
-          transform: translate(-50%, 8px);
-          font-family: 'IBM Plex Mono', monospace;
-          font-size: 9px;
-          font-weight: 600;
-          letter-spacing: 0.3em;
-          color: rgba(255, 255, 255, 0.85);
-          padding: 6px 12px;
-          background: rgba(0, 0, 0, 0.72);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          pointer-events: none;
-          opacity: 0;
-          z-index: 10;
-          animation: mobileHoldHint 5s ease-out forwards;
-        }
-      }
-
-      @keyframes mobileHoldHint {
-        0%        { opacity: 0; transform: translate(-50%, 8px); }
-        12%, 70%  { opacity: 1; transform: translate(-50%, 0); }
-        100%      { opacity: 0; transform: translate(-50%, 0); }
-      }
-
-      @media (hover: none) and (pointer: coarse) and (prefers-reduced-motion: reduce) {
-        [data-cursor-press]::after {
-          animation: none;
-          opacity: 0.85;
-          transform: translate(-50%, 0);
-        }
-      }
     </style>
   </head>
   <body class="min-h-screen">
