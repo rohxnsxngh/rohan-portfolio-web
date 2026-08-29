@@ -291,21 +291,35 @@ export function killAllScrollTriggers(): void {
  * has to be driven manually.
  */
 export function refreshScrollTriggers(): void {
+  // refresh() recalculates each trigger's start/end against the current layout;
+  // update() re-applies scrub progress for the current scroll position.
+  //
+  // Both are needed on a history navigation. Astro restores the previous scroll
+  // position programmatically, which fires no scroll event, so a scrubbed
+  // timeline keeps whatever progress it last computed. That is what stranded
+  // the hero: going back to a page you had scrolled down restored the scroll,
+  // left the scrub at full progress, and the header stayed translated off
+  // screen even after you scrolled back to the top.
+  const sync = () => {
+    ScrollTrigger.refresh();
+    ScrollTrigger.update();
+  };
+
   // Immediately, for whatever is already laid out.
-  ScrollTrigger.refresh();
+  sync();
 
   // Then again once late-arriving layout (fonts, images, canvases) settles.
-  requestAnimationFrame(() => ScrollTrigger.refresh());
+  requestAnimationFrame(sync);
 
   if (typeof document !== 'undefined' && document.fonts) {
-    document.fonts.ready.then(() => ScrollTrigger.refresh()).catch(() => {});
+    document.fonts.ready.then(sync).catch(() => {});
   }
 
   const images = Array.from(document.images).filter((img) => !img.complete);
   if (images.length) {
     let pending = images.length;
     const done = () => {
-      if (--pending === 0) ScrollTrigger.refresh();
+      if (--pending === 0) sync();
     };
     images.forEach((img) => {
       img.addEventListener('load', done, { once: true });
@@ -314,7 +328,7 @@ export function refreshScrollTriggers(): void {
   }
 
   // Final catch-all for anything that resizes later still (3D model loads).
-  setTimeout(() => ScrollTrigger.refresh(), 1200);
+  setTimeout(sync, 1200);
 }
 
 /**

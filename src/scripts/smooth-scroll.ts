@@ -21,6 +21,14 @@ export function initSmoothScroll(): Lenis {
     infinite: false,
   });
 
+  // Astro restores the previous scroll position on a history navigation without
+  // going through Lenis, so a freshly constructed instance would believe it is
+  // at the top while the document is scrolled down — and the first wheel event
+  // would jump. Start it from wherever the document actually is.
+  if (window.scrollY > 0) {
+    lenis.scrollTo(window.scrollY, { immediate: true });
+  }
+
   // Sync Lenis scroll with ScrollTrigger
   lenis.on('scroll', ScrollTrigger.update);
 

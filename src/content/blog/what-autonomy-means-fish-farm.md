@@ -96,11 +96,23 @@ One row per fish. Without that join, nothing else compounds.
 
 ![Me in a grey knit beanie and blue sweatshirt, laughing with my chin on my hand at a crowded event table, a name badge on my chest and the room out of focus behind](@images/experience/octapulse/photo_50575.jpg)
 
+## Measurement Is How You Build the Twin
+
+The reason to care about the first step is what it accumulates into.
+
+Every fish that passes the capture gate becomes a row: length, mass, proportions, fin placement, condition, a timestamp. Rows become a population. Populations tracked over time become a model of the facility — a digital twin, accurate enough to ask questions of instead of asking the water.
+
+That is the real deliverable. Not a detector, and not, in the end, a robot. A farm whose state is legible enough that decisions about feed, grading, breeding and harvest stop being estimates.
+
+And it matters because seafood supply now only grows if farming grows. Wild capture has been flat for decades while the population climbs. Feed is the largest cost and the largest waste on a farm, and it is currently dosed against a guess. Closing that loop against a measured population is not an efficiency nicety — it is how you get more protein out of water that is not getting any bigger.
+
+Autonomy is what you earn once the twin is accurate enough to act on. The acting is the part that produces food. The measuring is the part that makes the acting safe.
+
 ## The Third Step Is Still Ahead of Us
 
 I do not want to overstate where we are on "act."
 
-Our robotics work runs on a dev kit, and the honest current result is a simulation result. In MuJoCo, a scripted inverse-kinematics pick scores 50 out of 50 on a rigid box proxy and 0 out of 5 on both of our deformable fillet models, where the jaws crumple the object and leave it on the table. No robot of ours has picked a real fillet. The recorded real dataset uses a silicone sashimi proxy, and no policy checkpoint is trained yet.
+Our robotics work runs on a dev kit, and the honest current result is a simulation result. In simulation, a scripted inverse-kinematics pick scores 50 out of 50 on a rigid box proxy and 0 out of 5 on both of our deformable fillet models, where the jaws crumple the object and leave it on the table. No robot of ours has picked a real fillet. The recorded real dataset uses a silicone sashimi proxy, and no policy checkpoint is trained yet.
 
 What that demonstrates is still useful: the deformable problem, not the pipeline, is the hard one. The tooling is honest about its ceiling too — the deformable backend we chose runs at 0.06 to 0.11 times realtime on a laptop, an authoring and debugging tool rather than a data generator.
 

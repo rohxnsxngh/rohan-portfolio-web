@@ -296,6 +296,14 @@ const statusText: Record<'completed' | 'in-progress' | 'coming-soon', string> = 
   /* Character animations */
   .hero-title .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state and its reveal are skipped on client-side
+     navigations. The header carries transition:name="page-title" and is
+     snapshotted for the morph before any intro runs, and pinning it visible
+     also means the header can never be stranded at opacity 0 if the reveal
+     does not complete. A full page load still gets the character reveal. */
+  html:not(.spa-nav) .hero-title .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
     animation: charReveal 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;

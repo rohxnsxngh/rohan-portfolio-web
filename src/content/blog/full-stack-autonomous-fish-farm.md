@@ -84,6 +84,18 @@ Average genetic gain across aquaculture breeding programs runs 13.3% per generat
 
 It is still the layer we picked, and not by accident. It is the one place in the stack where the fish is already out of the water and in somebody's hands.
 
+## What All of This Is Actually For
+
+Stack the layers up and the goal stops being "automate the farm" and becomes something more specific: build a digital twin of it.
+
+A digital twin is a live model of a physical facility, accurate enough that you can interrogate the model instead of the water. Every layer above contributes state to it — water chemistry, oxygen headroom, feed delivered, biomass standing, health scores, the individual animals in each tank — and the value is not any single reading. It is that the readings are in one place, on one clock, attached to the same animals over time.
+
+That is what turns a farm from a thing you react to into a thing you can run experiments on. You can ask what a feed change did to conversion three weeks later. You can ask which family line actually outgrew the others rather than which one the grader remembered. You can ask whether a mortality event started upstream in the biofilter forty hours before anyone saw a dead fish.
+
+None of that requires a robot. It requires the farm to be legible.
+
+And legibility is where the food comes from. Global seafood supply now grows only if farming grows, the population keeps climbing, and the water does not. Every percentage point recovered from wasted feed, every fish that never should have been grown out, every generation of genetic gain that lands a season earlier — that is protein produced from inputs already being spent. A farm you can measure is a farm you can improve, and improvement at this scale is measured in millions of tonnes.
+
 ## Automate the Layer Under You First
 
 **Everything already automated on a farm shares one property — the quantity is directly observable by an instrument that already exists.** Oxygen and CO2 control loops, feed delivery, net inspection, biomass frames, camera-based lice counting, mechanical grading. None of those needed a new theory. They needed a sensor that could survive the building.

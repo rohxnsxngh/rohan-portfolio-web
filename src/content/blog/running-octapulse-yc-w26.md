@@ -70,7 +70,7 @@ You do not learn that in a group office hour.
 
 Some of these happened inside the batch and some after it. The pattern does not change.
 
-On 2 June 2026 a perfectly healthy camera dropped off our tailnet for about three days, and diagnosing it required physically traveling to the plant LAN. We now run a watchdog that checks every two minutes whether the Tailscale backend is genuinely running and the node is genuinely online — not merely whether the process is alive — and reboots the camera if it is still unreachable after fifteen minutes.
+On 2 June 2026 a perfectly healthy camera dropped off our private network for about three days, and diagnosing it required physically traveling to the plant LAN. We now run a watchdog that checks every two minutes whether the private-network client is genuinely running and the node is genuinely online — not merely whether the process is alive — and reboots the camera if it is still unreachable after fifteen minutes.
 
 Our camera apps now hard-fail at startup if their device ID or API URL is missing. That is a deliberate loss of convenience, added after a silent fallback masked a bug in which every camera in the fleet identified itself as camera 1.
 

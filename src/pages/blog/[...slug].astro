@@ -208,6 +208,14 @@ const statusText: Record<BlogStatus, string> = {
 
   .hero-title .char {
     display: inline-block;
+  }
+
+  /* The hidden intro state and its reveal are skipped on client-side
+     navigations. The header carries transition:name="page-title" and is
+     snapshotted for the morph before any intro runs, and pinning it visible
+     also means the header can never be stranded at opacity 0 if the reveal
+     does not complete. A full page load still gets the character reveal. */
+  html:not(.spa-nav) .hero-title .char {
     opacity: 0;
     transform: translateY(100px) scale(0.8);
   }
@@ -311,7 +319,7 @@ const statusText: Record<BlogStatus, string> = {
   import { onPageReady } from '../../scripts/pageReady';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
-  import { createPageIntroTimeline, scrollReveal } from '../../scripts/animations';
+  import { addHeroCharIntro, createPageIntroTimeline, scrollReveal } from '../../scripts/animations';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -327,11 +335,7 @@ const statusText: Record<BlogStatus, string> = {
     tl.to('.hero-section', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0.1);
 
     // Char reveal for title
-    const chars = document.querySelectorAll('.hero-title .char');
-    if (chars.length) {
-      gsap.set(chars, { opacity: 0, y: 100, scale: 0.8 });
-      tl.to(chars, { opacity: 1, y: 0, scale: 1, duration: 1, stagger: 0.02, ease: 'expo.out' }, 0.2);
-    }
+    addHeroCharIntro(tl, document.querySelectorAll('.hero-title .char'), 0.2);
 
     // Metadata
     tl.to('.metadata-section', { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, 0.4);
