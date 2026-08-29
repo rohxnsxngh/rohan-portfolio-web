@@ -95,6 +95,7 @@ const {
   // Exposure-scaled base intensity of the rig's spotlight, captured at
   // creation so the animation loop can pulse around it.
   let spotlightBase = 0;
+  let magentaBase = 0;
   let mousePointLight: THREE.PointLight | null = null;
   let hemisphereLight: THREE.HemisphereLight | null = null;
   let raycaster: THREE.Raycaster | null = null;
@@ -182,6 +183,7 @@ const {
       exposure: ROBOT_EXPOSURE.home,
     });
     spotlightBase = spotlight?.intensity ?? 0;
+    magentaBase = magentaAccent.intensity;
 
     // INVISIBLE LIGHTING SYSTEM - No visible geometry, just light
     // GRADIENT LIGHTING: Yellow (top) -> Orange (center) -> Red (bottom)
@@ -500,7 +502,11 @@ const {
         animatedLights.cyanAccent.position.z = Math.sin(cyanAngle) * 3;
 
         // Subtle pulse magenta accent
-        animatedLights.magentaAccent.intensity = 0.07 + Math.sin(elapsed * 1.2) * 0.03;
+        // Pulse around the rig's exposure-scaled value, like the spotlight —
+        // a hardcoded intensity here would silently override the per-page
+        // exposure and reintroduce the drift the shared rig removed.
+        animatedLights.magentaAccent.intensity =
+          magentaBase * (1 + Math.sin(elapsed * 1.2) * 0.4);
       }
 
 
