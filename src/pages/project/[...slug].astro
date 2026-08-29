@@ -37,7 +37,7 @@ const statusText: Record<'completed' | 'in-progress' | 'coming-soon', string> = 
 };
 ---
 
-<Layout title={`${project.data.title} | Rohan Singh`}>
+<Layout title={project.data.title} description={project.data.description}>
   <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>

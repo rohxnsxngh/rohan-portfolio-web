@@ -8,17 +8,31 @@ import Preloader from "../components/Preloader.astro";
 // used to be hardcoded a second time further down the head, which emitted two
 // <title> and two <meta name="description"> tags per page; centralising them
 // here keeps one of each and still gives untitled pages real content.
-const DEFAULT_TITLE = 'Rohan Singh';
+const SITE_NAME = 'Rohan Singh';
 const DEFAULT_DESCRIPTION =
   'Rohan Singh — software engineer with a background in mechanical engineering. Projects, research, writing and experience in robotics, computer vision and deep tech.';
 
 const {
-  title = DEFAULT_TITLE,
+  title,
   description = DEFAULT_DESCRIPTION,
   image,
   frontmatter,
   robots,
 } = Astro.props;
+
+// Pages pass only their own name; the site name is appended here so every
+// route reads the same way in a tab, a bookmark and a search result. This was
+// previously left to each page, which had drifted into three conventions
+// ("Art - Rohan Singh", "Foo | Rohan Singh", a bare "About") plus several
+// pages with no title at all.
+const pageTitle = title ?? SITE_NAME;
+
+// The homepage — and anything that already carries the site name — is left
+// alone rather than doubled up.
+const documentTitle =
+  pageTitle === SITE_NAME || pageTitle.endsWith(SITE_NAME)
+    ? pageTitle
+    : `${pageTitle} — ${SITE_NAME}`;
 ---
 
 <html lang="en" class="bg-secondary text-primary" data-theme="dark">
@@ -31,7 +45,7 @@ const {
       content="width=device-width, initial-scale=1.0"
     />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{documentTitle}</title>
     <meta name="description" content={description} />
 
     <!-- Preloaded because the font is otherwise only discovered once the CSS
@@ -46,7 +60,7 @@ const {
       crossorigin
     />
 
-    <Seo {title} {description} url={Astro.url} {image} {frontmatter} {robots} />
+    <Seo title={pageTitle} {description} url={Astro.url} {image} {frontmatter} {robots} />
     <ViewTransitions />
 
     <style is:global>

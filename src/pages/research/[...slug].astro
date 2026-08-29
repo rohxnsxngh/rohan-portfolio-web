@@ -34,7 +34,7 @@ const statusText: Record<ResearchStatus, string> = {
 };
 ---
 
-<Layout title={`${research.data.title} | Rohan Singh`}>
+<Layout title={research.data.title} description={research.data.description}>
   <div class="min-h-screen flex flex-col">
     <div class="flex-grow">
       <Navbar>

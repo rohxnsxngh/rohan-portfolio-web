@@ -39,7 +39,7 @@ const statusText: Record<BlogStatus, string> = {
 };
 ---
 
-<Layout title={`${post.data.title} | Rohan Singh`}>
+<Layout title={post.data.title} description={post.data.description}>
   <div class="min-h-screen flex flex-col">
     <div class="flex-grow">
       <Navbar>
