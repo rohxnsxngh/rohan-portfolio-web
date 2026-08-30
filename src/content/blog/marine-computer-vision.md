@@ -2,7 +2,7 @@
 title: "Computer Vision Challenges Unique to Marine Environments"
 date: "2026-08"
 author: "Rohan Singh"
-image: "@images/blog/marine-cv/stereo-depth-examples.png"
+image: "@images/experience/octapulse/4DABB450-8CE3-49C1-A66F-495E35A8C055_1_102_o.jpeg"
 status: "Complete"
 description: "Water is part of the optical path, not the backdrop. What scattering, specularity and a deformable subject actually do to a vision pipeline, measured on our own captures."
 tags: ["computer vision", "marine", "robotics", "OctaPulse", "deep learning"]
@@ -36,9 +36,7 @@ Valid depth on the fish came out at a median of 13.1 percent, p10 3.2 and p90 22
 
 The session also produced exactly one thickness number, 132 mm, for an animal that is 20 to 80 mm thick. That is a separate failure with a separate cause: depth alignment was switched off for all but three of those captures while we chased a firmware crash, so the fish bounding box and the depth map did not index into each other, and for the rest the app correctly refused to emit a number at all.
 
-![A figure titled What the depth camera actually returns on a fish: a top row of four overhead captures of a trout labelled worst 0 percent dense, p25 8 percent, median 13 percent and best 54 percent, three of them on a white stage with a bare hand holding the fish and one on a grey surface with AprilTags in the corners and a vertical black post through the middle, above a row of matching depth maps that are largely blank, with coloured speckle clinging only to the hand and to a ring of water on the table](@images/blog/marine-cv/stereo-depth-examples.png)
-
-That is the whole argument in one picture. Passive block-matching stereo works by finding the same patch of texture in the left and right image, and a wet, specular fish on a plain stage offers nothing to correlate. What depth comes back clings to the operator's hand and a ring of spilled water, the only textured things in frame.
+That is the whole argument in one number. Passive block-matching stereo works by finding the same patch of texture in the left and right image, and a wet, specular fish on a plain stage offers nothing to correlate. What depth comes back clings to the operator's hand and a ring of spilled water, the only textured things in frame.
 
 We tried the obvious escapes. Raising the mono resolution from 640 by 400 to 1280 by 800, chasing disparity precision, halved density: valid depth in the region of interest fell from about 19 percent to about 12. The intuition that more pixels means more texture is backwards in a texture-starved scene: the same weak signal spread over four times the pixels leaves less inside each matching block. The confidence filter was not the culprit either, since our setting of 245 is DepthAI's default and near maximally permissive. The cause is physical, not software.
 
@@ -53,8 +51,6 @@ The interim fix is cross-polarisation, a polarising film on the light and a cros
 ## The Reference Plane Moved More Than the Fish Is Thick
 
 Thickness, when we can compute it at all, is the stage plane minus the fish surface. Across that same session, whole-frame depth had a median of 564 mm, a range of 484 to 796 mm and a standard deviation of 69 mm. A trout in this size class is around 40 mm thick, well inside the 20 to 80 mm range above, so the reference was wandering further between captures than the quantity we were trying to measure.
-
-![An overhead phenotyping output: a rainbow trout on a green one inch grid mat inside a black tote outdoors on gravel, an AprilTag taped at the upper left, a laminated card reading 53, hands entering at both lower corners, coloured masks over the fins, white measurement lines labelled in inches, and a calibration readout reading Cal 136.4px per inch](@images/blog/marine-cv/fish53-detailed-visualization.jpg)
 
 That 69 mm is the quantitative reason behind something I have described before, the scale fiducial in every frame. A reference plane that moves by more than the subject is thick cannot be trusted to carry scale either, so each image carries its own known-length reference and calibrates itself.
 
@@ -74,9 +70,7 @@ Our first pass at fin erosion scoring compared each fin's mask area against a po
 
 The rebuild separates the two. Fins are measured in per-fin canonical frames anchored to morphometric keypoints, so a fin is compared in its own normalised coordinate system rather than in pixels. Aligned masks are rasterised into that grid to build a coverage map, and the template is the median envelope rather than an upper percentile, since a p90 reference makes the typical fish look eroded by construction.
 
-![Five heatmaps labelled dorsal, caudal, anal, pelvic and pectoral, each showing per pixel coverage of pose-normalised fin masks with a white contour marking the median envelope template, the caudal panel showing a crisp forked tail](@images/blog/marine-cv/fin-canonical-templates.jpg)
-
-That the caudal template comes out as a crisp fork is the evidence that the alignment works, since a misaligned stack would average into a blob. There is a backstop for the confound too: a folded but intact tail still has long rays, so the keypoint fork extent stays high while mask area says eroded, and that disagreement raises a fold flag rather than a score.
+A caudal template that resolves into a crisp fork rather than a blur is the evidence that the alignment works, since a misaligned stack would average into a blob. There is a backstop for the confound too: a folded but intact tail still has long rays, so the keypoint fork extent stays high while mask area says eroded, and that disagreement raises a fold flag rather than a score.
 
 ## No Ground Truth, So Test Invariances Instead
 
