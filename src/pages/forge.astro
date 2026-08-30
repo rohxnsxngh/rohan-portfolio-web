@@ -3,6 +3,10 @@ import Layout from "../layouts/Layout.astro";
 import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import ArtParticleViewer from "../components/ArtParticleViewer.astro";
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title="The Forge" description="Interactive ThreeJS experiments and visualizations">

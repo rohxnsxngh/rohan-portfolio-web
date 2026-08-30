@@ -19,7 +19,11 @@ export function initSmoothScroll(): Lenis {
     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     touchMultiplier: 2,
     infinite: false,
-  });
+    // Touch devices keep their native momentum scrolling. A JS-smoothed
+    // approximation fights the platform's own physics and reads as lag on a
+    // phone, where the native behaviour is already good.
+    smoothTouch: false,
+  } as ConstructorParameters<typeof Lenis>[0]);
 
   // Astro restores the previous scroll position on a history navigation without
   // going through Lenis, so a freshly constructed instance would believe it is

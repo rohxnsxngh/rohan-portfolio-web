@@ -120,6 +120,16 @@ const documentTitle =
         animation: slideUp 0.5s ease-out;
       }
 
+      /* On mobile, 100vh includes the browser chrome, so a full-height hero is
+         taller than the visible viewport and the layout shifts as the URL bar
+         hides and shows. dvh tracks the actual visible height. Applied as an
+         override so the 24 existing min-h-screen utilities are all covered
+         without editing each call site. */
+      @supports (height: 100dvh) {
+        .min-h-screen { min-height: 100dvh; }
+        .h-screen { height: 100dvh; }
+      }
+
       /* Lenis smooth scroll */
       html.lenis, html.lenis body {
         height: auto;

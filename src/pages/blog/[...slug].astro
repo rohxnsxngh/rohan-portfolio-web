@@ -37,6 +37,10 @@ const statusText: Record<BlogStatus, string> = {
   complete: "PUBLISHED",
   "coming-soon": "COMING SOON",
 };
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title={post.data.title} description={post.data.description}>

@@ -40,6 +40,10 @@ const sortedProjects = [...validProjects].sort((a, b) => {
 
   return statusCompare;
 });
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title="Projects" description="Robotics, computer vision and machine learning projects — from bio-inspired underwater robots to point cloud processing.">
@@ -516,6 +520,7 @@ const sortedProjects = [...validProjects].sort((a, b) => {
   /* Prevent layout shift */
   .hero-section {
     min-height: 100vh;
+    min-height: 100dvh;
     min-height: 100dvh;
   }
 

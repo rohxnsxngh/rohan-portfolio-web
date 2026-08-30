@@ -40,6 +40,7 @@ const {
   import { onPageReady } from '../scripts/pageReady';
   import { createRobotLightRig, ROBOT_EXPOSURE } from '../scripts/robotLightRig';
   import { bindOnce } from '../scripts/bindOnce';
+  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   // Import Three.js properly using ES modules
   import * as THREE from "three";
   import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -349,6 +350,19 @@ const {
 
     if (!container || !modelContainer) return;
 
+    // Phones, reduced-motion and data-saver visitors skip the WebGL hero
+    // entirely rather than downloading megabytes of geometry to run a
+    // post-processed scene behind the copy. See src/scripts/heavy3d.ts.
+    //
+    // The loading indicator lives in the markup and is normally hidden once
+    // the model arrives, so skipping has to hide it too or it sits there
+    // spinning forever over a model that is never coming.
+    if (shouldSkipHeavy3D()) {
+      const pending = document.querySelector('div.loading-container');
+      if (pending instanceof HTMLElement) pending.style.display = 'none';
+      return;
+    }
+
 
     ({ width, height, aspectRatio } = getContainerSize());
     if (!width || !height) return;
@@ -375,7 +389,9 @@ const {
 
     // Configure Draco loader for compressed models
     dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    // Self-hosted: a third-party CDN on the critical path of the hero model costs
+    // an extra DNS lookup and TLS handshake before any geometry can decode.
+    dracoLoader.setDecoderPath('/draco/');
     dracoLoader.preload();
 
     // Load robot model with Draco support

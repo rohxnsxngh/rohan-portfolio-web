@@ -19,6 +19,10 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   // Within the same group (both current or both ended), sort by start date descending
   return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
 });
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title="Experience" description="Engineering roles and internships across Tesla, ASML, NVIDIA, Toyota and my own company.">

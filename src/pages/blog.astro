@@ -95,6 +95,10 @@ const otherArticles = articlesByCategory.get("other") || [];
 if (otherArticles.length > 0) {
   activeCategories.push({ id: "other", name: "Other", icon: "folder", keywords: [] });
 }
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title="Writing" description="Essays and notes on robotics, computer vision, startups and the path from mechanical engineering into software.">
@@ -636,6 +640,7 @@ if (otherArticles.length > 0) {
   /* Prevent layout shift */
   .hero-section {
     min-height: 100vh;
+    min-height: 100dvh;
     min-height: 100dvh;
   }
 

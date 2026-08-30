@@ -54,6 +54,10 @@ const statusText = {
   "in-progress": "In Progress",
   "coming-soon": "Coming Soon",
 };
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title="Research" description="Academic research and technical deep-dives in machine learning, computer vision and point cloud processing.">

@@ -4,6 +4,10 @@ import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
 import ObfuscatedEmail from "../components/ObfuscatedEmail.astro";
 import ContactRobotViewer from "../components/ContactRobotViewer.astro";
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title="Contact" description="Get in touch about engineering work, collaborations or anything you are building.">
@@ -363,6 +367,7 @@ import ContactRobotViewer from "../components/ContactRobotViewer.astro";
   /* Prevent layout shift */
   .hero-section {
     min-height: 100vh;
+    min-height: 100dvh;
     min-height: 100dvh;
   }
 

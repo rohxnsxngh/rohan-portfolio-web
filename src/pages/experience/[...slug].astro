@@ -37,6 +37,10 @@ function formatYearMonth(dateString: string) {
     return dateString; // Return original string as fallback
   }
 }
+
+// Static at build time. Nothing on this page reads request-time state, so it is
+// served straight from the edge instead of invoking a function per request.
+export const prerender = true;
 ---
 
 <Layout title={experience.data.title} description={experience.data.description}>
