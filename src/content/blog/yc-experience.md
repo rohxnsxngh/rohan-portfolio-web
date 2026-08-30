@@ -60,11 +60,13 @@ Every founder prepares the first layer. What do you do, how big is the market, w
 
 The work is the second layer, which is what you have left when somebody takes a number you just said and asks how you know it.
 
-The example I keep coming back to is weight. We estimate mass from a scale referenced body area using an allometric fit, W = 0.106 * Area^1.47, which gives 2.8% error and an R squared of 0.96 against 136 physically weighed fish. That is the first layer, and on its own it is a number anybody could have put on a slide.
+The example I keep coming back to is weight. We estimate mass from a scale referenced body area using an allometric fit, validated against fish we physically weighed. That is the first layer, and on its own it is a number anybody could have put on a slide.
 
-The second layer is that the same fit holds at 2.82% under family-out cross validation, which is the part that tells you the model is reading morphology rather than memorising families. And the third layer is that I will still tell you weight is not a finished capability, because a single view model is inferring volume from a two dimensional area, and that is an assumption rather than a measurement.
+The second layer is the split you validated on. Holding out entire families, rather than shuffling individuals, is what tells you the model is reading morphology instead of memorising which family a fish came from. Same headline number, completely different claim underneath it.
 
-Being able to walk down that stack in one breath is the whole preparation. It is not a communication skill. Either you ran the family-out split or you did not, and no amount of rehearsal will produce the number afterward.
+And the third layer is that I will still tell you weight is not a finished capability, because a single view model is inferring volume from a two dimensional area, and that is an assumption rather than a measurement.
+
+Being able to walk down that stack in one breath is the whole preparation. It is not a communication skill. Either you ran the harder split or you did not, and no amount of rehearsal will produce it afterward.
 
 ## Saying the smaller number is a strategy, not modesty
 

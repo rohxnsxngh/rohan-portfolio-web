@@ -32,11 +32,11 @@ A cohort of trout does not grow faster because we are in a batch. A farm crew do
 
 The number we chose to report was how many individual fish we had photographed and turned into rows of data. It is countable, nobody can argue it upward, and it goes flat immediately if we are not physically getting to farms.
 
-That weekly counter is a slice of a much longer program. Our own program-review deck for Riverence (the customer named on our YC page as North America's largest trout producer) puts the total to date at roughly 11,000 fish imaged, grown out from an initial hundred-fish pilot. One photograph on a calibrated mat with an AprilTag scale reference becomes twenty or more objective traits for that animal. One row per fish.
+That weekly counter is a slice of a much longer program that started as a small pilot and grew from there. One photograph on a calibrated mat with a scale reference becomes twenty or more objective traits for that animal. One row per fish.
 
-What I like less is what sits underneath it. The model card for our phenotyping model says the quiet part out loud: because those labels came from SAM3 auto-labeling approved in bulk, the metrics "measure agreement with those auto-labels rather than with ground truth" unless a human-labeled holdout was used.
+What I like less is what sits underneath it. When a training set has been auto-labelled and approved in bulk, the accuracy figures you can quote measure agreement with the auto-labeller rather than agreement with reality, and they only become accuracy claims once a human-labelled holdout exists to check them against.
 
-Our own labeling platform is stricter. A vision-language model grades each auto-label and re-orders the review queue worst-first, but it never auto-approves, and every label still passes through a person. That gap is not confined to the older sets: our status doc still records that the metrics we report measure agreement with SAM3 rather than with ground truth, and closing it has been flagged repeatedly and is still open.
+That is a distinction worth holding yourself to even when nobody outside is asking. A batch is very good at making you ship. It does not make you honest about what your numbers mean.
 
 A batch is very good at making you ship. It does not make you honest. You have to do that part yourself.
 
@@ -70,11 +70,11 @@ You do not learn that in a group office hour.
 
 Some of these happened inside the batch and some after it. The pattern does not change.
 
-On 2 June 2026 a perfectly healthy camera dropped off our private network for about three days, and diagnosing it required physically traveling to the plant LAN. We now run a watchdog that checks every two minutes whether the private-network client is genuinely running and the node is genuinely online (not merely whether the process is alive), and reboots the camera if it is still unreachable after fifteen minutes.
+A perfectly healthy camera can drop off a private network and stay off, and diagnosing it means physically travelling to the plant. So a watchdog has to check whether the machine is genuinely reachable rather than whether its process is alive, and power-cycle it when it is not. Liveness and reachability are different questions and only one of them matters.
 
-Our camera apps now hard-fail at startup if their device ID or API URL is missing. That is a deliberate loss of convenience, added after a silent fallback masked a bug in which every camera in the fleet identified itself as camera 1.
+Anything identity-shaped hard-fails at startup now instead of falling back to a default. A silent default for a missing device identifier gives you a fleet that all reports itself as the same unit: nothing errors, the dashboard looks populated, and the data is worthless.
 
-My favorite failure is the smallest one. We version model class order as a first-class artifact and gitignore the weights themselves, because class order is the part you actually need to reason about later, and getting it wrong is silent and expensive. It once made every hand read as a trout.
+My favourite failure is the smallest one. Model class order is the part you actually need to reason about later, so it belongs in version control beside the model rather than baked into weights nobody can read. Getting it wrong is silent and expensive.
 
 ## Preparing for the stage is a compression exercise
 
@@ -104,9 +104,9 @@ None of that is the same as a company that works. It is evidence that other peop
 
 ## The batch could not compress a growth cycle
 
-It could not give us a human-labeled holdout set either. It could not get us washdown-rated hardware, which is still an open purchasing question rather than a solved engineering one.
+It could not get us washdown-rated hardware, which is a purchasing and design question rather than something tempo solves.
 
-And it could not tell us how to grip a wet fillet. In simulation, our scripted pick scores 50 out of 50 on a rigid box proxy and 0 out of 5 on both deformable fillet models. That is an in-house demonstration rather than a real-arm result, but a clear one that the deformable problem, not the pipeline, is the hard part.
+And it could not tell us how to grip a wet fillet. In simulation the split is stark: a scripted pick that succeeds every time on a rigid proxy fails outright on a deformable one. That is a demonstration rather than a real-arm result, but a clear one that the deformable problem, not the pipeline, is the hard part.
 
 That is the part I want to be clear about. Extraordinary tempo does not change what a biological system is willing to do, or what a food plant is willing to have bolted above its line.
 

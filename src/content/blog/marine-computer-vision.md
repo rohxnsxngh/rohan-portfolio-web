@@ -30,15 +30,11 @@ What it leaves behind is the rest of this piece, and it is more than I expected.
 
 A wet fish is a mirror. A curved, moving, specular mirror with a liquid film on it, lying on a surface that is also wet. Specularity is the single optical property that has cost us the most, and it produces failures that look unrelated until you line them up.
 
-We audited 585 captures from an OAK-4-D on 14 July 2026, recomputing everything from the raw 16-bit depth images rather than trusting the on-device numbers.
+Passive block-matching stereo on a wet fish returns a small fraction of the valid depth pixels you would get from active stereo with an infrared dot projector. Not a little worse. A different order of result.
 
-Valid depth on the fish came out at a median of 13.1 percent, p10 3.2 and p90 22.0, with 364 of the 585 captures under 15 percent dense. Active stereo with an infrared dot projector lands around 80 to 95 percent. We were at 13.
+Passive block-matching stereo works by finding the same patch of texture in the left and right image, and a wet, specular fish on a plain stage offers nothing to correlate. What depth comes back clings to the operator's hand and a ring of spilled water, the only textured things in frame.
 
-The session also produced exactly one thickness number, 132 mm, for an animal that is 20 to 80 mm thick. That is a separate failure with a separate cause: depth alignment was switched off for all but three of those captures while we chased a firmware crash, so the fish bounding box and the depth map did not index into each other, and for the rest the app correctly refused to emit a number at all.
-
-That is the whole argument in one number. Passive block-matching stereo works by finding the same patch of texture in the left and right image, and a wet, specular fish on a plain stage offers nothing to correlate. What depth comes back clings to the operator's hand and a ring of spilled water, the only textured things in frame.
-
-We tried the obvious escapes. Raising the mono resolution from 640 by 400 to 1280 by 800, chasing disparity precision, halved density: valid depth in the region of interest fell from about 19 percent to about 12. The intuition that more pixels means more texture is backwards in a texture-starved scene: the same weak signal spread over four times the pixels leaves less inside each matching block. The confidence filter was not the culprit either, since our setting of 245 is DepthAI's default and near maximally permissive. The cause is physical, not software.
+We tried the obvious escapes. Raising the mono resolution to chase disparity precision made things worse rather than better, which is counterintuitive until you think about what a matching block contains. The intuition that more pixels means more texture is backwards in a texture-starved scene: the same weak signal spread over four times the pixels leaves less inside each block to correlate against. Loosening the confidence filter did not rescue it either. The cause is physical, not a setting.
 
 ## One Optical Property, Two Failures That Look Unrelated
 
@@ -50,9 +46,9 @@ The interim fix is cross-polarisation, a polarising film on the light and a cros
 
 ## The Reference Plane Moved More Than the Fish Is Thick
 
-Thickness, when we can compute it at all, is the stage plane minus the fish surface. Across that same session, whole-frame depth had a median of 564 mm, a range of 484 to 796 mm and a standard deviation of 69 mm. A trout in this size class is around 40 mm thick, well inside the 20 to 80 mm range above, so the reference was wandering further between captures than the quantity we were trying to measure.
+Thickness, when you can compute it at all, is the stage plane minus the fish surface. That only works if the stage plane holds still. In a handheld or semi-portable rig it does not: the camera-to-stage distance drifts between captures by more than the thickness of the animal you are trying to measure. The reference wanders further than the quantity.
 
-That 69 mm is the quantitative reason behind something I have described before, the scale fiducial in every frame. A reference plane that moves by more than the subject is thick cannot be trusted to carry scale either, so each image carries its own known-length reference and calibrates itself.
+That is the reason for the scale fiducial in every frame. A reference plane that moves by more than the subject is thick cannot be trusted to carry scale either, so each image has to carry its own known-length reference and calibrate itself rather than inheriting a calibration from setup time.
 
 ## Noise Became Bias Because We Chose the Wrong Estimator
 

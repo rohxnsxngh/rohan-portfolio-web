@@ -38,11 +38,11 @@ A number that passes all three will be flat for reasons you do not control. I ha
 
 ## The batch rewards the half of your stack that deploys itself
 
-Our vision platform's status doc has a section on our deployment model subtitled "the asymmetry that has bitten us". The frontend and the API redeploy automatically on a push to main. The GPU apps and the database migrations are manual. The migrations I apply by hand.
+There is an asymmetry in most deployment setups that a weekly cadence quietly punishes. The frontend and the API redeploy automatically on a push. The GPU apps and the database migrations are manual, applied by hand.
 
 A weekly cadence rewards the automatic half and penalizes the manual half. You drift toward whatever has the shortest path from decision to visible result, because that is what the week measures. Physical work has the longest deploy path there is.
 
-The same doc lists what we have not verified, and the most useful entry says there is no automated test suite at all: no pytest, no jest, no CI test step, and every verification that cycle was a throwaway script run against production data and then deleted. Those scripts caught real bugs. None of it is repeatable by anyone else.
+The more uncomfortable version of that is testing. It is entirely possible to ship for months on throwaway verification scripts, run once against real data and then deleted, with no suite and no CI step behind them. Those scripts catch real bugs. None of it is repeatable by anyone else, and a weekly cadence never once asks you to make it so.
 
 A batch produces exactly that shape of codebase, and I do not think that is avoidable in three months with two people. What is avoidable is not knowing it. Keep a written list of what you have not verified, and add to it in the same sitting you decide to skip the check.
 

@@ -44,9 +44,9 @@ The cost is real. It only works where the fish is already being handled (hatcher
 
 Capture is not "run the detector and save the frame." It is a three-state machine (idle, settling, awaiting clear) that fires only once a trout has been held for a settle interval and the frame has been hand-free for a set number of consecutive detector frames, so a hand never occludes a measurement image.
 
-The confidence floors are deliberately asymmetric: trout at 0.6, hand at 0.35. A missed hand silently corrupts a measurement. A false hand costs a few frames of delay. Those errors are not worth the same, so they do not get the same threshold. The 0.6 came from data rather than taste: real trout scored p10 0.84 and p50 0.96 on the old white-tub captures and p10/p50 0.95 on the current rig, and the worst false positive on an empty table was 0.24. That 0.95 is not a generalization estimate, though. Those frames span only about five scenes and were almost certainly in training.
+The confidence floors are deliberately asymmetric: the threshold for detecting the fish is set well above the threshold for detecting a hand. A missed hand silently corrupts a measurement. A false hand costs a few frames of delay. Those errors are not worth the same, so they do not get the same threshold, and the gap between them came from looking at how the two classes actually score rather than from taste.
 
-The dedup logic took longer to get right than the model did. A debounce that waited three clear frames assumed roughly 15 fps. The device ran at 33, so three frames was 90 milliseconds, and one fish got captured about 20 times. We raised it to 45, then rebuilt the whole thing around track identity: capture each track exactly once, never expire it.
+The dedup logic took longer to get right than the model did. A debounce counted in frames rather than in time quietly assumes a frame rate, and when the device runs faster than the assumption the window collapses to a fraction of what you intended and one fish gets captured over and over. The fix was to stop counting frames at all and key on track identity: capture each track exactly once, never expire it.
 
 **Pick the error you can recover from.** A duplicate is a visible row you can filter. A miss is invisible and gone. That sentence has settled more design arguments for us than any accuracy number.
 
@@ -58,27 +58,25 @@ None of that is machine learning. All of it decides whether the machine learning
 
 Most of the failures that have cost us real data were plumbing failures rather than the model being wrong. Not all. A threshold set above where real fish actually score is a model problem, and we have had that too. But the pattern is lopsided, and not the one I expected.
 
-The one that still bothers me is the quietest. A silent fallback for a missing device identifier meant every camera in the fleet reported itself as camera 1. Nothing errored. The dashboard looked populated. Our apps now hard-fail at startup if the device ID or API URL is missing, because a crash on boot is a better bug than a fleet that unanimously agrees with itself.
+The worst of them are the quiet ones. A default value standing in for a missing device identifier will produce a fleet that all reports itself as the same unit: nothing errors, the dashboard looks populated, and the data is worthless. A crash on boot is a better bug than a fleet that unanimously agrees with itself, so anything identity-shaped should hard-fail at startup rather than fall back.
 
-Model class order is the same category of hazard. We gitignore the weights, because weights are regenerable, and version-control a model card beside each one instead, because class order and provenance are the parts you actually need later. Getting class order wrong is silent and expensive. It once made every hand read as a trout.
+Model class order is the same category of hazard. Weights are regenerable; class order and provenance are the parts you actually need later, and they belong in version control beside the model rather than in someone's memory. Getting class order wrong is silent and expensive.
 
-Version pins belong on that list too. Our keypoint models are RF-DETR rather than YOLO, and the library is pinned to 1.8.1 because 1.8.2 refactored the keypoint head and switched the schema to active-first, which orphaned our trained weights. It did not raise an error. It returned zero keypoints.
+Version pins belong on that list too. A minor release of a model library can refactor a head, change a schema, and orphan your trained weights without raising a single error. It just returns nothing.
 
 None of these announce themselves. They all produce output that looks like success.
 
 ## Labels Are the Part I Trust Least
 
-Our processing-line detector is a small YOLOv8n over four classes. For a while our own README advertised a headline mAP in the mid-nineties. The results CSV committed next to it says mAP50 of about 0.52 and mAP50-95 of about 0.41 over fifty epochs.
+A headline accuracy number is the easiest thing in machine learning to quote and the hardest to earn, and the gap usually hides in where the labels came from.
 
-I do not fully know where the higher number came from. What I know is which artifact I trust, and it is the one the training run wrote. Our internal correction note now says it plainly: re-derive or drop, and do not cite the README figure.
+If a training set was auto-labelled by a segmentation model and approved in bulk, then every metric you report measures agreement with that auto-labeller rather than agreement with reality. The number can be high and honest and still not mean what a reader assumes it means. It only becomes an accuracy claim once a human-labelled holdout exists to check it against.
 
-That is a small embarrassment and a useful one, because a number nobody can reproduce is worse than no number at all. It is the same failure as an estimated weight in a breeding database: something that looks like a measurement and is not.
+That distinction is worth being pedantic about, because a number nobody can reproduce is worse than no number at all. It is the same failure as an estimated weight in a breeding database: something that looks like a measurement and is not.
 
-The deeper issue is underneath both models: where the labels came from. Our phenotyping model card states it directly. Because those labels came from SAM3 auto-labelling approved in bulk, the metrics "measure agreement with those auto-labels rather than with ground truth" unless a human-labelled holdout was used. The processing-line set is worse in this respect, not better: it runs from a SAM3 video predictor straight into YOLO format with no human approval step at all.
+**Do not let one careful pipeline vouch for another.** Machine-assisted labelling is fine, and it is how anyone labels at volume now: an open-vocabulary detector proposes boxes, a segmentation model refines them to masks, and a vision-language model grades every instance so the human queue is ordered worst-first. What matters is that the model never auto-approves. Every label still passes through a person.
 
-**Do not let one careful pipeline vouch for another.** The in-house labelling platform we built since works differently: an open-vocabulary detector proposes boxes, SAM3 refines them to masks, a vision-language model grades every instance to re-order the human queue worst-first, and the model never auto-approves; every label passes through a person.
-
-That rule holds for the review queue. It did not hold for the sets those earlier models were trained on, and until a human-labelled holdout exists I will not describe any of those figures as field accuracy.
+Care in one part of a pipeline does not transfer to another part just because they share a codebase.
 
 ## Measuring Every Animal Is the Half of Genetics Nobody Industrialised
 
@@ -112,13 +110,11 @@ Autonomy is what you earn once the twin is accurate enough to act on. The acting
 
 I do not want to overstate where we are on "act."
 
-Our robotics work runs on a dev kit, and the honest current result is a simulation result. In simulation, a scripted inverse-kinematics pick scores 50 out of 50 on a rigid box proxy and 0 out of 5 on both of our deformable fillet models, where the jaws crumple the object and leave it on the table. No robot of ours has picked a real fillet. The recorded real dataset uses a silicone sashimi proxy, and no policy checkpoint is trained yet.
+The manipulation layer is a build in progress, and I would rather say that plainly than imply more.
 
-What that demonstrates is still useful: the deformable problem, not the pipeline, is the hard one. The tooling is honest about its ceiling too: the deformable backend we chose runs at 0.06 to 0.11 times realtime on a laptop, an authoring and debugging tool rather than a data generator.
+In simulation the split is stark. A scripted pick that succeeds every time on a rigid proxy fails outright on a deformable one, where the jaws crumple the object and leave it on the table. That is the useful finding: the deformable problem, not the pipeline, is the hard one. The tooling is honest about its ceiling too, since a deformable solver runs at a small fraction of realtime on a laptop, which makes it an authoring and debugging environment rather than a data generator.
 
-The evaluation contract is unforgiving in a way that has nothing to do with learning. Whatever cameras, resolution and frame rate a dataset was recorded with must be reproduced at evaluation time or the policy silently degrades. Renaming one camera key from `context` to `wrist` on 24 July 2026 made an entire dataset and its checkpoint permanently incompatible with the rig.
-
-One string, and a dataset and its checkpoint stopped being loadable, cheaply in this case, because v0 was a 16-episode shakedown.
+The evaluation contract is unforgiving in a way that has nothing to do with learning. Whatever cameras, resolution and frame rate a dataset was recorded with have to be reproduced at evaluation time or the policy silently degrades. Rename one camera key and an entire dataset and its checkpoint become permanently incompatible with the rig. One string.
 
 The hardware boundary is just as blunt. The dev kit has no ingress rating and cannot be sprayed down, while a plant line needs IP69K and 316 stainless. So we develop the policy on cheap hardware and port the chassis, not the learning. The dev kit is a flight simulator, not an aircraft.
 
