@@ -127,6 +127,56 @@ const {
     const OPACITY_MULTIPLIER = parseFloat(parentContainer?.dataset.opacity || '1.0');
     const MOUSE_RADIUS_FROM_PROP = parseFloat(parentContainer?.dataset.mouseRadius || '3.0');
 
+    // The container must have a real size before anything is built. On a cold
+    // load the init can run before layout has given it one, and with a zero
+    // size the camera aspect becomes 0/0 (NaN) and the renderer allocates a
+    // 0x0 drawing buffer. The stylesheet then stretches that buffer to fill
+    // the hero with `width: 100% !important`, which paints a flat surface
+    // instead of the particle field, and the hero's black/70 overlay turns it
+    // grey. Navigating re-ran init against a laid out page, which is why it
+    // appeared to fix itself.
+    //
+    // The four robot viewers already guard this. Wait for a real size instead.
+    if (!container.clientWidth || !container.clientHeight) {
+      let settled = false;
+      let pollId = 0;
+      const pending = new ResizeObserver(() => resume());
+      let attempts = 0;
+
+      const stop = () => {
+        settled = true;
+        pending.disconnect();
+        if (pollId) clearTimeout(pollId);
+      };
+
+      function resume() {
+        if (settled) return;
+        if (container.clientWidth && container.clientHeight) {
+          stop();
+          initParticleViewer();
+        }
+      }
+
+      // ResizeObserver is the right primary signal, but its callbacks are
+      // delivered with the rendering steps, which a background tab throttles.
+      // A bounded poll makes the recovery independent of that, and gives up
+      // rather than spinning if the hero genuinely never gets a size.
+      const poll = () => {
+        if (settled) return;
+        if (++attempts > 40) { stop(); return; }
+        resume();
+        if (!settled) pollId = window.setTimeout(poll, 100);
+      };
+
+      pending.observe(container);
+      pollId = window.setTimeout(poll, 100);
+      currentCleanup = stop;
+      return;
+    }
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+
     // Configuration
     const PARTICLE_COUNT = 15000;
     const PARTICLE_SIZE = 2.5;
@@ -140,7 +190,7 @@ const {
 
     const camera = new THREE.PerspectiveCamera(
       60,
-      container.clientWidth / container.clientHeight,
+      containerWidth / containerHeight,
       0.1,
       1000
     );
@@ -150,7 +200,7 @@ const {
       antialias: true,
       powerPreference: "high-performance",
     });
-    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setSize(containerWidth, containerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
@@ -363,8 +413,8 @@ const {
     const grayscalePass = new ShaderPass(LuminosityShader);
     composer.addPass(grayscalePass);
     const sobelPass = new ShaderPass(SobelOperatorShader);
-    sobelPass.uniforms['resolution'].value.x = container.clientWidth * window.devicePixelRatio;
-    sobelPass.uniforms['resolution'].value.y = container.clientHeight * window.devicePixelRatio;
+    sobelPass.uniforms['resolution'].value.x = containerWidth * window.devicePixelRatio;
+    sobelPass.uniforms['resolution'].value.y = containerHeight * window.devicePixelRatio;
     composer.addPass(sobelPass);
 
     // Mouse tracking
