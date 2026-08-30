@@ -2,7 +2,7 @@
 title: "Why Software Rotational Programs are a Political Stunt"
 date: "2024-03-02"
 author: "Rohan Singh"
-image: "/images/blog/rotational-programs.jpg"
+image: "@images/experience/octapulse/64E3A15F-B59A-4345-9173-FF3BECEA3153.JPG"
 status: "Complete"
 description: "A critical analysis of software engineering rotational programs and why they often serve more political purposes than developmental ones."
 tags: ["career", "software engineering", "corporate culture", "professional development"]

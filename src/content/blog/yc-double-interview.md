@@ -2,7 +2,7 @@
 title: "Getting Interviewed twice in a YC Batch (S24)"
 date: "2024-09"
 author: "Rohan Singh"
-image: "/images/blog/yc-interview.jpg"
+image: "@images/experience/octapulse/B8633296-F8D3-4DE3-B158-2C0BA63ADCA3_1_105_c.jpeg"
 status: "Complete"
 description: "A unique experience of being interviewed twice by Y Combinator in the same batch (S24), with different startups and different outcomes."
 tags: ["startups", "Y Combinator", "entrepreneurship", "interviews"]

@@ -523,6 +523,20 @@ const documentTitle =
         var fallbackTimer = null;
         var attempts = 0;
 
+        // A failed image request does not throw, log, or fail a build. It just
+        // paints the browser's torn-image glyph over the design, and nothing
+        // tells you. Capture the error (image errors do not bubble, hence the
+        // capture phase) and collapse the element instead, so a CDN blip or a
+        // stale path degrades to empty space rather than visible breakage.
+        document.addEventListener('error', function (e) {
+          var el = e.target;
+          if (!el || el.tagName !== 'IMG') return;
+          if (el.dataset.brokenHandled) return;
+          el.dataset.brokenHandled = '1';
+          el.style.visibility = 'hidden';
+          console.warn('[assets] image failed to load:', el.currentSrc || el.src);
+        }, true);
+
         // Read by src/scripts/pageReady.ts. A page script that finishes
         // evaluating after Astro has already dispatched astro:page-load needs
         // to know it missed the event so it can initialise anyway. This script

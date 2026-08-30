@@ -2,7 +2,7 @@
 title: "Building Hardware/Robotics Startups vs. Pure Software"
 date: "2025-02"
 author: "Rohan Singh"
-image: "/images/blog/hardware-vs-software.jpg"
+image: "@images/experience/octapulse/4DABB450-8CE3-49C1-A66F-495E35A8C055_1_102_o.jpeg"
 status: "Complete"
 description: "The unique challenges of building a robotics startup compared to pure software - from manufacturing and supply chains to iteration cycles and fundraising."
 tags: ["startup", "robotics", "hardware", "entrepreneurship", "OctaPulse"]

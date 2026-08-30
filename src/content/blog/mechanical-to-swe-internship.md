@@ -2,7 +2,7 @@
 title: "How to Get a Software Engineering Internship as a Mechanical Engineer"
 date: "2023-08"
 author: "Rohan Singh"
-image: "/images/blog/mech-to-swe.jpg"
+image: "@images/experience/octapulse/64E3A15F-B59A-4345-9173-FF3BECEA3153.JPG"
 status: "Complete"
 description: "A comprehensive guide on transitioning from mechanical engineering to software engineering internships, based on personal experience and practical strategies."
 tags: ["career", "software engineering", "mechanical engineering", "internships"]

@@ -65,6 +65,8 @@ import Footer from "../../layouts/Footer.astro";
 </Layout>
 
 <script>
+  import { whenSized } from '../../scripts/whenSized';
+  let cancelPendingSize: (() => void) | null = null;
   import { onPageReady } from '../../scripts/pageReady';
   import * as THREE from "three";
   import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -130,6 +132,10 @@ import Footer from "../../layouts/Footer.astro";
   `;
 
   function disposeThreeJS() {
+    // Drop any pending wait-for-size so it cannot fire against a
+    // container that has already been swapped away.
+    cancelPendingSize?.();
+    cancelPendingSize = null;
     cancelAnimationFrame(_animationId);
     eventAbort?.abort();
     eventAbort = null;
@@ -151,6 +157,15 @@ import Footer from "../../layouts/Footer.astro";
   function initThreeJS() {
     const container = document.getElementById('threejs-container');
     if (!container) return;
+
+    // A zero-sized container yields a NaN camera aspect and a 0x0 drawing
+    // buffer, which the stylesheet then stretches over the hero as a flat
+    // panel. Wait for a real size instead of building against nothing.
+    if (!container.clientWidth || !container.clientHeight) {
+      cancelPendingSize?.();
+      cancelPendingSize = whenSized(container, () => initThreeJS());
+      return;
+    }
 
     disposeThreeJS();
     contextLost = false;

@@ -187,8 +187,6 @@ Our computer vision system employs AprilTag markers (36h11 family) for real-time
 
 The system was validated through controlled movement tests where the robot followed predefined paths while the vision system recorded position data at 30fps, allowing precise measurement of swimming performance metrics including velocity, acceleration, and path deviation.
 
-![AprilTag Tracking System](/images/project/FishRobotTracking.jpg)
-
 ### Control System
 
 We developed two PID controllers to correct the robot's movement by minimizing the error in its trajectory compared to a desired path:
@@ -216,8 +214,6 @@ The table below summarizes our key experiment parameters and results:
 | 3 | 13 | 2.0 | 45 | Multiplying | Forward Movement |
 | 4 | 18 | 2.0 | 45 | Multiplying | Increased Forward Movement |
 | 5 | 25 | 2.0 | 45 | Multiplying | Greatest Forward Movement (until bracket failure) |
-
-![T-Bone with 5 Tail Joints During Testing](/images/project/FishRobotPool.jpg)
 
 The most significant finding was that high-amplitude oscillation patterns (20-25 degrees) produced more effective propulsion than low-amplitude patterns (13-16 degrees) when frequency (2Hz) and phase shift (45°) were held constant. Additionally, the multiplying undulation pattern (where amplitude increases progressively along the tail) generated much more effective forward movement than the constant tail propulsion pattern.
 

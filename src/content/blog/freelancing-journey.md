@@ -2,7 +2,7 @@
 title: "How I started freelancing and made an additional $50,000 (Q1 & Q2 2024)"
 date: "2024-07"
 author: "Rohan Singh"
-image: "/images/blog/freelancing.jpg"
+image: "@images/experience/octapulse/64E3A15F-B59A-4345-9173-FF3BECEA3153.JPG"
 status: "Complete"
 description: "A detailed breakdown of how I started my freelancing journey and successfully earned $50,000 in additional income during the first half of 2024."
 tags: ["freelancing", "entrepreneurship", "software development", "career"]

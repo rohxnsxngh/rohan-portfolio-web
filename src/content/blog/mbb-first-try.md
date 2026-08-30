@@ -2,7 +2,7 @@
 title: "Interviewing with McKinsey and BCG"
 date: "2025-09"
 author: "Rohan Singh"
-image: "/images/blog/cmu-cv.jpg"
+image: "@images/blog/cmu-cv/hw2-brief-rotation-histogram.png"
 status: "Complete"
 description: "Jumping into Ccnsulting, what got me interested and my experience preparing for the interviews"
 tags: ["consulting", "case studies", "BCG", "McKinsey"]

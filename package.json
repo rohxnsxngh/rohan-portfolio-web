@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "node scripts/generate-image-sizes.mjs && astro check && astro build && node scripts/vercel-cache-headers.mjs",
+    "build": "node scripts/generate-image-sizes.mjs && node scripts/verify-assets.mjs && astro check && astro build && node scripts/vercel-cache-headers.mjs",
     "preview": "astro preview",
     "astro": "astro",
-    "image-sizes": "node scripts/generate-image-sizes.mjs"
+    "image-sizes": "node scripts/generate-image-sizes.mjs",
+    "verify-assets": "node scripts/verify-assets.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.5.6",
