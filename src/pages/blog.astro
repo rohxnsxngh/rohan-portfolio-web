@@ -1277,6 +1277,7 @@ export const prerender = true;
 
 <script>
   import { onPageReady } from '../scripts/pageReady';
+  import { DURATION, EASE } from '../scripts/motion';
   import { addHeroCharIntro, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
@@ -1314,13 +1315,13 @@ export const prerender = true;
     // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
     // handle the intro instead — no per-element tween objects allocated.
     if (isDesktop) {
-      tl.to('.label-intro', { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0);
+      tl.to('.label-intro', { opacity: 1, y: 0, duration: DURATION.page, ease: EASE.enter }, 0);
       // Skipped on client-side navigations — the header is being morphed
       // between routes by the shared page-title view transition instead.
       addHeroCharIntro(tl, document.querySelectorAll('.hero-name .char'), 0.1);
-      tl.to('.statement', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
-      tl.to('.cta-section', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
-      tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+      tl.to('.statement', { opacity: 1, y: 0, duration: DURATION.page, ease: EASE.enter }, 0.35);
+      tl.to('.cta-section', { opacity: 1, y: 0, duration: DURATION.page, ease: EASE.enter }, 0.45);
+      tl.to('.scroll-indicator', { opacity: 1, duration: DURATION.page, ease: EASE.enter }, 0.6);
     }
 
     // Hero scroll-split effect

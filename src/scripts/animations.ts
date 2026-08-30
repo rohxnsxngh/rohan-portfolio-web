@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { DURATION, EASE, STAGGER, staggerFor } from './motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,9 +51,11 @@ export function addHeroCharIntro(
     opacity: 1,
     y: 0,
     scale: 1,
-    duration: 1,
-    stagger: 0.05,
-    ease: 'expo.out',
+    duration: DURATION.hero,
+    // A blog title can be 40+ characters. A flat per-character delay would run
+    // the cascade well past the point the reader has started reading.
+    stagger: staggerFor(list.length, STAGGER.micro),
+    ease: EASE.hero,
   }, position);
 }
 
@@ -214,8 +217,8 @@ export function scrollReveal(
     const tween = gsap.to(el, {
       opacity: 1,
       y: 0,
-      duration: opts.duration ?? 0.8,
-      ease: opts.ease ?? 'expo.out',
+      duration: opts.duration ?? DURATION.card,
+      ease: opts.ease ?? EASE.enter,
       delay: (opts.stagger ?? 0) * i,
       scrollTrigger: {
         trigger: el,
@@ -252,9 +255,9 @@ export function batchScrollReveal(
       gsap.to(batch, {
         opacity: 1,
         y: 0,
-        duration: opts.duration ?? 0.8,
-        stagger: opts.stagger ?? 0.1,
-        ease: opts.ease ?? 'expo.out',
+        duration: opts.duration ?? DURATION.card,
+        stagger: opts.stagger ?? staggerFor(batch.length, STAGGER.standard),
+        ease: opts.ease ?? EASE.enter,
       });
     },
     start: opts.start ?? 'top 85%',
@@ -357,7 +360,7 @@ export function revealStragglers(): void {
     if (r.bottom < 0 || r.top > window.innerHeight) return;
     if (r.width === 0 && r.height === 0) return;
 
-    gsap.to(el, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'expo.out' });
+    gsap.to(el, { opacity: 1, y: 0, scale: 1, duration: DURATION.card, ease: EASE.enter });
   });
 }
 
@@ -422,8 +425,8 @@ export function batchScaleReveal(
         opacity: 1,
         scale: 1,
         y: 0,
-        duration: opts.duration ?? 0.8,
-        stagger: opts.stagger ?? 0.1,
+        duration: opts.duration ?? DURATION.card,
+        stagger: opts.stagger ?? staggerFor(batch.length, STAGGER.standard),
         ease: opts.ease ?? 'back.out(1.7)',
       });
     },
@@ -496,8 +499,8 @@ export function createPinnedReveal(
     tl.to(item, {
       opacity: 1,
       y: 0,
-      duration: 1,
-      ease: 'expo.out',
+      duration: DURATION.page,
+      ease: EASE.enter,
     }, i * 0.5);
   });
 

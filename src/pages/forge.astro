@@ -598,6 +598,7 @@ export const prerender = true;
 
 <script>
   import { onPageReady } from '../scripts/pageReady';
+  import { DURATION, EASE } from '../scripts/motion';
   import { addHeroCharIntro, animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
@@ -632,9 +633,9 @@ export const prerender = true;
       // between routes by the shared page-title view transition instead.
       addHeroCharIntro(tl, document.querySelectorAll('.hero-title .char'), 0);
       tl.add(() => animateLineExpand('.accent-line'), 0.3);
-      tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.5);
-      tl.to('.hero-description', { opacity: 1, y: 0, duration: 1, ease: 'expo.out' }, 0.7);
-      tl.to('.scroll-indicator', { opacity: 1, duration: 1, ease: 'expo.out' }, 1.0);
+      tl.to('.hero-subtitle', { opacity: 1, y: 0, duration: DURATION.page, ease: EASE.enter }, 0.35);
+      tl.to('.hero-description', { opacity: 1, y: 0, duration: DURATION.page, ease: EASE.enter }, 0.45);
+      tl.to('.scroll-indicator', { opacity: 1, duration: DURATION.page, ease: EASE.enter }, 0.6);
     }
 
     // Hero scroll-split effect

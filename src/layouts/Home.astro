@@ -380,6 +380,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 <script>
   import { onPageReady } from '../scripts/pageReady';
   import { addHeroCharIntro, createHeroParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { DURATION, EASE } from '../scripts/motion';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -438,8 +439,8 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       tl.to('.label-intro', {
         opacity: 1,
         y: 0,
-        duration: 0.8,
-        ease: 'expo.out',
+        duration: DURATION.page,
+        ease: EASE.enter,
       }, 0);
 
       // Character reveal. Skipped on client-side navigations — the header is
@@ -451,26 +452,26 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       tl.to('.statement', {
         opacity: 1,
         y: 0,
-        duration: 1,
-        ease: 'expo.out',
-      }, 0.5);
+        duration: DURATION.page,
+        ease: EASE.enter,
+      }, 0.35);
 
       // CTA section
       tl.to('.cta-section', {
         opacity: 1,
         y: 0,
-        duration: 1,
-        ease: 'expo.out',
-      }, 0.7);
+        duration: DURATION.page,
+        ease: EASE.enter,
+      }, 0.45);
 
       // Scroll indicator
       const scrollIndicator = document.querySelector('.scroll-indicator-minimal');
       if (scrollIndicator) {
         tl.to(scrollIndicator, {
           opacity: 1,
-          duration: 1,
-          ease: 'expo.out',
-        }, 1.2);
+          duration: DURATION.page,
+          ease: EASE.enter,
+        }, 0.6);
       }
     }
 
