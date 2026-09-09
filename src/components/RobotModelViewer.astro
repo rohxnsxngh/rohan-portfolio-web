@@ -65,7 +65,8 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
       <progress id="progress-bar" value="0" max="100"></progress>
     </div>
   </div>
-  <!-- Phone opt-in. Only rendered visible in data-state="poster", and
+  <!-- Phone retry. Only rendered visible in data-state="poster", which the
+       scene enters when it fails to start or loses its WebGL context, and
        display:none on desktop so it never enters the tab order there. -->
   <button type="button" class="load-3d" data-haptic="light">
     View in 3D<small>about 1.5 MB</small>
@@ -112,7 +113,7 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
   // starts the fetch as soon as this script evaluates. That is still a little
   // later than the old static imports, which the browser discovered while
   // parsing the entry chunk; here it has to download and run this page's own
-  // module graph first. Phones do not prefetch; tap-to-load resolves on demand.
+  // module graph first. Every device that will run the scene prefetches, phones included.
   prefetchThree();
 
   // Populated from resolveThree() before any scene code runs.
@@ -126,9 +127,10 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
   let progressBar: HTMLElement | null = null;
   let loadingContainer: Element | null = null;
 
-  // "poster": still image, opt-in button (phones). "loading": modules and
-  // model in flight. "live": first frame with the model drawn, poster fades.
-  // "off": reduced motion or data saver, poster only, no button.
+  // "loading": modules and model in flight, poster showing on phones.
+  // "live": first frame with the model drawn, poster fades. "poster": the
+  // scene failed or lost its context on a phone; still image plus a retry
+  // button. "off": reduced motion or data saver, poster only, no button.
   type ViewerState = 'poster' | 'loading' | 'live' | 'off';
   function setState(state: ViewerState) {
     container?.setAttribute('data-state', state);
@@ -475,44 +477,45 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
     // Skip init if this page doesn't have the robot viewer
     if (!container || !modelContainer) return;
 
-    // Phones, reduced-motion and data-saver visitors do not get the WebGL
-    // hero by default; they get the poster. See src/scripts/heavy3d.ts.
-    //
-    // A phone skipped for width alone can opt in with the button, which pulls
-    // the modules and the model only at that point. Reduced-motion and
-    // data-saver are explicit requests, so those get no button.
+    // Reduced-motion and data-saver visitors do not get the WebGL hero; those
+    // are explicit requests. See src/scripts/heavy3d.ts.
     //
     // The loading indicator lives in the markup and is normally hidden once
     // the model arrives, so skipping has to hide it too or it sits there
     // spinning forever over a model that is never coming.
     const skipReason = heavy3DSkipReason();
     if (skipReason) {
-      setState(skipReason === 'width' ? 'poster' : 'off');
+      setState('off');
       if (loadingContainer instanceof HTMLElement) loadingContainer.style.display = 'none';
-      if (skipReason === 'width') {
-        container.querySelector('button.load-3d')?.addEventListener('click', () => {
-          if (container?.getAttribute('data-state') === 'loading') return;
-          void startScene(gen, true, true);
-        }, { signal: eventAbort.signal });
-      }
       return;
     }
 
+    // Phones run the live scene like everyone else. The poster in the markup
+    // is already painting under the scrim and crossfades out on the first
+    // live frame, so the model streaming in is never a blank hero. The
+    // "View in 3D" button only reappears if the scene fails to start or loses
+    // its context: on a phone it is the retry path, not the entry point.
+    const phone = window.matchMedia('(max-width: 767px)').matches;
+    container.querySelector('button.load-3d')?.addEventListener('click', () => {
+      if (container?.getAttribute('data-state') === 'loading') return;
+      void startScene(gen, true, true);
+    }, { signal: eventAbort.signal });
+
     setState('loading');
-    void startScene(gen, isCoarsePointer(), false);
+    void startScene(gen, isCoarsePointer(), phone);
   }
 
   // Builds and runs the scene. `touch` is true on phones and tablets, where
   // the canvas must not capture scrolling and the pixel ratio is capped lower.
-  // `canRetry` is true only on the tap-to-load path: it is the one case where
-  // the poster and button exist to fall back to. `touch` is not enough for
-  // that, since an iPad is a coarse pointer that passed the width gate, and
-  // there the poster and button are display:none and no click handler was
-  // bound, so a "poster" state would render nothing and offer no way back.
+  // `canRetry` is true where the poster and button exist to fall back to,
+  // which is phone widths only. `touch` is not enough for that, since an iPad
+  // is a coarse pointer at a width where the poster and button are
+  // display:none, so a "poster" state there would render nothing and offer
+  // no way back.
   async function startScene(gen: number, touch: boolean, canRetry: boolean) {
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
     setState('loading');
-    // The tap-to-load path needs the progress bar back: the poster branch hid
+    // The retry path needs the progress bar back: the fallback states hide
     // it, and on a phone the model is a real wait.
     if (loadingContainer instanceof HTMLElement) loadingContainer.style.display = '';
     if (progressBar instanceof HTMLProgressElement) progressBar.value = 0;

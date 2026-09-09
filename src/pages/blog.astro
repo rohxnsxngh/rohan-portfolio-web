@@ -1251,9 +1251,9 @@ export const prerender = true;
       width: 100%;
     }
 
-    /* No .mouse-active rules here: the touch handlers that add that class are
-       only bound when the 3D scene can exist, so on a phone there is nothing
-       to reveal and the copy must never dim. */
+    /* The touch reveal on phones uses the .mouse-active rules in the 768px
+       block above: the scene runs live here too, so a finger on the hero dims
+       the copy and lifts the scrim exactly as a mouse does on desktop. */
 
     .card-corner-accent {
       width: 15px;
@@ -1284,11 +1284,11 @@ export const prerender = true;
     }
   }
 
-  /* Matches the shouldSkipHeavy3D() viewport gate. Below 768px the viewer
-     shows a still poster instead of the live scene, and the desktop 0.85 scrim
-     would bury it; 0.6 lets the poster read while keeping the copy legible. */
+  /* Phones rest at a lighter scrim than the desktop 0.85 so the model reads
+     without a hover to invite the touch. Scoped to the resting state: the
+     .mouse-active reveal above lifts it to 0.2 exactly as on desktop. */
   @media (max-width: 767px) {
-    .robot-overlay {
+    .hero-section:not(.mouse-active) .robot-overlay {
       background: rgba(0, 0, 0, 0.6) !important;
     }
   }
@@ -1455,14 +1455,13 @@ export const prerender = true;
     const SCROLL_THRESHOLD = 10;
 
     if (heroSection && robotContainer) {
-      // The pointer handlers exist to reveal the keyboard under the cursor or
-      // finger. Where the viewer skips the scene (phones, reduced motion, data
-      // saver) there is nothing behind the scrim, so the first touch of every
-      // scroll used to blank the headline to 5% for 800ms and reveal black.
-      // mousemove is inside the same gate because iOS Safari synthesises a
-      // mousemove on every tap of an element that listens for it, so leaving
-      // it bound would dim the copy on the poster's "View in 3D" tap. Desktop
-      // with a live scene is unchanged: the predicate is false there.
+      // The pointer handlers reveal the keyboard under the cursor or finger, on
+      // phones too. They are bound only where the viewer will run the scene
+      // (shouldSkipHeavy3D is reduced-motion and data-saver only), because
+      // where it does not there is nothing behind the scrim and the first
+      // touch of every scroll would blank the headline to reveal black.
+      // A finger that turns out to be scrolling releases the reveal at once
+      // (see touchmove) so a flick never costs the 800ms dim.
       if (!shouldSkipHeavy3D()) {
         heroSection.addEventListener("mousemove", (e) => {
           handleInteraction(e.clientX, e.clientY);
@@ -1484,8 +1483,13 @@ export const prerender = true;
             const deltaY = Math.abs(touch.clientY - touchStartY);
             const deltaX = Math.abs(touch.clientX - touchStartX);
 
-            if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+            if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX && !isScrolling) {
+              // A scroll, not a touch on the keyboard: give the copy straight back.
               isScrolling = true;
+              heroSection.classList.remove('mouse-active');
+              mouseActive = false;
+              if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+              document.dispatchEvent(new CustomEvent("robotMouseLeave", { detail: { left: true } }));
             }
 
             if (!isScrolling) {

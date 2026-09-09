@@ -7,28 +7,26 @@
  * on a desktop and a bad one on a phone: before this gate a handset on cellular
  * pulled the full hero model and ran the same render loop as a workstation.
  *
- * Skipping is not a degraded page. These viewers sit behind the hero copy under
- * a heavy scrim, so what is lost is ambience, and what is gained is several
- * megabytes and a great deal of battery. Phones now get a still poster of the
- * same scene and a "View in 3D" tap target instead, which is why the viewers
- * need to know *why* the gate fired and not just that it did: a phone skipped
- * for width alone can opt in, a data-saver or reduced-motion visitor cannot.
+ * Phones are not gated on width any more. The reveal (touch the hero, the copy
+ * dims, the lights follow the finger, a sideways drag spins the model) is the
+ * point of these heroes, and a phone visitor deserves it as much as a desktop
+ * one. What phones get instead is a lighter scene: pixel ratio capped at 1.5,
+ * textures already stripped from the models, three.js loaded on demand, and a
+ * poster painted from the HTML until the first live frame so nothing is blank
+ * while the model streams. Reduced-motion and data-saver remain hard skips
+ * because they are explicit requests, not guesses about the device.
  *
  * Deliberately not gated on deviceMemory: it reports 4GB or less on plenty of
  * capable laptops, so it would switch the effect off for people who can afford
  * it.
  */
-export type Heavy3DSkipReason = 'reduced-motion' | 'data' | 'width';
+export type Heavy3DSkipReason = 'reduced-motion' | 'data' | 'ssr';
 
 /**
  * The first reason the heavy scene should not run, or null when it may.
- *
- * Order matters for the viewers' poster state: reduced-motion and data
- * constraints win over width, so a phone on 2g is "off" (no opt-in button)
- * rather than "poster" (tap to load).
  */
 export function heavy3DSkipReason(): Heavy3DSkipReason | null {
-  if (typeof window === 'undefined') return 'width';
+  if (typeof window === 'undefined') return 'ssr';
 
   // Someone who has asked for less motion should not get an animated 3D scene.
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 'reduced-motion';
@@ -46,10 +44,6 @@ export function heavy3DSkipReason(): Heavy3DSkipReason | null {
       return 'data';
     }
   }
-
-  // Phones and small tablets. Also catches desktop windows dragged very narrow,
-  // which is the right call for the same reasons.
-  if (window.matchMedia('(max-width: 767px)').matches) return 'width';
 
   return null;
 }
@@ -117,10 +111,10 @@ let heavy: Promise<ThreeModules> | null = null;
 
 function startLoad(): Promise<ThreeModules> {
   const load = loadThree();
-  // A rejected load must not stay cached. On flaky cellular the first tap of
-  // "View in 3D" can fail mid-fetch; if this promise were kept, every later
-  // tap would re-reject instantly with no network request and the phone could
-  // never load the scene until a full reload. Dropping it lets the next
+  // A rejected load must not stay cached. On flaky cellular the first load
+  // can fail mid-fetch; if this promise were kept, every later retry from the
+  // "View in 3D" button would re-reject instantly with no network request and
+  // the phone could never load the scene until a full reload. Dropping it lets the next
   // resolveThree() start a fresh import(). (Some browsers also cache a failed
   // module fetch in the module map, so this makes retry possible rather than
   // guaranteed; without it retry is impossible everywhere.)
@@ -138,9 +132,8 @@ function startLoad(): Promise<ThreeModules> {
 
 /**
  * Start fetching three if this device will run the scene. Called at each
- * viewer's module top level, not inside init(), so a desktop starts the
- * fetch as soon as its page script evaluates. Phones leave it alone and
- * resolve on demand from the tap-to-load button.
+ * viewer's module top level, not inside init(), so the fetch starts as soon
+ * as the page script evaluates rather than after the viewer's DOM work.
  */
 export function prefetchThree(): void {
   if (heavy || heavy3DSkipReason() !== null) return;

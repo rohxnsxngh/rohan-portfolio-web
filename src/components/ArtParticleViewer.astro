@@ -24,7 +24,7 @@ const {
   import { onPageReady } from '../scripts/pageReady';
   import { bindOnce } from '../scripts/bindOnce';
   import { whenSized } from '../scripts/whenSized';
-  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
+  import { shouldSkipHeavy3D, isCoarsePointer } from '../scripts/heavy3d';
 
   // three and its post-processing passes are the bulk of this page's script
   // (~136 KB gz) and a phone never uses them, so they are loaded with import()
@@ -136,13 +136,11 @@ const {
     const container = document.querySelector(".art-particle-canvas-inner") as HTMLElement;
     if (!container) return; // No particle viewer on this page
 
-    // Same gate as the robot viewers, deliberately including its reduced-motion
-    // and data-saver reasons at any width: this scene is 15k noise-displaced
-    // points plus three full-screen passes every frame, under a scrim that
-    // hides most of it, so it is exactly the animated ambience those visitors
-    // asked not to pay for, on a phone or a desktop. Checked before the size
-    // wait so a skipped page registers no ResizeObserver either. The container
-    // stays put: it is absolute and black on a black hero.
+    // Same gate as the robot viewers: reduced-motion and data-saver visitors
+    // asked not to pay for animated ambience, so they get none. Checked before
+    // the size wait so a skipped page registers no ResizeObserver either. The
+    // container stays put: it is absolute and black on a black hero. Phones
+    // are not skipped; they run the scene at the budget set below.
     if (shouldSkipHeavy3D()) return;
 
     // Get opacity and mouse radius from parent data attributes
@@ -172,8 +170,12 @@ const {
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
 
-    // Configuration
-    const PARTICLE_COUNT = 15000;
+    // Configuration. Phones run this scene too now, at a budget: a third of
+    // the points, no MSAA and a 1x buffer. The Sobel pass stays because it is
+    // the look; at 1x on a 390px hero it is a small fraction of the desktop
+    // cost, and the scrim above hides the resolution difference.
+    const lowPower = isCoarsePointer() || window.matchMedia('(max-width: 767px)').matches;
+    const PARTICLE_COUNT = lowPower ? 5000 : 15000;
     const PARTICLE_SIZE = 2.5;
     const SPREAD = 12;
     const MOUSE_INFLUENCE_RADIUS = MOUSE_RADIUS_FROM_PROP;
@@ -192,11 +194,11 @@ const {
     camera.position.z = 20;
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !lowPower,
       powerPreference: "high-performance",
     });
     renderer.setSize(containerWidth, containerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(lowPower ? 1 : Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
     // Recover gracefully if the browser reclaims this WebGL context under
@@ -520,7 +522,7 @@ const {
       camera.updateProjectionMatrix();
 
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(lowPower ? 1 : Math.min(window.devicePixelRatio, 2));
 
       composer.setSize(width, height);
       const resizedRatio = renderer.getPixelRatio();
