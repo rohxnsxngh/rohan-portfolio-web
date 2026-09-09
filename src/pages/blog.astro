@@ -1314,6 +1314,7 @@ export const prerender = true;
   import { DURATION, EASE } from '../scripts/motion';
   import { addHeroCharIntro, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import { shouldSkipHeavy3D } from '../scripts/heavy3d';
+  import { bindHeroTouch } from '../scripts/heroTouch';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -1448,71 +1449,28 @@ export const prerender = true;
       }, 800);
     };
 
-    // Touch tracking for scroll vs interaction detection
-    let touchStartY = 0;
-    let touchStartX = 0;
-    let isScrolling = false;
-    const SCROLL_THRESHOLD = 10;
 
     if (heroSection && robotContainer) {
       // The pointer handlers reveal the keyboard under the cursor or finger, on
       // phones too. They are bound only where the viewer will run the scene
       // (shouldSkipHeavy3D is reduced-motion and data-saver only), because
-      // where it does not there is nothing behind the scrim and the first
-      // touch of every scroll would blank the headline to reveal black.
-      // A finger that turns out to be scrolling releases the reveal at once
-      // (see touchmove) so a flick never costs the 800ms dim.
+      // where it does not there is nothing behind the scrim and a touch would
+      // blank the headline to reveal black. Touch semantics (flick scrolls,
+      // sideways drag or hold explores, lifting lingers like a still mouse)
+      // live in src/scripts/heroTouch.ts, shared by the four heroes.
       if (!shouldSkipHeavy3D()) {
         heroSection.addEventListener("mousemove", (e) => {
           handleInteraction(e.clientX, e.clientY);
         });
 
-        heroSection.addEventListener("touchstart", (e) => {
-          if (e.touches.length > 0) {
-            const touch = e.touches[0];
-            touchStartX = touch.clientX;
-            touchStartY = touch.clientY;
-            isScrolling = false;
-            handleInteraction(touch.clientX, touch.clientY);
-          }
-        }, { passive: true });
-
-        heroSection.addEventListener("touchmove", (e) => {
-          if (e.touches.length > 0) {
-            const touch = e.touches[0];
-            const deltaY = Math.abs(touch.clientY - touchStartY);
-            const deltaX = Math.abs(touch.clientX - touchStartX);
-
-            if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX && !isScrolling) {
-              // A scroll, not a touch on the keyboard: give the copy straight back.
-              isScrolling = true;
-              heroSection.classList.remove('mouse-active');
-              mouseActive = false;
-              if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
-              document.dispatchEvent(new CustomEvent("robotMouseLeave", { detail: { left: true } }));
-            }
-
-            if (!isScrolling) {
-              handleInteraction(touch.clientX, touch.clientY);
-            }
-          }
-        }, { passive: true });
-
-        heroSection.addEventListener("touchend", () => {
-          heroSection.classList.remove('mouse-active');
-          mouseActive = false;
-          isScrolling = false;
-
-          if (mouseTimeout) {
-            clearTimeout(mouseTimeout);
-            mouseTimeout = null;
-          }
-
-          document.dispatchEvent(
-            new CustomEvent("blogKeyboardMouseLeave", {
-              detail: { left: true },
-            })
-          );
+        bindHeroTouch(heroSection, {
+          interact: handleInteraction,
+          release: () => {
+            heroSection.classList.remove('mouse-active');
+            mouseActive = false;
+            if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+            document.dispatchEvent(new CustomEvent("blogKeyboardMouseLeave", { detail: { left: true } }));
+          },
         });
       }
 
