@@ -159,36 +159,6 @@ export function animateLineExpand(
 }
 
 /**
- * Create hero parallax - replaces manual window.scroll listener with ScrollTrigger scrub.
- * Replicates: opacity = 1 - scrolled/(height*0.7), translateY = scrolled * 0.3
- */
-export function createHeroParallax(
-  selector: string | Element
-): ScrollTrigger | null {
-  const element =
-    typeof selector === 'string' ? document.querySelector(selector) : selector;
-  if (!element) return null;
-
-  if (prefersReducedMotion()) return null;
-
-  return ScrollTrigger.create({
-    trigger: element.closest('.hero-section, section, .relative') || element,
-    start: 'top top',
-    end: 'bottom top',
-    scrub: true,
-    onUpdate: (self) => {
-      const progress = self.progress;
-      const opacity = Math.max(0, 1 - progress / 0.7);
-      const translateY = progress * window.innerHeight * 0.3;
-      gsap.set(element, {
-        opacity,
-        y: translateY,
-      });
-    },
-  });
-}
-
-/**
  * Generic scroll-triggered fade-in-up for below-fold content.
  */
 export function scrollReveal(

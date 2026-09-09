@@ -310,18 +310,14 @@ export const prerender = true;
 <style>
   /* ===== HERO SECTION STYLES ===== */
 
-  /* Tech grid background */
+  /* Tech grid background. Static on purpose: the old 60s background-position
+     pan moved 1.7px/s, invisible at 10% opacity over 3% lines, but it forced a
+     repaint of a section-sized layer every frame, and this page carries two. */
   .tech-grid {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
   }
 
   /* Robot background */
@@ -362,13 +358,6 @@ export const prerender = true;
 
   .hero-section:not(.mouse-active) .robot-overlay {
     transition: background 2.5s ease-in-out;
-  }
-
-  /* Prevent layout shift */
-  .hero-section {
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: 100dvh;
   }
 
   /* Label intro */
@@ -618,12 +607,22 @@ export const prerender = true;
       width: 100%;
     }
   }
+
+  /* Matches the shouldSkipHeavy3D() viewport gate. Below 768px the viewer
+     shows a still poster instead of the live scene, and the desktop 0.85 scrim
+     would bury it; 0.6 lets the poster read while keeping the copy legible. */
+  @media (max-width: 767px) {
+    .robot-overlay {
+      background: rgba(0, 0, 0, 0.6) !important;
+    }
+  }
 </style>
 
 <script>
   import { onPageReady } from '../scripts/pageReady';
   import { DURATION, EASE } from '../scripts/motion';
   import { addHeroCharIntro, animateLineExpand, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -836,54 +835,64 @@ export const prerender = true;
     const SCROLL_THRESHOLD = 10; // pixels of vertical movement to trigger scroll
 
     if (heroSection && robotContainer) {
-      heroSection.addEventListener("mousemove", (e) => {
-        handleInteraction(e.clientX, e.clientY);
-      });
+      // The pointer handlers exist to reveal the robot under the cursor or
+      // finger. Where the viewer skips the scene (phones, reduced motion, data
+      // saver) there is nothing behind the scrim, so the first touch of every
+      // scroll used to blank the headline to 5% for 800ms and reveal black.
+      // mousemove is inside the same gate because iOS Safari synthesises a
+      // mousemove on every tap of an element that listens for it, so leaving
+      // it bound would dim the copy on the poster's "View in 3D" tap. Desktop
+      // with a live scene is unchanged: the predicate is false there.
+      if (!shouldSkipHeavy3D()) {
+        heroSection.addEventListener("mousemove", (e) => {
+          handleInteraction(e.clientX, e.clientY);
+        });
 
-      heroSection.addEventListener("touchstart", (e) => {
-        if (e.touches.length > 0) {
-          const touch = e.touches[0];
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-          isScrolling = false;
-          handleInteraction(touch.clientX, touch.clientY);
-        }
-      }, { passive: true });
-
-      heroSection.addEventListener("touchmove", (e) => {
-        if (e.touches.length > 0) {
-          const touch = e.touches[0];
-          const deltaY = Math.abs(touch.clientY - touchStartY);
-          const deltaX = Math.abs(touch.clientX - touchStartX);
-
-          // If vertical movement exceeds threshold and is greater than horizontal, allow scrolling
-          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
-            isScrolling = true;
-          }
-
-          // Only trigger interaction effect, don't block scrolling
-          if (!isScrolling) {
+        heroSection.addEventListener("touchstart", (e) => {
+          if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            isScrolling = false;
             handleInteraction(touch.clientX, touch.clientY);
           }
-        }
-      }, { passive: true });
+        }, { passive: true });
 
-      heroSection.addEventListener("touchend", () => {
-        heroSection.classList.remove('mouse-active');
-        mouseActive = false;
-        isScrolling = false;
+        heroSection.addEventListener("touchmove", (e) => {
+          if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            const deltaY = Math.abs(touch.clientY - touchStartY);
+            const deltaX = Math.abs(touch.clientX - touchStartX);
 
-        if (mouseTimeout) {
-          clearTimeout(mouseTimeout);
-          mouseTimeout = null;
-        }
+            // If vertical movement exceeds threshold and is greater than horizontal, allow scrolling
+            if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) {
+              isScrolling = true;
+            }
 
-        document.dispatchEvent(
-          new CustomEvent("contactRobotMouseLeave", {
-            detail: { left: true },
-          })
-        );
-      });
+            // Only trigger interaction effect, don't block scrolling
+            if (!isScrolling) {
+              handleInteraction(touch.clientX, touch.clientY);
+            }
+          }
+        }, { passive: true });
+
+        heroSection.addEventListener("touchend", () => {
+          heroSection.classList.remove('mouse-active');
+          mouseActive = false;
+          isScrolling = false;
+
+          if (mouseTimeout) {
+            clearTimeout(mouseTimeout);
+            mouseTimeout = null;
+          }
+
+          document.dispatchEvent(
+            new CustomEvent("contactRobotMouseLeave", {
+              detail: { left: true },
+            })
+          );
+        });
+      }
 
       heroSection.addEventListener("mouseleave", () => {
         heroSection.classList.remove('mouse-active');

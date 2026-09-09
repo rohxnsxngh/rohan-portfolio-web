@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "image-sizes": "node scripts/generate-image-sizes.mjs",
-    "verify-assets": "node scripts/verify-assets.mjs"
+    "verify-assets": "node scripts/verify-assets.mjs",
+    "posters": "node scripts/render-model-posters.mjs",
+    "strip-glb-textures": "node scripts/strip-glb-textures.mjs public/models/robot_playground_draco.glb public/models/kuma_heavy_robot_draco.glb public/models/walking_robot.glb"
   },
   "dependencies": {
     "@astrojs/check": "^0.5.6",

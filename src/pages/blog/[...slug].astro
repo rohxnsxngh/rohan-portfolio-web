@@ -203,7 +203,9 @@ export const prerender = true;
     text-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
   }
 
-  /* Word wrapper to prevent mid-word breaks */
+  /* Word wrapper to prevent mid-word breaks. Every letter is its own
+     inline-block for the reveal animation, so without nowrap a word could
+     break anywhere with no hyphen; any overflow fix has to be size only. */
   .hero-title .word {
     display: inline-block;
     white-space: nowrap;
@@ -302,8 +304,12 @@ export const prerender = true;
       padding-bottom: 2rem;
     }
 
+    /* Sized so the longest single word on any page (HARDWARE/ROBOTICS,
+       17 glyphs) fits at 390px. IBM Plex Mono advances 0.6em per glyph and
+       WebKit's synthetic bold adds about 1px more, which is why 8.5vw rather
+       than 9vw: at 9vw the right edge lands past the content box on iOS. */
     .hero-title {
-      font-size: clamp(1.5rem, 12vw, 3rem);
+      font-size: clamp(1.25rem, 8.5vw, 2.5rem);
     }
 
     .metadata-section,

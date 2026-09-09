@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
 import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
+import rehypeMarkdownImageSizes from "./src/plugins/rehypeMarkdownImageSizes.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,6 +27,11 @@ export default defineConfig({
       blogs: "src/content/blogs",
     },
   },
+  markdown: {
+    // Prose images in .md files get widths/sizes/quality here, since a
+    // components override on <Content /> is MDX-only. See the plugin header.
+    rehypePlugins: [rehypeMarkdownImageSizes],
+  },
   output: "server",
   adapter: vercel({
     webAnalytics: { enabled: true },
@@ -47,14 +53,6 @@ export default defineConfig({
         include: [/three/, /three\/examples\/jsm\/*/]
       },
       chunkSizeWarningLimit: 600,
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'three-vendor': ['three'],
-            'gsap-vendor': ['gsap'],
-          }
-        }
-      }
     }
   },
 });

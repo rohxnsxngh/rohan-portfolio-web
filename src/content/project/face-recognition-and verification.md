@@ -9,7 +9,7 @@ github: "https://github.com/yourusername/face-recognition"
 kaggle: "https://www.kaggle.com/competitions/11785-hw-2-p-2-face-verification-spring-2025"
 ---
 
-![Face recognition verification system visualization](/images/project/IDLHW2FaceVerificationArchitecture.jpg)
+![Face recognition verification system visualization](@images/project/IDLHW2FaceVerificationArchitecture.jpg)
 
 ## Project Overview
 
@@ -53,7 +53,7 @@ Network Architecture:
 
 The inclusion of residual connections was crucial for training deeper networks effectively, helping to mitigate the vanishing gradient problem that typically plagues deep CNNs.
 
-![CNN architecture diagram](/images/project/IDLHW2CNN.jpg)
+![CNN architecture diagram](@images/project/IDLHW2CNN.jpg)
 
 ### Key Architectural Components
 

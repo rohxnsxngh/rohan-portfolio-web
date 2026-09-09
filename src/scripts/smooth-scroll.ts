@@ -11,23 +11,39 @@ const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function initSmoothScroll(): Lenis {
+// Same expression heavy3d.ts exposes as isCoarsePointer(); inlined so this
+// module does not pull the 3D helper into the layout chunk.
+const isCoarsePointer = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+export function initSmoothScroll(): Lenis | null {
   destroySmoothScroll();
+
+  // Touch devices keep native momentum scrolling, so Lenis has nothing to add
+  // there, but constructing it is not free: its VirtualScroll registers
+  // non-passive touchstart/touchmove/touchend listeners on window (every
+  // finger drag walks event.composedPath() before Lenis decides to do
+  // nothing), and its ticker callback is a second gsap.ticker listener, which
+  // is enough to stop GSAP ever putting the rAF loop to sleep. On a phone
+  // that is a permanently awake ticker for zero visible benefit, so do not
+  // construct it at all. ScrollTrigger works against native scroll.
+  if (isCoarsePointer()) {
+    return null;
+  }
 
   lenis = new Lenis({
     duration: prefersReducedMotion() ? 0 : 1.2,
     easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    touchMultiplier: 2,
     infinite: false,
-    // Touch devices keep their native momentum scrolling. A JS-smoothed
-    // approximation fights the platform's own physics and reads as lag on a
-    // phone, where the native behaviour is already good.
-    smoothTouch: false,
-  } as ConstructorParameters<typeof Lenis>[0]);
+    // Explicit even though it is the default: a JS-smoothed approximation
+    // fights the platform's own touch physics and reads as lag.
+    syncTouch: false,
+  });
 
   // Astro restores the previous scroll position on a history navigation without
   // going through Lenis, so a freshly constructed instance would believe it is
-  // at the top while the document is scrolled down — and the first wheel event
+  // at the top while the document is scrolled down, and the first wheel event
   // would jump. Start it from wherever the document actually is.
   if (window.scrollY > 0) {
     lenis.scrollTo(window.scrollY, { immediate: true });

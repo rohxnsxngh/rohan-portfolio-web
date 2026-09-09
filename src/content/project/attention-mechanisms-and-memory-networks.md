@@ -11,7 +11,7 @@ kaggle: "https://www.kaggle.com/competitions/11785-s25-hw4p2-asr/overview"
 
 This project explores the implementation of state-of-the-art neural sequence modeling techniques across two challenging domains: word-level language modeling for text generation and end-to-end speech recognition with attention mechanisms. Both components showcase the power and versatility of recurrent architectures for complex sequential data.
 
-![Neural Language Model Architecture](/images/project/IDLHW4FullTransformer.jpg)
+![Neural Language Model Architecture](@images/project/IDLHW4FullTransformer.jpg)
 
 ## Project Overview
 
@@ -26,9 +26,9 @@ I developed sophisticated recurrent neural networks to model statistical pattern
 - Exploring regularization techniques specifically designed for recurrent networks
 - Evaluating models using perplexity metrics and qualitative text generation
 
-![Neural Language Model Architecture](/images/project/IDLHW4TransformerSublayers.jpg)
+![Neural Language Model Architecture](@images/project/IDLHW4TransformerSublayers.jpg)
 
-![Neural Language Model Architecture](/images/project/IDLHW4TransformerLayers.jpg)
+![Neural Language Model Architecture](@images/project/IDLHW4TransformerLayers.jpg)
 
 ### Part 2: Speech-to-Text Transcription with Attention
 

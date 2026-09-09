@@ -24,12 +24,25 @@ const {
   import { onPageReady } from '../scripts/pageReady';
   import { bindOnce } from '../scripts/bindOnce';
   import { whenSized } from '../scripts/whenSized';
-  import * as THREE from "three";
-  import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-  import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-  import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
-  import { LuminosityShader } from "three/examples/jsm/shaders/LuminosityShader.js";
-  import { SobelOperatorShader } from "three/examples/jsm/shaders/SobelOperatorShader.js";
+  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
+
+  // three and its post-processing passes are the bulk of this page's script
+  // (~136 KB gz) and a phone never uses them, so they are loaded with import()
+  // rather than statically. Kicking the fetch off here, at module evaluation,
+  // rather than inside initParticleViewer() keeps desktop timing close to what
+  // a static import gave: the browser discovers the chunk the moment this
+  // module runs instead of after the page-ready handshake.
+  function loadHeavy() {
+    return Promise.all([
+      import("three"),
+      import("three/examples/jsm/postprocessing/EffectComposer.js"),
+      import("three/examples/jsm/postprocessing/RenderPass.js"),
+      import("three/examples/jsm/postprocessing/ShaderPass.js"),
+      import("three/examples/jsm/shaders/LuminosityShader.js"),
+      import("three/examples/jsm/shaders/SobelOperatorShader.js"),
+    ]);
+  }
+  let heavy: ReturnType<typeof loadHeavy> | null = shouldSkipHeavy3D() ? null : loadHeavy();
 
   // Simplex noise implementation for organic movement
   class SimplexNoise {
@@ -112,7 +125,7 @@ const {
   // Track current instance for cleanup
   let currentCleanup: (() => void) | null = null;
 
-  function initParticleViewer() {
+  async function initParticleViewer() {
     // Clean up any previous instance first
     if (currentCleanup) {
       currentCleanup();
@@ -122,6 +135,15 @@ const {
     // Find the container on the current page
     const container = document.querySelector(".art-particle-canvas-inner") as HTMLElement;
     if (!container) return; // No particle viewer on this page
+
+    // Same gate as the robot viewers, deliberately including its reduced-motion
+    // and data-saver reasons at any width: this scene is 15k noise-displaced
+    // points plus three full-screen passes every frame, under a scrim that
+    // hides most of it, so it is exactly the animated ambience those visitors
+    // asked not to pay for, on a phone or a desktop. Checked before the size
+    // wait so a skipped page registers no ResizeObserver either. The container
+    // stays put: it is absolute and black on a black hero.
+    if (shouldSkipHeavy3D()) return;
 
     // Get opacity and mouse radius from parent data attributes
     const parentContainer = container.closest('.art-particle-container') as HTMLElement;
@@ -136,6 +158,16 @@ const {
       currentCleanup = whenSized(container, () => initParticleViewer());
       return;
     }
+
+    // astro:before-swap can fire while the import is still in flight, and so
+    // can a second init for the same page view. Either one runs this cleanup,
+    // which turns the rest of this call into a no-op instead of letting it
+    // build a scene against a container that has already been swapped away.
+    let cancelled = false;
+    currentCleanup = () => { cancelled = true; };
+    const [THREE, { EffectComposer }, { RenderPass }, { ShaderPass }, { LuminosityShader }, { SobelOperatorShader }] =
+      await (heavy ??= loadHeavy());
+    if (cancelled) return;
 
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
@@ -376,8 +408,13 @@ const {
     const grayscalePass = new ShaderPass(LuminosityShader);
     composer.addPass(grayscalePass);
     const sobelPass = new ShaderPass(SobelOperatorShader);
-    sobelPass.uniforms['resolution'].value.x = containerWidth * window.devicePixelRatio;
-    sobelPass.uniforms['resolution'].value.y = containerHeight * window.devicePixelRatio;
+    // The kernel spacing has to match the drawing buffer, which is sized from
+    // the renderer's clamped ratio (2), not the raw devicePixelRatio (3 on
+    // most iPhones). With the raw value the Sobel taps landed between texels
+    // and the edges came out soft.
+    const pixelRatio = renderer.getPixelRatio();
+    sobelPass.uniforms['resolution'].value.x = containerWidth * pixelRatio;
+    sobelPass.uniforms['resolution'].value.y = containerHeight * pixelRatio;
     composer.addPass(sobelPass);
 
     // Mouse tracking
@@ -486,8 +523,9 @@ const {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
       composer.setSize(width, height);
-      sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
-      sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
+      const resizedRatio = renderer.getPixelRatio();
+      sobelPass.uniforms['resolution'].value.x = width * resizedRatio;
+      sobelPass.uniforms['resolution'].value.y = height * resizedRatio;
     }
 
     window.addEventListener("resize", handleResize);
@@ -539,7 +577,7 @@ const {
   // Guarded: this viewer is used on five routes, so its script is inlined into
   // five separate page bundles. Without the guard, moving between those routes
   // registered a fresh listener each time and every one of them called
-  // initParticleViewer() — stacking up WebGL contexts and RAF loops until the
+  // initParticleViewer(), stacking up WebGL contexts and RAF loops until the
   // browser began dropping the oldest contexts.
   bindOnce('art-particle-viewer', () => {
     // Initialize on every page load (initial + View Transition navigations)

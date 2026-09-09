@@ -14,7 +14,10 @@ export const prerender = true;
       <!-- Header -->
       <div class="pt-16 pb-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-          <div class="flex items-center justify-between mb-8">
+          <!-- Below md the button row may drop under the title; from md up both
+               rows are nowrap, which is the layout this page always had there
+               (the title block shrinks and wraps, the buttons stay on the right). -->
+          <div class="flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 mb-8">
             <div>
               <a href="/forge" class="inline-flex items-center text-primary/60 hover:text-primary transition-colors font-mono text-sm mb-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,7 +28,7 @@ export const prerender = true;
               <h1 class="text-3xl sm:text-4xl font-mono text-primary mb-2">Enhanced Cube Grid</h1>
               <p class="text-primary/70 font-mono">Cinematic bloom effects with dynamic lighting</p>
             </div>
-            <div class="hidden sm:flex items-center space-x-3">
+            <div class="flex flex-wrap md:flex-nowrap items-center gap-3">
               <button id="play-pause" class="px-3 py-2 border border-primary/20 text-primary/80 hover:bg-primary/10 transition-colors font-mono text-sm">
                 Pause
               </button>
@@ -46,7 +49,9 @@ export const prerender = true;
       <!-- ThreeJS Container -->
       <div class="px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
-          <div id="threejs-container" class="w-full h-[600px] border border-primary/20 rounded-lg overflow-hidden bg-black/50">
+          <!-- 60svh on phones: a fixed 600px canvas is taller than the visible
+               viewport there and the controls below it were off-screen. -->
+          <div id="threejs-container" data-experiment="1" class="w-full h-[60svh] sm:h-[600px] border border-primary/20 rounded-lg overflow-hidden bg-black/50">
             <div class="loading-container">
               <div class="loading-spinner"></div>
               <p class="text-primary/60 font-mono text-sm mt-4">Loading enhanced scene...</p>
@@ -137,12 +142,33 @@ export const prerender = true;
   import { whenSized } from '../../scripts/whenSized';
   let cancelPendingSize: (() => void) | null = null;
   import { onPageReady } from '../../scripts/pageReady';
-  import * as THREE from "three";
-  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-  import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-  import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-  import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-  import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
+  import { isCoarsePointer } from '../../scripts/heavy3d';
+  import type * as ThreeNS from "three";
+  import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+  import type { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+  import type { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+
+  // three is loaded with import() rather than statically so that it stops
+  // being part of the shared chunk graph: with the hero viewers now lazy, the
+  // forge experiments were the last static importers, and a static edge here
+  // would keep three in the module graph the whole site evaluates on load.
+  // The fetch is kicked off at module evaluation, not inside initThreeJS(), so
+  // it starts as early as the browser can discover it. Not gated: on this page
+  // the canvas is the content, so every device needs it.
+  const heavy = Promise.all([
+    import("three"),
+    import("three/examples/jsm/controls/OrbitControls.js"),
+    import("three/examples/jsm/postprocessing/EffectComposer.js"),
+    import("three/examples/jsm/postprocessing/RenderPass.js"),
+    import("three/examples/jsm/postprocessing/UnrealBloomPass.js"),
+    import("three/examples/jsm/postprocessing/OutputPass.js"),
+  ]);
+  let THREE: typeof ThreeNS;
+  let mods: Awaited<typeof heavy>;
+  // Bumped by every init and dispose. An init that awaited the import checks
+  // its token afterwards so a navigation away (or a second init) while the
+  // chunk was in flight does not build a scene into a swapped-out container.
+  let initToken = 0;
 
   // Simple Perlin noise implementation
   class SimpleNoise {
@@ -209,13 +235,15 @@ export const prerender = true;
   }
 
   // Scene variables
-  let scene: THREE.Scene;
-  let camera: THREE.PerspectiveCamera;
-  let renderer: THREE.WebGLRenderer;
-  let composer: EffectComposer;
-  let bloomPass: UnrealBloomPass;
+  let scene: ThreeNS.Scene;
+  let camera: ThreeNS.PerspectiveCamera;
+  let renderer: ThreeNS.WebGLRenderer;
+  // Null until built. On desktop that happens in init; on a phone only if the
+  // user turns bloom on, so the default phone frame never pays for the passes.
+  let composer: EffectComposer | null = null;
+  let bloomPass: UnrealBloomPass | null = null;
   let controls: OrbitControls;
-  let mesh: THREE.InstancedMesh;
+  let mesh: ThreeNS.InstancedMesh;
   let _animationId: number;
   let isAnimating = true;
   let bloomEnabled = true;
@@ -226,9 +254,10 @@ export const prerender = true;
   // Animation variables
   let amount = 20;
   let count = Math.pow(amount, 3);
-  const dummy = new THREE.Object3D();
+  // Created in init once three has loaded; module evaluation no longer has it.
+  let dummy: ThreeNS.Object3D;
   const noise = new SimpleNoise();
-  const color = new THREE.Color();
+  let color: ThreeNS.Color;
 
   // Settings
   let noiseAmplitude = 0.1;
@@ -247,16 +276,19 @@ export const prerender = true;
     // container that has already been swapped away.
     cancelPendingSize?.();
     cancelPendingSize = null;
+    initToken++;
     cancelAnimationFrame(_animationId);
     eventAbort?.abort();
     eventAbort = null;
     controls?.dispose();
     if (mesh) {
       mesh.geometry?.dispose();
-      (mesh.material as THREE.Material)?.dispose();
+      (mesh.material as ThreeNS.Material)?.dispose();
       mesh.dispose();
     }
     composer?.dispose();
+    composer = null;
+    bloomPass = null;
     if (renderer) {
       renderer.dispose();
       if (renderer.getContext()) {
@@ -266,9 +298,17 @@ export const prerender = true;
     }
   }
 
-  function initThreeJS() {
+  async function initThreeJS() {
     const container = document.getElementById('threejs-container');
     if (!container) return;
+    // Under View Transitions this module outlives its page: the document is
+    // never reloaded, so the astro:page-load listener registered below keeps
+    // firing on every later navigation. All three experiments use the same
+    // #threejs-container id, so without this check visiting experiment-1 and
+    // then experiment-2 built both scenes into experiment-2's container, each
+    // wiping the other's canvas and leaving an orphaned WebGL context and rAF
+    // loop behind. Only the page that owns the container may build into it.
+    if (container.dataset.experiment !== '1') return;
 
     // A zero-sized container yields a NaN camera aspect and a 0x0 drawing
     // buffer, which the stylesheet then stretches over the hero as a flat
@@ -279,10 +319,24 @@ export const prerender = true;
       return;
     }
 
+    const token = ++initToken;
+    mods = await heavy;
+    if (token !== initToken) return;
+    [THREE] = mods;
+    const { OrbitControls } = mods[1];
+    dummy = new THREE.Object3D();
+    color = new THREE.Color();
+
     disposeThreeJS();
     contextLost = false;
     eventAbort = new AbortController();
     container.innerHTML = '';
+
+    // Phones (and anything else driven by touch) get a lighter render: 1x
+    // pixel ratio, no MSAA, no shadow pass and no bloom by default. The
+    // 767px cut mirrors heavy3d.ts so a phone in landscape is still caught.
+    // Desktop values are untouched. experiment-2 and -3 use the same test.
+    const lowPower = isCoarsePointer() || window.matchMedia('(max-width: 767px)').matches;
 
     // Scene setup
     scene = new THREE.Scene();
@@ -296,12 +350,14 @@ export const prerender = true;
 
     // Renderer setup with enhanced settings
     renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !lowPower,
       powerPreference: "high-performance"
     });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
+    renderer.setPixelRatio(lowPower ? 1 : Math.min(window.devicePixelRatio, 2));
+    // Nothing in the scene receives shadows (mesh.receiveShadow is false), so
+    // on a phone the 2048px depth pass is pure cost and is switched off.
+    renderer.shadowMap.enabled = !lowPower;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.0;
@@ -320,8 +376,14 @@ export const prerender = true;
       initThreeJS();
     }, { signal: eventAbort.signal });
 
-    // Post-processing setup
-    setupPostProcessing(container);
+    // Post-processing setup. On a phone the bloom chain (two extra full-screen
+    // passes plus a mip pyramid) is deferred until the user asks for it via
+    // the Bloom button, and the labels are synced so they do not claim it is on.
+    if (lowPower) {
+      setBloomEnabled(false);
+    } else {
+      setupPostProcessing(container);
+    }
 
     // Create enhanced instanced mesh
     createInstancedMesh();
@@ -339,6 +401,11 @@ export const prerender = true;
     controls.minDistance = 8;
     controls.autoRotate = false;
     controls.autoRotateSpeed = 0.3;
+    // OrbitControls sets touch-action: none, which swallows every touch on the
+    // canvas and traps a phone user who is trying to scroll past it. pan-y
+    // hands vertical drags back to the page; horizontal ones still orbit.
+    // Mouse input is unaffected. Matches experiment-2.
+    renderer.domElement.style.touchAction = 'pan-y';
 
     // Start animation
     animate();
@@ -347,6 +414,10 @@ export const prerender = true;
   }
 
   function setupPostProcessing(container: HTMLElement) {
+    const { EffectComposer } = mods[2];
+    const { RenderPass } = mods[3];
+    const { UnrealBloomPass } = mods[4];
+    const { OutputPass } = mods[5];
     composer = new EffectComposer(renderer);
     const renderPass = new RenderPass(scene, camera);
     composer.addPass(renderPass);
@@ -354,7 +425,7 @@ export const prerender = true;
     bloomPass = new UnrealBloomPass(
       new THREE.Vector2(container.clientWidth, container.clientHeight),
       bloomIntensity,   // strength
-      0.5,              // radius  
+      0.5,              // radius
       0.8               // threshold
     );
     composer.addPass(bloomPass);
@@ -363,11 +434,27 @@ export const prerender = true;
     composer.addPass(outputPass);
   }
 
+  // The one place bloom state changes. Bloom toggled on after init (the phone
+  // path) builds the chain on demand, and the button and status labels are
+  // written here rather than at each call site so they cannot drift from the
+  // state they describe.
+  function setBloomEnabled(enabled: boolean) {
+    bloomEnabled = enabled;
+    if (bloomEnabled && !composer) {
+      const container = document.getElementById('threejs-container');
+      if (container) setupPostProcessing(container);
+    }
+    const bloomBtn = document.getElementById('bloom-toggle');
+    if (bloomBtn) bloomBtn.textContent = bloomEnabled ? 'Bloom' : 'No Bloom';
+    const statusElement = document.getElementById('bloom-status');
+    if (statusElement) statusElement.textContent = bloomEnabled ? 'Enabled' : 'Disabled';
+  }
+
   function createInstancedMesh() {
     if (mesh) {
       scene.remove(mesh);
       mesh.geometry?.dispose();
-      (mesh.material as THREE.Material)?.dispose();
+      (mesh.material as ThreeNS.Material)?.dispose();
       mesh.dispose();
     }
 
@@ -521,7 +608,7 @@ export const prerender = true;
     updateFPS(time);
     controls.update();
 
-    if (bloomEnabled) {
+    if (bloomEnabled && composer) {
       composer.render();
     } else {
       renderer.render(scene, camera);
@@ -554,16 +641,13 @@ export const prerender = true;
     }, { signal });
 
     bloomBtn?.addEventListener('click', () => {
-      bloomEnabled = !bloomEnabled;
-      bloomBtn.textContent = bloomEnabled ? 'Bloom' : 'No Bloom';
-      const statusElement = document.getElementById('bloom-status');
-      if (statusElement) statusElement.textContent = bloomEnabled ? 'Enabled' : 'Disabled';
+      setBloomEnabled(!bloomEnabled);
     }, { signal });
 
     wireframeBtn?.addEventListener('click', () => {
       wireframeMode = !wireframeMode;
       if (mesh && mesh.material) {
-        (mesh.material as THREE.MeshPhongMaterial).wireframe = wireframeMode;
+        (mesh.material as ThreeNS.MeshPhongMaterial).wireframe = wireframeMode;
       }
       wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
     }, { signal });
@@ -577,7 +661,8 @@ export const prerender = true;
 
     bloomIntensitySlider?.addEventListener('input', () => {
       bloomIntensity = parseFloat(bloomIntensitySlider.value);
-      bloomPass.strength = bloomIntensity;
+      // No pass yet on the phone path; the value is picked up when it is built.
+      if (bloomPass) bloomPass.strength = bloomIntensity;
       const label = bloomIntensitySlider.nextElementSibling;
       if (label) label.textContent = bloomIntensity.toFixed(1);
     }, { signal });
@@ -608,15 +693,12 @@ export const prerender = true;
           controls.update();
           break;
         case 'KeyB':
-          bloomEnabled = !bloomEnabled;
-          if (bloomBtn) bloomBtn.textContent = bloomEnabled ? 'Bloom' : 'No Bloom';
-          const statusElement = document.getElementById('bloom-status');
-          if (statusElement) statusElement.textContent = bloomEnabled ? 'Enabled' : 'Disabled';
+          setBloomEnabled(!bloomEnabled);
           break;
         case 'KeyW':
           wireframeMode = !wireframeMode;
           if (mesh && mesh.material) {
-            (mesh.material as THREE.MeshPhongMaterial).wireframe = wireframeMode;
+            (mesh.material as ThreeNS.MeshPhongMaterial).wireframe = wireframeMode;
           }
           if (wireframeBtn) wireframeBtn.textContent = wireframeMode ? 'Solid' : 'Wireframe';
           break;
@@ -630,7 +712,7 @@ export const prerender = true;
         camera.aspect = container.clientWidth / container.clientHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(container.clientWidth, container.clientHeight);
-        composer.setSize(container.clientWidth, container.clientHeight);
+        composer?.setSize(container.clientWidth, container.clientHeight);
       }
     }, { signal });
   }

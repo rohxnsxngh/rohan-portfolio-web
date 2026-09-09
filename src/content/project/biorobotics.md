@@ -13,7 +13,7 @@ demo: "https://biorobotics-custom-sim.vercel.app/"
 
 This project investigates the optimization of aquatic robotic propulsion through bio-inspired fishtail locomotion. Our team developed and evaluated a multi-actuator system to understand the fundamental relationships between control complexity, swimming pattern variables, and propulsion efficiency in underwater robotics.
 
-![Fish Robot Swimming](/images/project/BiobotTBone.JPG)
+![Fish Robot Swimming](@images/project/BiobotTBone.JPG)
 
 ## Research Motivation
 
@@ -27,7 +27,7 @@ Our core hypothesis was: **A high frequency, low amplitude tail motion will move
 
 This hypothesis was inspired by observations of different fish swimming patterns in nature and the biomechanical principles that govern efficient aquatic locomotion.
 
-![Fish Locomotion Principles and Thrust Generation](/images/project/BiobotFishMotion.png)
+![Fish Locomotion Principles and Thrust Generation](@images/project/BiobotFishMotion.png)
 
 ## Project Overview
 
@@ -52,7 +52,7 @@ Fish locomotion provides an excellent biological model for underwater propulsion
 
 These locomotion patterns involve complex interactions between the fish's body and the surrounding fluid, creating thrust through manipulation of water pressure and momentum. As shown in our reference diagram, forward thrust is generated when the lateral movement of the fish's body creates regions of pressure differential in the surrounding water.
 
-![CAD Render of Complete Robot](/images/project/BiobotRender.jpg)
+![CAD Render of Complete Robot](@images/project/BiobotRender.jpg)
 
 ## Robot Design: T-Bone
 
@@ -68,11 +68,11 @@ The head serves as the primary electronics housing and tail attachment point, fe
 - A dedicated servo-actuated rudder mechanism for directional control
 - Mounting points for AprilTag markers used in visual tracking
 
-![Head Design with Streamlined Hydrodynamic Shape](/images/project/BiobotMesh.png)
+![Head Design with Streamlined Hydrodynamic Shape](@images/project/BiobotMesh.png)
 
 Fabricated using 3D printing with PLA material at 15% infill, the head achieves sufficient buoyancy while maintaining structural integrity. Waterproofing was accomplished through silicone sealant application at all seams and potential leakage points, creating a robust platform that balances multiple functional requirements.
 
-![Head Design with CFD Analysis](/images/project/BiobotCFD.png)
+![Head Design with CFD Analysis](@images/project/BiobotCFD.png)
 
 The electronics enclosure was secured to a specially designed raft structure that maintained the sensitive components above the waterline while allowing the propulsive elements to operate effectively underwater.
 
@@ -92,7 +92,7 @@ The tail was designed with two distinct fin components:
 
 This design allows for precise control of segment angles to generate complex wave patterns along the tail. The system was designed with modularity as a priority, allowing us to easily swap different tail components for comparative testing.
 
-![Tail Segment Design Showing Horizontal and Vertical Fins](/images/project/BiobotWaterside.JPG)
+![Tail Segment Design Showing Horizontal and Vertical Fins](@images/project/BiobotWaterside.JPG)
 
 ### Electronics Architecture
 
@@ -104,11 +104,11 @@ The electrical system consists of:
 - **Six D646WP waterproof servo motors**: Five for tail articulation and one for rudder control
 - **Electrical switch** for battery connection to reduce wear on connectors and enable quick power cycling
 
-![System Overview](/images/project/BiobotSystemOverview.png)
+![System Overview](@images/project/BiobotSystemOverview.png)
 
 The circuit was designed with ample current handling capacity, with copper pour on both sides of the PCB to manage the peak current of up to 11A from the servos. The board includes bulk and decoupling capacitors (220µF for every 1A) to ensure stable power delivery.
 
-![Custom PCB Design](/images/project/BiobotPCB.png)
+![Custom PCB Design](@images/project/BiobotPCB.png)
 
 All connections were waterproofed using cord grippers embedded in the top of the enclosure and sealed with FlexSeal. The electrical components were housed in a verified off-the-shelf waterproof enclosure, with the Arduino R4 and custom PCB securely mounted inside.
 
@@ -125,7 +125,7 @@ A comprehensive CFD study was conducted to optimize the robot's hydrodynamic pro
 
 The fin length of 2.5" with 2" curvature showed the best performance, with an average TKE around 7-9 × 10^-3 m²/s². This optimal design showed a complete turbulence profile without points of excessive TKE that would indicate regions of turbulence detrimental to efficient propulsion.
 
-![CFD Analysis Showing Turbulent Kinetic Energy Profile](/images/project/BiobotCFD2.png)
+![CFD Analysis Showing Turbulent Kinetic Energy Profile](@images/project/BiobotCFD2.png)
 
 The final robot design incorporated fins at a diagonal angle from the head's base, which CFD analysis confirmed generated a complete turbulence profile in the wake at a moderate range (around 8 × 10^-3 m²/s²) - acceptable for propulsion without creating regions of high turbulence.
 
@@ -138,7 +138,7 @@ To determine the most effective infill density for buoyant 3D-printed parts, we 
 - **50% infill**: Floated with less than 50% volume submerged
 - **100% infill**: Sank completely
 
-![Float Test of 3D Printed Cubes](/images/project/BiobotFloatTest.jpg)
+![Float Test of 3D Printed Cubes](@images/project/BiobotFloatTest.jpg)
 
 Based on these results, we designed a two-part fin structure:
 - Horizontal elements printed at 15% infill for maximum buoyancy
@@ -174,7 +174,7 @@ def calculate_joint_angles(amplitude, frequency, phase_shift, tail_multipliers):
 
 The system supports both continuous swimming and burst movement modes, with configurable burst duration and pause intervals.
 
-![Interactive Tail Motion Simulation](/images/project/BiobotSimulationTesting.png)
+![Interactive Tail Motion Simulation](@images/project/BiobotSimulationTesting.png)
 
 ### Computer Vision and Tracking
 
@@ -262,9 +262,9 @@ These findings provide crucial insights for developing more efficient aquatic ro
 
 Our results highlight the importance of biomimetic principles in robotics design, showing how lessons from evolutionary adaptation can inform engineering solutions for complex problems. The project serves as a foundation for further exploration of bio-inspired underwater propulsion systems, contributing to the ongoing efforts to develop more efficient and maneuverable underwater robotics.
 
-![Holding Fish Robot](/images/project/BiobotBaby.JPG)
+![Holding Fish Robot](@images/project/BiobotBaby.JPG)
 
-![Complete T-Bone Fish Robot Group](/images/project/BiobotGroupPicture.JPG)
+![Complete T-Bone Fish Robot Group](@images/project/BiobotGroupPicture.JPG)
 
 ## Video Demo
 

@@ -107,17 +107,31 @@ export const prerender = true;
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <!-- First video -->
                   <div class="video-wrapper">
+                    <!-- No `autoplay` and preload="none": these two clips are 16.85 MB
+                         between them, and with the autoplay attribute iOS starts pulling
+                         them as soon as the section is anywhere near the viewport. The
+                         IntersectionObserver below is the only thing that calls play(),
+                         so nothing downloads until the wrapper is actually on screen.
+                         `muted` and `playsinline` stay: iOS refuses programmatic play()
+                         without them. The desktop source is listed first with an explicit
+                         media query, so a browser that ignores <source media> still picks
+                         the file it always did. The query also requires hover because
+                         Safari evaluates <source media> once and never again on rotation:
+                         every current iPhone is over 767px wide in landscape and would be
+                         locked onto the 1080p file for the life of the page. iPads land on
+                         the mobile encode as a result, which is fine for a grayscale
+                         decorative loop. The script below restores desktop buffering. -->
                     <video
                       poster="/videos/tennis_01_thumb.jpg"
                       class="video-element"
-                      autoplay
                       loop
                       muted
                       playsinline
-                      preload="metadata"
+                      preload="none"
                       aria-label="Tennis video clip one"
                     >
-                      <source src="/videos/tennis_01.mp4" type="video/mp4" />
+                      <source src="/videos/tennis_01.mp4" type="video/mp4" media="(min-width: 768px) and (hover: hover)" />
+                      <source src="/videos/tennis_01_mobile.mp4" type="video/mp4" media="(max-width: 767px), (hover: none) and (pointer: coarse)" />
                       Your browser does not support the video tag.
                     </video>
                     <div class="video-border"></div>
@@ -128,14 +142,14 @@ export const prerender = true;
                     <video
                       poster="/videos/tennis_02_thumb.jpg"
                       class="video-element"
-                      autoplay
                       loop
                       muted
                       playsinline
-                      preload="metadata"
+                      preload="none"
                       aria-label="Tennis video clip two"
                     >
-                      <source src="/videos/tennis_02.mp4" type="video/mp4" />
+                      <source src="/videos/tennis_02.mp4" type="video/mp4" media="(min-width: 768px) and (hover: hover)" />
+                      <source src="/videos/tennis_02_mobile.mp4" type="video/mp4" media="(max-width: 767px), (hover: none) and (pointer: coarse)" />
                       Your browser does not support the video tag.
                     </video>
                     <div class="video-border"></div>
@@ -257,18 +271,15 @@ export const prerender = true;
       0 4px 20px rgba(0, 0, 0, 0.85);
   }
 
-  /* Tech grid background */
+  /* Tech grid background. Deliberately static: the old gridPan keyframe moved
+     background-position by 100px per minute, which is invisible at 1.7px/s but
+     is not compositor-animatable in WebKit, so every frame repainted the whole
+     hero (including the triple text-shadow title) on the main thread. */
   .tech-grid {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
   }
 
   /* BOLD ABOUT TITLE */
@@ -630,6 +641,7 @@ export const prerender = true;
   import { DURATION, EASE } from '../scripts/motion';
   import { addHeroCharIntro, animateLineExpand, scrollReveal, createMultiLayerParallax, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
+  import { heavy3DSkipReason } from '../scripts/heavy3d';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -663,6 +675,7 @@ export const prerender = true;
     // GSAP intro timeline
     const tl = createPageIntroTimeline();
     const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
     // handle the intro instead — no per-element tween objects allocated.
@@ -685,7 +698,7 @@ export const prerender = true;
     const leftChars = allChars.slice(0, halfLen);
     const rightChars = allChars.slice(halfLen);
 
-    if (leftChars.length && rightChars.length && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
+    if (leftChars.length && rightChars.length && heroSection && !reduceMotion && isDesktop) {
       const splitTl = gsap.timeline({
         scrollTrigger: {
           trigger: heroSection,
@@ -705,7 +718,7 @@ export const prerender = true;
     }
 
     // Continuous glow pulse on hero chars
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
+    if (!reduceMotion && isDesktop) {
       tl.call(() => {
         const glowChars = document.querySelectorAll('.about-title .char');
         if (glowChars.length) {
@@ -726,8 +739,10 @@ export const prerender = true;
     scrollReveal('.videos-section');
     scrollReveal('.cta-section');
 
-    // Profile image parallax
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    // Profile image parallax. Desktop only, like the other scrub effects on
+    // this page: on a phone it is one more scrubbed ScrollTrigger reading
+    // layout on every scroll event for a shift nobody notices.
+    if (!reduceMotion && isDesktop) {
       createMultiLayerParallax([
         { selector: '.profile-container', speed: -0.3 },
       ]);
@@ -805,52 +820,70 @@ export const prerender = true;
     }, { signal });
   });
 
-  // Intersection Observer for lazy loading videos
+  // Tennis clips: play only while on screen. The <video> elements carry no
+  // `autoplay` and preload="none", so on a phone this observer is the one and
+  // only thing that starts a download; before, the attribute made the browser
+  // fetch both files on its own and the observer was decoration. Desktop gets
+  // its old timing back from the script (attributes cannot be media-gated):
+  // preload flipped to auto on page load, and play from the first visible
+  // pixel, exactly what `autoplay` used to imply.
+  //
+  // Scoped to the about page's own clips rather than every <video> in the
+  // document: with ViewTransitions this module outlives the page, and an
+  // unscoped querySelectorAll('video') used to reach the unmuted, controls-only
+  // videos on the ASML and MOGO pages and call play() on them as they scrolled
+  // into view.
   onPageReady(() => {
     aboutObservers.forEach((o) => o.disconnect());
     aboutObservers = [];
 
-    const videos = document.querySelectorAll("video");
+    if (!document.querySelector('.about-title')) return;
 
-    if ("IntersectionObserver" in window) {
-      const videoObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const video = entry.target as HTMLVideoElement;
-              video.play().catch(() => {
-                // Auto-play may be prevented by browser settings
-              });
-              videoObserver.unobserve(video);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      aboutObservers.push(videoObserver);
+    const videos = document.querySelectorAll<HTMLVideoElement>('.videos-section video');
+    if (!videos.length || !('IntersectionObserver' in window)) return;
 
-      videos.forEach((video) => {
-        videoObserver.observe(video);
-      });
+    // Someone who has asked to save data (or is on 2g) gets the posters and
+    // nothing else. These are decorative loops, not content, so there is no
+    // play button to offer instead. Same definition of "less data" as the
+    // hero model gate, so the two cannot drift.
+    if (heavy3DSkipReason() === 'data') return;
+
+    // Same expression as the desktop <source media> above, so the device
+    // that buffers up front is the one that got the 1080p file. An iPad is
+    // over 767px but has no hover, and is treated like a phone here.
+    const isDesktop = window.matchMedia('(min-width: 768px) and (hover: hover)').matches;
+    if (isDesktop) {
+      videos.forEach((video) => { video.preload = 'auto'; });
     }
 
-    // Pause/play based on visibility
-    const pauseObserver = new IntersectionObserver(
+    // Phones wait for a quarter of the wrapper: enough that the clip is
+    // actually being looked at, so a fast scroll past the section does not
+    // start two downloads it then abandons. Desktop plays from any pixel, as
+    // it always did.
+    const playRatio = isDesktop ? 0 : 0.25;
+
+    const playbackObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLVideoElement).play().catch(() => {});
-          } else {
-            (entry.target as HTMLVideoElement).pause();
+          const video = entry.target as HTMLVideoElement;
+          // Gate on the ratio, not just isIntersecting: the observer also
+          // fires when isIntersecting flips, independent of the threshold
+          // list, so the first callback on scroll-in arrives at ratio ~0.
+          if (entry.isIntersecting && entry.intersectionRatio >= playRatio) {
+            // Rejected on iOS Low Power Mode and by autoplay policies; the
+            // poster stays up, which is fine.
+            video.play().catch(() => {});
+          } else if (!entry.isIntersecting) {
+            video.pause();
           }
         });
       },
-      { threshold: 0 }
+      // Both edges observed explicitly: 0 for pause on full exit, playRatio
+      // for the start. On desktop that collapses to a single 0.
+      { threshold: isDesktop ? [0] : [0, 0.25] }
     );
-    aboutObservers.push(pauseObserver);
+    aboutObservers.push(playbackObserver);
 
-    videos.forEach((video) => {
-      pauseObserver.observe(video);
-    });
+    videos.forEach((video) => playbackObserver.observe(video));
   });
 </script>

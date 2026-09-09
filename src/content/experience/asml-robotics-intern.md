@@ -63,7 +63,7 @@ The kinematic pins are what lock the EIP in place after the gripper releases it.
 
 ![Kinematic Pin Close-up](@images/experience/asml/kinematic-pin-closeup.png)
 
-<video controls width="100%" style="margin: 20px 0; border-radius: 8px;">
+<video controls playsinline preload="none" poster="/videos/simulation-bevels_thumb.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 1074 / 666;">
   <source src="/images/experience/asml/simulation-bevels.mp4" type="video/mp4">
 </video>
 
@@ -93,13 +93,13 @@ The real value of the simulation came from running massive parameter sweeps. I r
 - Contact friction coefficients
 - Approach velocities
 
-<video controls width="100%" style="margin: 20px 0; border-radius: 8px;">
+<video controls playsinline preload="none" poster="/videos/simulation-pin-insertion_thumb.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 1238 / 732;">
   <source src="/images/experience/asml/simulation-pin-insertion.mp4" type="video/mp4">
 </video>
 
 This helped identify the tolerance thresholds where handoff would succeed vs fail. We could see exactly which misalignment conditions caused collisions, which caused the reticle to slip, and which caused vibrations that exceeded acceptable limits.
 
-<video controls width="100%" style="margin: 20px 0; border-radius: 8px;">
+<video controls playsinline preload="none" poster="/videos/simulation-collision_thumb.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 1576 / 922;">
   <source src="/images/experience/asml/simulation-collision.mp4" type="video/mp4">
 </video>
 

@@ -230,7 +230,10 @@ export const prerender = true;
                       <!-- Glow overlay that follows mouse -->
                       <div class="glow-overlay"></div>
 
-                      <div class="card-content h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative z-10">
+                      {/* No z-index on .card-content on purpose: a z-index here made it a
+                          stacking context, which trapped the external-link row below the
+                          full-card anchor (z-20) so GitHub / Live Demo could not be tapped. */}
+                      <div class="card-content h-full min-h-[200px] rounded-xl bg-black border border-accent/20 transition-all duration-300 hover:shadow-lg flex flex-col relative">
                         {/* Add the ProjectImage component here */}
                         <ProjectImage image={image} title={title} tags={tags} />
 
@@ -270,7 +273,7 @@ export const prerender = true;
                             )}
                           </div>
                           {(github || demo || kaggle) && (
-                            <div class="mt-4 pt-4 flex gap-4 border-t border-accent/10">
+                            <div class="mt-4 pt-4 flex gap-4 border-t border-accent/10 relative z-30">
                               {github && (
                                 <a
                                   href={github}
@@ -341,18 +344,14 @@ export const prerender = true;
 <style>
   /* ===== HERO SECTION STYLES (matching homepage) ===== */
 
-  /* Tech grid background */
+  /* Tech grid background. Static on purpose: the old 60s background-position
+     pan moved 1.7px/s, invisible at 10% opacity over 3% lines, but it forced a
+     repaint of a section-sized layer every frame, and this page carries two. */
   .tech-grid {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
   }
 
   /* ===== MASSIVE TYPOGRAPHY ===== */
@@ -517,13 +516,6 @@ export const prerender = true;
     transition: background 2.5s ease-in-out;
   }
 
-  /* Prevent layout shift */
-  .hero-section {
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: 100dvh;
-  }
-
   /* ===== PROJECT CARDS ===== */
 
   .line-clamp-3 {
@@ -594,7 +586,7 @@ export const prerender = true;
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
   }
 
-  /* Animated gradient border */
+  /* Gradient border. Static here; the sweep lives under (hover: hover) below. */
   .card-gradient-border {
     position: absolute;
     inset: -2px;
@@ -609,29 +601,39 @@ export const prerender = true;
       transparent
     );
     background-size: 200% 200%;
+    background-position: 0% 50%;
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: borderGlow 4s linear infinite;
     opacity: 0.6;
     pointer-events: none;
     z-index: 5;
   }
 
-  @keyframes borderGlow {
-    0%, 100% {
-      background-position: 0% 50%;
+  /* The border sweep exists for a pointer that can hover. A phone never
+     holds that state (a tap on the card navigates), so on touch the border
+     rests on its first keyframe and the compositor gets to idle instead of
+     running twelve infinite background-position animations. */
+  @media (hover: hover) {
+    .card-gradient-border {
+      animation: borderGlow 4s linear infinite;
     }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
 
-  .project-card:hover .card-gradient-border {
-    opacity: 1;
-    animation-duration: 2s;
+    @keyframes borderGlow {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .project-card:hover .card-gradient-border {
+      opacity: 1;
+      animation-duration: 2s;
+    }
   }
 
   /* Grid overlay */
@@ -653,7 +655,8 @@ export const prerender = true;
     opacity: 1;
   }
 
-  /* Mouse-following glow effect */
+  /* Mouse-following glow effect. No will-change: it pinned a card-sized
+     screen-blended layer per card even while the overlay sat at opacity 0. */
   .glow-overlay {
     position: absolute;
     inset: 0;
@@ -670,11 +673,19 @@ export const prerender = true;
       transparent 40%
     );
     mix-blend-mode: screen;
-    will-change: opacity;
   }
 
   .project-card:hover .glow-overlay {
     opacity: 1;
+  }
+
+  /* Without hover the overlay divs have nothing to reveal; take the empty
+     elements out of layout so they cannot influence the card. */
+  @media (hover: none) {
+    .card-grid-overlay,
+    .glow-overlay {
+      display: none;
+    }
   }
 
   /* Enhanced card content hover */
@@ -760,7 +771,9 @@ export const prerender = true;
     }
 
     .label-intro span {
-      font-size: 0.65rem;
+      /* 0.75rem is the floor for uppercase tracked text on a phone; 0.65rem
+         rendered at 10.4px and was the smallest type on the page. */
+      font-size: 0.75rem;
       letter-spacing: 0.2em;
     }
 
@@ -768,17 +781,9 @@ export const prerender = true;
       width: 100%;
     }
 
-    .robot-overlay {
-      background: rgba(0, 0, 0, 0.88) !important;
-    }
-
-    .hero-section.mouse-active .hero-content {
-      opacity: 0.05;
-    }
-
-    .hero-section.mouse-active .robot-overlay {
-      background: rgba(0, 0, 0, 0.2) !important;
-    }
+    /* No .mouse-active rules here: the touch handlers that add that class are
+       only bound when the 3D scene can exist, so on a phone there is nothing
+       to reveal and the copy must never dim. */
 
     .card-corner-accent {
       width: 15px;
@@ -790,12 +795,22 @@ export const prerender = true;
       height: 20px;
     }
   }
+
+  /* Matches the shouldSkipHeavy3D() viewport gate. Below 768px the viewer
+     shows a still poster instead of the live scene, and the desktop 0.85 scrim
+     would bury it; 0.6 lets the poster read while keeping the copy legible. */
+  @media (max-width: 767px) {
+    .robot-overlay {
+      background: rgba(0, 0, 0, 0.6) !important;
+    }
+  }
 </style>
 
 <script>
   import { onPageReady } from '../scripts/pageReady';
   import { DURATION, EASE } from '../scripts/motion';
   import { addHeroCharIntro, batchScaleReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -908,28 +923,38 @@ export const prerender = true;
     const SCROLL_THRESHOLD = 10;
 
     if (heroSection && robotContainer) {
-      heroSection.addEventListener("mousemove", (e) => handleInteraction(e.clientX, e.clientY));
+      // The pointer handlers exist to reveal the robot under the cursor or
+      // finger. Where the viewer skips the scene (phones, reduced motion, data
+      // saver) there is nothing behind the scrim, so the first touch of every
+      // scroll used to blank the headline to 5% for 800ms and reveal black.
+      // mousemove is inside the same gate because iOS Safari synthesises a
+      // mousemove on every tap of an element that listens for it, so leaving
+      // it bound would dim the copy on the poster's "View in 3D" tap. Desktop
+      // with a live scene is unchanged: the predicate is false there.
+      if (!shouldSkipHeavy3D()) {
+        heroSection.addEventListener("mousemove", (e) => handleInteraction(e.clientX, e.clientY));
 
-      heroSection.addEventListener("touchstart", (e) => {
-        if (e.touches.length > 0) {
-          const t = e.touches[0]; touchStartX = t.clientX; touchStartY = t.clientY; isScrolling = false;
-          handleInteraction(t.clientX, t.clientY);
-        }
-      }, { passive: true });
+        heroSection.addEventListener("touchstart", (e) => {
+          if (e.touches.length > 0) {
+            const t = e.touches[0]; touchStartX = t.clientX; touchStartY = t.clientY; isScrolling = false;
+            handleInteraction(t.clientX, t.clientY);
+          }
+        }, { passive: true });
 
-      heroSection.addEventListener("touchmove", (e) => {
-        if (e.touches.length > 0) {
-          const t = e.touches[0];
-          if (Math.abs(t.clientY - touchStartY) > SCROLL_THRESHOLD && Math.abs(t.clientY - touchStartY) > Math.abs(t.clientX - touchStartX)) isScrolling = true;
-          if (!isScrolling) handleInteraction(t.clientX, t.clientY);
-        }
-      }, { passive: true });
+        heroSection.addEventListener("touchmove", (e) => {
+          if (e.touches.length > 0) {
+            const t = e.touches[0];
+            if (Math.abs(t.clientY - touchStartY) > SCROLL_THRESHOLD && Math.abs(t.clientY - touchStartY) > Math.abs(t.clientX - touchStartX)) isScrolling = true;
+            if (!isScrolling) handleInteraction(t.clientX, t.clientY);
+          }
+        }, { passive: true });
 
-      heroSection.addEventListener("touchend", () => {
-        heroSection.classList.remove('mouse-active'); mouseActive = false; isScrolling = false;
-        if (projectMouseTimeout) { clearTimeout(projectMouseTimeout); projectMouseTimeout = null; }
-        document.dispatchEvent(new CustomEvent("projectsRobotMouseLeave", { detail: { left: true } }));
-      });
+        heroSection.addEventListener("touchend", () => {
+          heroSection.classList.remove('mouse-active'); mouseActive = false; isScrolling = false;
+          if (projectMouseTimeout) { clearTimeout(projectMouseTimeout); projectMouseTimeout = null; }
+          document.dispatchEvent(new CustomEvent("projectsRobotMouseLeave", { detail: { left: true } }));
+        });
+      }
 
       heroSection.addEventListener("mouseleave", () => {
         heroSection.classList.remove('mouse-active'); mouseActive = false;

@@ -69,7 +69,7 @@ export const prerender = true;
             <!-- CAREER JOURNEY TIMELINE -->
             <div class="journey-section mb-16 opacity-0">
               <div class="flex items-center gap-4 mb-8">
-                <p class="font-mono text-[10px] sm:text-xs tracking-[0.3em] text-primary/30 uppercase">
+                <p class="font-mono text-xs tracking-[0.3em] text-primary/30 uppercase">
                   Career Journey
                 </p>
                 <div class="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent"></div>
@@ -372,12 +372,10 @@ export const prerender = true;
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
+    /* Static on purpose. The old 60s background-position drift moved the grid
+       1.7px per second, which nobody can see, but background-position is not
+       compositor-animatable in WebKit, so the page-tall element under every
+       card was repainted on the main thread every frame. */
   }
 
   /* BOLD EXPERIENCE TITLE */
@@ -474,58 +472,6 @@ export const prerender = true;
     }
   }
 
-  /* Cascading hover-like animation for each card */
-  .journey-card-wrapper:nth-child(1) .journey-card {
-    animation: autoHoverEffect 15s ease-in-out infinite;
-    animation-delay: 0s;
-  }
-
-  .journey-card-wrapper:nth-child(2) .journey-card {
-    animation: autoHoverEffect 15s ease-in-out infinite;
-    animation-delay: 2s;
-  }
-
-  .journey-card-wrapper:nth-child(3) .journey-card {
-    animation: autoHoverEffect 15s ease-in-out infinite;
-    animation-delay: 4s;
-  }
-
-  .journey-card-wrapper:nth-child(4) .journey-card {
-    animation: autoHoverEffect 15s ease-in-out infinite;
-    animation-delay: 6s;
-  }
-
-  .journey-card-wrapper:nth-child(5) .journey-card {
-    animation: autoHoverEffect 15s ease-in-out infinite;
-    animation-delay: 8s;
-  }
-
-  .journey-card-wrapper:nth-child(6) .journey-card {
-    animation: autoHoverEffect 15s ease-in-out infinite;
-    animation-delay: 10s;
-  }
-
-  .journey-card-wrapper:nth-child(7) .journey-card {
-    animation: autoHoverEffect 15s ease-in-out infinite;
-    animation-delay: 12s;
-  }
-
-  /* Auto hover effect - lift the card (longer duration, smooth transitions) */
-  @keyframes autoHoverEffect {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    5% {
-      transform: translateY(-8px);
-    }
-    15% {
-      transform: translateY(-8px);
-    }
-    20% {
-      transform: translateY(0);
-    }
-  }
-
   /* Pause all animations on hover - ensure user interaction takes priority */
   .journey-card-wrapper:hover .journey-card,
   .journey-card-wrapper:hover .journey-corner,
@@ -546,70 +492,131 @@ export const prerender = true;
     }
   }
 
-  /* Corner accent animation */
-  .journey-card-wrapper:nth-child(1) .journey-corner {
-    animation: cornerExpand 15s ease-in-out infinite;
-    animation-delay: 0s;
-  }
-
-  .journey-card-wrapper:nth-child(2) .journey-corner {
-    animation: cornerExpand 15s ease-in-out infinite;
-    animation-delay: 2s;
-  }
-
-  .journey-card-wrapper:nth-child(3) .journey-corner {
-    animation: cornerExpand 15s ease-in-out infinite;
-    animation-delay: 4s;
-  }
-
-  .journey-card-wrapper:nth-child(4) .journey-corner {
-    animation: cornerExpand 15s ease-in-out infinite;
-    animation-delay: 6s;
-  }
-
-  .journey-card-wrapper:nth-child(5) .journey-corner {
-    animation: cornerExpand 15s ease-in-out infinite;
-    animation-delay: 8s;
-  }
-
-  .journey-card-wrapper:nth-child(6) .journey-corner {
-    animation: cornerExpand 15s ease-in-out infinite;
-    animation-delay: 10s;
-  }
-
-  .journey-card-wrapper:nth-child(7) .journey-corner {
-    animation: cornerExpand 15s ease-in-out infinite;
-    animation-delay: 12s;
-  }
-
-  @keyframes cornerExpand {
-    0%, 100% {
-      width: 12px;
-      height: 12px;
-      border-color: rgba(255, 255, 255, 0.3);
-      filter: none;
-    }
-    5% {
-      width: 16px;
-      height: 16px;
-      border-color: rgba(255, 255, 255, 0.6);
-      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
-    }
-    15% {
-      width: 16px;
-      height: 16px;
-      border-color: rgba(255, 255, 255, 0.6);
-      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4));
-    }
-    20% {
-      width: 12px;
-      height: 12px;
-      border-color: rgba(255, 255, 255, 0.3);
-      filter: none;
-    }
+  /* Journey Card Content. No backdrop-filter: 40% black over a #000 page reads
+     the same with or without a blur, but on iOS every blurred card is
+     re-sampled at 3x DPR on each composited frame, and this page never idles. */
+  .journey-card-content {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    position: relative;
+    z-index: 10;
+    transition: all 0.4s ease;
   }
 
   @media (min-width: 1024px) {
+    .journey-card-content {
+      padding: 1.25rem 0.875rem;
+    }
+  }
+
+  /* Only the seventh card brightens on hover. The other six used to carry
+     the cardContentBrighten keyframes on this element, and an animation
+     declaration outranks a hover rule in the cascade, so hover never changed
+     their colours; now that the cycle paints a pseudo-element the hover rule
+     would suddenly reach all seven and stack on top of it. Keeping the old
+     reach keeps desktop identical. */
+  .journey-card-wrapper:nth-child(7) .journey-card:hover .journey-card-content {
+    background: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  /* The cascading auto-hover cycle only runs where a hover exists to imitate.
+     On touch devices (and narrow windows) the cards are static: there is no
+     pointer to pause the cycle, and 60+ infinite animations kept the phone's
+     compositor and main thread awake for the whole visit. */
+  @media (hover: hover) and (min-width: 1024px) {
+    /* Cascading hover-like animation for each card */
+    .journey-card-wrapper:nth-child(1) .journey-card {
+      animation: autoHoverEffect 15s ease-in-out infinite;
+      animation-delay: 0s;
+    }
+
+    .journey-card-wrapper:nth-child(2) .journey-card {
+      animation: autoHoverEffect 15s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+
+    .journey-card-wrapper:nth-child(3) .journey-card {
+      animation: autoHoverEffect 15s ease-in-out infinite;
+      animation-delay: 4s;
+    }
+
+    .journey-card-wrapper:nth-child(4) .journey-card {
+      animation: autoHoverEffect 15s ease-in-out infinite;
+      animation-delay: 6s;
+    }
+
+    .journey-card-wrapper:nth-child(5) .journey-card {
+      animation: autoHoverEffect 15s ease-in-out infinite;
+      animation-delay: 8s;
+    }
+
+    .journey-card-wrapper:nth-child(6) .journey-card {
+      animation: autoHoverEffect 15s ease-in-out infinite;
+      animation-delay: 10s;
+    }
+
+    .journey-card-wrapper:nth-child(7) .journey-card {
+      animation: autoHoverEffect 15s ease-in-out infinite;
+      animation-delay: 12s;
+    }
+
+    /* Auto hover effect - lift the card (longer duration, smooth transitions) */
+    @keyframes autoHoverEffect {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      5% {
+        transform: translateY(-8px);
+      }
+      15% {
+        transform: translateY(-8px);
+      }
+      20% {
+        transform: translateY(0);
+      }
+    }
+
+    /* Corner accent animation. Width/height still animate here (scale() would
+       also thicken the 1.5px border and needs a per-corner transform-origin);
+       the drop-shadow filter keyframe is gone because filter animations
+       rasterise the corner every frame for a 6px glow. */
+    .journey-card-wrapper:nth-child(1) .journey-corner {
+      animation: cornerExpand 15s ease-in-out infinite;
+      animation-delay: 0s;
+    }
+
+    .journey-card-wrapper:nth-child(2) .journey-corner {
+      animation: cornerExpand 15s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+
+    .journey-card-wrapper:nth-child(3) .journey-corner {
+      animation: cornerExpand 15s ease-in-out infinite;
+      animation-delay: 4s;
+    }
+
+    .journey-card-wrapper:nth-child(4) .journey-corner {
+      animation: cornerExpand 15s ease-in-out infinite;
+      animation-delay: 6s;
+    }
+
+    .journey-card-wrapper:nth-child(5) .journey-corner {
+      animation: cornerExpand 15s ease-in-out infinite;
+      animation-delay: 8s;
+    }
+
+    .journey-card-wrapper:nth-child(6) .journey-corner {
+      animation: cornerExpand 15s ease-in-out infinite;
+      animation-delay: 10s;
+    }
+
+    .journey-card-wrapper:nth-child(7) .journey-corner {
+      animation: cornerExpand 15s ease-in-out infinite;
+      animation-delay: 12s;
+    }
+
     @keyframes cornerExpand {
       0%, 100% {
         width: 10px;
@@ -636,221 +643,213 @@ export const prerender = true;
         filter: none;
       }
     }
-  }
 
-  /* Gradient border animation */
-  .journey-card-wrapper:nth-child(1) .journey-gradient-border {
-    animation: borderIntensify 15s ease-in-out infinite;
-    animation-delay: 0s;
-  }
-
-  .journey-card-wrapper:nth-child(2) .journey-gradient-border {
-    animation: borderIntensify 15s ease-in-out infinite;
-    animation-delay: 2s;
-  }
-
-  .journey-card-wrapper:nth-child(3) .journey-gradient-border {
-    animation: borderIntensify 15s ease-in-out infinite;
-    animation-delay: 4s;
-  }
-
-  .journey-card-wrapper:nth-child(4) .journey-gradient-border {
-    animation: borderIntensify 15s ease-in-out infinite;
-    animation-delay: 6s;
-  }
-
-  .journey-card-wrapper:nth-child(5) .journey-gradient-border {
-    animation: borderIntensify 15s ease-in-out infinite;
-    animation-delay: 8s;
-  }
-
-  .journey-card-wrapper:nth-child(6) .journey-gradient-border {
-    animation: borderIntensify 15s ease-in-out infinite;
-    animation-delay: 10s;
-  }
-
-  .journey-card-wrapper:nth-child(7) .journey-gradient-border {
-    animation: borderIntensify 15s ease-in-out infinite;
-    animation-delay: 12s;
-  }
-
-  @keyframes borderIntensify {
-    0%, 100% {
-      opacity: 0.5;
+    /* Gradient border animation */
+    .journey-card-wrapper:nth-child(1) .journey-gradient-border {
+      animation: borderIntensify 15s ease-in-out infinite;
+      animation-delay: 0s;
     }
-    5% {
-      opacity: 1;
-      animation-duration: 2s;
+
+    .journey-card-wrapper:nth-child(2) .journey-gradient-border {
+      animation: borderIntensify 15s ease-in-out infinite;
+      animation-delay: 2s;
     }
-    15% {
-      opacity: 1;
-      animation-duration: 2s;
+
+    .journey-card-wrapper:nth-child(3) .journey-gradient-border {
+      animation: borderIntensify 15s ease-in-out infinite;
+      animation-delay: 4s;
     }
-    20% {
-      opacity: 0.5;
+
+    .journey-card-wrapper:nth-child(4) .journey-gradient-border {
+      animation: borderIntensify 15s ease-in-out infinite;
+      animation-delay: 6s;
     }
-  }
 
-  /* Grid overlay animation */
-  .journey-card-wrapper:nth-child(1) .journey-grid-overlay {
-    animation: gridFadeIn 15s ease-in-out infinite;
-    animation-delay: 0s;
-  }
+    .journey-card-wrapper:nth-child(5) .journey-gradient-border {
+      animation: borderIntensify 15s ease-in-out infinite;
+      animation-delay: 8s;
+    }
 
-  .journey-card-wrapper:nth-child(2) .journey-grid-overlay {
-    animation: gridFadeIn 15s ease-in-out infinite;
-    animation-delay: 2s;
-  }
+    .journey-card-wrapper:nth-child(6) .journey-gradient-border {
+      animation: borderIntensify 15s ease-in-out infinite;
+      animation-delay: 10s;
+    }
 
-  .journey-card-wrapper:nth-child(3) .journey-grid-overlay {
-    animation: gridFadeIn 15s ease-in-out infinite;
-    animation-delay: 4s;
-  }
+    .journey-card-wrapper:nth-child(7) .journey-gradient-border {
+      animation: borderIntensify 15s ease-in-out infinite;
+      animation-delay: 12s;
+    }
 
-  .journey-card-wrapper:nth-child(4) .journey-grid-overlay {
-    animation: gridFadeIn 15s ease-in-out infinite;
-    animation-delay: 6s;
-  }
+    @keyframes borderIntensify {
+      0%, 100% {
+        opacity: 0.5;
+      }
+      5% {
+        opacity: 1;
+        animation-duration: 2s;
+      }
+      15% {
+        opacity: 1;
+        animation-duration: 2s;
+      }
+      20% {
+        opacity: 0.5;
+      }
+    }
 
-  .journey-card-wrapper:nth-child(5) .journey-grid-overlay {
-    animation: gridFadeIn 15s ease-in-out infinite;
-    animation-delay: 8s;
-  }
+    /* Grid overlay animation */
+    .journey-card-wrapper:nth-child(1) .journey-grid-overlay {
+      animation: gridFadeIn 15s ease-in-out infinite;
+      animation-delay: 0s;
+    }
 
-  .journey-card-wrapper:nth-child(6) .journey-grid-overlay {
-    animation: gridFadeIn 15s ease-in-out infinite;
-    animation-delay: 10s;
-  }
+    .journey-card-wrapper:nth-child(2) .journey-grid-overlay {
+      animation: gridFadeIn 15s ease-in-out infinite;
+      animation-delay: 2s;
+    }
 
-  .journey-card-wrapper:nth-child(7) .journey-grid-overlay {
-    animation: gridFadeIn 15s ease-in-out infinite;
-    animation-delay: 12s;
-  }
+    .journey-card-wrapper:nth-child(3) .journey-grid-overlay {
+      animation: gridFadeIn 15s ease-in-out infinite;
+      animation-delay: 4s;
+    }
 
-  @keyframes gridFadeIn {
-    0%, 100% {
+    .journey-card-wrapper:nth-child(4) .journey-grid-overlay {
+      animation: gridFadeIn 15s ease-in-out infinite;
+      animation-delay: 6s;
+    }
+
+    .journey-card-wrapper:nth-child(5) .journey-grid-overlay {
+      animation: gridFadeIn 15s ease-in-out infinite;
+      animation-delay: 8s;
+    }
+
+    .journey-card-wrapper:nth-child(6) .journey-grid-overlay {
+      animation: gridFadeIn 15s ease-in-out infinite;
+      animation-delay: 10s;
+    }
+
+    .journey-card-wrapper:nth-child(7) .journey-grid-overlay {
+      animation: gridFadeIn 15s ease-in-out infinite;
+      animation-delay: 12s;
+    }
+
+    @keyframes gridFadeIn {
+      0%, 100% {
+        opacity: 0;
+      }
+      5% {
+        opacity: 1;
+      }
+      15% {
+        opacity: 1;
+      }
+      20% {
+        opacity: 0;
+      }
+    }
+
+    /* Glow overlay animation */
+    .journey-card-wrapper:nth-child(1) .journey-glow-overlay {
+      animation: glowFadeIn 15s ease-in-out infinite;
+      animation-delay: 0s;
+    }
+
+    .journey-card-wrapper:nth-child(2) .journey-glow-overlay {
+      animation: glowFadeIn 15s ease-in-out infinite;
+      animation-delay: 2s;
+    }
+
+    .journey-card-wrapper:nth-child(3) .journey-glow-overlay {
+      animation: glowFadeIn 15s ease-in-out infinite;
+      animation-delay: 4s;
+    }
+
+    .journey-card-wrapper:nth-child(4) .journey-glow-overlay {
+      animation: glowFadeIn 15s ease-in-out infinite;
+      animation-delay: 6s;
+    }
+
+    .journey-card-wrapper:nth-child(5) .journey-glow-overlay {
+      animation: glowFadeIn 15s ease-in-out infinite;
+      animation-delay: 8s;
+    }
+
+    .journey-card-wrapper:nth-child(6) .journey-glow-overlay {
+      animation: glowFadeIn 15s ease-in-out infinite;
+      animation-delay: 10s;
+    }
+
+    .journey-card-wrapper:nth-child(7) .journey-glow-overlay {
+      animation: glowFadeIn 15s ease-in-out infinite;
+      animation-delay: 12s;
+    }
+
+    /* Sweeping glow animation - the sweep position is written by the RAF loop
+       in the script below; this only fades the overlay in and out */
+    @keyframes glowFadeIn {
+      0%, 100% {
+        opacity: 0;
+      }
+      5% {
+        opacity: 1;
+      }
+      15% {
+        opacity: 1;
+      }
+      20% {
+        opacity: 0;
+      }
+    }
+
+    /* Enhanced brightness during the cycle. Painted by a pseudo-element whose
+       opacity is animated instead of keyframing background/border-color on
+       the content box: opacity runs on the compositor, colour changes repaint
+       the card and its text every frame. Layered over the resting colours the
+       overlay lands on the same rgba(0,0,0,0.5) / rgba(255,255,255,0.15) the
+       old keyframes reached. It is deliberately not in the hover pause list
+       and the hover colour rule above is limited to card 7: the old keyframes
+       kept cycling under the pointer and blocked hover on cards 1-6, so this
+       is the same picture. z-index -1 keeps it under the card text. */
+    .journey-card-content::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: rgba(0, 0, 0, 0.1667);
+      border: 1px solid rgba(255, 255, 255, 0.105);
       opacity: 0;
+      pointer-events: none;
+      z-index: -1;
     }
-    5% {
-      opacity: 1;
+
+    .journey-card-wrapper:nth-child(1) .journey-card-content::before,
+    .journey-card-wrapper:nth-child(2) .journey-card-content::before,
+    .journey-card-wrapper:nth-child(3) .journey-card-content::before,
+    .journey-card-wrapper:nth-child(4) .journey-card-content::before,
+    .journey-card-wrapper:nth-child(5) .journey-card-content::before,
+    .journey-card-wrapper:nth-child(6) .journey-card-content::before {
+      animation: cardContentBrighten 15s ease-in-out infinite;
     }
-    15% {
-      opacity: 1;
-    }
-    20% {
-      opacity: 0;
-    }
-  }
 
-  /* Glow overlay animation */
-  .journey-card-wrapper:nth-child(1) .journey-glow-overlay {
-    animation: glowFadeIn 15s ease-in-out infinite;
-    animation-delay: 0s;
-  }
+    .journey-card-wrapper:nth-child(1) .journey-card-content::before { animation-delay: 0s; }
+    .journey-card-wrapper:nth-child(2) .journey-card-content::before { animation-delay: 2s; }
+    .journey-card-wrapper:nth-child(3) .journey-card-content::before { animation-delay: 4s; }
+    .journey-card-wrapper:nth-child(4) .journey-card-content::before { animation-delay: 6s; }
+    .journey-card-wrapper:nth-child(5) .journey-card-content::before { animation-delay: 8s; }
+    .journey-card-wrapper:nth-child(6) .journey-card-content::before { animation-delay: 10s; }
 
-  .journey-card-wrapper:nth-child(2) .journey-glow-overlay {
-    animation: glowFadeIn 15s ease-in-out infinite;
-    animation-delay: 2s;
-  }
-
-  .journey-card-wrapper:nth-child(3) .journey-glow-overlay {
-    animation: glowFadeIn 15s ease-in-out infinite;
-    animation-delay: 4s;
-  }
-
-  .journey-card-wrapper:nth-child(4) .journey-glow-overlay {
-    animation: glowFadeIn 15s ease-in-out infinite;
-    animation-delay: 6s;
-  }
-
-  .journey-card-wrapper:nth-child(5) .journey-glow-overlay {
-    animation: glowFadeIn 15s ease-in-out infinite;
-    animation-delay: 8s;
-  }
-
-  .journey-card-wrapper:nth-child(6) .journey-glow-overlay {
-    animation: glowFadeIn 15s ease-in-out infinite;
-    animation-delay: 10s;
-  }
-
-  .journey-card-wrapper:nth-child(7) .journey-glow-overlay {
-    animation: glowFadeIn 15s ease-in-out infinite;
-    animation-delay: 12s;
-  }
-
-  /* Sweeping glow animation - horizontal on desktop, vertical on mobile */
-  @keyframes glowFadeIn {
-    0%, 100% {
-      opacity: 0;
-    }
-    5% {
-      opacity: 1;
-    }
-    15% {
-      opacity: 1;
-    }
-    20% {
-      opacity: 0;
-    }
-  }
-
-
-  /* Journey Card Content */
-  .journey-card-content {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    padding: 1rem;
-    position: relative;
-    z-index: 10;
-    transition: all 0.4s ease;
-  }
-
-  @media (min-width: 1024px) {
-    .journey-card-content {
-      padding: 1.25rem 0.875rem;
-    }
-  }
-
-  .journey-card:hover .journey-card-content {
-    background: rgba(0, 0, 0, 0.5);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-
-  /* Enhanced brightness during animation */
-  .journey-card-wrapper:nth-child(1) .journey-card-content,
-  .journey-card-wrapper:nth-child(2) .journey-card-content,
-  .journey-card-wrapper:nth-child(3) .journey-card-content,
-  .journey-card-wrapper:nth-child(4) .journey-card-content,
-  .journey-card-wrapper:nth-child(5) .journey-card-content,
-  .journey-card-wrapper:nth-child(6) .journey-card-content {
-    animation: cardContentBrighten 15s ease-in-out infinite;
-  }
-
-  .journey-card-wrapper:nth-child(1) .journey-card-content { animation-delay: 0s; }
-  .journey-card-wrapper:nth-child(2) .journey-card-content { animation-delay: 2s; }
-  .journey-card-wrapper:nth-child(3) .journey-card-content { animation-delay: 4s; }
-  .journey-card-wrapper:nth-child(4) .journey-card-content { animation-delay: 6s; }
-  .journey-card-wrapper:nth-child(5) .journey-card-content { animation-delay: 8s; }
-  .journey-card-wrapper:nth-child(6) .journey-card-content { animation-delay: 10s; }
-  .journey-card-wrapper:nth-child(7) .journey-card-content { animation-delay: 12s; }
-
-  @keyframes cardContentBrighten {
-    0%, 100% {
-      background: rgba(0, 0, 0, 0.4);
-      border-color: rgba(255, 255, 255, 0.05);
-    }
-    5% {
-      background: rgba(0, 0, 0, 0.5);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-    15% {
-      background: rgba(0, 0, 0, 0.5);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
-    20% {
-      background: rgba(0, 0, 0, 0.4);
-      border-color: rgba(255, 255, 255, 0.05);
+    @keyframes cardContentBrighten {
+      0%, 100% {
+        opacity: 0;
+      }
+      5% {
+        opacity: 1;
+      }
+      15% {
+        opacity: 1;
+      }
+      20% {
+        opacity: 0;
+      }
     }
   }
 
@@ -929,7 +928,8 @@ export const prerender = true;
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: borderGlow 4s linear infinite;
+    /* No base animation: the per-card borderIntensify rules above own the
+       animation shorthand on every wrapper, so a borderGlow here never ran. */
     opacity: 0.5;
     pointer-events: none;
     z-index: 5;
@@ -1160,13 +1160,22 @@ export const prerender = true;
     letter-spacing: 0.05em;
   }
 
+  /* 10px at 30-40% white is below what a phone can render legibly; the desktop
+     row keeps its tighter size because seven cards share one line there. */
+  @media (max-width: 1023px) {
+    .journey-year,
+    .journey-role {
+      font-size: 0.75rem;
+    }
+  }
+
   /* Journey Badge */
   .journey-badge {
     position: absolute;
     top: 0.35rem;
     right: 0.35rem;
     font-family: monospace;
-    font-size: 6px;
+    font-size: 9px;
     font-weight: 700;
     padding: 0.15rem 0.3rem;
     border-radius: 2px;
@@ -1405,18 +1414,27 @@ export const prerender = true;
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: borderGlow 4s linear infinite;
     opacity: 0.6;
     pointer-events: none;
     z-index: 5;
   }
 
-  @keyframes borderGlow {
-    0%, 100% {
-      background-position: 0% 50%;
+  /* The gradient stays visible at rest everywhere; only its drift is limited
+     to hover-capable desktops. background-position repaints the masked,
+     card-sized layer on the main thread every frame, and on a phone the seven
+     cards are stacked in one scroll column. */
+  @media (hover: hover) and (min-width: 1024px) {
+    .card-gradient-border {
+      animation: borderGlow 4s linear infinite;
     }
-    50% {
-      background-position: 100% 50%;
+
+    @keyframes borderGlow {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
     }
   }
 
@@ -1471,7 +1489,10 @@ export const prerender = true;
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 0;
-    backdrop-filter: blur(10px);
+    /* No backdrop-filter (see .journey-card-content). The blur also created a
+       stacking context that kept the inner z-10 wrapper beneath the sibling
+       glow and grid overlays; isolation keeps that paint order without it. */
+    isolation: isolate;
     overflow: hidden;
     width: 100%;
   }
@@ -1771,6 +1792,7 @@ export const prerender = true;
   import { DURATION, EASE } from '../scripts/motion';
   import { addHeroCharIntro, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
+  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -2005,8 +2027,14 @@ export const prerender = true;
       }, { signal });
     });
 
-    // Animate the glow sweep effect with proper hover interaction
-    const isMobile = window.innerWidth < 1024;
+    // Animate the glow sweep effect with proper hover interaction. The sweep
+    // mirrors the CSS auto-hover cycle, which only exists under
+    // (hover: hover) and (min-width: 1024px); everywhere else the overlay
+    // stays at opacity 0, so seven permanent RAF callbacks would be writing
+    // custom properties into an invisible gradient.
+    const runsGlowSweep =
+      window.matchMedia('(hover: hover) and (min-width: 1024px)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const cycleDuration = 15000; // 15 seconds
     const hoverDuration = 1500; // 1.5 seconds (10% of cycle)
     const delays = [0, 2000, 4000, 6000, 8000, 10000, 12000]; // milliseconds
@@ -2018,16 +2046,8 @@ export const prerender = true;
 
       let isUserHovering = false;
 
-      // Track user hover state
-      wrapperEl.addEventListener('mouseenter', () => {
-        isUserHovering = true;
-      }, { signal });
-
-      wrapperEl.addEventListener('mouseleave', () => {
-        isUserHovering = false;
-      }, { signal });
-
-      // Manual mouse tracking (takes priority when hovering)
+      // Manual mouse tracking. Kept everywhere: iOS tap-hover emulation can
+      // still reveal the overlay through the :hover opacity rule.
       wrapperEl.addEventListener('mousemove', (e) => {
         const rect = wrapperEl.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -2056,20 +2076,11 @@ export const prerender = true;
             const adjustedTime = elapsed - delay;
 
             if (adjustedTime >= 0 && adjustedTime <= hoverDuration) {
-              // We're in the active hover period
+              // We're in the active hover period: horizontal sweep (left to right)
               const progress = adjustedTime / hoverDuration;
-
-              if (isMobile) {
-                // Vertical sweep (top to bottom)
-                const yPos = progress * 100;
-                glowOverlay.style.setProperty('--mouse-x', '50%');
-                glowOverlay.style.setProperty('--mouse-y', `${yPos}%`);
-              } else {
-                // Horizontal sweep (left to right)
-                const xPos = progress * 100;
-                glowOverlay.style.setProperty('--mouse-x', `${xPos}%`);
-                glowOverlay.style.setProperty('--mouse-y', '50%');
-              }
+              const xPos = progress * 100;
+              glowOverlay.style.setProperty('--mouse-x', `${xPos}%`);
+              glowOverlay.style.setProperty('--mouse-y', '50%');
             }
           }
 
@@ -2079,7 +2090,20 @@ export const prerender = true;
         updateGlow();
       }
 
-      animateGlow();
+      if (runsGlowSweep) {
+        // Track user hover state so the sweep yields to the real pointer.
+        // Only updateGlow reads the flag, so where the sweep is off these
+        // listeners would be maintaining a value nothing consumes.
+        wrapperEl.addEventListener('mouseenter', () => {
+          isUserHovering = true;
+        }, { signal });
+
+        wrapperEl.addEventListener('mouseleave', () => {
+          isUserHovering = false;
+        }, { signal });
+
+        animateGlow();
+      }
     });
   });
 
@@ -2087,6 +2111,10 @@ export const prerender = true;
   onPageReady(() => {
     const heroSection = document.getElementById('hero-section');
     if (!heroSection || !document.querySelector('.experience-title')) return;
+
+    // The only listener for these events is the particle viewer, which does
+    // not start where heavy 3D is skipped, so there is nothing to relay to.
+    if (shouldSkipHeavy3D()) return;
 
     // Reuses the same abort controller/timeout slot as the cards handler above
     // (both gate on the same '.experience-title' guard, so it's always fresh here).

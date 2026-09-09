@@ -213,18 +213,14 @@ export const prerender = true;
   }
 
   /* ===== GALLERY SECTION ===== */
-  /* Tech grid background */
+  /* Tech grid background. Static on purpose: the old 60s background-position
+     pan moved 1.7px/s, invisible at 10% opacity over 3% lines, but it forced a
+     repaint of a section-sized layer every frame for the life of the page. */
   .tech-grid {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
   }
 
   /* Section title */

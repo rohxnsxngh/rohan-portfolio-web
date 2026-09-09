@@ -105,18 +105,14 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 <style>
   /* ===== THEME: BOLD TECH MINIMALISM ===== */
 
-  /* Tech grid background */
+  /* Tech grid background. Static on purpose: the old 60s background-position
+     pan moved 1.7px/s, invisible at 10% opacity over 3% lines, but it forced a
+     repaint of a hero-sized layer every frame for the life of the page. */
   .tech-grid {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
   }
 
   /* Gradient overlay for depth */
@@ -346,7 +342,9 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     }
 
     .label-intro span {
-      font-size: 0.65rem;
+      /* 0.75rem is the floor for uppercase tracked text on a phone; 0.65rem
+         rendered at 10.4px and was the smallest type on the page. */
+      font-size: 0.75rem;
       letter-spacing: 0.2em;
     }
 
@@ -354,32 +352,25 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       width: 100%;
     }
 
-    /* Slightly more visible robot on mobile - but still dim */
-    .robot-overlay {
-      background: rgba(0, 0, 0, 0.88) !important;
-    }
-
-    /* Enable touch interaction on mobile */
-    .hero-section.mouse-active .hero-content {
-      opacity: 0.05;
-    }
-
-    .hero-section.mouse-active .robot-overlay {
-      background: rgba(0, 0, 0, 0.2) !important;
-    }
+    /* No .mouse-active rules here: the touch handlers that add that class are
+       only bound when the 3D scene can exist (see initHomeInteractions), so on a
+       phone there is nothing to reveal and the copy must never dim. */
   }
 
-  /* Prevent layout shift */
-  .hero-section {
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-height: 100dvh; /* Dynamic viewport height for mobile */
+  /* Matches the shouldSkipHeavy3D() viewport gate. Below 768px the viewer
+     shows a still poster instead of the live scene, and the desktop 0.85 scrim
+     would bury it; 0.6 lets the poster read while keeping the copy legible. */
+  @media (max-width: 767px) {
+    .robot-overlay {
+      background: rgba(0, 0, 0, 0.6) !important;
+    }
   }
 </style>
 
 <script>
   import { onPageReady } from '../scripts/pageReady';
-  import { addHeroCharIntro, createHeroParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { addHeroCharIntro, createPageIntroTimeline } from '../scripts/animations';
+  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   import { DURATION, EASE } from '../scripts/motion';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
@@ -480,6 +471,12 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     const heroSection = document.getElementById('hero-section');
     const robotOverlay = document.getElementById('robot-dim');
 
+    // No fallback branch below this. Phones used to get a scrubbed
+    // opacity/transform ScrollTrigger on .hero-content that fought the CSS
+    // opacity transition on the same element every touch-scroll tick, and the
+    // reduced-motion path was a no-op inside the old createHeroParallax helper
+    // (since removed from animations.ts), so the else never produced anything
+    // worth keeping.
     if (nameLines.length >= 2 && heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
       const splitTl = splitTimeline = gsap.timeline({
         scrollTrigger: {
@@ -502,9 +499,6 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       if (robotOverlay) {
         splitTl.to(robotOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.3)', ease: 'none' }, 0);
       }
-    } else {
-      // Fallback: standard hero parallax for reduced motion
-      createHeroParallax('.hero-content');
     }
 
     // Continuous hero glow pulse — subtle living, breathing typography
@@ -568,35 +562,45 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     const SCROLL_THRESHOLD = 10;
 
     if (heroSection && robotContainer) {
-      heroSection.addEventListener("mousemove", (e) => handleInteraction(e.clientX, e.clientY));
+      // The pointer handlers exist to reveal the robot under the cursor or
+      // finger. Where the viewer skips the scene (phones, reduced motion, data
+      // saver) there is nothing behind the scrim, so the first touch of every
+      // scroll used to blank the headline to 5% for 800ms and reveal black.
+      // mousemove is inside the same gate because iOS Safari synthesises a
+      // mousemove on every tap of an element that listens for it, so leaving
+      // it bound would dim the copy on the poster's "View in 3D" tap. Desktop
+      // with a live scene is unchanged: the predicate is false there.
+      if (!shouldSkipHeavy3D()) {
+        heroSection.addEventListener("mousemove", (e) => handleInteraction(e.clientX, e.clientY));
 
-      heroSection.addEventListener("touchstart", (e) => {
-        if (e.touches.length > 0) {
-          const touch = e.touches[0];
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
+        heroSection.addEventListener("touchstart", (e) => {
+          if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            isScrolling = false;
+            handleInteraction(touch.clientX, touch.clientY);
+          }
+        }, { passive: true });
+
+        heroSection.addEventListener("touchmove", (e) => {
+          if (e.touches.length > 0) {
+            const touch = e.touches[0];
+            const deltaY = Math.abs(touch.clientY - touchStartY);
+            const deltaX = Math.abs(touch.clientX - touchStartX);
+            if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) isScrolling = true;
+            if (!isScrolling) handleInteraction(touch.clientX, touch.clientY);
+          }
+        }, { passive: true });
+
+        heroSection.addEventListener("touchend", () => {
+          heroSection.classList.remove('mouse-active');
+          mouseActive = false;
           isScrolling = false;
-          handleInteraction(touch.clientX, touch.clientY);
-        }
-      }, { passive: true });
-
-      heroSection.addEventListener("touchmove", (e) => {
-        if (e.touches.length > 0) {
-          const touch = e.touches[0];
-          const deltaY = Math.abs(touch.clientY - touchStartY);
-          const deltaX = Math.abs(touch.clientX - touchStartX);
-          if (deltaY > SCROLL_THRESHOLD && deltaY > deltaX) isScrolling = true;
-          if (!isScrolling) handleInteraction(touch.clientX, touch.clientY);
-        }
-      }, { passive: true });
-
-      heroSection.addEventListener("touchend", () => {
-        heroSection.classList.remove('mouse-active');
-        mouseActive = false;
-        isScrolling = false;
-        if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
-        document.dispatchEvent(new CustomEvent("robotMouseLeave", { detail: { left: true } }));
-      });
+          if (mouseTimeout) { clearTimeout(mouseTimeout); mouseTimeout = null; }
+          document.dispatchEvent(new CustomEvent("robotMouseLeave", { detail: { left: true } }));
+        });
+      }
 
       heroSection.addEventListener("mouseleave", () => {
         heroSection.classList.remove('mouse-active');

@@ -11,7 +11,7 @@ kaggle: "https://www.kaggle.com/competitions/hw-3-p-2-automatic-speech-recogniti
 
 This project implements an end-to-end Automatic Speech Recognition (ASR) system using Recurrent Neural Networks (RNNs) and Connectionist Temporal Classification (CTC). Unlike traditional ASR systems that require aligned phoneme labels, this system can learn from unaligned data, making it more adaptable to real-world speech recognition scenarios.
 
-![ASR System Architecture Visualization](/images/project/IDLHW3AudioToPhoneme.jpg)
+![ASR System Architecture Visualization](@images/project/IDLHW3AudioToPhoneme.jpg)
 
 ## The Challenge of Unaligned Speech Data
 
@@ -27,7 +27,7 @@ This presents several key challenges:
 
 To address these challenges, I implemented a sophisticated neural network architecture combined with Connectionist Temporal Classification (CTC), a loss function specifically designed for sequence prediction without alignment information.
 
-![ASR System Architecture Visualization](/images/project/IDLHW3CTC.jpg)
+![ASR System Architecture Visualization](@images/project/IDLHW3CTC.jpg)
 
 ### Network Architecture
 
@@ -159,7 +159,7 @@ target_lengths = torch.tensor([len(t) for t in targets], device=device)
 loss = ctc_loss(log_probs, targets, input_lengths, target_lengths)
 ```
 
-![ASR System Architecture Visualization](/images/project/IDLHW3RNNEncoder.jpg)
+![ASR System Architecture Visualization](@images/project/IDLHW3RNNEncoder.jpg)
 
 CTC works by:
 1. Allowing the model to output a "blank" symbol (representing silence or transitions)

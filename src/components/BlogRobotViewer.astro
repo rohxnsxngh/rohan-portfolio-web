@@ -11,6 +11,14 @@ const {
   height = "100%",
   className = "",
 } = Astro.props;
+
+// Only phones ever match a <source>; everyone else falls through to the 1x1
+// transparent GIF and fetches nothing. Reduced-motion and data-saver visitors
+// on a desktop keep the blank hero they always had: the poster is a portrait
+// still, and stretched across a 16:9 hero it would be an upscaled crop of the
+// keyboard sitting behind the copy.
+const posterMedia = "(max-width: 767px)";
+const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 ---
 
 <div
@@ -21,24 +29,86 @@ const {
   <div class="grid-overlay"></div>
 
   <div id="blog-robot-container" class="robot-display">
+    <!-- Still of the scene for devices that do not run it. Sits above the
+         canvas and crossfades out once the live scene has drawn its first
+         frame with the model in it (data-state="live"). -->
+    <picture class="hero-poster" aria-hidden="true">
+      <source
+        type="image/avif"
+        media={posterMedia}
+        srcset="/models/posters/blog-2x.avif 2x, /models/posters/blog-3x.avif 3x"
+      />
+      <source
+        type="image/webp"
+        media={posterMedia}
+        srcset="/models/posters/blog-2x.webp 2x, /models/posters/blog-3x.webp 3x"
+      />
+      <img
+        src={blankGif}
+        alt=""
+        width="786"
+        height="1704"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
     <div class="loading-container">
       <progress id="blog-progress-bar" value="0" max="100"></progress>
     </div>
   </div>
+  <!-- Phone opt-in. Only rendered visible in data-state="poster", and
+       display:none on desktop so it never enters the tab order there. -->
+  <button type="button" class="load-3d" data-haptic="light">
+    View in 3D<small>about 0.5 MB</small>
+  </button>
 </div>
 
 <script>
   import { onPageReady } from '../scripts/pageReady';
-  import { createRobotLightRig, ROBOT_EXPOSURE } from '../scripts/robotLightRig';
   import { bindOnce } from '../scripts/bindOnce';
-  import { shouldSkipHeavy3D } from '../scripts/heavy3d';
-  import * as THREE from "three";
-  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-  import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-  import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-  import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-  import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-  import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
+  import {
+    adoptModules,
+    heavy3DSkipReason,
+    isCoarsePointer,
+    prefetchThree,
+    resolveThree,
+    type ThreeCore,
+    type ThreeLib,
+    type ThreeModules,
+  } from '../scripts/heavy3d';
+  // Type-only imports cost nothing at runtime; the values come from resolveThree().
+  import type {
+    AnimationAction,
+    AnimationMixer,
+    BufferGeometry,
+    Clock,
+    Group,
+    HemisphereLight,
+    Material,
+    PerspectiveCamera,
+    PointLight,
+    Raycaster,
+    Scene,
+    Vector2,
+    Vector3,
+    WebGLRenderer,
+  } from 'three';
+  import type { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+  import type { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+  import type { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+  import type { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+
+  // three is fetched with import() through heavy3d.ts (the reasoning is
+  // there). Prefetch runs at module top level, not inside init(), so a desktop
+  // starts the fetch as soon as this script evaluates. That is still a little
+  // later than the old static imports, which the browser discovered while
+  // parsing the entry chunk; here it has to download and run this page's own
+  // module graph first. Phones do not prefetch; tap-to-load resolves on demand.
+  prefetchThree();
+
+  // Populated from resolveThree() before any scene code runs.
+  let THREE!: ThreeCore;
+  let lib!: ThreeLib;
 
   // DOM elements — re-queried in init() to survive View Transition DOM swaps
   let container: Element | null = null;
@@ -46,6 +116,14 @@ const {
   let modelContainer: HTMLElement | null = null;
   let progressBar: HTMLElement | null = null;
   let loadingContainer: Element | null = null;
+
+  // "poster": still image, opt-in button (phones). "loading": modules and
+  // model in flight. "live": first frame with the model drawn, poster fades.
+  // "off": reduced motion or data saver, poster only, no button.
+  type ViewerState = 'poster' | 'loading' | 'live' | 'off';
+  function setState(state: ViewerState) {
+    container?.setAttribute('data-state', state);
+  }
 
   const getContainerSize = () => {
     if (!container) return { width: 0, height: 0, aspectRatio: 1 };
@@ -60,15 +138,25 @@ const {
   let width = 0;
   let height = 0;
   let aspectRatio = 1;
+  // One pixel ratio per init, shared by the renderer, the composer's render
+  // target and the Sobel resolution uniform. They used to disagree (renderer
+  // capped at 2, target and uniform at the raw devicePixelRatio), which on a
+  // DPR-3 phone allocated a 9x-CSS-pixel target for one frame and then stepped
+  // the Sobel kernel 2/3 of a texel. Touch devices cap lower: the scene is
+  // dimmed behind a scrim, so the extra fill cost buys nothing visible.
+  let pixelRatio = 1;
 
-  let keyboard: THREE.Group;
-  let mixer: THREE.AnimationMixer;
-  let animationAction: THREE.AnimationAction | null = null;
+  // The model handles are nulled by the scene's cleanup so a re-run on the
+  // same document (tap-to-load after context loss, or back-navigation to this
+  // hero) starts without the previous scene's model.
+  let keyboard: Group | null = null;
+  let mixer: AnimationMixer | null = null;
+  let animationAction: AnimationAction | null = null;
   let controls: OrbitControls;
-  let camera: THREE.PerspectiveCamera;
-  let renderer: THREE.WebGLRenderer;
-  let scene: THREE.Scene;
-  let clock = new THREE.Clock();
+  let camera: PerspectiveCamera;
+  let renderer: WebGLRenderer;
+  let scene: Scene;
+  let clock!: Clock;
   let animatedLights: any;
 
   // Post-processing
@@ -76,16 +164,16 @@ const {
   let sobelPass: ShaderPass;
 
   let dracoLoader: DRACOLoader | null = null;
-  let loadedGeometries: THREE.BufferGeometry[] = [];
-  let loadedMaterials: THREE.Material[] = [];
+  let loadedGeometries: BufferGeometry[] = [];
+  let loadedMaterials: Material[] = [];
   let pendingAnimCompleteTimeout: number | null = null;
 
   // Mouse lighting system
-  let mousePointLight: THREE.PointLight | null = null;
-  let hemisphereLight: THREE.HemisphereLight | null = null;
-  let raycaster: THREE.Raycaster | null = null;
-  let mouseVector: THREE.Vector2 | null = null;
-  let lightPosition: THREE.Vector3 = new THREE.Vector3();
+  let mousePointLight: PointLight | null = null;
+  let hemisphereLight: HemisphereLight | null = null;
+  let raycaster: Raycaster | null = null;
+  let mouseVector: Vector2 | null = null;
+  let lightPosition!: Vector3;
   let isMouseOver = false;
 
   // Throttle for mouse raycasting (~30fps = 33ms)
@@ -93,7 +181,7 @@ const {
   const RAYCAST_THROTTLE_MS = 33;
   let pendingMousePosition: { x: number; y: number } | null = null;
 
-  function initScene() {
+  function initScene(touch: boolean) {
     scene = new THREE.Scene();
     // Transparent background to allow particle effect to show through
     scene.background = null;
@@ -114,7 +202,7 @@ const {
     renderer.setClearColor(0x000000, 0);
 
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(pixelRatio);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.BasicShadowMap; // Faster than PCFSoftShadowMap
 
@@ -129,7 +217,20 @@ const {
     camera.lookAt(0, 0, 0);
 
     // OrbitControls for user interaction - very limited rotation for keyboard
-    controls = new OrbitControls(camera, renderer.domElement);
+    controls = new lib.OrbitControls(camera, renderer.domElement);
+
+    if (touch) {
+      // OrbitControls.connect() sets touch-action: none on the canvas, and this
+      // canvas covers the whole hero. On a phone that means every vertical
+      // drag is swallowed as a rotate and the page cannot be scrolled from the
+      // top of the page at all. pan-y hands vertical swipes back to the
+      // browser; horizontal drags still rotate. pinch-zoom has to be listed
+      // too: pan-y on its own also removes the browser's pinch gesture, which
+      // would make the hero the one region of the page that cannot be zoomed.
+      // (OrbitControls' own zoom is already off below, for every pointer.)
+      renderer.domElement.style.touchAction = 'pan-y pinch-zoom';
+    }
+
     controls.target = new THREE.Vector3(0, 0, 0);
     controls.enableRotate = true;
 
@@ -150,7 +251,7 @@ const {
 
     // Balanced lighting - visible base with mouse enhancement
     // Shared lighting rig — see src/scripts/robotLightRig.ts.
-    createRobotLightRig(scene, { exposure: ROBOT_EXPOSURE.blog, shadowMapSize: 512 });
+    lib.createRobotLightRig(scene, { exposure: lib.ROBOT_EXPOSURE.blog, shadowMapSize: 512 });
 
     // GRADIENT LIGHTING: Yellow (top) -> Orange (center) -> Red (bottom)
     const yellowLight = new THREE.PointLight(0xffee00, 0, 25, 1.2);
@@ -171,6 +272,7 @@ const {
     // Initialize raycaster for mouse-to-3D mapping
     raycaster = new THREE.Raycaster();
     mouseVector = new THREE.Vector2();
+    lightPosition = new THREE.Vector3();
 
     // Store lights for animation
     animatedLights = {
@@ -180,14 +282,14 @@ const {
 
     // Set up Sobel post-processing with alpha preservation
     const renderTarget = new THREE.WebGLRenderTarget(
-      width * window.devicePixelRatio,
-      height * window.devicePixelRatio,
+      width * pixelRatio,
+      height * pixelRatio,
       { format: THREE.RGBAFormat, type: THREE.UnsignedByteType }
     );
 
-    composer = new EffectComposer(renderer, renderTarget);
+    composer = new lib.EffectComposer(renderer, renderTarget);
 
-    const renderPass = new RenderPass(scene, camera);
+    const renderPass = new lib.RenderPass(scene, camera);
     renderPass.clearAlpha = 0;
     composer.addPass(renderPass);
 
@@ -245,9 +347,9 @@ const {
       `
     };
 
-    sobelPass = new ShaderPass(SobelAlphaShader);
-    sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
-    sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
+    sobelPass = new lib.ShaderPass(SobelAlphaShader);
+    sobelPass.uniforms['resolution'].value.x = width * pixelRatio;
+    sobelPass.uniforms['resolution'].value.y = height * pixelRatio;
     composer.addPass(sobelPass);
   }
 
@@ -264,15 +366,15 @@ const {
     camera.aspect = aspectRatio;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(pixelRatio);
 
     // Update composer and Sobel resolution
     if (composer) {
       composer.setSize(width, height);
     }
     if (sobelPass) {
-      sobelPass.uniforms['resolution'].value.x = width * window.devicePixelRatio;
-      sobelPass.uniforms['resolution'].value.y = height * window.devicePixelRatio;
+      sobelPass.uniforms['resolution'].value.x = width * pixelRatio;
+      sobelPass.uniforms['resolution'].value.y = height * pixelRatio;
     }
 
     // Render with post-processing
@@ -285,12 +387,17 @@ const {
 
   let currentCleanup: (() => void) | null = null;
   let eventAbort: AbortController | null = null;
+  // Bumped by every init(); an async scene start that resolves after a
+  // navigation compares against it and bails instead of building a scene
+  // into a page that is gone.
+  let initGeneration = 0;
 
   function init() {
     if (currentCleanup) { currentCleanup(); currentCleanup = null; }
 
     eventAbort?.abort();
     eventAbort = new AbortController();
+    const gen = ++initGeneration;
 
     // Re-query DOM elements (fresh references after View Transition swap)
     container = document.querySelector(".blog-robot-viewer-container");
@@ -300,27 +407,91 @@ const {
 
     if (!container || !modelContainer) return;
 
-    // Phones, reduced-motion and data-saver visitors skip the WebGL hero
-    // entirely rather than downloading megabytes of geometry to run a
-    // post-processed scene behind the copy. See src/scripts/heavy3d.ts.
+    // Phones, reduced-motion and data-saver visitors do not get the WebGL
+    // hero by default; they get the poster. See src/scripts/heavy3d.ts.
+    //
+    // A phone skipped for width alone can opt in with the button, which pulls
+    // the modules and the model only at that point. Reduced-motion and
+    // data-saver are explicit requests, so those get no button.
     //
     // The loading indicator lives in the markup and is normally hidden once
     // the model arrives, so skipping has to hide it too or it sits there
     // spinning forever over a model that is never coming.
-    if (shouldSkipHeavy3D()) {
-      const pending = document.querySelector('div.loading-container');
-      if (pending instanceof HTMLElement) pending.style.display = 'none';
+    const skipReason = heavy3DSkipReason();
+    if (skipReason) {
+      setState(skipReason === 'width' ? 'poster' : 'off');
+      if (loadingContainer instanceof HTMLElement) loadingContainer.style.display = 'none';
+      if (skipReason === 'width') {
+        container.querySelector('button.load-3d')?.addEventListener('click', () => {
+          if (container?.getAttribute('data-state') === 'loading') return;
+          void startScene(gen, true, true);
+        }, { signal: eventAbort.signal });
+      }
       return;
     }
 
+    setState('loading');
+    void startScene(gen, isCoarsePointer(), false);
+  }
+
+  // Builds and runs the scene. `touch` is true on phones and tablets, where
+  // the canvas must not capture scrolling and the pixel ratio is capped lower.
+  // `canRetry` is true only on the tap-to-load path: it is the one case where
+  // the poster and button exist to fall back to. `touch` is not enough for
+  // that, since an iPad is a coarse pointer that passed the width gate, and
+  // there the poster and button are display:none and no click handler was
+  // bound, so a "poster" state would render nothing and offer no way back.
+  async function startScene(gen: number, touch: boolean, canRetry: boolean) {
+    if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+    setState('loading');
+    // The tap-to-load path needs the progress bar back: the poster branch hid
+    // it, and on a phone the model is a real wait.
+    if (loadingContainer instanceof HTMLElement) loadingContainer.style.display = '';
+    if (progressBar instanceof HTMLProgressElement) progressBar.value = 0;
+
+    // Where the scene stops short of running: back to the poster and button
+    // where there is one to tap, otherwise the blank "off" state. Never leave
+    // "loading" behind, since that keeps the poster up with the button hidden.
+    const fallBack = () => {
+      setState(canRetry ? 'poster' : 'off');
+      if (loadingContainer instanceof HTMLElement) loadingContainer.style.display = 'none';
+    };
+
+    let modules: ThreeModules;
+    try {
+      modules = await resolveThree();
+    } catch {
+      // A failed chunk fetch (flaky cellular, mostly) should leave the poster
+      // and the button, not a stuck progress bar. heavy3d.ts drops the failed
+      // promise, so the next tap starts a fresh fetch.
+      if (gen !== initGeneration) return;
+      fallBack();
+      return;
+    }
+    if (gen !== initGeneration || !container || !modelContainer) return;
+    ({ THREE, lib } = adoptModules(modules));
 
     ({ width, height, aspectRatio } = getContainerSize());
-    if (!width || !height) return;
+    if (!width || !height) {
+      fallBack();
+      return;
+    }
+    pixelRatio = Math.min(window.devicePixelRatio, touch ? 1.5 : 2);
 
     _disposing = false;
     clock = new THREE.Clock();
 
-    initScene();
+    // WebGLRenderer throws when the browser refuses a context (iOS Safari under
+    // memory pressure, WebGL disabled, a GPU process crash). Without this the
+    // exception escapes the async function and the viewer is stranded in
+    // "loading": poster up, button hidden, nothing to tap.
+    try {
+      initScene(touch);
+    } catch (err) {
+      console.error('[viewer] could not create the WebGL scene', err);
+      fallBack();
+      return;
+    }
 
     const manager = new THREE.LoadingManager();
     manager.onProgress = (_url, loaded, total) => {
@@ -329,26 +500,41 @@ const {
       }
     };
 
-    if (loadingContainer instanceof HTMLElement) {
+    // Desktop hides the bar straight away (the model streams in behind the
+    // copy in a second or two); on touch it stays until the model is in, since
+    // the visitor asked for it and is watching for it.
+    if (!touch && loadingContainer instanceof HTMLElement) {
       loadingContainer.style.display = "none";
     }
+    manager.onLoad = () => {
+      if (loadingContainer instanceof HTMLElement) {
+        loadingContainer.style.display = "none";
+      }
+    };
 
     // Configure Draco loader for compressed models
-    dracoLoader = new DRACOLoader();
+    dracoLoader = new lib.DRACOLoader();
     // Self-hosted: a third-party CDN on the critical path of the hero model costs
     // an extra DNS lookup and TLS handshake before any geometry can decode.
     dracoLoader.setDecoderPath('/draco/');
     dracoLoader.preload();
 
     // Load the keyboard model with Draco support
-    const loader = new GLTFLoader(manager);
+    const loader = new lib.GLTFLoader(manager);
     loader.setDRACOLoader(dracoLoader);
     loadedGeometries = [];
     loadedMaterials = [];
+    // Per-scene flags, as opposed to the module-level model handles. A loader
+    // callback that lands after this scene was torn down (and possibly after
+    // the next one started, which resets _disposing) must not add its model
+    // to the new scene, and the poster crossfade must key on *this* scene
+    // having its model, not on whatever handle a previous scene left behind.
+    let sceneDisposed = false;
+    let modelInScene = false;
     loader.load(
       "/models/keyboard_draco.glb", // Draco-compressed model
       (glb) => {
-        if (_disposing) return;
+        if (_disposing || sceneDisposed) return;
         keyboard = glb.scene;
 
         // Dark material for keyboard
@@ -389,6 +575,7 @@ const {
         keyboard.rotation.y = 0.15; // Slight angle for depth
 
         scene.add(keyboard);
+        modelInScene = true;
 
         // Setup animation - loop continuously at 4x speed
         if (glb.animations && glb.animations.length > 0) {
@@ -418,13 +605,22 @@ const {
       },
       undefined, // Progress callback not needed
       () => {
+        if (_disposing || sceneDisposed) return;
         // Error loading model - dispatch event anyway to not block UI
-        if (!_disposing) document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
+        document.dispatchEvent(new CustomEvent('blogRobotAnimationComplete'));
+        // Without the model there is nothing to draw, so tear the scene down
+        // rather than leave a render loop and a WebGL context running behind
+        // the poster. On the tap path that brings the button back so the
+        // visitor can try again; before this the state stuck at "loading"
+        // with the button hidden and no way out short of a reload.
+        if (currentCleanup) { currentCleanup(); currentCleanup = null; }
+        fallBack();
       }
     );
 
     let _animationId: number;
     let _loopRunning = false;
+    let _live = false;
     function animate() {
       if (_disposing) return;
       if (!_loopRunning) return;
@@ -450,6 +646,14 @@ const {
         composer.render();
       } else {
         renderer.render(scene, camera);
+      }
+
+      // The poster only crossfades once a frame with the model in it has
+      // actually been drawn; flipping on load would show an empty canvas
+      // for the frame in between.
+      if (!_live && modelInScene) {
+        _live = true;
+        setState('live');
       }
     }
 
@@ -488,16 +692,50 @@ const {
     const resizeObserver = new ResizeObserver(() => handleResize());
     if (container) resizeObserver.observe(container);
 
+    // Context loss. iOS evicts WebGL contexts under memory pressure and when
+    // too many are open; without handling this the loop keeps drawing into a
+    // dead context. On the tap-to-load path the poster and button come back
+    // so the visitor can retry; if the browser restores the context on its
+    // own the loop resumes and the next frame flips back to live.
+    const canvas = renderer.domElement;
+    const onContextLost = (event: Event) => {
+      event.preventDefault();
+      if (_disposing) return;
+      stopLoop();
+      _live = false;
+      if (canRetry) setState('poster');
+    };
+    const onContextRestored = () => {
+      if (_disposing) return;
+      setState('loading');
+      startLoop();
+    };
+    canvas.addEventListener('webglcontextlost', onContextLost);
+    canvas.addEventListener('webglcontextrestored', onContextRestored);
+
+    // Scene-level listeners live on their own controller so a tap-to-load
+    // re-run after context loss does not stack a second set.
+    const sceneAbort = new AbortController();
+
     // Store cleanup function (called on navigation or re-init)
     currentCleanup = () => {
       _disposing = true;
+      sceneDisposed = true;
+      sceneAbort.abort();
       cancelAnimationFrame(_animationId);
       visibilityObserver?.disconnect();
       visibilityObserver = null;
       resizeObserver.disconnect();
       window.removeEventListener('resize', handleResize);
+      canvas.removeEventListener('webglcontextlost', onContextLost);
+      canvas.removeEventListener('webglcontextrestored', onContextRestored);
       if (mouseTimeout) clearTimeout(mouseTimeout);
       if (pendingAnimCompleteTimeout) clearTimeout(pendingAnimCompleteTimeout);
+      // Drop the model handles with the scene: the next scene's raycasts and
+      // mixer updates must not run against a model that is no longer drawn.
+      keyboard = null;
+      mixer = null;
+      animationAction = null;
       loadedGeometries.forEach((g) => g.dispose());
       loadedMaterials.forEach((m) => m.dispose());
       loadedGeometries = [];
@@ -594,10 +832,13 @@ const {
       }
     }
 
-    // Scoped to eventAbort's signal so listeners don't accumulate across navigations.
-    const { signal } = eventAbort!;
+    // Scoped to the scene's controller so listeners don't accumulate across
+    // navigations or re-inits.
+    const { signal } = sceneAbort;
 
-    // Mouse event handlers for lighting system
+    // Mouse event handlers for lighting system. No touch handlers: the old
+    // touchstart/touchmove pair called preventDefault with passive:false,
+    // which on a full-hero canvas blocked page scrolling on phones.
     if (modelContainer && mouseVector && raycaster) {
       modelContainer.addEventListener('mouseenter', () => {
         isMouseOver = true;
@@ -617,33 +858,6 @@ const {
       modelContainer.addEventListener('mousemove', (event) => {
         if (!isMouseOver) return;
         updateLighting(event.clientX, event.clientY);
-      }, { signal });
-
-      // Touch event handlers for mobile support
-      modelContainer.addEventListener('touchstart', (event) => {
-        isMouseOver = true;
-        if (mousePointLight && hemisphereLight) {
-          mousePointLight.intensity = 0;
-          hemisphereLight.intensity = 0;
-          if (animatedLights.yellowLight) animatedLights.yellowLight.intensity = 0;
-          if (animatedLights.redLight) animatedLights.redLight.intensity = 0;
-        }
-        if (event.touches.length > 0) {
-          event.preventDefault();
-          updateLighting(event.touches[0].clientX, event.touches[0].clientY);
-        }
-      }, { signal, passive: false });
-
-      modelContainer.addEventListener('touchmove', (event) => {
-        if (event.touches.length > 0) {
-          event.preventDefault();
-          updateLighting(event.touches[0].clientX, event.touches[0].clientY);
-        }
-      }, { signal, passive: false });
-
-      modelContainer.addEventListener('touchend', () => {
-        isMouseOver = false;
-        fadeOutLights();
       }, { signal });
     }
 
@@ -727,6 +941,8 @@ const {
     document.addEventListener("astro:before-swap", () => {
       eventAbort?.abort();
       eventAbort = null;
+      // Invalidate any scene start still awaiting its modules.
+      initGeneration++;
       if (currentCleanup) { currentCleanup(); currentCleanup = null; }
     });
   });
@@ -772,6 +988,93 @@ const {
     z-index: 10;
     width: 100%;
     height: 100%;
+  }
+
+  /* Poster: covers the canvas until the live scene has drawn the model.
+     Phone-only, in both the poster and off states. Desktop never fetches it
+     (no <source> matches, the fallback is a 1x1 transparent GIF) and hides
+     the element outright below so that GIF can never paint over the canvas;
+     the same rule keeps a reduced-motion or data-saver desktop on the blank
+     hero it always had rather than an upscaled portrait crop. */
+  .hero-poster img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 45%;
+    transition: opacity 0.6s ease-out;
+    pointer-events: none;
+  }
+
+  [data-state="live"] .hero-poster img {
+    opacity: 0;
+  }
+
+  @media (min-width: 768px) {
+    .hero-poster {
+      display: none;
+    }
+  }
+
+  /* On desktop this z-index lifts the canvas above the page's .robot-overlay
+     scrim (the page dims what is behind the model, the model's own exposure
+     does the rest). Where the poster shows it has to sit *under* that scrim
+     instead, or a full-brightness photo lands behind the hero copy. */
+  @media (max-width: 767px) {
+    .robot-display {
+      z-index: auto;
+    }
+  }
+
+  /* Tap-to-load. Hidden until the script sets data-state="poster"; the
+     page's hero copy is pointer-events:none so taps reach it through the
+     text. z-index clears the page's scrim (z-index 1 in the same context). */
+  .load-3d {
+    display: none;
+    position: absolute;
+    left: 50%;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%);
+    z-index: 30;
+    pointer-events: auto;
+    align-items: baseline;
+    gap: 0.6em;
+    min-height: 44px;
+    padding: 0.7rem 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.92);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .load-3d small {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+  }
+
+  .load-3d:active {
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  [data-state="poster"] .load-3d {
+    display: inline-flex;
+  }
+
+  @media (min-width: 768px) {
+    .load-3d {
+      display: none !important;
+    }
   }
 
   .loading-container {

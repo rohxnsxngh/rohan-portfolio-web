@@ -290,7 +290,9 @@ export const prerender = true;
     }
   }
 
-  /* Word wrapper to prevent mid-word breaks */
+  /* Word wrapper to prevent mid-word breaks. Every letter is its own
+     inline-block for the reveal animation, so without nowrap a word could
+     break anywhere with no hyphen; any overflow fix has to be size only. */
   .hero-title .word {
     display: inline-block;
     white-space: nowrap;
@@ -557,8 +559,12 @@ export const prerender = true;
   }
 
   @media (max-width: 640px) {
+    /* Sized so the longest single word on any page (14 glyphs) fits at
+       390px with room for WebKit's synthetic bold: 0.6em Plex Mono advance
+       minus the -0.08em tracking is 0.52em per glyph, about 255px of a
+       342px content box. */
     .hero-title {
-      font-size: clamp(1.8rem, 14vw, 6rem);
+      font-size: clamp(1.5rem, 9vw, 4rem);
     }
 
     .hero-section {

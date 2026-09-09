@@ -26,7 +26,7 @@ MOGO started with a deceptively simple question: *what if building a soft robot 
 
 This was a semester-long research project for Carnegie Mellon's 24-673, built with Yujia Liu, Hongfei Liu, and Brady Stump.
 
-![The final MOGO modules 3D printed in white TPU](/images/project/MogoHero.jpg)
+![The final MOGO modules 3D printed in white TPU](@images/project/MogoHero.jpg)
 
 ## The Connector Compliance Paradox
 
@@ -54,7 +54,7 @@ The final design didn't arrive fully formed. It emerged from three distinct manu
 
 We started ambitious: computationally-designed interlocking ribbed structures, printed on a Formlabs SLA machine in Flexible Resin 80A, with IPA washing and UV curing. The parts were genuinely flexible, and genuinely impractical. Multi-part assemblies were fiddly, the ribs were hard to align, and getting them to attach reliably was a fight. Not the kind of thing you hand to a novice.
 
-![Exploded view of the Phase 1 interlocking rib design](/images/project/MogoPhase1Exploded.png)
+![Exploded view of the Phase 1 interlocking rib design](@images/project/MogoPhase1Exploded.png)
 
 ### Phase 2: Simplified Studs
 
@@ -64,13 +64,13 @@ Phase 2 stripped things down: LEGO-style studs of various diameters, ribbed inte
 
 Insights from the first two phases pushed us to change *both* the fabrication method and the geometry. We switched to FDM printing in **thermoplastic polyurethane (TPU)** and committed to a **ball-and-socket** joint. The geometry does a lot of quiet work: the rounded ball self-guides into the tapered socket, the spherical contact spreads load instead of concentrating it, small misalignments are forgiven, and, crucially, the whole thing prints as a single piece with zero post-assembly.
 
-![CAD iterations of the module geometry](/images/project/MogoCADIterations.png)
+![CAD iterations of the module geometry](@images/project/MogoCADIterations.png)
 
-![Final CAD of the ball and socket modules](/images/project/MogoCADModules.png)
+![Final CAD of the ball and socket modules](@images/project/MogoCADModules.png)
 
 The lesson baked into this progression is one we kept relearning: **kill complicated multi-part ideas early.** The best version of MOGO is almost embarrassingly simple, and that simplicity is the point.
 
-![Two MOGO modules connected by a single soft ball-and-socket joint](/images/project/MogoConnection.jpg)
+![Two MOGO modules connected by a single soft ball-and-socket joint](@images/project/MogoConnection.jpg)
 
 ## Dialing In the Infill
 
@@ -79,27 +79,27 @@ Here's where it gets fun. Because these are FDM prints, we don't just get one ma
 - **The socket** needs to stay compliant so the ball slides in without a wrestling match. Lower infill (20-30%) and a rectilinear pattern give the rim room to flex open.
 - **The ball** needs to hold its shape under pull-out load so the joint doesn't just pop apart. Higher infill (up to 50%) with a gyroid pattern (whose triply-periodic surface distributes stress evenly) keeps it firm.
 
-![Slicer cross-section of the socket module's internal structure](/images/project/MogoInfillCrossSection.jpg)
+![Slicer cross-section of the socket module's internal structure](@images/project/MogoInfillCrossSection.jpg)
 
 We measured everything with a Mark-10 digital force gauge, capturing both **insertion force** (how much effort assembly takes) and **pull-out force** (how strongly the connection holds).
 
-![Force testing on the Mark-10 digital force gauge](/images/project/MogoForceTest.jpg)
+![Force testing on the Mark-10 digital force gauge](@images/project/MogoForceTest.jpg)
 
 The numbers told a clean story. Insertion force climbed with socket infill; pull-out force climbed with ball infill. The sweet spot (soft rectilinear sockets around 20-30% paired with 50% gyroid balls) landed at roughly **25 N to insert and 55 N to pull out**, a force ratio of about **2.2**. In plain terms: it takes more than twice the effort to separate the joint than to make it. That asymmetry is exactly what you want in a connector meant to stay together.
 
-![Force testing results: insertion force and pull-out force versus infill density](/images/project/MogoForceGraphs.png)
+![Force testing results: insertion force and pull-out force versus infill density](@images/project/MogoForceGraphs.png)
 
 ## Validating It in Simulation
 
 Before trusting the physical results, we ran the joint through structural FEA in SOLIDWORKS Simulation, modeling TPU as a hyperelastic Mooney-Rivlin material and loading a bonded pair under three scenarios: **torsion, bending, and tension.**
 
-![Von Mises stress under torsional loading](/images/project/MogoFEATorsion.png)
+![Von Mises stress under torsional loading](@images/project/MogoFEATorsion.png)
 
 The simulations validated the failure modes and, usefully, one *limitation*: under torsion the joint begins to unlock around a 45° rotation, a progressive, tactile separation rather than a sudden snap, which is at least a warning you can feel. Bending and tension held up well within the range of forces a human hand would apply.
 
-![Displacement under tension: the connection stretches but holds](/images/project/MogoFEATension.png)
+![Displacement under tension: the connection stretches but holds](@images/project/MogoFEATension.png)
 
-![Displacement under bending](/images/project/MogoFEABending.png)
+![Displacement under bending](@images/project/MogoFEABending.png)
 
 ## The Surprising Result: Compliance *Enhances* Robustness
 
@@ -133,7 +133,7 @@ It's a small building block. But small, reliable, reconfigurable building blocks
 
 Modules snapping together, holding, and coming apart: the whole point of MOGO in a few seconds.
 
-<video controls width="100%" style="margin: 20px 0; border-radius: 8px;">
+<video controls playsinline preload="none" poster="/videos/mogo_demo_thumb.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 1280 / 720;">
   <source src="/videos/mogo_demo.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>

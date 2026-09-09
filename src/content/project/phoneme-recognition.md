@@ -11,7 +11,7 @@ kaggle: "https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2"
 
 This project focused on building a high-performance deep learning system for frame-level phoneme recognition, part of the CMU 11-785 Introduction to Deep Learning coursework. By applying multilayer perceptron (MLP) architectures to speech recordings from the Wall Street Journal dataset, I achieved 86% accuracy in classifying audio frames into their corresponding phoneme states.
 
-![Mel-spectrogram of speech with frame highlighting](/images/project/IDLHW1Spectogram3.jpg)
+![Mel-spectrogram of speech with frame highlighting](@images/project/IDLHW1Spectogram3.jpg)
 
 ## Project Challenge
 
@@ -140,9 +140,9 @@ def collate_fn(self, batch):
 
 Fine-tuning these augmentation parameters through grid search (frequency_mask_param=4, time_mask_param=8) yielded a 3.5% accuracy improvement.
 
-![Spectrogram visualization with time and frequency masking](/images/project/IDLHW1Spectogram.jpg)
+![Spectrogram visualization with time and frequency masking](@images/project/IDLHW1Spectogram.jpg)
 
-![Spectrogram visualization with time and frequency masking](/images/project/IDLHW1Spectogram2.jpg)
+![Spectrogram visualization with time and frequency masking](@images/project/IDLHW1Spectogram2.jpg)
 
 ### Training Optimizations
 

@@ -39,6 +39,11 @@ const documentTitle =
   <head>
     <meta charset="UTF-8" />
     <meta name="color-scheme" content="dark" />
+    <!-- Still the 42 KB 1024px JPEG for a 16px tab icon. public/favicon.svg
+         is the untouched astro-init Astro rocket, not an RS mark, so it must
+         not be referenced; and Safari ignores SVG rel=icon anyway, so a raster
+         is needed regardless. Swap this for a 32px PNG plus a 180px
+         apple-touch-icon once those files exist in public/. -->
     <link rel="icon" type="image/jpeg" href="/images/RS.jpg" />
     <meta
       name="viewport"
@@ -50,11 +55,14 @@ const documentTitle =
 
     <!-- Preloaded because the font is otherwise only discovered once the CSS
          has been fetched and parsed, which shows a flash of fallback text on
-         a cold load. Served from public/ as woff2 (39KB, vs 134KB for the ttf
-         Vite used to fingerprint out of src/fonts). -->
+         a cold load. Served from public/ as a Latin-only woff2 subset (15KB;
+         the full face is 39KB and 930 codepoints, 168 of them Cyrillic, none
+         of which this site sets). The full face is still declared as a
+         fallback below, so pages that use a glyph outside the subset (arrows,
+         Greek in a few blog posts) fetch it on demand. -->
     <link
       rel="preload"
-      href="/fonts/IBMPlexMono-Regular.woff2"
+      href="/fonts/IBMPlexMono-Regular.latin.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -64,16 +72,31 @@ const documentTitle =
     <ViewTransitions />
 
     <style is:global>
+      /* Two faces for one family. The full file is declared first and has no
+         unicode-range, so it covers everything; the Latin subset is declared
+         last with a unicode-range, and because a later matching face wins,
+         Latin text resolves to the subset and the full file is only
+         downloaded on a page that renders a codepoint the subset lacks.
+         Only the Regular weight ships, so keep both at `normal` and let the
+         browser synthesise the bold/black weights the headers use, the same
+         rendering the dev server produced. */
       @font-face {
         font-family: 'IBM Plex Mono';
         src: url('/fonts/IBMPlexMono-Regular.woff2') format('woff2'),
              url('/fonts/IBMPlexMono-Regular.ttf') format('truetype');
-        /* Only the Regular weight ships, so keep the declaration at `normal`
-           and let the browser synthesise the bold/black weights the headers
-           use — same rendering the dev server produced. */
         font-weight: normal;
         font-style: normal;
         font-display: swap;
+      }
+      @font-face {
+        font-family: 'IBM Plex Mono';
+        src: url('/fonts/IBMPlexMono-Regular.latin.woff2') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+          U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+          U+2212, U+2215, U+FEFF, U+FFFD;
       }
 
       :root {
@@ -121,13 +144,18 @@ const documentTitle =
       }
 
       /* On mobile, 100vh includes the browser chrome, so a full-height hero is
-         taller than the visible viewport and the layout shifts as the URL bar
-         hides and shows. dvh tracks the actual visible height. Applied as an
-         override so the 24 existing min-h-screen utilities are all covered
-         without editing each call site. */
-      @supports (height: 100dvh) {
-        .min-h-screen { min-height: 100dvh; }
-        .h-screen { height: 100dvh; }
+         taller than the visible viewport. svh is the viewport with the
+         toolbar fully shown, i.e. the smallest it gets, so a hero sized to it
+         always fits and never changes size. This used to be dvh, which tracks
+         the toolbar as it collapses on scroll: every collapse and expand on
+         iOS Safari relayouts the hero (and every other min-h-screen block),
+         which visibly jitters the hero and shifts every ScrollTrigger start
+         position by the toolbar delta. Applied as an override so the existing
+         min-h-screen utilities are all covered without editing each call
+         site. Nothing uses the bare h-screen utility, so only min-h-screen
+         is overridden. */
+      @supports (height: 100svh) {
+        .min-h-screen { min-height: 100svh; }
       }
 
       /* Lenis smooth scroll */

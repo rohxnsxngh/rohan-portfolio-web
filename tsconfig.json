@@ -1,3 +1,8 @@
 {
-  "extends": "astro/tsconfigs/strict"
+  "extends": "astro/tsconfigs/strict",
+  // The base config turns on allowJs with no include list, so without this
+  // astro check also type-checks everything under public/. The 720 KB
+  // single-line emscripten build in public/draco alone pushes the checker
+  // past Node's default 4 GB heap, and nothing in public/ is ever imported.
+  "exclude": ["public", "dist", ".vercel"]
 }

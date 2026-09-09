@@ -221,18 +221,14 @@ export const prerender = true;
 </Layout>
 
 <style>
-  /* Tech grid background */
+  /* Tech grid background. Static on purpose: the old 60s background-position
+     pan moved 1.7px/s, invisible at 10% opacity over 3% lines, but it forced a
+     repaint of a section-sized layer every frame for the life of the page. */
   .tech-grid {
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
   }
 
   /* HERO SECTION */
@@ -373,7 +369,7 @@ export const prerender = true;
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
   }
 
-  /* Animated gradient border */
+  /* Gradient border. Static here; the sweep lives under (hover: hover) below. */
   .card-gradient-border {
     position: absolute;
     inset: -2px;
@@ -388,29 +384,39 @@ export const prerender = true;
       transparent
     );
     background-size: 200% 200%;
+    background-position: 0% 50%;
     -webkit-mask:
       linear-gradient(#fff 0 0) content-box,
       linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    animation: borderGlow 4s linear infinite;
     opacity: 0.6;
     pointer-events: none;
     z-index: 5;
   }
 
-  @keyframes borderGlow {
-    0%, 100% {
-      background-position: 0% 50%;
+  /* The border sweep exists for a pointer that can hover. A phone never
+     holds that state (a tap on the card navigates), so on touch the border
+     rests on its first keyframe and the compositor gets to idle instead of
+     running its infinite background-position animations. */
+  @media (hover: hover) {
+    .card-gradient-border {
+      animation: borderGlow 4s linear infinite;
     }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
 
-  .research-card:hover .card-gradient-border {
-    opacity: 1;
-    animation-duration: 2s;
+    @keyframes borderGlow {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .research-card:hover .card-gradient-border {
+      opacity: 1;
+      animation-duration: 2s;
+    }
   }
 
   /* Grid overlay */
@@ -432,7 +438,8 @@ export const prerender = true;
     opacity: 1;
   }
 
-  /* Mouse-following glow effect */
+  /* Mouse-following glow effect. No will-change: it pinned a card-sized
+     screen-blended layer per card even while the overlay sat at opacity 0. */
   .glow-overlay {
     position: absolute;
     inset: 0;
@@ -449,11 +456,19 @@ export const prerender = true;
       transparent 40%
     );
     mix-blend-mode: screen;
-    will-change: opacity;
   }
 
   .research-card:hover .glow-overlay {
     opacity: 1;
+  }
+
+  /* Without hover the overlay divs have nothing to reveal; take the empty
+     elements out of layout so they cannot influence the card. */
+  @media (hover: none) {
+    .card-grid-overlay,
+    .glow-overlay {
+      display: none;
+    }
   }
 
   /* Enhanced card content hover with cyan/magenta glow */
