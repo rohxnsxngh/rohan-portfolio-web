@@ -77,6 +77,7 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
     type ThreeLib,
     type ThreeModules,
   } from '../scripts/heavy3d';
+  import { frameCameraForAspect } from '../scripts/frameCamera';
   // Type-only imports cost nothing at runtime; the values come from resolveThree().
   import type {
     AnimationAction,
@@ -156,6 +157,11 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
   let animationAction: AnimationAction | null = null;
   let controls: OrbitControls;
   let camera: PerspectiveCamera;
+  // The authored camera distance from its target, captured once per scene so
+  // repeated resizes cannot compound the portrait framing correction.
+  let baseCameraDistance = 0;
+  let baseMinDistance = 0;
+  let baseMaxDistance = 0;
   let renderer: WebGLRenderer;
   let scene: Scene;
   let clock!: Clock;
@@ -234,6 +240,12 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
     }
 
     controls.target = new THREE.Vector3(0, 0, 0);
+
+    // Capture the authored framing before anything adjusts it, then fit it to
+    // the container we actually have. See src/scripts/frameCamera.ts: without
+    // this a portrait phone crops in horizontally and the model lands on top
+    // of the hero copy instead of behind it.
+    baseCameraDistance = camera.position.distanceTo(controls.target);
     controls.enableRotate = true;
 
     // Restrict horizontal rotation to ±25 degrees
@@ -250,6 +262,12 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
 
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
+
+    // Fit the authored framing to the container we actually have, and widen
+    // OrbitControls' distance limits by the same factor: without that,
+    // controls.update() would clamp the camera straight back to the desktop
+    // framing on the next frame.
+    applyFraming();
 
     // Balanced lighting - visible base with mouse enhancement
     // Shared lighting rig — see src/scripts/robotLightRig.ts.
@@ -357,6 +375,16 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
 
   let _disposing = false;
 
+  /**
+   * Re-fit the camera to the container's aspect ratio. Called once the scene
+   * is built and again on every resize, which on iOS means every time the
+   * Safari toolbar collapses.
+   */
+  function applyFraming() {
+    if (!camera || !controls || !baseCameraDistance) return;
+    const factor = frameCameraForAspect(camera, controls.target, baseCameraDistance, aspectRatio);
+  }
+
   function handleResize() {
     if (_disposing) return;
     const { width: newWidth, height: newHeight, aspectRatio: newAspectRatio } = getContainerSize();
@@ -365,8 +393,7 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
     width = newWidth;
     height = newHeight;
     aspectRatio = newAspectRatio;
-    camera.aspect = aspectRatio;
-    camera.updateProjectionMatrix();
+    applyFraming();
     renderer.setSize(width, height);
     renderer.setPixelRatio(pixelRatio);
 
