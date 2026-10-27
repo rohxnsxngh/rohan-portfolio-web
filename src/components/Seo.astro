@@ -1,6 +1,6 @@
 ---
 import siteData from "../data/siteData.json";
-import jsonLDGenerator from "../js/jsonLD";
+import jsonLDGenerator, { toAbsoluteUrl } from "../js/jsonLD";
 
 const {
   title,
@@ -15,40 +15,77 @@ const jsonLD = jsonLDGenerator({
   type: frontmatter ? "post" : "website",
   post: frontmatter,
   url,
+  site: Astro.site,
 });
 
+// A page may hand in either a bare path ("/og/blog-foo.png") or an object with
+// its own alt text and intrinsic size, so templates do not have to know which
+// shape the rest of this file wants.
+const pageImage = typeof image === "string" ? { src: image } : image;
+const imageSrc = String(pageImage?.src || siteData.image.src);
+
 // Link-preview crawlers (Facebook, X/Twitter, LinkedIn, Slack, iMessage)
-// require absolute image URLs per the OG/Twitter Card spec — a site-relative
+// require absolute image URLs per the OG/Twitter Card spec: a site-relative
 // path silently fails to fetch and shows no preview thumbnail.
-const absoluteImage = new URL(
-  image?.src || siteData.image.src,
-  Astro.site
-).href;
+const absoluteImage = toAbsoluteUrl(imageSrc, Astro.site);
+
+// og:image:type was hardcoded to image/jpeg, which is wrong for the generated
+// PNG cards under /og/. Crawlers that trust the declared type over sniffing
+// (LinkedIn is the usual one) drop the image instead of rendering it.
+const MIME_BY_EXTENSION: Record<string, string> = {
+  avif: "image/avif",
+  gif: "image/gif",
+  jpeg: "image/jpeg",
+  jpg: "image/jpeg",
+  png: "image/png",
+  svg: "image/svg+xml",
+  webp: "image/webp",
+};
+const extension = imageSrc.split(/[?#]/)[0].split(".").pop()?.toLowerCase();
+const imageType = MIME_BY_EXTENSION[extension ?? ""];
+
+// A declared size that does not match the file is worse than no size at all:
+// the crawler lays out a box of the wrong shape and the preview crops. The
+// height here was fixed at 600 while the default card has always been 630. Only
+// the cards we control the dimensions of get a declared size, and any other
+// image has to supply its own or go undeclared and be measured by the crawler.
+const isKnownCardSize =
+  imageSrc === siteData.image.src || imageSrc.startsWith("/og/");
+const imageWidth = pageImage?.width ?? (isKnownCardSize ? siteData.image.width : undefined);
+const imageHeight = pageImage?.height ?? (isKnownCardSize ? siteData.image.height : undefined);
+const imageAlt = pageImage?.alt || siteData.image.alt;
 ---
 
 <!-- SEO -->
 <link rel="canonical" href={url} />
 
 <!-- Open Graph -->
-<meta property="og:site_name" content="Rohan Singh Portfolio and Blog" />
+<meta property="og:site_name" content={siteData.title} />
+<meta property="og:type" content={frontmatter ? "article" : "website"} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url} />
-<meta property="og:image" content={absoluteImage} />
-<meta property="og:image:url" content={absoluteImage} />
-<meta property="og:image:secure_url" content={absoluteImage} />
-<meta property="og:image:type" content="image/jpeg" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="600" />
-<meta property="og:image:alt" content={image?.alt || siteData.image.alt} />
+{
+  absoluteImage && (
+    <>
+      <meta property="og:image" content={absoluteImage} />
+      <meta property="og:image:url" content={absoluteImage} />
+      <meta property="og:image:secure_url" content={absoluteImage} />
+      {imageType && <meta property="og:image:type" content={imageType} />}
+      {imageWidth && <meta property="og:image:width" content={String(imageWidth)} />}
+      {imageHeight && <meta property="og:image:height" content={String(imageHeight)} />}
+      <meta property="og:image:alt" content={imageAlt} />
+    </>
+  )
+}
 
 <!-- Twitter -->
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content={absoluteImage} />
-<meta name="twitter:image:alt" content={title} />
-<meta name="twitter:domain" content={import.meta.env.SITE} />
+{absoluteImage && <meta name="twitter:image" content={absoluteImage} />}
+<meta name="twitter:image:alt" content={imageAlt || title} />
+{Astro.site && <meta name="twitter:domain" content={Astro.site.host} />}
 
 {robots && <meta name="robots" content="noindex, nofollow" />}
 

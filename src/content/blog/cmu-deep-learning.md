@@ -4,7 +4,7 @@ date: "2025-03"
 author: "Rohan Singh"
 image: "@images/blog/cmu-cv/ap-vs-iou-threshold.png"
 status: "Published"
-description: "My journey through CMU's world renowned Intro to Deep Learning class, focused on unraveling the black box and exploring a techniques in deep learning, and model training best practices."
+description: "My journey through CMU's world-renowned Intro to Deep Learning class, focused on unraveling the black box and exploring techniques in deep learning, and model training best practices."
 tags: ["model training", "deep learning", "education", "research", "CMU 11-785", "autograd"]
 ---
 

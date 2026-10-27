@@ -68,6 +68,17 @@ const documentTitle =
       crossorigin
     />
 
+    <!-- Feed readers and browser extensions only discover a feed through this
+         tag; without it /rss.xml exists but nothing points at it. Declared on
+         every page rather than just /blog so a reader subscribing from an
+         essay it landed on finds it too. -->
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="Rohan Singh: Writing"
+      href="/rss.xml"
+    />
+
     <Seo title={pageTitle} {description} url={Astro.url} {image} {frontmatter} {robots} />
     <ViewTransitions />
 

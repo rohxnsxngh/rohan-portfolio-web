@@ -40,12 +40,50 @@ function formatYearMonth(dateString: string) {
   }
 }
 
+// Every entry here is titled by bare job title, so "Software Engineering
+// Intern" was the whole page title on two different pages and named neither
+// company. Role plus employer plus start year is what makes each one distinct
+// in a result list, and the year is what separates the two Tesla internships,
+// which share both role and employer. The site name is appended here rather
+// than left to Layout, which joins with an em-dash.
+const startYear = experience.data.date.slice(0, 4);
+const pageTitle = `${experience.data.title} at ${experience.data.company} (${startYear}) · Rohan Singh`;
+
+// The frontmatter description is a bare fragment ("Telematics modules,
+// Software Reliability"), which as a search snippet says neither whose job it
+// was nor when. Leading with role, employer and dates keeps every fact sourced
+// from the entry itself and still leaves the fragment as the detail.
+const period = experience.data.endDate
+  ? `${formatYearMonth(experience.data.date)} to ${formatYearMonth(experience.data.endDate)}`
+  : `${formatYearMonth(experience.data.date)} to present`;
+const summary = experience.data.description.trim();
+const pageDescription = `${experience.data.title} at ${experience.data.company}, ${period}. ${
+  /[.!?]$/.test(summary) ? summary : `${summary}.`
+}`;
+
+// Handing the entry's own metadata to <Seo> is what makes this page publish an
+// article instead of the site-wide WebSite node every one of these carried.
+// `collection` is the hint the generator reads to choose Article here rather
+// than the BlogPosting the blog gets. The collection has no author or image
+// field, so the site author is named explicitly and the share card falls back
+// to the site default.
+const frontmatter = {
+  ...experience.data,
+  collection: "experience",
+  author: "Rohan Singh",
+  description: pageDescription,
+};
+
 // Static at build time. Nothing on this page reads request-time state, so it is
 // served straight from the edge instead of invoking a function per request.
 export const prerender = true;
 ---
 
-<Layout title={experience.data.title} description={experience.data.description}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  frontmatter={frontmatter}
+>
   <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
@@ -173,9 +211,12 @@ export const prerender = true;
             <div class="content-section sm:px-20 px-6 py-16">
               <!-- Section Label -->
               <div class="section-header mb-12 opacity-0" style="animation: fadeInUp 0.8s ease-out 0.8s forwards;">
-                <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                <!-- h2, not h3: these labels sit directly under the page h1,
+                     so an h3 here skipped a level and left the body's own h2s
+                     nested under nothing. -->
+                <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
                   // SUMMARY
-                </h3>
+                </h2>
                 <div class="section-divider h-px bg-gradient-to-r from-primary/20 via-primary/10 to-transparent"></div>
               </div>
 
@@ -192,9 +233,9 @@ export const prerender = true;
               {
                 experience.data.images && (
                   <div class="images-section mt-16 opacity-0" style="animation: fadeInUp 0.8s ease-out 1.2s forwards;">
-                    <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-8">
+                    <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-8">
                       // GALLERY
-                    </h3>
+                    </h2>
                     <div class="images-grid grid grid-cols-1 md:grid-cols-2 gap-8">
                       {experience.data.images.map(
                         (image: { src: string; alt: string }) => (

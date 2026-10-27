@@ -33,12 +33,43 @@ const statusText: Record<ResearchStatus, string> = {
   "coming-soon": "COMING SOON",
 };
 
+// The image field is written three ways across the collections ("@images/x"
+// is a Vite build alias, "images/x" has no leading slash, "/images/x" is
+// already right). Normalise to the public/ path so the share card and the
+// structured data point at the real file.
+const shareImage = {
+  src: research.data.image.replace(/^@?\/?images\//, "/images/"),
+  alt: research.data.title,
+};
+
+// Handing the entry's own metadata to <Seo> is what makes this page publish an
+// article instead of the site-wide WebSite node every one of these carried.
+// `collection` is the hint the generator reads to choose Article here rather
+// than the BlogPosting the blog gets. The collection has no author field; every
+// entry is his own work, so the site author is named explicitly.
+const frontmatter = {
+  ...research.data,
+  collection: "research",
+  author: "Rohan Singh",
+  image: shareImage,
+};
+
+// The site name is appended here rather than left to Layout, which joins with
+// an em-dash. A middle dot also keeps the entry title first, where a search
+// result truncates last.
+const pageTitle = `${research.data.title} · Rohan Singh`;
+
 // Static at build time. Nothing on this page reads request-time state, so it is
 // served straight from the edge instead of invoking a function per request.
 export const prerender = true;
 ---
 
-<Layout title={research.data.title} description={research.data.description}>
+<Layout
+  title={pageTitle}
+  description={research.data.description}
+  image={shareImage}
+  frontmatter={frontmatter}
+>
   <div class="min-h-screen flex flex-col">
     <div class="flex-grow">
       <Navbar>

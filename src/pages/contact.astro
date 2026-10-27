@@ -153,6 +153,7 @@ export const prerender = true;
                     type="text"
                     id="name"
                     name="name"
+                    autocomplete="name"
                     required
                     class="form-input w-full px-4 py-3 bg-black/50 border border-accent/20 rounded-lg text-primary placeholder-primary/30 focus:outline-none focus:border-primary/50 transition-all duration-300"
                     placeholder="Your name"
@@ -168,6 +169,9 @@ export const prerender = true;
                     type="email"
                     id="email"
                     name="email"
+                    autocomplete="email"
+                    autocapitalize="none"
+                    spellcheck="false"
                     required
                     class="form-input w-full px-4 py-3 bg-black/50 border border-accent/20 rounded-lg text-primary placeholder-primary/30 focus:outline-none focus:border-primary/50 transition-all duration-300"
                     placeholder="your@email.com"
@@ -183,6 +187,7 @@ export const prerender = true;
                     type="text"
                     id="subject"
                     name="subject"
+                    autocomplete="off"
                     required
                     class="form-input w-full px-4 py-3 bg-black/50 border border-accent/20 rounded-lg text-primary placeholder-primary/30 focus:outline-none focus:border-primary/50 transition-all duration-300"
                     placeholder="What's this about?"
@@ -241,6 +246,12 @@ export const prerender = true;
                 </div>
 
                 <!-- Status Messages -->
+                <!-- The visible boxes below are toggled with display:none, and a
+                     live region that is display:none at the moment its text
+                     changes is not announced. So the announcement lives in this
+                     always-rendered sr-only region instead, which also keeps the
+                     form's spacing identical to before. -->
+                <p id="form-live" class="sr-only" role="status" aria-live="polite"></p>
                 <div id="form-status" class="hidden">
                   <div id="success-message" class="hidden p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400">
                     <div class="flex items-center">
@@ -652,10 +663,10 @@ export const prerender = true;
     const isDesktop = window.matchMedia('(min-width: 768px)').matches;
 
     // Desktop only: rich GSAP intro. On mobile, CSS keyframes in Layout.astro
-    // handle the intro instead — no per-element tween objects allocated.
+    // handle the intro instead: no per-element tween objects allocated.
     if (isDesktop) {
       tl.to('.label-intro', { opacity: 1, y: 0, duration: DURATION.page, ease: EASE.enter }, 0);
-      // Skipped on client-side navigations — the header is being morphed
+      // Skipped on client-side navigations. The header is being morphed
       // between routes by the shared page-title view transition instead.
       addHeroCharIntro(tl, document.querySelectorAll('.contact-title .char'), 0);
       tl.add(() => animateLineExpand('.accent-line'), 0.3);
@@ -717,6 +728,7 @@ export const prerender = true;
     const successMessage = document.getElementById('success-message') as HTMLElement;
     const errorMessage = document.getElementById('error-message') as HTMLElement;
     const errorText = document.getElementById('error-text') as HTMLElement;
+    const liveRegion = document.getElementById('form-live') as HTMLElement;
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -736,13 +748,16 @@ export const prerender = true;
         return;
       }
 
-      // Show loading state
+      // Show loading state. aria-busy and the cleared live region matter as
+      // much as the spinner: a screen reader user gets no spinner.
       submitBtn.disabled = true;
+      submitBtn.setAttribute('aria-busy', 'true');
       buttonText.classList.add('hidden');
       buttonLoading.classList.remove('hidden');
       formStatus.classList.add('hidden');
       successMessage.classList.add('hidden');
       errorMessage.classList.add('hidden');
+      announce('');
 
       try {
         const response = await fetch('/api/contact', {
@@ -756,13 +771,14 @@ export const prerender = true;
         const result = await response.json();
 
         if (response.ok) {
-          // Success
           haptic('success');
           formStatus.classList.remove('hidden');
           successMessage.classList.remove('hidden');
+          announce("Message sent successfully. I'll get back to you soon.");
           form.reset();
         } else {
-          // Error from API
+          // The endpoint returns a visitor-safe message; the detail behind it
+          // is in the server log, not in this response.
           haptic('error');
           showError(result.error || 'Something went wrong. Please try again.');
         }
@@ -773,6 +789,7 @@ export const prerender = true;
       } finally {
         // Reset button state
         submitBtn.disabled = false;
+        submitBtn.removeAttribute('aria-busy');
         buttonText.classList.remove('hidden');
         buttonLoading.classList.add('hidden');
       }
@@ -782,6 +799,13 @@ export const prerender = true;
       formStatus.classList.remove('hidden');
       errorMessage.classList.remove('hidden');
       errorText.textContent = message;
+      announce(message);
+    }
+
+    // Re-setting identical text does not re-announce, so clear it first.
+    function announce(message: string) {
+      liveRegion.textContent = '';
+      if (message) liveRegion.textContent = message;
     }
 
     // ===== HERO SECTION ROBOT INTERACTION =====

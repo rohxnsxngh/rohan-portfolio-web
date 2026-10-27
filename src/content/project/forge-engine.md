@@ -3,7 +3,7 @@ title: "The Forge: ThreeJS Sandbox"
 date: "2022-07"
 status: "completed"
 image: "/images/project/HansAubsHome.png"
-description: "A ThreeJS sanbox designed to experiment with shaders, audio visualizations, geometries, and proceddural generation in the browser"
+description: "A ThreeJS sandbox designed to experiment with shaders, audio visualizations, geometries, and procedural generation in the browser"
 tags: ["graphics", "C++", "OpenGL", "WebGL", "physics simulation"]
 github: "https://github.com/rohxnsxngh/hans-aubs"
 # demo: "https://graphics-engine.demo.com"

@@ -1,7 +1,20 @@
-<!-- src/components/MarkdownContent.astro -->
-<div class="markdown-content">
-  <slot />
-</div>
+---
+// Every article page already prints the entry title as the page <h1>, so a
+// markdown body that opens with its own level-one heading publishes a second
+// <h1> and leaves the document with two competing titles (project/biorobotics
+// and research/echocardiagram-ml did exactly that). Demoting every body-level
+// <h1> to <h2> here makes that impossible whatever an author writes, and this
+// is the only place the transform can live: astro:content's render() takes no
+// plugin options, so a rehype pass cannot be scoped to these collections.
+//
+// Matching on the rendered string is safe because a literal "<" in prose or in
+// a fenced code block is escaped to "&#x3C;" long before this runs, so only
+// real heading tags can match.
+const body = await Astro.slots.render("default");
+const headingsBelowTheTitle = body.replace(/<(\/?)h1(?=[\s/>])/gi, "<$1h2");
+---
+
+<div class="markdown-content" set:html={headingsBelowTheTitle} />
 
 <script>
   import { onPageReady } from '../scripts/pageReady';

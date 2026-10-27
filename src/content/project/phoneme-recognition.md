@@ -5,7 +5,6 @@ status: "completed"
 image: "/images/project/IDLHW1Spectogram2.jpg"
 description: "A deep learning system that recognizes phoneme states from speech recordings, implementing advanced neural network architectures and achieving 86% accuracy on frame-level speech classification."
 tags: ["deep learning", "speech recognition", "neural networks", "pytorch", "signal processing", "machine learning"]
-github: "https://github.com/yourusername/phoneme-recognition"
 kaggle: "https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2"
 ---
 
@@ -268,5 +267,4 @@ With additional computational resources, several promising directions emerge:
 4. **Feature Engineering**: Exploring alternative mel-spectrogram configurations and delta features
 
 ## Links
-- [GitHub Repository](https://github.com/yourusername/phoneme-recognition)
 - [Kaggle Competition](https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2)

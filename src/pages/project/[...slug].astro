@@ -36,12 +36,43 @@ const statusText: Record<'completed' | 'in-progress' | 'coming-soon', string> = 
   'coming-soon': 'COMING SOON'
 };
 
+// The image field is written three ways across the collections ("@images/x"
+// is a Vite build alias, "images/x" has no leading slash, "/images/x" is
+// already right). Normalise to the public/ path so the share card and the
+// structured data point at the real file.
+const shareImage = {
+  src: project.data.image.replace(/^@?\/?images\//, "/images/"),
+  alt: project.data.title,
+};
+
+// Handing the entry's own metadata to <Seo> is what makes this page publish an
+// article instead of the site-wide WebSite node every one of these carried.
+// `collection` is the hint the generator reads to choose Article here rather
+// than the BlogPosting the blog gets. The collection has no author field; every
+// entry is his own work, so the site author is named explicitly.
+const frontmatter = {
+  ...project.data,
+  collection: "project",
+  author: "Rohan Singh",
+  image: shareImage,
+};
+
+// The site name is appended here rather than left to Layout, which joins with
+// an em-dash. A middle dot also keeps the project title first, where a search
+// result truncates last.
+const pageTitle = `${project.data.title} · Rohan Singh`;
+
 // Static at build time. Nothing on this page reads request-time state, so it is
 // served straight from the edge instead of invoking a function per request.
 export const prerender = true;
 ---
 
-<Layout title={project.data.title} description={project.data.description}>
+<Layout
+  title={pageTitle}
+  description={project.data.description}
+  image={shareImage}
+  frontmatter={frontmatter}
+>
   <div class="min-h-screen flex flex-col bg-secondary">
     <div class="flex-grow">
       <Navbar>
@@ -163,9 +194,12 @@ export const prerender = true;
             <div class="content-section sm:px-20 px-6 py-16">
               <!-- Section Label -->
               <div class="section-header mb-12 opacity-0" style="animation: fadeInUp 0.8s ease-out 0.8s forwards;">
-                <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                <!-- h2, not h3: these labels sit directly under the page h1,
+                     so an h3 here skipped a level and left the body's own h2s
+                     nested under nothing. -->
+                <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
                   // PROJECT DETAILS
-                </h3>
+                </h2>
                 <div class="section-divider h-px bg-gradient-to-r from-primary/20 via-primary/10 to-transparent"></div>
               </div>
 
@@ -181,9 +215,9 @@ export const prerender = true;
               <!-- Images Section -->
               {project.data.images && (
                 <div class="images-section mt-16 opacity-0" style="animation: fadeInUp 0.8s ease-out 1.2s forwards;">
-                  <h3 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-8">
+                  <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-8">
                     // GALLERY
-                  </h3>
+                  </h2>
                   <div class="images-grid grid grid-cols-1 md:grid-cols-2 gap-8">
                     {project.data.images.map((image: { src: string; alt: string }) => (
                       <div class="image-wrapper group relative overflow-hidden rounded-lg">

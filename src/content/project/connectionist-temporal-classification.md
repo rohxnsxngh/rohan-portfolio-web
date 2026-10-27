@@ -5,7 +5,6 @@ status: "completed"
 image: "/images/project/IDLHW3RNNEncoder.jpg"
 description: "An end-to-end Automatic Speech Recognition (ASR) system built with pyramidal bidirectional LSTM and Connectionist Temporal Classification, achieving high accuracy in phoneme prediction from unaligned speech data."
 tags: ["deep learning", "speech recognition", "RNN", "LSTM", "CTC", "natural language processing", "audio processing"]
-github: "https://github.com/yourusername/asr-ctc-system"
 kaggle: "https://www.kaggle.com/competitions/hw-3-p-2-automatic-speech-recognition-asr-11-785"
 ---
 
@@ -446,7 +445,5 @@ With additional time and resources, several promising directions emerge:
 5. **Spectrogram Features**: Experimenting with raw spectrograms instead of MFCCs could provide richer input features
 
 ## Project Links
-- [GitHub Repository](https://github.com/yourusername/asr-ctc-system): coming soon...
 - [WandB Project](https://wandb.ai/rohansi2-carnegie-mellon-university/hw3p2-11785-ablations?nw=nwuserrohansi2)
-- [Kaggle Challenge](https://www.kaggle.com/competitions/hw-3-p-2-automatic-speech-recognition-asr-11-785): 
-```
+- [Kaggle Challenge](https://www.kaggle.com/competitions/hw-3-p-2-automatic-speech-recognition-asr-11-785)

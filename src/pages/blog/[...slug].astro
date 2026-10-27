@@ -20,10 +20,14 @@ const { Content } = await post.render();
 // Calculate reading time from the raw content
 const readingTime = calculateReadingTime(post.body);
 
-// Set default status if undefined
+// Frontmatter writes this as "Complete", "Published" or "Coming Soon" while
+// the lookups below are keyed lowercase, so every post used to miss both maps:
+// an empty status badge, and the "Article In Progress" notice on finished
+// posts. Normalise instead of assuming one spelling.
 const defaultStatus = "coming-soon";
-const actualStatus = post.data.status || defaultStatus;
-const isComplete = actualStatus === "complete";
+const rawStatus = (post.data.status || defaultStatus).toLowerCase().replace(/\s+/g, "-");
+const isComplete = rawStatus === "complete" || rawStatus === "completed" || rawStatus === "published";
+const actualStatus = isComplete ? "complete" : "coming-soon";
 
 type BlogStatus = "complete" | "coming-soon";
 
@@ -38,12 +42,41 @@ const statusText: Record<BlogStatus, string> = {
   "coming-soon": "COMING SOON",
 };
 
+// The "@images/" prefix is a Vite build alias, not a path a crawler can
+// fetch, and the same field is written three ways across the collections
+// ("@images/x", "images/x", "/images/x"). Normalise to the public/ path so the
+// share card and the structured data point at the real file.
+const shareImage = {
+  src: post.data.image.replace(/^@?\/?images\//, "/images/"),
+  alt: post.data.title,
+};
+
+// Handing the entry's own metadata to <Seo> is what makes this page publish a
+// BlogPosting instead of the site-wide WebSite node every article carried.
+// `collection` is the hint the generator reads to choose BlogPosting here and
+// Article for project, research and experience.
+const frontmatter = {
+  ...post.data,
+  collection: "blog",
+  image: shareImage,
+};
+
+// The site name is appended here rather than left to Layout, which joins with
+// an em-dash. A middle dot also keeps the article title first, where a search
+// result truncates last.
+const pageTitle = `${post.data.title} · Rohan Singh`;
+
 // Static at build time. Nothing on this page reads request-time state, so it is
 // served straight from the edge instead of invoking a function per request.
 export const prerender = true;
 ---
 
-<Layout title={post.data.title} description={post.data.description}>
+<Layout
+  title={pageTitle}
+  description={post.data.description}
+  image={shareImage}
+  frontmatter={frontmatter}
+>
   <div class="min-h-screen flex flex-col">
     <div class="flex-grow">
       <Navbar>

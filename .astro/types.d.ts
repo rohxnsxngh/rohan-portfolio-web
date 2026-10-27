@@ -154,9 +154,9 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"deep-tech-fundraising.md": {
-	id: "deep-tech-fundraising.md";
-  slug: "deep-tech-fundraising";
+"founder-to-venture-partner.md": {
+	id: "founder-to-venture-partner.md";
+  slug: "founder-to-venture-partner";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
@@ -231,6 +231,13 @@ declare module 'astro:content' {
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
+"teaching-agentic-ai.md": {
+	id: "teaching-agentic-ai.md";
+  slug: "teaching-agentic-ai";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 "what-autonomy-means-fish-farm.md": {
 	id: "what-autonomy-means-fish-farm.md";
   slug: "what-autonomy-means-fish-farm";
@@ -268,6 +275,13 @@ declare module 'astro:content' {
   collection: "experience";
   data: InferEntrySchema<"experience">
 } & { render(): Render[".md"] };
+"emeritus-cmu-instructor.md": {
+	id: "emeritus-cmu-instructor.md";
+  slug: "emeritus-cmu-instructor";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
 "nvidia-cad-intern.md": {
 	id: "nvidia-cad-intern.md";
   slug: "nvidia-cad-intern";
@@ -278,6 +292,13 @@ declare module 'astro:content' {
 "octapulse-cto.md": {
 	id: "octapulse-cto.md";
   slug: "octapulse-cto";
+  body: string;
+  collection: "experience";
+  data: InferEntrySchema<"experience">
+} & { render(): Render[".md"] };
+"pioneer-fund-venture-partner.md": {
+	id: "pioneer-fund-venture-partner.md";
+  slug: "pioneer-fund-venture-partner";
   body: string;
   collection: "experience";
   data: InferEntrySchema<"experience">

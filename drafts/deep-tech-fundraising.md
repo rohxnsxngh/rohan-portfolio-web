@@ -1,11 +1,17 @@
 <!--
 UNPUBLISHED DRAFT.
 
-Not in src/content/, so Astro never renders or ships it. The live post at
-src/content/blog/deep-tech-fundraising.md is a "Coming Soon" stub.
+Not in src/content/, so Astro never renders or ships it. There is no live post
+for this any more either: the "Coming Soon" stub that used to sit at
+src/content/blog/deep-tech-fundraising.md was listed, indexed and in the
+sitemap while promising an essay it did not contain, so it was moved here as
+deep-tech-fundraising-stub.md. Leaving the collection is what unpublishes a
+post: the blog listing, the per-post pages, the sitemap and the feed are all
+built from getCollection("blog").
 
-To publish: replace the body of that file with everything below the
-frontmatter here, and set status to "Complete".
+To publish: move this file (frontmatter and everything below it, minus this
+comment) to src/content/blog/deep-tech-fundraising.md, and delete
+deep-tech-fundraising-stub.md.
 -->
 
 ---

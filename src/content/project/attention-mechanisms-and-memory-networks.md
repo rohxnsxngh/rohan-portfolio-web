@@ -5,7 +5,6 @@ status: "completed"
 image: "/images/project/IDLHW4TransformerSublayers.jpg"
 description: "Development of advanced sequence models using recurrent neural networks for text generation on WikiText-2 and speech-to-text transcription systems with attention mechanisms on the LibriSpeech corpus."
 tags: ["deep learning", "natural language processing", "recurrent neural networks", "attention mechanisms", "speech recognition", "text generation", "LSTM", "GRU", "sequence modeling"]
-github: "https://github.com/yourusername/neural-language-models"
 kaggle: "https://www.kaggle.com/competitions/11785-s25-hw4p2-asr/overview"
 ---
 
@@ -592,9 +591,6 @@ Both components highlight the importance of careful implementation details, prop
 
 ## Resources
 
-- [GitHub Repository](https://github.com/yourusername/neural-language-models): coming soon...
 - [Kaggle Competition Link](https://www.kaggle.com/competitions/11785-s25-hw4p2-asr/overview): private for now...
 - [WikiText-2 Dataset](https://blog.salesforceairesearch.com/the-wikitext-long-term-dependency-language-modeling-dataset/)
 - [LibriSpeech Dataset](http://www.openslr.org/12/)
-- [Project Report PDF](/files/neural_language_models_report.pdf): coming soon...
-- [Interactive Demo](/demo/language_model_demo): coming soon...

@@ -1,8 +1,22 @@
 {
-    "title": "My Portfolio Page and Blog",
-    "description": "Rohan Singh Engineering Chronicles",
-    "image": {
-      "src": "/images/image-default.jpg",
-      "alt": "My Portfolio Page and Blog"
+  "title": "Rohan Singh Portfolio and Blog",
+  "description": "Rohan Singh, software engineer with a background in mechanical engineering. Projects, research, writing and experience in robotics, computer vision and deep tech.",
+  "author": {
+    "name": "Rohan Singh",
+    "jobTitle": "Software Engineer",
+    "sameAs": [
+      "https://github.com/rohxnsxngh",
+      "https://www.linkedin.com/in/rohxnsxngh/"
+    ],
+    "worksFor": {
+      "name": "OctaPulse",
+      "url": "https://www.tryoctapulse.com/"
     }
+  },
+  "image": {
+    "src": "/images/image-default.jpg",
+    "alt": "Rohan Singh Portfolio and Blog",
+    "width": 1200,
+    "height": 630
   }
+}

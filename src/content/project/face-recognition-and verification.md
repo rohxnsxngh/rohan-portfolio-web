@@ -5,7 +5,6 @@ status: "completed"
 image: "/images/project/IDLHW2FaceClassificationArchitecture.jpg"
 description: "A deep learning model to extract discriminative facial features"
 tags: ["deep learning", "face recognition", "neural networks", "pytorch", "CNNs", "machine learning"]
-github: "https://github.com/yourusername/face-recognition"
 kaggle: "https://www.kaggle.com/competitions/11785-hw-2-p-2-face-verification-spring-2025"
 ---
 
@@ -232,5 +231,4 @@ With additional time and resources, several promising directions emerge:
 4. **Adversarial Training**: Improving robustness to variations and potential attacks
 
 ## Project Links
-- [GitHub Repository](https://github.com/yourusername/face-recognition): coming soon...
 - [Kaggle Competition](https://www.kaggle.com/competitions/11785-hw-2-p-2-face-verification-spring-2025)

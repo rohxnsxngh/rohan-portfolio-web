@@ -4,7 +4,7 @@ date: "2025-09"
 author: "Rohan Singh"
 image: "@images/blog/cmu-cv/hw2-brief-rotation-histogram.png"
 status: "Complete"
-description: "Jumping into Ccnsulting, what got me interested and my experience preparing for the interviews"
+description: "Jumping into consulting, what got me interested and my experience preparing for the interviews"
 tags: ["consulting", "case studies", "BCG", "McKinsey"]
 ---
 

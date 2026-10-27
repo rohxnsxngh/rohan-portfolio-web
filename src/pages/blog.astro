@@ -4,6 +4,7 @@ import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
 import BlogRobotViewer from "../components/BlogRobotViewer.astro";
 import { calculateReadingTime, formatReadingTime } from "../utils/readingTime";
+import { formatContentDate } from "../scripts/formatDate";
 
 import { getCollection } from "astro:content";
 import type { CollectionEntry } from "astro:content";
@@ -429,7 +430,7 @@ export const prerender = true;
                       </span>
                     </div>
                     <div class="flex items-center gap-3 text-sm text-primary/60 mb-4">
-                      <span>{new Date(article.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      <span>{formatContentDate(article.data.date)}</span>
                       <span class="text-primary/30">•</span>
                       <span class="flex items-center gap-1">
                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
