@@ -1,4 +1,6 @@
 ---
+import CompanyMark from "../../components/CompanyMark.astro";
+import { companyMark } from "../../data/companyMarks";
 import { Image } from "astro:assets";
 import { getImageSize } from "../../utils/imageSize";
 import { getCollection, getEntry } from "astro:content";
@@ -102,8 +104,11 @@ export const prerender = true;
                 <!-- Company Badge -->
                 <div class="company-section mb-8">
                   <div class="flex items-center gap-4 flex-wrap">
-                    <span class="company-name font-mono text-2xl sm:text-3xl font-bold text-white/95">
-                      {experience.data.company}
+                    <span class="company-name inline-flex items-center gap-3 font-mono text-2xl sm:text-3xl font-bold text-white/95">
+                      <CompanyMark company={experience.data.company} />
+                      <span class:list={[companyMark(experience.data.company)?.wordmark && "sr-only"]}>
+                        {experience.data.company}
+                      </span>
                     </span>
                     {!experience.data.endDate && (
                       <span class="current-badge font-mono text-xs px-3 py-1.5 rounded bg-green-500/10 text-green-400 border border-green-500/30">

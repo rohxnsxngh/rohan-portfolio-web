@@ -44,11 +44,49 @@ None of that requires the farm to be robotic. It requires the farm to be *legibl
 
 ![Rohan and Paul beside a Y Combinator check-in screen showing 'OctaPulse (W26)'](@images/experience/octapulse/42DEAF7C-EA45-4DB2-AD07-AFBB0227D2AB.JPG)
 
+### What we are building toward: autonomous, high-margin, bountiful
+
+<video autoplay muted loop playsinline preload="none" poster="/videos/octapulse/raceway-imaging-station_poster.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 16 / 9;"><source src="/videos/octapulse/raceway-imaging-station.mp4" type="video/mp4"></video>
+
+*One of our imaging stations on the walkway of a trout farm, beside raceways full of fish.*
+
+On our own site we put it plainly: we are building the data and robotics layer for seafood production. Phenotyping and breeding, camera-based digital twins, and robotic automation, from the hatchery to the processing line. When YC introduced us on launch day, they described it as building toward autonomous aquaculture from the hatchery to processing. That is the shape of the whole company.
+
+**Autonomous** does not mean a farm with nobody on it. It means the cold, wet, repetitive work of counting, measuring, grading and moving fish is done by machines that see every animal, and the people who run the farm spend their time on the decisions only they can make. Plants already struggle to hire and keep people for that work, and it gets harder to fill every year.
+
+**High margin** is what falls out of seeing everything. A fish farm loses money in small amounts, thousands of times a day: feed spent on fish that will never reach harvest, a fillet bruised by rushed handling, a line that slows down and nobody notices until the shift report. Every damaged fish is value lost before it reaches the box. A farm that measures every fish and every station can stop paying for those losses, which is how you cut cost and raise yield at the same time.
+
+**Bountiful** is the reason to do any of it. The vision we wrote down for OctaPulse is a future of true abundance, where human prosperity and ocean health grow together. The ocean covers 70% of the Earth and produces only about 2% of our food, and fish convert feed to protein far more efficiently than cattle do. The room to grow is enormous. What has been missing is the tooling to farm it well.
+
+#### The tools we are bringing
+
+**Phenotyping.** Every fish photographed during normal handling is measured for shape, size and condition and linked to its family, so breeding teams can compare families side by side on the traits they select for. The next section is about how that works.
+
+**Digital Twin.** We install cameras on processing lines and farm sites and place each one on the site's own floor plan. Every fillet is found and outlined as it passes, so counts, throughput and colour come from the product rather than a clipboard.
+
+<video autoplay muted loop playsinline preload="none" poster="/videos/octapulse/line-cameras-live_poster.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 16 / 9;"><source src="/videos/octapulse/line-cameras-live.mp4" type="video/mp4"></video>
+
+*Eight cameras on one working processing line, every fillet picked out by live detection. People and gloves blurred.*
+
+The dashboard puts the whole plant on one screen. Open any camera to see the line live, see throughput by station and shift, and see what the line produced next to what it cost to run and where value was lost. A built-in assistant answers questions about output, throughput and colour from the plant's own records, and when the records do not hold the answer, it says so instead of guessing. Farms and hatcheries are next for the same approach.
+
+<video autoplay muted loop playsinline preload="none" poster="/videos/octapulse/digital-twin-floor-plan_poster.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 16 / 9;"><source src="/videos/octapulse/digital-twin-floor-plan.mp4" type="video/mp4"></video>
+
+*The OctaPulse dashboard on a real plant's floor plan, zooming into grading and packing as the camera markers come up.*
+
+**Plant Robotics.** Robot cells that pick whole fish and fillets off the belt and place them in crates, one cell per station, all down the line. This one is in development: designed, simulated, and running as a prototype in a working plant, with pilots on partner lines next. More on that below.
+
+All three share one workspace and the same per-fish measurements. That is the point. The measurement layer is what makes the robots worth trusting, and the robots are what turn a farm you can see into a farm that runs itself.
+
 ### We turned a five-minute manual job into a photograph
 
 At the broodstock and hatchery stage, phenotyping and deformity inspection are still done by hand. Farmers net dozens of fish, anesthetize them, and measure individually: roughly five minutes per fish, on animals the process stresses.
 
 We capture the same measurements from a single photograph in under 30 seconds. One row per fish, 20-plus objective traits from one image.
+
+<video autoplay muted loop playsinline preload="none" poster="/videos/octapulse/phenotyping-measured-trout_poster.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 16 / 9;"><source src="/videos/octapulse/phenotyping-measured-trout.mp4" type="video/mp4"></video>
+
+*Real photos of trout: segmentation masks for body, fins, gill cover and eye resolve into an outline, a midline and a length, depth and weight readout.*
 
 The measurement is a mat and a fiducial before it is a model. A fish goes on a calibrated measurement mat with a printed scale reference, so every image carries its own scale rather than inheriting one from how carefully somebody set up the rig that morning. Instance segmentation isolates the body and eight features (eye, operculum, and the caudal, dorsal, adipose, pectoral, pelvic and anal fins), and a geometry engine converts pixels to real-world inches.
 
@@ -82,9 +120,19 @@ We are implementing imitation learning on a development arm platform. A fillet i
 
 The crux is the gripper, not the arm. Pinching damages product, which pushes the design toward compliant fingers, suction, or non-contact approaches, and that is the problem we are actively working.
 
+<video autoplay muted loop playsinline preload="none" poster="/videos/octapulse/prototype-gripper-plant_poster.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 16 / 9;"><source src="/videos/octapulse/prototype-gripper-plant.mp4" type="video/mp4"></video>
+
+*Our prototype gripper picking a salmon fillet beside a stack of crates.*
+
 Simulation carries the authoring load. We can parse an arm's kinematics in seconds and watch a soft-body fillet slump under gravity, but a deformable solver runs at a fraction of realtime, which makes simulation an excellent debugging and authoring environment and tells us exactly where real-world demonstrations have to carry the weight instead.
 
 We are developing the policy on inexpensive hardware and porting the chassis, not the learning. A plant deployment needs high-pressure hot-water washdown ratings, food-grade stainless and crevice-free sloped surfaces, and the doctrine we wrote down for ourselves is that hygienic design beats waterproofing, because a sealed box that keeps water out also traps water in.
+
+Where this goes is one cell per station, all down the line: cells beside the belt that pick whole fish as they pass and fill the crates below, with every layout simulated before it reaches a plant. The order is design and simulation, then pilots with partner plants on one handling task each, then production deployments on the lines that proved the task.
+
+<video autoplay muted loop playsinline preload="none" poster="/videos/octapulse/robot-cells-line_poster.jpg" width="100%" style="margin: 20px 0; border-radius: 8px; aspect-ratio: 16 / 9;"><source src="/videos/octapulse/robot-cells-line.mp4" type="video/mp4"></video>
+
+*Simulation render of robot cells along a processing line, picking whole trout off the belt and placing them into crates.*
 
 ![Paul and Rohan in OctaPulse-branded navy quarter-zips with event lanyards, photographed indoors](@images/experience/octapulse/photo_51731.jpg)
 

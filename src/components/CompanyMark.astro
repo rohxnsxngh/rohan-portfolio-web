@@ -1,0 +1,50 @@
+---
+/**
+ * CompanyMark Component
+ *
+ * A small monochrome logo for an experience entry. The logo file is used only
+ * as a CSS mask, so the mark is painted in currentColor and picks up whatever
+ * tint the surrounding badge already has instead of the brand's own colours.
+ *
+ * Wordmarks (ASML) stand in for the company name, so the badge hides its text
+ * label for those. Companies without a mark render nothing.
+ *
+ * Usage:
+ * <CompanyMark company="OctaPulse" />
+ */
+
+import { companyMark } from "../data/companyMarks";
+
+interface Props {
+  company: string;
+  class?: string;
+}
+
+const { company, class: className = "" } = Astro.props;
+const mark = companyMark(company);
+---
+
+{mark && (
+  <span
+    class:list={["company-mark", mark.wordmark && "company-mark--wordmark", className]}
+    style={`--mark: url(${mark.src}); aspect-ratio: ${mark.ratio};`}
+    aria-hidden="true"
+  />
+)}
+
+<style>
+  .company-mark {
+    display: inline-block;
+    flex: none;
+    height: 1.05em;
+    background-color: currentColor;
+    -webkit-mask: var(--mark) center / contain no-repeat;
+    mask: var(--mark) center / contain no-repeat;
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+  }
+
+  .company-mark--wordmark {
+    height: 0.8em;
+  }
+</style>
