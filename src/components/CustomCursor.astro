@@ -25,6 +25,15 @@
     z-index: 9999;
   }
 
+  /* Anchored at the viewport origin and positioned by the script through the
+     individual `translate` property, which composites. */
+  #cursor-dot,
+  #cursor-outline,
+  #cursor-label {
+    top: 0;
+    left: 0;
+  }
+
   #cursor-dot {
     position: fixed;
     width: 4px;
@@ -237,12 +246,17 @@
   let lastMouseX = 0;
   let lastMouseY = 0;
 
-  // Setup canvas
+  // Setup canvas. The backing store is sized in device pixels and the context
+  // scaled back to CSS pixels, otherwise the trail is upsampled and blurry on
+  // a retina screen. Capped at 2: the blocks are 4-6px squares and a 3x store
+  // only costs fill rate.
+  let dpr = 1;
   function resizeCanvas() {
-    if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+    if (!canvas || !ctx) return;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   resizeCanvas();
@@ -264,6 +278,16 @@
     if (pixelBlocks.length > 25) {
       pixelBlocks.shift();
     }
+    wake();
+  }
+
+  // Positions go through the individual `translate` property rather than
+  // left/top. left/top is layout, so writing it every frame invalidated layout
+  // for the whole fixed layer; `translate` is composited, and it stacks in
+  // front of each element's own `transform` (the -50% centring, the 45deg
+  // rotation and its hover scale) without touching it or its transition.
+  function place(el: HTMLElement | null, x: number, y: number) {
+    if (el) el.style.translate = `${x}px ${y}px`;
   }
 
   // Mouse movement
@@ -280,6 +304,10 @@
       outlineY = mouseY;
       lastMouseX = mouseX;
       lastMouseY = mouseY;
+
+      place(dot, cursorX, cursorY);
+      place(outline, outlineX, outlineY);
+      place(cursorLabel, outlineX, outlineY);
 
       // Show cursor elements now that we have the correct position
       if (dot) dot.classList.add('cursor-initialized');
@@ -308,6 +336,8 @@
         addPixelBlock(mouseX, mouseY);
       }
     }
+
+    wake();
   });
 
   // Interactive elements
@@ -356,84 +386,113 @@
     document.body.classList.remove('cursor-click');
   });
 
-  // Animation loop
-  function animate() {
-    // Smooth cursor movement with easing
-    const ease = 0.15;
-    cursorX += (mouseX - cursorX) * ease;
-    cursorY += (mouseY - cursorY) * ease;
+  // Easing rates, per second. The old per-frame factors (0.15 for the dot,
+  // 0.1 for the outline) were tuned at 60 Hz and ran twice as fast on a 120 Hz
+  // display; these are the same feel expressed against elapsed time, so
+  // 1 - exp(-rate * dt) reproduces 0.15 and 0.1 at exactly 60 fps.
+  const DOT_RATE = 9.75;
+  const OUTLINE_RATE = 6.3;
+  // Block life drained per second (0.025 a frame at 60 fps).
+  const LIFE_RATE = 1.5;
+  // Below this the followers are visually on the pointer.
+  const SETTLE_PX = 0.1;
 
-    const outlineEase = 0.1;
-    outlineX += (mouseX - outlineX) * outlineEase;
-    outlineY += (mouseY - outlineY) * outlineEase;
+  let rafId = 0;
+  let lastTime = 0;
+  // Whether the previous frame left anything on the canvas, so an idle frame
+  // does not clear an already empty store.
+  let canvasDirty = false;
 
-    // Update DOM positions
-    if (dot) {
-      dot.style.left = `${cursorX}px`;
-      dot.style.top = `${cursorY}px`;
+  // The loop sleeps once the dot and outline have caught the pointer and the
+  // trail has faded. A still mouse used to keep a full-viewport clearRect and
+  // three style writes running every frame for the life of the tab.
+  function wake() {
+    if (rafId || !isInitialized) return;
+    lastTime = performance.now();
+    rafId = requestAnimationFrame(animate);
+  }
+
+  function animate(now: number) {
+    // Clamped so a frame after a long stall (a tab switch, a GC pause) eases
+    // rather than teleports.
+    const dt = Math.min(Math.max((now - lastTime) / 1000, 0), 0.1);
+    lastTime = now;
+
+    const kDot = 1 - Math.exp(-DOT_RATE * dt);
+    const kOutline = 1 - Math.exp(-OUTLINE_RATE * dt);
+
+    cursorX += (mouseX - cursorX) * kDot;
+    cursorY += (mouseY - cursorY) * kDot;
+    outlineX += (mouseX - outlineX) * kOutline;
+    outlineY += (mouseY - outlineY) * kOutline;
+
+    const settled =
+      Math.abs(mouseX - cursorX) < SETTLE_PX && Math.abs(mouseY - cursorY) < SETTLE_PX &&
+      Math.abs(mouseX - outlineX) < SETTLE_PX && Math.abs(mouseY - outlineY) < SETTLE_PX;
+
+    if (settled) {
+      cursorX = outlineX = mouseX;
+      cursorY = outlineY = mouseY;
     }
 
-    if (outline) {
-      outline.style.left = `${outlineX}px`;
-      outline.style.top = `${outlineY}px`;
-    }
-
-    if (cursorLabel) {
-      cursorLabel.style.left = `${outlineX}px`;
-      cursorLabel.style.top = `${outlineY}px`;
-    }
+    place(dot, cursorX, cursorY);
+    place(outline, outlineX, outlineY);
+    place(cursorLabel, outlineX, outlineY);
 
     // Draw canvas effects (pixelated blocks)
-    // Capture into a const so TS can narrow inside the forEach callback (ctx is `let`).
+    // Capture into a const so TS can narrow inside the loop (ctx is `let`).
     const ctx2d = ctx;
     if (ctx2d && canvas) {
-      ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+      if (canvasDirty) {
+        ctx2d.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        canvasDirty = false;
+      }
 
-      // Draw pixelated blocks
-      pixelBlocks.forEach((block, index) => {
-        block.life -= 0.025;
+      ctx2d.fillStyle = '#FFFFFF';
+      ctx2d.strokeStyle = '#FFFFFF';
+      ctx2d.lineWidth = 1;
+
+      // Backwards, so removing a dead block does not skip the one after it.
+      for (let index = pixelBlocks.length - 1; index >= 0; index--) {
+        const block = pixelBlocks[index];
+        block.life -= LIFE_RATE * dt;
 
         if (block.life <= 0) {
           pixelBlocks.splice(index, 1);
-          return;
+          continue;
         }
 
-        const alpha = block.life * 0.35;
-        ctx2d.globalAlpha = alpha;
-        ctx2d.fillStyle = '#FFFFFF';
-        ctx2d.strokeStyle = '#FFFFFF';
-        ctx2d.lineWidth = 1;
+        ctx2d.globalAlpha = block.life * 0.35;
+        canvasDirty = true;
+
+        const bx = Math.floor(block.x / block.size) * block.size;
+        const by = Math.floor(block.y / block.size) * block.size;
 
         // Draw different block types
         if (block.type === 'solid') {
-          ctx2d.fillRect(
-            Math.floor(block.x / block.size) * block.size,
-            Math.floor(block.y / block.size) * block.size,
-            block.size,
-            block.size
-          );
+          ctx2d.fillRect(bx, by, block.size, block.size);
         } else if (block.type === 'hollow') {
-          ctx2d.strokeRect(
-            Math.floor(block.x / block.size) * block.size,
-            Math.floor(block.y / block.size) * block.size,
-            block.size,
-            block.size
-          );
+          // A 1px stroke is centred on the path, so on whole coordinates it
+          // straddles two pixel rows and renders as a soft 2px grey line. The
+          // half-pixel offset puts it on one row.
+          ctx2d.strokeRect(bx + 0.5, by + 0.5, block.size - 1, block.size - 1);
         } else if (block.type === 'dot') {
-          const centerX = Math.floor(block.x / block.size) * block.size + block.size / 2;
-          const centerY = Math.floor(block.y / block.size) * block.size + block.size / 2;
-          ctx2d.fillRect(centerX - 1, centerY - 1, 2, 2);
+          ctx2d.fillRect(bx + block.size / 2 - 1, by + block.size / 2 - 1, 2, 2);
         }
-      });
+      }
 
       ctx2d.globalAlpha = 1;
+    } else {
+      pixelBlocks.length = 0;
     }
 
-    requestAnimationFrame(animate);
-  }
+    if (settled && pixelBlocks.length === 0 && !canvasDirty) {
+      rafId = 0;
+      return;
+    }
 
-  // Start animation
-  animate();
+    rafId = requestAnimationFrame(animate);
+  }
 
   // Handle page visibility
   document.addEventListener('visibilitychange', () => {
@@ -453,22 +512,15 @@
     ctx = canvas?.getContext('2d') ?? null;
     cursorLabel = document.getElementById('cursor-label');
 
-    if (canvas) {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+    resizeCanvas();
+    canvasDirty = false;
 
     if (isInitialized) {
-      if (dot) {
-        dot.classList.add('cursor-initialized');
-        dot.style.left = `${cursorX}px`;
-        dot.style.top = `${cursorY}px`;
-      }
-      if (outline) {
-        outline.classList.add('cursor-initialized');
-        outline.style.left = `${outlineX}px`;
-        outline.style.top = `${outlineY}px`;
-      }
+      if (dot) dot.classList.add('cursor-initialized');
+      if (outline) outline.classList.add('cursor-initialized');
+      place(dot, cursorX, cursorY);
+      place(outline, outlineX, outlineY);
+      place(cursorLabel, outlineX, outlineY);
     }
 
     // Body classes don't survive body replacement — clear stuck states.
@@ -478,6 +530,7 @@
     // click-triggered navigation before its mouseout fires, leaving the label
     // (and the previous page's text) stuck visible on the persisted cursor root.
     cursorLabel?.classList.remove('visible');
+    wake();
   });
 
   // Cursor will be shown on first mouse move via cursor-initialized class

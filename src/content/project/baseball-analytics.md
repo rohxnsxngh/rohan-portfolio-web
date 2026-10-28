@@ -1,60 +1,105 @@
 ---
-title: "Baseball Analytics Platform"
+title: "AI Umpire: Modeling MLB Strike Zones"
 date: "2023-12"
 status: "completed"
-image: "/images/project/MachineLearningEric.png"
-description: "A comprehensive baseball analytics platform that uses machine learning to analyze player performance and predict game outcomes."
-tags: ["machine learning", "sports analytics", "Python", "data science", "visualization"]
+image: "/images/project/baseball/called-pitches-overview.jpg"
+description: "Random forest, gradient boosting and SVM models that learn the individual strike zones of six MLB umpires from 35,508 called pitches across 170 games."
+tags: ["machine learning", "scikit-learn", "sports analytics", "Python", "classification"]
 github: "https://github.com/rohxnsxngh/Machine-Learning-MEEN/tree/main/Project"
-# demo: "https://baseball-analytics.demo.com"
+images:
+  - src: "/images/project/baseball/random-forest-angel-hernandez.png"
+    alt: "Random forest strike zone for Angel Hernandez with held-out test pitches"
+  - src: "/images/project/baseball/random-forest-erich-bacchus.png"
+    alt: "Random forest strike zone for Erich Bacchus with held-out test pitches"
+  - src: "/images/project/baseball/random-forest-junior-valentine.png"
+    alt: "Random forest strike zone for Junior Valentine with held-out test pitches"
+  - src: "/images/project/baseball/random-forest-malachi-moore.png"
+    alt: "Random forest strike zone for Malachi Moore with held-out test pitches"
+  - src: "/images/project/baseball/random-forest-pat-hoberg.png"
+    alt: "Random forest strike zone for Pat Hoberg with held-out test pitches"
+  - src: "/images/project/baseball/random-forest-quinn-wolcott.png"
+    alt: "Random forest strike zone for Quinn Wolcott with held-out test pitches"
 ---
 
-In the world of baseball, data has always played a critical role in shaping strategies, evaluating players, and even predicting game outcomes. Our **Baseball Analytics Platform** was built with this in mind, blending machine learning, real-time analytics, and visualization tools to bring deeper insights into the sport. Developed as part of **Texas A&M’s MEEN 423 course**, this project wasn’t just about crunching numbers; it was about understanding the nuances of the game through data-driven analysis.
+Pitch tracking is good enough now that people keep proposing robot umpires, and players keep pushing back that it would remove the "human element" of the game. For our **MEEN 423** machine learning final project at Texas A&M in Fall 2023, my three-person team flipped the usual question. Instead of asking whether a call was correct, we asked whether a model could learn how one specific umpire calls the zone, quirks included.
 
-#### **The Core Idea: Predicting Umpire Calls with ML**  
+We picked six MLB home plate umpires (Angel Hernandez, Erich Bacchus, Junior Valentine, Malachi Moore, Pat Hoberg and Quinn Wolcott) and trained a separate classifier for each one. The target is not the rulebook zone. It is that umpire's zone.
 
-One of the primary focuses of this platform was predicting **umpire calls** using advanced machine learning techniques. Umpire decisions can significantly impact a game, and by analyzing historical data, pitch trajectories, and situational factors, our models were able to anticipate calls with remarkable accuracy. This gave teams and analysts a clearer understanding of decision-making patterns and potential biases, ultimately providing a **competitive edge** in strategizing for games. 
+#### **The Data**
 
-![Machine Learning Baseball Overview](@images/project/MachineLearningBaseball.png)
+We pulled every called pitch (no swing) from 170 games of the 2023 regular season on Baseball Savant: **35,508 pitches** in total, roughly balanced between balls and strikes.
 
-#### **How It Works: The Technology Behind the Platform**  
+| Umpire | Games | Called pitches |
+|---|---|---|
+| Angel Hernandez | 13 | 2,769 |
+| Erich Bacchus | 32 | 6,561 |
+| Junior Valentine | 35 | 7,092 |
+| Malachi Moore | 31 | 6,603 |
+| Pat Hoberg | 29 | 6,417 |
+| Quinn Wolcott | 30 | 6,066 |
 
-The platform integrates **real-time game data**, **historical player statistics**, and **environmental factors** to create an **intelligent analytics engine**. We used Python for data processing, PostgreSQL for managing extensive datasets, and TensorFlow to train machine learning models capable of recognizing trends and predicting outcomes.  
+Each row carries the pitch location as it crosses the plate (`pX`, `pZ`), the call, the batter's strike zone top and bottom (`sZ_top`, `sZ_bot`) and the home plate umpire.
 
-![Machine Learning Analysis 1](@images/project/MachineLearningBaseball1.png)
+![Strike zone geometry and coordinate frame](@images/project/MachineLearningBaseball.png)
 
-Our models, including **RandomForestClassifier** and specialized pitch prediction algorithms, were fine-tuned using **cross-validation techniques and hyperparameter optimization**. These models didn’t just predict plays; they provided **decision boundary visualizations** and **feature importance analysis**, helping users understand **why** certain plays were more likely to occur.  
+#### **Normalizing the Zone**
 
-![Machine Learning Analysis 2](@images/project/MachineLearningBaseball2.png)
+The horizontal zone is fixed for everyone: half the 17 inch plate plus the 0.12 ft radius of a ball, which puts the edges at **±0.83 ft**. The vertical zone is not. It runs from the hollow below the batter's kneecap to the midpoint between shoulders and belt, so a pitch at 3.2 ft is a strike against a tall hitter and a ball against a short one.
 
-Additionally, **D3.js-powered interactive visualizations** made complex data insights more accessible, allowing users to explore **team strategies, player performance, and in-game trends** dynamically.  
+To compare pitches across batters, we rescaled every `pZ` into an average zone of 1.5 to 3.5 ft, the MLB averages for `sZ_bot` and `sZ_top`:
 
-#### **Real-World Results: Accuracy & Strategic Insights**  
+`pZ_norm = (pZ - sZ_bot) / (sZ_top - sZ_bot) * (3.5 - 1.5) + 1.5`
 
-The machine learning models delivered impressive results:  
-- **85% accuracy** in predicting game outcomes.  
-- **30% improvement** in team strategy optimization.  
-- Analysis of **1,000+ games** in real-time.  
-- Enhanced **player performance tracking** and **scouting capabilities**.  
+After that, every pitch for every batter lives in the same two-dimensional frame, and the only features each model sees are horizontal location and normalized height.
 
-![Baseball Data Mapping](@images/project/MachineLearningBaseballMapping.png)
+![X position variables and plate width](@images/project/MachineLearningBaseball1.png)
 
-Beyond predictions, the platform helped **optimize team strategies**, identifying key opportunities for **lineup adjustments, defensive formations, and offensive tactics**. Coaches and analysts could use these insights to **make more informed decisions**, ensuring their team stayed ahead of the competition.
+![Z position variables and MLB average zone](@images/project/MachineLearningBaseball2.png)
 
-![Analysis Results - Eric](@images/project/MachineLearningEric.png)
+Plotting all of one umpire's calls in that frame already shows the shape of their zone before any model is trained.
 
-![Analysis Results - Malachi](@images/project/MachineLearningMalachi.png)
+![All called pitches for Pat Hoberg in the normalized frame](@images/project/baseball/all-pitches-pat-hoberg.png)
 
-#### **Looking Ahead: The Future of Baseball Analytics**  
+#### **Three Models per Umpire**
 
-While the current platform already offers **valuable insights**, there's plenty of room for growth. Future iterations will focus on **advanced player tracking**, **real-time strategy recommendations**, and even **mobile app development** for broader accessibility. Additionally, we envision integrating **international league data**, allowing for cross-league comparisons and a **global perspective** on baseball analytics.  
+For each umpire we split the calls 95/5 into training and test sets and fit three scikit-learn classifiers:
 
-#### **Final Thoughts**  
+- **Support vector machine** with an RBF kernel (`C=1.0`, `gamma='scale'`). The strike zone is a rounded box, so a linear boundary is not enough.
+- **Gradient boosting** with 100 depth-3 trees at a learning rate of 0.1.
+- **Random forest** with 200 trees, `max_depth=10` and `min_samples_split=10`.
 
-This project was more than just an academic exercise; it was a real-world application of machine learning in sports, blending technical innovation with the excitement of the game. Whether for **coaches, analysts, or baseball enthusiasts**, the Baseball Analytics Platform provides a **data-driven approach** to understanding and enhancing the sport we love.  
+For the random forest we also ran a 5-fold `GridSearchCV` over tree count, depth, split size and leaf size for each umpire. The best settings differed noticeably between umpires (Quinn Wolcott's zone was fit best by 50 shallow depth-5 trees, Junior Valentine's by depth-20 trees), which is a small hint that the zones themselves differ in how sharp their edges are.
 
-Check out the **[GitHub repository](https://github.com/rohxnsxngh/Machine-Learning-MEEN/tree/main/Project)** for the code and technical details.
+To see what each model learned, we evaluated it on a dense 500 by 500 grid over the plate area and drew the predicted ball and strike regions as a contour, with the held-out test pitches and the rulebook box on top. Misses show up immediately as red dots in blue territory or the reverse.
 
-<!-- or explore the **[live demo](https://baseball-analytics.demo.com)** to see it in action! -->
+![Support vector machine zone for Pat Hoberg](@images/project/baseball/svm-pat-hoberg.png)
 
----
+![Gradient boosting zone for Pat Hoberg](@images/project/baseball/gradient-boosting-pat-hoberg.png)
+
+#### **Results**
+
+Accuracy here means agreement with the umpire's actual call on held-out pitches, not agreement with the rulebook.
+
+| Umpire | SVM | Gradient boosting | Random forest |
+|---|---|---|---|
+| Angel Hernandez | 0.88 | 0.86 | 0.88 |
+| Erich Bacchus | 0.86 | 0.88 | 0.88 |
+| Junior Valentine | 0.90 | 0.87 | 0.87 |
+| Malachi Moore | 0.88 | 0.88 | 0.93 |
+| Pat Hoberg | 0.91 | 0.91 | 0.88 |
+| Quinn Wolcott | 0.87 | 0.90 | 0.90 |
+| **Average** | **0.884** | **0.883** | **0.890** |
+
+All three model families landed between 0.883 and 0.890 on average, so with only two features the choice of classifier barely matters. The test set is only 5% of each umpire's pitches (about 140 to 350 calls), so differences of a couple of points between cells are within noise, and I would not read much into which model "won" for a given umpire.
+
+The more interesting output is the shape of the learned zones. They are rounded rather than square, they bleed past the rulebook box in places, and they are not the same from umpire to umpire.
+
+![Model comparison for Erich Bacchus](@images/project/MachineLearningEric.png)
+
+![Model comparison for Malachi Moore](@images/project/MachineLearningMalachi.png)
+
+#### **What I Would Do Next**
+
+A per-umpire model opens up a few questions we only sketched in the report: replaying a contested call under a different umpire's zone, simulating a whole game as if someone else were behind the plate, or checking whether an umpire's zone drifts within a game. On the modeling side, the obvious next steps are adding count and batter handedness as features and evaluating with proper cross-validation instead of a single small test split.
+
+The code, the dataset, the plots and the full report are in the **[GitHub repository](https://github.com/rohxnsxngh/Machine-Learning-MEEN/tree/main/Project)**.

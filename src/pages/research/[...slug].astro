@@ -6,6 +6,8 @@ import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../layouts/Navigation.astro";
 import Footer from "../../layouts/Footer.astro";
 import MarkdownContent from "../../components/MarkdownContent.astro";
+import Diagram from "../../components/Diagram.astro";
+import { diagramsFor } from "../../data/diagrams";
 
 export async function getStaticPaths() {
   const researchEntries = await getCollection("research");
@@ -17,6 +19,7 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const research = await getEntry("research", slug);
 const { Content } = await research.render();
+const diagrams = diagramsFor("research", research.slug);
 
 type ResearchStatus = "completed" | "in-progress" | "coming-soon";
 
@@ -169,6 +172,16 @@ export const prerender = true;
             </div>
           </div>
         </section>
+
+        <!-- HOW IT WORKS: animated diagrams from src/data/diagrams.ts. -->
+        {diagrams.length > 0 && (
+          <section class="diagram-section w-full sm:px-20 px-6 pt-12">
+            <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-white/50">
+              // HOW IT WORKS
+            </h2>
+            {diagrams.map((d, i) => <Diagram {...d} index={i + 1} />)}
+          </section>
+        )}
 
         <!-- Story Content Section -->
         <section class="content-section w-full sm:px-20 px-6 py-12">

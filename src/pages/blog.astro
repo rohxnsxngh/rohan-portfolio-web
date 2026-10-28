@@ -118,7 +118,7 @@ export const prerender = true;
         </div>
 
         <!-- Dark overlay to dim keyboard heavily by default -->
-        <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+        <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none" id="robot-dim"></div>
       </div>
 
       <!-- Tech grid overlay for texture -->
@@ -591,7 +591,9 @@ export const prerender = true;
   /* Overlay - dims the keyboard heavily, lightens on hover */
   .robot-overlay {
     z-index: 1;
-    transition: background 0.6s ease-out;
+    /* background-color only: the scroll split scrubs opacity on this element,
+       and the old transition-all restarted on every scrubbed tick. */
+    transition: background-color 0.6s ease-out;
   }
 
   /* Hero content with slower fade transitions */
@@ -631,7 +633,7 @@ export const prerender = true;
   }
 
   .hero-section:not(.mouse-active) .robot-overlay {
-    transition: background 2.5s ease-in-out;
+    transition: background-color 2.5s ease-in-out;
   }
 
   /* ===== BLOG CARDS ===== */
@@ -1313,7 +1315,8 @@ export const prerender = true;
 <script>
   import { onPageReady } from '../scripts/pageReady';
   import { DURATION, EASE } from '../scripts/motion';
-  import { addHeroCharIntro, batchScrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { addHeroCharIntro, batchScrollReveal, createPageIntroTimeline, initHeroGlow, bindPointerGlow } from '../scripts/animations';
+  import { getLenis } from '../scripts/smooth-scroll';
   import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   import { bindHeroTouch } from '../scripts/heroTouch';
   import { initKineticText } from '../scripts/kinetic-text';
@@ -1384,20 +1387,17 @@ export const prerender = true;
       splitTl.fromTo('.statement', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
       splitTl.fromTo('.cta-section', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
       if (robotOverlay) {
-        splitTl.fromTo(robotOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.85)' }, { backgroundColor: 'rgba(0, 0, 0, 0.3)', ease: 'none' }, 0);
+        // Opacity, not backgroundColor: 0.85 x 0.35 is about the old 0.3, it
+        // composites, and it leaves background-color to the hover reveal.
+        splitTl.fromTo(robotOverlay, { opacity: 1 }, { opacity: 0.35, ease: 'none' }, 0);
       }
     }
 
-    // Continuous glow pulse on hero chars
+    // Continuous glow pulse on hero chars. Composited opacity on a glow copy
+    // of each char, paused while the hero is off screen (see initHeroGlow).
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && isDesktop) {
       tl.call(() => {
-        const glowChars = document.querySelectorAll('.hero-name .char');
-        if (glowChars.length) {
-          gsap.to(glowChars, {
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
-            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
-          });
-        }
+        initHeroGlow(document.querySelectorAll('.hero-name .char'), document.getElementById('hero-section'));
       });
     }
 
@@ -1505,21 +1505,8 @@ export const prerender = true;
 
     blogCards.forEach((card) => {
       const glowOverlay = card.querySelector<HTMLElement>('.glow-overlay');
-      if (!glowOverlay) return;
-
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-        glowOverlay.style.setProperty('--mouse-x', `${x}%`);
-        glowOverlay.style.setProperty('--mouse-y', `${y}%`);
-      });
-
-      card.addEventListener('mouseleave', () => {
-        glowOverlay.style.setProperty('--mouse-x', '50%');
-        glowOverlay.style.setProperty('--mouse-y', '50%');
-      });
+      // Rect cached per hover, writes batched into one frame.
+      if (glowOverlay) bindPointerGlow(card, glowOverlay);
     });
 
     // ===== SEARCH FUNCTIONALITY =====
@@ -1711,15 +1698,19 @@ export const prerender = true;
           tocArticleItems.forEach(item => item.classList.remove('active'));
           tocItem.classList.add('active');
 
-          // Scroll to card
-          const cardRect = targetCard.getBoundingClientRect();
+          // Scroll to card. Through Lenis when it is running: a native smooth
+          // scrollTo under Lenis is two smooth scrolls fighting over the page.
           const offset = 100;
-          const scrollTo = window.scrollY + cardRect.top - offset;
-
-          window.scrollTo({
-            top: scrollTo,
-            behavior: 'smooth'
-          });
+          const lenis = getLenis();
+          if (lenis) {
+            lenis.scrollTo(targetCard, { offset: -offset });
+          } else {
+            const cardRect = targetCard.getBoundingClientRect();
+            window.scrollTo({
+              top: window.scrollY + cardRect.top - offset,
+              behavior: 'smooth'
+            });
+          }
 
           // Highlight effect
           targetCard.classList.add('toc-highlight');

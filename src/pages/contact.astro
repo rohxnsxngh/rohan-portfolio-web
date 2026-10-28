@@ -26,7 +26,7 @@ export const prerender = true;
         </div>
 
         <!-- Dark overlay to dim robot by default -->
-        <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+        <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none" id="robot-dim"></div>
       </div>
 
       <!-- Tech grid overlay for texture -->
@@ -344,7 +344,9 @@ export const prerender = true;
   /* Overlay - dims the robot heavily, lightens on hover */
   .robot-overlay {
     z-index: 1;
-    transition: background 0.6s ease-out;
+    /* background-color only: the scroll split scrubs opacity on this element,
+       and the old transition-all restarted on every scrubbed tick. */
+    transition: background-color 0.6s ease-out;
   }
 
   /* Hero content transitions */
@@ -368,7 +370,7 @@ export const prerender = true;
   }
 
   .hero-section:not(.mouse-active) .robot-overlay {
-    transition: background 2.5s ease-in-out;
+    transition: background-color 2.5s ease-in-out;
   }
 
   /* Label intro */
@@ -632,7 +634,7 @@ export const prerender = true;
 <script>
   import { onPageReady } from '../scripts/pageReady';
   import { DURATION, EASE } from '../scripts/motion';
-  import { addHeroCharIntro, animateLineExpand, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { addHeroCharIntro, animateLineExpand, scrollReveal, createPageIntroTimeline, initHeroGlow } from '../scripts/animations';
   import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   import { bindHeroTouch } from '../scripts/heroTouch';
   import { initKineticText } from '../scripts/kinetic-text';
@@ -698,20 +700,17 @@ export const prerender = true;
       splitTl.fromTo('.statement', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
       splitTl.fromTo('.cta-section', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
       if (robotOverlay) {
-        splitTl.fromTo(robotOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.85)' }, { backgroundColor: 'rgba(0, 0, 0, 0.3)', ease: 'none' }, 0);
+        // Opacity, not backgroundColor: 0.85 x 0.35 is about the old 0.3, it
+        // composites, and it leaves background-color to the hover reveal.
+        splitTl.fromTo(robotOverlay, { opacity: 1 }, { opacity: 0.35, ease: 'none' }, 0);
       }
     }
 
-    // Continuous glow pulse on hero chars
+    // Continuous glow pulse on hero chars. Composited opacity on a glow copy
+    // of each char, paused while the hero is off screen (see initHeroGlow).
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && isDesktop) {
       tl.call(() => {
-        const glowChars = document.querySelectorAll('.contact-title .char');
-        if (glowChars.length) {
-          gsap.to(glowChars, {
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
-            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
-          });
-        }
+        initHeroGlow(document.querySelectorAll('.contact-title .char'), document.getElementById('hero-section'));
       });
     }
 

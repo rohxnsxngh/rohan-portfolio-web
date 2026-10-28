@@ -3,121 +3,70 @@ title: "3D Platform for Scaffolding"
 date: "2024-04"
 status: "completed"
 image: "/images/project/Scaffolding5.jpg"
-description: "A high-performance 3D application for scaffolding graphics, utilizing WebGPU and ifc.js for real-time visualization and automated Bill of Materials (BOM) generation."
-tags: ["3D graphics", "WebGPU", "BIM", "construction technology", "real-time rendering"]
-# github: "https://github.com/rohxnsxngh/hans-aubs"
+description: "A browser-based scaffolding planner built with three.js, Vue and openbim-components: draw a building footprint, extrude it, add a roof, auto-generate scaffolding around it and request a rental quote."
+tags: ["three.js", "BIM", "IFC", "Vue", "construction technology"]
+github: "https://github.com/rohxnsxngh/scaffold-bim"
 demo: "https://0477ecc2-5847-48e4-bdb9-32403bc35367.vercel.app/model"
 ---
 
-## Scaffolding Graphics: Building Interactive and High-Performance 3D Applications
+## Scaffolding a Building in the Browser
 
-The development of high-performance 3D applications demands the seamless integration of intuitive user interfaces, efficient rendering techniques, and scalable resource management. This project introduces a next-generation scaffolding graphics application built for **Stillastorget.no**, a company operating in the **Norway/Spain** region specializing in construction technology. 
+Renting scaffolding usually starts with someone measuring a building, sketching it, and working out by hand how many bays, staircases and covers the job needs. I built this tool for a construction technology client (name withheld) to move that step into the browser: a customer draws their building, the app wraps it in scaffolding, and the result turns into a rental quote request.
 
-By leveraging cutting-edge web technologies such as **WebGPU, instanced mesh rendering, and ifc.js**, this application enables users to define building dimensions, extrude structures, generate scaffolding, and create an automated Bill of Materials (BOM) with real-time visualization.
+I wrote it in TypeScript with **Vue 3**, **Pinia** for state, **three.js** (r152) for the scene and **openbim-components** for the BIM toolbar and IFC loading. Most of the work happened in April and May 2024, with a final public demo build in December 2024. It is about 8,800 lines across the scene utilities and Vue pages.
 
-![Scaffold 1](@images/project/Scaffolding5.jpg)  
+![Sheeted scaffolding around an extruded building](@images/project/Scaffolding5.jpg)
 
-## Core Features
-### 1. Interactive Building Design
-- Users can draw, define, and modify building structures by setting measurements and extruding shapes.
-- Measurement tools allow precise input of dimensions (width, height, depth) for structures.
-- Supports real-time updates and modifications with intuitive UI controls.
+## The Workflow
 
-### 2. Automated Scaffolding Generation
-- Based on defined building dimensions, scaffolding structures are automatically generated.
-- Users can select specific building areas for scaffolding placement.
-- Customization options allow users to modify scaffold material types, dimensions, and structural configurations.
+The interface is a step-by-step flow across the top of the screen: general site settings, floor plan and building, roof, scaffolding, extras, and the price request. Each step changes what the 3D scene lets you do.
 
-### 3. Bill of Materials (BOM) Generation
-- A comprehensive BOM quantifies all scaffold elements used in the project.
-- Users can export the BOM in multiple formats (CSV, PDF) for further analysis and cost estimation.
+### 1. Site and Terrain
+The first step sets the ground the scaffolding will stand on. You pick a terrain block type (asphalt, sand, fine sand, clay, grass or mixed), which is the kind of detail a rental company needs to plan base plates and anchoring.
 
-### 4. Real-Time Editing and Visualization
-- Drag-and-drop interface allows seamless manipulation of scaffold components.
-- Real-time updates ensure immediate feedback on modifications.
-- Advanced rendering optimizations improve performance and interactivity.
+### 2. Drawing the Blueprint
+In a top-down view you draw the footprint with a rectangle or polygon tool, or type the length and width directly. Every edge gets a live measurement label in meters. Under the hood each footprint is stored as a `THREE.Shape`, so it can be moved, edited and redrawn without losing its outline (`createBlueprintFromShapeOutline`, `editBlueprint`, `moveBlueprint`).
 
-![Scaffold 1](@images/project/Scaffolding2.jpg) 
+![Drawing a building footprint with live edge measurements](@images/project/Scaffolding1.jpg)
 
-## **Technical Implementation**
+![A second footprint drawn next to the first](@images/project/Scaffolding2.jpg)
 
-### **WebGPU as the Rendering Backend**
-WebGPU provides a robust rendering pipeline, replacing WebGL for improved efficiency and performance. The key benefits include:
+### 3. Extrusion and Roofs
+Setting a height extrudes the footprint into a building with `ExtrudeGeometry` (`createExtrusionFromBlueprint`). Each building can then take a **flat**, **gable** or **shed** roof, each generated from the footprint and wall height, with duplicate roofs cleaned up when the blueprint changes.
 
-#### **Instanced Mesh Rendering**
-- Uses GPU instancing to efficiently render thousands of scaffolding components with minimal draw calls.
-- Reduces CPU-GPU communication overhead, ensuring smooth real-time visualization.
+### 4. Generating the Scaffolding
+This is the core of the tool. `generateScaffoldOutline` offsets the building outline outward and builds a set of lines around it. `placeScaffoldModelsAlongLine` then walks each line and places a scaffold bay every **1.57 m**, interpolating the position along the edge and rotating each bay to face along it. A position map with an epsilon check prevents two bays from landing in the same spot where edges meet.
 
-#### **Parallel Processing**
-- WebGPU’s compute shaders handle geometry updates, physics simulations, and lighting calculations in parallel.
-- Enables real-time interaction with complex scaffolding structures without performance bottlenecks.
+The bays themselves are GLB models cloned with `SkeletonUtils`, so every bay is a real scaffold section rather than a placeholder box. You set the wall distance and the number of levels, and the app stacks bays upward.
 
-#### **Memory Management Optimizations**
-- **Frustum Culling**: Renders only the visible portions of the scaffolding within the camera’s view, improving FPS.
-- **Level of Detail (LOD)**: Dynamically adjusts the detail level of scaffolds based on the camera distance.
-- **Buffer Updates**: Ensures real-time scaffold transformations without reloading entire meshes.
+![Choosing scaffold components next to an auto-generated scaffold](@images/project/Scaffolding3.jpg)
 
-### **Integration with ifc.js for BIM Models**
-Ifc.js, an open-source JavaScript library, enables **Building Information Modeling (BIM)** integration for accurate construction planning.
+### 5. Editing
+Automatic generation gets you most of the way, but real jobs need exceptions. You can delete a whole **row** (one level along an edge) or a whole **column** (one vertical stack), swap a bay for an **internal or external staircase**, place individual components by hand, and add **sheeting** over the faces of the scaffold.
 
-#### **WebAssembly (WASM) Backend**
-- Delivers high-performance parsing and rendering of **Industry Foundation Classes (IFC)** files directly in the browser.
-- Avoids heavy processing on the CPU by offloading computations to WebAssembly, ensuring faster load times.
+![Scaffold with rows edited around a multi-wing building](@images/project/Scaffolding4.jpg)
 
-#### **Component Extraction**
-- Allows extraction of specific building elements (walls, floors, roofs) to define attachment points for scaffolding.
-- Enables seamless integration with architectural design files and construction planning tools.
+### 6. Supply and Quote
+The last step counts what is in the scene: scaffold bays, internal staircases and external staircases (`calculateTotalAmountScaffoldingInScene`), plus the covered area. Those counts fill an order summary inside a "Get an offer for rent" form, alongside contact details and a desired date. That summary is the hand-off to the rental company's sales process.
 
-#### **Custom Materials & Textures**
-- Differentiate scaffolding from the main building structure using dynamically assigned materials and textures.
-- Supports material customization based on project requirements.
+![Sheeting applied over the generated scaffold](@images/project/Scaffolding6.jpg)
 
-![Scaffold 1](@images/project/Scaffolding3.jpg) 
+## Loading Real Buildings with IFC
 
-## **Development and Technology Stack**
-The application was built using a modern web-based stack:
+Drawing footprints works for simple jobs, but larger customers already have a BIM model. Through openbim-components I added an IFC loader (`FragmentIfcLoader`, which runs web-ifc in WebAssembly) and fragment manager, so an architect's IFC file can be dropped into the same scene the scaffolding lives in. I tested it with a set of sample IFC files in the repo.
 
-| Technology  | Purpose  |
-|-------------|---------|
-| **WebGPU**  | High-performance real-time rendering |
-| **ifc.js**  | BIM model integration and IFC file parsing |
-| **WebAssembly (WASM)**  | Optimized computation for IFC file handling |
-| **Three.js**  | 3D scene management and geometry rendering |
-| **Vue.js**  | UI framework for interactive user controls |
-| **TypeScript**  | Type-safe application logic |
+## Stack
 
-## **Challenges and Optimizations**
+| Technology | What it does here |
+|---|---|
+| **three.js** | Scene, cameras, geometry, extrusion, GLB scaffold models |
+| **openbim-components** | Toolbar UI and IFC loading through web-ifc |
+| **Vue 3 + Pinia** | The step-by-step pages and shared scene state |
+| **GSAP** | Camera and UI transitions |
+| **Tailwind + daisyUI** | Side panels, modals and forms |
 
-### **Performance Bottlenecks**
-- **Solution:** Used instanced rendering and LOD techniques to optimize large-scale scaffolding visualization.
+## What I Learned
 
-### **BIM Model Complexity**
-- **Solution:** Implemented custom IFC parsing strategies to extract only relevant components for scaffolding attachment.
+The hard part was not rendering. It was keeping geometry consistent as the user edits: a footprint moved after scaffolding was placed has to invalidate the right roofs and bays, and corners where two edges meet have to agree on who owns the bay. Storing the source shape and line endpoints in each mesh's `userData`, and rebuilding from those instead of mutating meshes in place, is what made the editing tools manageable.
 
-### **Real-Time UI Responsiveness**
-- **Solution:** Leveraged React’s state management and GPU-driven updates for a smooth user experience.
-
-## **Business Impact and Future Enhancements**
-
-### **Impact on Stillastorget.no**
-- **Efficiency Gains**: Automated scaffolding planning reduces manual work and improves accuracy.
-- **Cost Savings**: Optimized material estimation through BOM generation minimizes waste.
-- **Market Differentiation**: Cutting-edge technology positions Stillastorget.no as an innovator in construction technology.
-
-![Scaffold 1](@images/project/Scaffolding4.jpg) 
-
-### **Planned Enhancements**
-- **AI-driven Scaffold Placement**: Implement reinforcement learning to optimize scaffold positioning.
-- **Augmented Reality (AR) Support**: Enable scaffold visualization through AR for on-site construction planning.
-- **Cloud Integration**: Store and retrieve scaffold designs via cloud-based project management platforms.
-
-![Scaffold 1](@images/project/Scaffolding1.jpg) 
-
-## **Conclusion**
-This project demonstrates the power of modern web technologies in revolutionizing scaffolding graphics for construction. By combining WebGPU, ifc.js, and real-time optimizations, we have built a scalable and efficient solution for **Stillastorget.no**. Future improvements will continue to enhance its capabilities, ensuring it remains at the forefront of **construction visualization technology**.
-
-**[live demo](https://0477ecc2-5847-48e4-bdb9-32403bc35367.vercel.app/model)**
-
-![Scaffold 1](@images/project/Scaffolding6.jpg) 
-
----
+The code is on **[GitHub](https://github.com/rohxnsxngh/scaffold-bim)** and the **[live demo](https://0477ecc2-5847-48e4-bdb9-32403bc35367.vercel.app/model)** still runs.

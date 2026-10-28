@@ -1,6 +1,6 @@
 ---
 title: "MOGO: Resolving the Connector Compliance Paradox in Modular Soft Robotics"
-date: "2025-05"
+date: "2025-12"
 status: "completed"
 image: "/images/project/MogoHero.jpg"
 description: "A single-material, fully-soft ball-and-socket connector that lets soft robotic modules snap together like LEGO, trading rigid interfaces for compliant ones and discovering, counterintuitively, that softness makes the connection stronger."

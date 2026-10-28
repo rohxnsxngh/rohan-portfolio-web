@@ -1,0 +1,96 @@
+/* Animated diagrams (src/diagrams). Colours are read by the runtime from the
+   --dg-* properties on each figure, so a page can retint one without touching
+   the kind that draws it. */
+.diagram {
+  --dg-fg: #fff;
+  --dg-dim: rgba(255, 255, 255, 0.55);
+  --dg-faint: rgba(255, 255, 255, 0.16);
+  --dg-grid: rgba(255, 255, 255, 0.05);
+  --dg-accent: #ff6600;
+  --dg-accent2: #60a5fa;
+  --dg-ok: #4ade80;
+  --dg-bad: #f87171;
+  --dg-font: 'IBM Plex Mono', monospace;
+  margin: 2rem 0 0;
+  max-width: 72rem;
+}
+
+@media (prefers-contrast: more) {
+  .diagram {
+    --dg-dim: rgba(255, 255, 255, 0.85);
+    --dg-faint: rgba(255, 255, 255, 0.35);
+    --dg-grid: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* The box is sized from SSR by aspect-ratio alone, so nothing moves when the
+   chunk arrives and the canvas fades in. */
+.dg-stage {
+  position: relative;
+  aspect-ratio: var(--dg-aspect-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #000;
+}
+
+@media (min-width: 640px) {
+  .dg-stage { aspect-ratio: var(--dg-aspect); }
+}
+
+.dg-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: pan-y;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+
+.diagram[data-ready] canvas { opacity: 1; }
+
+.dg-toggle {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  min-height: 24px;
+  padding: 0.35rem 0.55rem;
+  font: 10px/1 var(--dg-font);
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.dg-toggle:hover,
+.dg-toggle:focus-visible {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* No kind module, or it failed to load: the caption carries it alone. */
+.diagram.dg-missing .dg-stage { display: none; }
+
+.dg-caption {
+  margin-top: 0.75rem;
+  font: 0.8rem/1.6 var(--dg-font);
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 60rem;
+}
+
+.dg-caption b {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.15em;
+  margin-right: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-toggle { display: none; }
+  .dg-stage canvas { transition: none; }
+}

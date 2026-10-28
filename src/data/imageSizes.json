@@ -235,6 +235,46 @@
     800,
     800
   ],
+  "/images/project/baseball/all-pitches-pat-hoberg.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/called-pitches-overview.jpg": [
+    1920,
+    840
+  ],
+  "/images/project/baseball/gradient-boosting-pat-hoberg.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/random-forest-angel-hernandez.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/random-forest-erich-bacchus.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/random-forest-junior-valentine.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/random-forest-malachi-moore.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/random-forest-pat-hoberg.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/random-forest-quinn-wolcott.png": [
+    432,
+    576
+  ],
+  "/images/project/baseball/svm-pat-hoberg.png": [
+    432,
+    576
+  ],
   "/images/project/BiobotBaby.JPG": [
     4032,
     3024
@@ -302,6 +342,18 @@
   "/images/project/BiobotWaterside.JPG": [
     4032,
     3024
+  ],
+  "/images/project/cerlab-website/home.jpg": [
+    1600,
+    1000
+  ],
+  "/images/project/cerlab-website/research-areas.jpg": [
+    1600,
+    1000
+  ],
+  "/images/project/cerlab-website/research.jpg": [
+    1600,
+    820
   ],
   "/images/project/HansAubsForge.png": [
     1256,
@@ -502,6 +554,26 @@
   "/images/project/PointnextPipeline.jpg": [
     1240,
     437
+  ],
+  "/images/project/quaternion-studios-site/field.jpg": [
+    1600,
+    1000
+  ],
+  "/images/project/quaternion-studios-site/hero.jpg": [
+    1600,
+    1000
+  ],
+  "/images/project/quaternion-studios-site/map.jpg": [
+    1600,
+    1000
+  ],
+  "/images/project/quaternion-studios-site/shadow-gram.jpg": [
+    1600,
+    1000
+  ],
+  "/images/project/quaternion-studios-site/voyage.jpg": [
+    1600,
+    1000
   ],
   "/images/project/ResearchCustomStrats.jpg": [
     633,

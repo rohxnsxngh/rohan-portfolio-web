@@ -46,14 +46,25 @@ const RENDER_TIMEOUT_MS = 240_000;
 // with srcset, so both are rendered natively rather than downscaled: the Sobel
 // edge kernel works in texels and a downscaled 3x render would soften edges.
 const SIZES = [
-  { suffix: '2x', w: 786, h: 1704 },
-  { suffix: '3x', w: 1179, h: 2556 },
+  { suffix: '2x', w: 786, h: 1704, dpr: 2 },
+  { suffix: '3x', w: 1179, h: 2556, dpr: 3 },
 ];
 
+// The pixel ratio the live scene starts at on a phone (TOUCH_STEPS[0] in
+// src/scripts/viewerResolution.ts). The Sobel kernel steps one texel, so its
+// edge lines are a fixed number of DEVICE pixels wide: at 3x they would come
+// out 2/3 the width of the live scene's and visibly thicken when it fades in.
+// Each size steps its kernel by dpr / LIVE_DPR texels instead, which puts the
+// edges at the live scene's CSS width while the geometry keeps the full 3x.
+const LIVE_DPR = 2;
+
 // Encode settings. WebP q75 was the knee of the size/quality curve in the
-// prototype; AVIF lands about 40% smaller again at a slightly lower nominal q.
+// prototype. The Sobel lines are 1 to 2px wide and saturated (cyan, magenta,
+// orange), which is exactly what 4:2:0 chroma subsampling smears, so AVIF
+// keeps full chroma at a slightly higher q and WebP uses sharp's smarter
+// subsampler (WebP cannot do 4:4:4 lossy).
 const WEBP_QUALITY = 75;
-const AVIF_QUALITY = { '2x': 45, '3x': 50 };
+const AVIF_QUALITY = { '2x': 55, '3x': 58 };
 
 /**
  * One entry per viewer. The camera, material, rig options and hover rig are
@@ -154,7 +165,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 const SETUPS = ${JSON.stringify(setups)};
 const q = new URLSearchParams(location.search);
 const which = q.get('model');
-const SIZES = q.get('sizes').split(',').map(s => { const [suffix, w, h] = s.split(':'); return { suffix, w: +w, h: +h }; });
+const SIZES = q.get('sizes').split(',').map(s => { const [suffix, w, h, kernel] = s.split(':'); return { suffix, w: +w, h: +h, kernel: +kernel }; });
 const S = SETUPS[which];
 
 // src/scripts/robotLightRig.ts, verbatim ratios
@@ -250,19 +261,22 @@ try {
   out.bbox = { min: bb.min.toArray(), max: bb.max.toArray(), center: bb.getCenter(new THREE.Vector3()).toArray(), size: bb.getSize(new THREE.Vector3()).toArray() };
 
   const cam = S.portrait?.cam ?? S.cam, target = S.portrait?.target ?? S.target, fov = S.portrait?.fov ?? S.fov;
-  for (const { suffix, w, h } of SIZES) {
+  for (const { suffix, w, h, kernel } of SIZES) {
     const camera = new THREE.PerspectiveCamera(fov, w / h, 0.1, 1000);
     camera.position.set(...cam); camera.lookAt(...target);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, precision: 'mediump', preserveDrawingBuffer: true });
+    // Same pipeline as the live viewers: no canvas AA (it only ever touched
+    // the Sobel quad), MSAA on the composer target, highp throughout.
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, precision: 'highp', preserveDrawingBuffer: true });
     renderer.setClearColor(0x000000, 0); renderer.setPixelRatio(1); renderer.setSize(w, h);
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.BasicShadowMap;
     document.getElementById('mount').appendChild(renderer.domElement);
 
-    const rt = new THREE.WebGLRenderTarget(w, h, { format: THREE.RGBAFormat, type: THREE.UnsignedByteType });
+    const rt = new THREE.WebGLRenderTarget(w, h, { format: THREE.RGBAFormat, type: THREE.UnsignedByteType, samples: 4 });
     const composer = new EffectComposer(renderer, rt);
     const rp = new RenderPass(scene, camera); rp.clearAlpha = 0; composer.addPass(rp);
     composer.addPass(new ShaderPass({
-      uniforms: { tDiffuse: { value: null }, resolution: { value: new THREE.Vector2(w, h) } },
+      // A smaller "resolution" makes the kernel step more than one texel.
+      uniforms: { tDiffuse: { value: null }, resolution: { value: new THREE.Vector2(w / kernel, h / kernel) } },
       vertexShader: SOBEL_VERT, fragmentShader: SOBEL_FRAG,
     }));
     composer.render();
@@ -321,7 +335,7 @@ function startServer(page, onResult) {
 // ---------------------------------------------------------------------------
 async function renderInChrome(port, model, sizes, workDir) {
   const profile = join(workDir, `profile-${model}`);
-  const sizesParam = sizes.map((s) => `${s.suffix}:${s.w}:${s.h}`).join(',');
+  const sizesParam = sizes.map((s) => `${s.suffix}:${s.w}:${s.h}:${s.dpr / LIVE_DPR}`).join(',');
   const url = `http://127.0.0.1:${port}/render.html?model=${model}&sizes=${sizesParam}`;
   const maxW = Math.max(...sizes.map((s) => s.w)) + 40;
   const maxH = Math.max(...sizes.map((s) => s.h)) + 40;
@@ -409,8 +423,8 @@ async function main() {
         // bg-secondary is #000000; the poster sits directly on it.
         const base = sharp(png).flatten({ background: '#000000' });
         const outputs = [
-          [`${model}-${suffix}.webp`, await base.clone().webp({ quality: WEBP_QUALITY }).toBuffer()],
-          [`${model}-${suffix}.avif`, await base.clone().avif({ quality: AVIF_QUALITY[suffix], effort: 6 }).toBuffer()],
+          [`${model}-${suffix}.webp`, await base.clone().webp({ quality: WEBP_QUALITY, smartSubsample: true }).toBuffer()],
+          [`${model}-${suffix}.avif`, await base.clone().avif({ quality: AVIF_QUALITY[suffix], effort: 6, chromaSubsampling: '4:4:4' }).toBuffer()],
         ];
         if (keepPng) outputs.push([`${model}-${suffix}.png`, png]);
         for (const [name, buf] of outputs) {

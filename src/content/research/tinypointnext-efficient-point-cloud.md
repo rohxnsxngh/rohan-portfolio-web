@@ -11,7 +11,7 @@ tags: ["3D point clouds", "deep learning", "model compression", "real-time infer
 
 ## Abstract
 
-Point cloud processing has emerged as a critical capability for autonomous systems, robotics, and augmented reality applications. However, state-of-the-art architectures often prioritize accuracy over computational efficiency, limiting deployment on resource-constrained platforms. This paper presents TinyPointNeXt, a lightweight neural network architecture optimized for human detection in dynamic 3D point cloud environments. Through systematic architectural modifications and comprehensive training optimization, we demonstrate that an 81% reduction in model parameters (from 1.36M to 0.26M) can be achieved while simultaneously improving classification accuracy by 1.31%. Our experiments on custom-collected datasets from real-world environments validate the effectiveness of our approach, achieving 93.98% overall accuracy with inference times of 2.47ms per sample. These results challenge the prevailing assumption that model complexity correlates directly with performance, suggesting that task-specific architectural optimization yields superior efficiency-accuracy trade-offs for specialized applications.
+Point cloud processing has emerged as a critical capability for autonomous systems, robotics, and augmented reality applications. However, state-of-the-art architectures often prioritize accuracy over computational efficiency, limiting deployment on resource-constrained platforms. This paper presents TinyPointNeXt, a lightweight neural network architecture optimized for human detection in dynamic 3D point cloud environments. Through systematic architectural modifications and comprehensive training optimization, we demonstrate that an 81% reduction in model parameters (from 1.36M to 0.26M) can be achieved while simultaneously improving classification accuracy by 1.19%. Our experiments on custom-collected datasets from real-world environments validate the effectiveness of our approach, achieving 93.86% overall accuracy with inference times of 2.47ms per sample. These results challenge the prevailing assumption that model complexity correlates directly with performance, suggesting that task-specific architectural optimization yields superior efficiency-accuracy trade-offs for specialized applications.
 
 ![Dynamic Object Segmentation in Point Clouds](@images/project/PointnextCustomDataset.jpg)
 
@@ -241,43 +241,30 @@ Key findings from the ablation study:
 
 ### C. Comparative Results
 
-The optimized TinyPointNeXt configuration was evaluated against the baseline PointNeXt-S:
+Each architectural variant was trained on the custom human detection dataset and compared against the baseline PointNeXt-S:
 
-| Metric | PointNeXt-S (Baseline) | TinyPointNeXt | Delta |
-|--------|------------------------|---------------|-------|
-| Overall Accuracy | 92.67% | 93.98% | +1.31% |
-| Human Detection Accuracy | 92.64% | 94.67% | +2.03% |
-| False Positive Accuracy | 92.67% | 93.28% | +0.61% |
-| Parameters | 1.36M | 0.26M | -81% |
-| Inference Time | 2.98ms | 2.47ms | -17% |
-| Model Size (FP32) | 5.4MB | 1.0MB | -81% |
+| Model | Overall Accuracy | Run Time | Parameters |
+|-------|------------------|----------|------------|
+| PointNeXt-S (Baseline) | 92.67% | 2.98ms | 1.3638M |
+| Encoder Width = 24 | 93.12% | 2.91ms | 0.8762M |
+| Encoder Width = 16 | 93.73% | 2.83ms | 0.5086M |
+| 5 Block Encoder | 93.42% | 2.78ms | 0.5072M |
+| 4 Block Encoder (TinyPointNeXt) | 93.86% | 2.47ms | 0.2591M |
+| Set Abstraction Layers = 1 | 93.98% | 2.88ms | 1.0140M |
 
-These results demonstrate that TinyPointNeXt achieves superior classification performance while requiring significantly fewer computational resources.
+The 4 Block Encoder is the configuration referred to as TinyPointNeXt. Against the baseline it improves overall accuracy by 1.19% while using 81% fewer parameters (0.26M vs 1.36M) and running 17% faster (2.47ms vs 2.98ms). Every reduced variant matched or beat the default model, which suggests PointNeXt-S is overparameterized for this task.
 
-### D. Generalization Analysis
+### D. Class-Specific Results
 
-To evaluate generalization capability, we tested models trained on the clean dataset against the challenging test set:
+The highest raw accuracy came from the Set Abstraction Layers = 1 variant, at the cost of roughly four times the parameters of TinyPointNeXt. Its per-class breakdown on the custom dataset:
 
-| Model | Clean Test Accuracy | Challenging Test Accuracy | Degradation |
-|-------|--------------------|-----------------------------|-------------|
-| PointNeXt-S | 92.67% | 84.23% | -8.44% |
-| TinyPointNeXt | 93.98% | 87.91% | -6.07% |
+| Class | Accuracy | Samples |
+|-------|----------|---------|
+| Human | 94.67% | 4,614 |
+| False Positive | 93.28% | 2,397 |
+| Overall | 93.98% | 7,011 |
 
-TinyPointNeXt demonstrates improved robustness to distribution shift, exhibiting smaller accuracy degradation on out-of-distribution samples. We attribute this to the regularization effect of reduced model capacity, which prevents overfitting to training data idiosyncrasies.
-
-### E. Computational Efficiency
-
-Inference benchmarks were conducted on an NVIDIA Jetson AGX Xavier, representative of embedded platforms for autonomous systems:
-
-| Metric | PointNeXt-S | TinyPointNeXt | Improvement |
-|--------|-------------|---------------|-------------|
-| Latency (mean) | 12.4ms | 8.1ms | 35% faster |
-| Latency (p99) | 18.7ms | 11.2ms | 40% faster |
-| Throughput | 80.6 samples/s | 123.5 samples/s | 53% higher |
-| Memory Usage | 412MB | 198MB | 52% lower |
-| Power Consumption | 8.2W | 5.1W | 38% lower |
-
-These efficiency gains enable real-time processing at sensor frame rates (10-20 Hz) on embedded platforms, a critical requirement for deployment in autonomous systems.
+Human clusters are classified slightly more accurately than false positives, which suits applications where missing a person is the costlier error.
 
 ## VII. System Integration
 
@@ -344,7 +331,7 @@ Based on our findings, we identify several promising research directions:
 
 ## X. Conclusion
 
-This paper presented TinyPointNeXt, a lightweight architecture for human detection in 3D point clouds that achieves an 81% reduction in model parameters while improving classification accuracy by 1.31% compared to baseline PointNeXt-S. Through systematic architectural analysis and comprehensive training optimization, we demonstrated that task-specific model design can yield substantial efficiency gains without sacrificing performance.
+This paper presented TinyPointNeXt, a lightweight architecture for human detection in 3D point clouds that achieves an 81% reduction in model parameters while improving classification accuracy by 1.19% compared to baseline PointNeXt-S. Through systematic architectural analysis and comprehensive training optimization, we demonstrated that task-specific model design can yield substantial efficiency gains without sacrificing performance.
 
 Our results establish new efficiency benchmarks for point cloud classification and provide practical guidelines for deploying deep learning models on resource-constrained autonomous platforms. The success of our approach suggests that the point cloud processing community should revisit assumptions about model complexity, focusing on task-specific optimization rather than pursuing ever-larger architectures.
 

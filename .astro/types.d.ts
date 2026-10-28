@@ -361,6 +361,13 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
+"cerlab-website.md": {
+	id: "cerlab-website.md";
+  slug: "cerlab-website";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
 "connectionist-temporal-classification.md": {
 	id: "connectionist-temporal-classification.md";
   slug: "connectionist-temporal-classification";
@@ -375,8 +382,8 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
-"face-recognition-and verification.md": {
-	id: "face-recognition-and verification.md";
+"face-recognition-and-verification.md": {
+	id: "face-recognition-and-verification.md";
   slug: "face-recognition-and-verification";
   body: string;
   collection: "project";
@@ -406,6 +413,13 @@ declare module 'astro:content' {
 "phoneme-recognition.md": {
 	id: "phoneme-recognition.md";
   slug: "phoneme-recognition";
+  body: string;
+  collection: "project";
+  data: InferEntrySchema<"project">
+} & { render(): Render[".md"] };
+"quaternion-studios-site.md": {
+	id: "quaternion-studios-site.md";
+  slug: "quaternion-studios-site";
   body: string;
   collection: "project";
   data: InferEntrySchema<"project">

@@ -1,4 +1,5 @@
 ---
+import { formatContentDate } from "../../scripts/formatDate";
 import { Image } from "astro:assets";
 import { getImageSize } from "../../utils/imageSize";
 import { getCollection, getEntry } from 'astro:content';
@@ -6,6 +7,8 @@ import Layout from '../../layouts/Layout.astro';
 import Navbar from '../../layouts/Navigation.astro';
 import Footer from '../../layouts/Footer.astro';
 import MarkdownContent from '../../components/MarkdownContent.astro';
+import Diagram from '../../components/Diagram.astro';
+import { diagramsFor } from '../../data/diagrams';
 
 export async function getStaticPaths() {
   const projects = await getCollection('project');
@@ -23,6 +26,7 @@ if (!project) {
 }
 
 const { Content } = await project.render();
+const diagrams = diagramsFor('project', project.slug);
 
 const statusColors = {
   completed: 'bg-green-500/10 text-green-400 border-green-500/30',
@@ -134,10 +138,7 @@ export const prerender = true;
                     {statusText[project.data.status as 'completed' | 'in-progress' | 'coming-soon']}
                   </span>
                   <time datetime={project.data.date} class="text-primary/60 font-mono text-sm">
-                    {new Date(project.data.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long'
-                    })}
+                    {formatContentDate(project.data.date)}
                   </time>
                 </div>
 
@@ -189,6 +190,18 @@ export const prerender = true;
                 </div>
               </div>
             </div>
+
+            <!-- HOW IT WORKS: animated diagrams from src/data/diagrams.ts. No
+                 opacity-0 intro here: each canvas fades itself in once drawn. -->
+            {diagrams.length > 0 && (
+              <div class="diagram-section sm:px-20 px-6 pt-4">
+                <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-primary/50 mb-4">
+                  // HOW IT WORKS
+                </h2>
+                <div class="section-divider h-px bg-gradient-to-r from-primary/20 via-primary/10 to-transparent"></div>
+                {diagrams.map((d, i) => <Diagram {...d} index={i + 1} />)}
+              </div>
+            )}
 
             <!-- CONTENT SECTION - Full Width Story Format -->
             <div class="content-section sm:px-20 px-6 py-16">
@@ -275,12 +288,6 @@ export const prerender = true;
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
     background-size: 100px 100px;
-    animation: gridPan 60s linear infinite;
-  }
-
-  @keyframes gridPan {
-    0% { background-position: 0 0; }
-    100% { background-position: 100px 100px; }
   }
 
   @keyframes fadeInUp {
@@ -416,18 +423,27 @@ export const prerender = true;
   }
 
   /* Accent line */
+  /* Grown with scaleX from the left edge: a width animation lays the page out
+     every frame, a scale is composited. The gradient reads the same either way. */
   .accent-line {
     height: 3px;
-    width: 0;
+    width: 200px;
+    transform: scaleX(0);
+    transform-origin: left center;
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), transparent);
-    animation: lineExpand 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: accentGrow 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     animation-delay: 0.6s;
   }
 
-  @keyframes lineExpand {
+  @keyframes accentGrow {
     to {
-      width: 200px;
+      transform: scaleX(1);
     }
+  }
+
+  /* The reveal watchdog pins width on a stalled intro; pin the scale too. */
+  :global(html.reveal-fallback) .accent-line {
+    transform: none;
   }
 
   /* Hero section spacing */
@@ -446,16 +462,15 @@ export const prerender = true;
 
   .section-divider {
     opacity: 0;
-    animation: lineGrow 1s ease-out forwards;
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: dividerGrow 1s ease-out forwards;
     animation-delay: 0.9s;
   }
 
-  @keyframes lineGrow {
-    from {
-      width: 0;
-    }
+  @keyframes dividerGrow {
     to {
-      width: 100%;
+      transform: scaleX(1);
       opacity: 1;
     }
   }

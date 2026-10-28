@@ -3,6 +3,7 @@ import Navbar from "../layouts/Navigation.astro";
 import Footer from "../layouts/Footer.astro";
 import Layout from "../layouts/Layout.astro";
 import ArtParticleViewer from "../components/ArtParticleViewer.astro";
+import { Image } from "astro:assets";
 
 // Static at build time. Nothing on this page reads request-time state, so it is
 // served straight from the edge instead of invoking a function per request.
@@ -57,13 +58,22 @@ export const prerender = true;
               <!-- Profile Image Section -->
               <div class="profile-section">
                 <div class="profile-container group">
-                  <img
-                    src="/profile_optimized.jpg"
+                  {/* The 800px original through the image service, rather than
+                      the 640px /profile_optimized.jpg the box used to stretch
+                      to 500px (1000 device px at 2x). Both widths are on
+                      Vercel's allowed list. `sizes` mirrors the box: the full
+                      column minus px-6 below lg, capped at 500px from lg. */}
+                  <Image
+                    src="/images/profile.jpg"
                     alt="Rohan Singh - Software Engineer and Builder"
                     class="profile-image"
                     loading="eager"
-                    width="400"
-                    height="400"
+                    width={828}
+                    height={828}
+                    widths={[640, 828]}
+                    sizes="(max-width: 1023px) min(calc(100vw - 48px), 500px), 500px"
+                    format="webp"
+                    quality={80}
                   />
                   <div class="profile-overlay"></div>
                   <div class="profile-border"></div>
@@ -338,7 +348,7 @@ export const prerender = true;
     height: 100%;
     object-fit: cover;
     filter: grayscale(0.3);
-    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: filter 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .profile-container:hover .profile-image {
@@ -639,7 +649,7 @@ export const prerender = true;
 <script>
   import { onPageReady } from '../scripts/pageReady';
   import { DURATION, EASE } from '../scripts/motion';
-  import { addHeroCharIntro, animateLineExpand, scrollReveal, createMultiLayerParallax, createPageIntroTimeline } from '../scripts/animations';
+  import { addHeroCharIntro, animateLineExpand, scrollReveal, createMultiLayerParallax, createPageIntroTimeline, initHeroGlow } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import { heavy3DSkipReason } from '../scripts/heavy3d';
   import gsap from 'gsap';
@@ -717,16 +727,11 @@ export const prerender = true;
       }
     }
 
-    // Continuous glow pulse on hero chars
+    // Continuous glow pulse on hero chars. Composited opacity on a glow copy
+    // of each char, paused while the hero is off screen (see initHeroGlow).
     if (!reduceMotion && isDesktop) {
       tl.call(() => {
-        const glowChars = document.querySelectorAll('.about-title .char');
-        if (glowChars.length) {
-          gsap.to(glowChars, {
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
-            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
-          });
-        }
+        initHeroGlow(document.querySelectorAll('.about-title .char'), document.getElementById('hero-section'));
       });
     }
 

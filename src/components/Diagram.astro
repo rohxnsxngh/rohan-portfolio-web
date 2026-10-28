@@ -1,0 +1,43 @@
+---
+// One animated diagram. The figure reserves its own box from the aspect ratio
+// (no layout shift), the canvas is drawn by src/diagrams/kinds/<kind>.ts once
+// it nears the viewport, and the caption is the no-JS and search fallback.
+import '../diagrams/diagram.css';
+
+interface Props {
+  kind: string;
+  /** what the canvas shows, for screen readers */
+  label: string;
+  caption?: string;
+  /** width / height at 640px and up, and below it */
+  aspect?: number;
+  aspectSm?: number;
+  /** figure number shown before the caption */
+  index?: number;
+  /** JSON handed to the kind as f.data */
+  data?: unknown;
+}
+
+const { kind, label, caption, aspect = 16 / 9, aspectSm = 4 / 3, index, data } = Astro.props;
+---
+
+<figure
+  class="diagram"
+  data-diagram={kind}
+  data-diagram-props={data === undefined ? undefined : JSON.stringify(data)}
+  style={`--dg-aspect:${aspect};--dg-aspect-sm:${aspectSm}`}
+>
+  <div class="dg-stage">
+    <canvas role="img" aria-label={label}></canvas>
+    <button type="button" class="dg-toggle" aria-pressed="false" aria-label="Pause animation">PAUSE</button>
+  </div>
+  {caption && (
+    <figcaption class="dg-caption">
+      {index !== undefined && <b>FIG. {String(index).padStart(2, '0')}</b>}{caption}
+    </figcaption>
+  )}
+</figure>
+
+<script>
+  import '../diagrams/boot';
+</script>

@@ -3,268 +3,70 @@ title: "Phoneme Recognition: Neural Networks for Speech Classification"
 date: "2025-02"
 status: "completed"
 image: "/images/project/IDLHW1Spectogram2.jpg"
-description: "A deep learning system that recognizes phoneme states from speech recordings, implementing advanced neural network architectures and achieving 86% accuracy on frame-level speech classification."
+description: "A frame-level phoneme classifier for speech built only from fully connected layers, using a 1.29-second context window and a diamond-shaped MLP to reach 86% validation accuracy."
 tags: ["deep learning", "speech recognition", "neural networks", "pytorch", "signal processing", "machine learning"]
 kaggle: "https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2"
 ---
 
-This project focused on building a high-performance deep learning system for frame-level phoneme recognition, part of the CMU 11-785 Introduction to Deep Learning coursework. By applying multilayer perceptron (MLP) architectures to speech recordings from the Wall Street Journal dataset, I achieved 86% accuracy in classifying audio frames into their corresponding phoneme states.
-
-![Mel-spectrogram of speech with frame highlighting](@images/project/IDLHW1Spectogram3.jpg)
+This was the first homework of Carnegie Mellon's 11-785 Introduction to Deep Learning in Spring 2025: label every 10 ms frame of a speech recording with the phoneme being spoken, using nothing but a **multilayer perceptron**. No convolutions, no recurrence, no attention, and a cap of 20 million parameters. My best model reached **86.0% validation accuracy**.
 
-## Project Challenge
+Because this is course work, this page describes the design, the experiments and what I learned, not the implementation itself.
 
-Speech recognition represents a fundamental challenge in AI, requiring systems to identify the atomic sound units (phonemes) that make up spoken language. Unlike image classification or text processing, speech involves time-dependent patterns where the meaning of a sound depends heavily on its context.
+![A speech spectrogram with one frame and its context highlighted](@images/project/IDLHW1Spectogram3.jpg)
 
-The Kaggle competition challenged participants to identify phoneme states for each frame in a speech dataset, requiring accurate classification across 40 different phoneme categories. Key constraints included:
-- Working exclusively with MLP architectures (no CNNs, RNNs, or transformers)
-- Maximum model size of 20 million parameters
-- Variable-length utterances requiring careful preprocessing
+## The Problem
 
-## Technical Approach
+Each utterance arrives as a matrix of shape (T, 28): one row per 10 ms frame, each row 28 MFCC-style coefficients describing the spectrum of the audio in a 25 ms window. Every frame has a phoneme label, and the job is to predict that label for every frame in the test set.
 
-### Speech Representation and Feature Extraction
+The catch is that a single frame says very little. 10 ms of audio is a fraction of a phoneme, many phonemes look almost identical over that span, and the same sound changes shape depending on what comes before and after it. An MLP has no built-in notion of time, so all of that context has to be handed to it explicitly.
 
-At the core of this project was understanding how speech is represented computationally. Raw speech waveforms were preprocessed into mel-spectrograms:
+## Context Windows
 
-1. **Short-Time Fourier Transform (STFT)**: Applied to 25ms frames of audio with 10ms stride between frames
-2. **Mel-scale Conversion**: Transformed the frequency domain representation to better match human auditory perception
-3. **Feature Extraction**: Each frame converted to a 28-dimensional feature vector representing frequency components
+The most important design choice was how much surrounding audio each prediction sees. Instead of classifying a frame on its own, the model is given the frame plus *k* frames on each side, flattened into one long input vector. For frames near the start or end of an utterance, the missing context is zero-padded.
 
-This process yielded matrices of shape (T, 28) for each utterance, where T represents the duration in frames (100 frames per second of speech). Each frame required classification into one of 40 phoneme states.
+I settled on **64 frames on each side**: 129 frames, or about 1.29 seconds of speech, around every prediction. With 28 coefficients per frame, that is a 3,612-dimensional input. Early runs with 30 to 48 frames of context topped out lower, and the gains from more context were the clearest signal in my whole experiment log.
 
-<!-- ![Visualization of feature extraction process](/images/projects/feature-extraction.jpg) -->
+## Model
 
-### Model Architecture Evolution
+The final network is what I called a **diamond** MLP, because the hidden layers widen and then narrow:
 
-Through systematic experimentation, I evaluated four distinct architectural patterns:
+| Layer | Width |
+|---|---|
+| Input (129 frames x 28 coefficients) | 3,612 |
+| Hidden 1 | 1,024 |
+| Hidden 2 | 4,096 |
+| Hidden 3 | 2,048 |
+| Hidden 4 | 1,024 |
+| Output | one score per phoneme |
 
-1. **Pyramid Structure** (decreasing layer sizes: 4096 → 2048 → 1024)
-   - Found to create an information bottleneck that limited performance
+Each hidden layer is a linear layer followed by batch normalization, a **GELU** activation and dropout of 0.25. I compared this against a constant-width "cylinder" network and an "inverse pyramid" that only gets wider. In my short comparison runs at the same context size, the diamond scored a point or two higher, so it became the base for every long run.
 
-2. **Inverse Pyramid** (increasing layer sizes: 1024 → 2048 → 4096)
-   - Showed promise but suffered from severe overfitting
+## Training
 
-3. **Cylinder Structure** (constant width: 2048 throughout)
-   - Provided solid baseline performance but lacked model capacity
+- **Normalization:** cepstral mean normalization, subtracting each coefficient's mean over the utterance. This removes much of the fixed coloration a particular microphone or room adds to every frame.
+- **Augmentation:** frequency masking and time masking on the context window, applied to about 70% of batches, so the model cannot rely on a single band of coefficients or a single moment of audio.
+- **Initialization:** Kaiming normal initialization for every linear layer.
+- **Regularization:** dropout, batch normalization, and AdamW-style weight decay of 0.05.
+- **Schedule:** I started with `ReduceLROnPlateau` and moved to a fixed step schedule that halves the learning rate on a set interval, which gave steadier long runs.
+- **Mixed precision** training on a single T4 GPU.
 
-4. **Diamond Structure** (expanding then contracting: 1024 → 4096 → 2048 → 1024) - FINAL CHOICE
-   - Initial expansion captured complex patterns
-   - Middle bottleneck forced feature compression
-   - Final contraction reduced overfitting
-   - Facilitated better gradient flow through skip-like connections
+![MFCC features with time and frequency masking applied](@images/project/IDLHW1Spectogram.jpg)
 
-The final architecture included:
+![Another masked training example](@images/project/IDLHW1Spectogram2.jpg)
 
-```python
-self.model = nn.Sequential(
-    nn.Linear(input_size, 1024),
-    nn.BatchNorm1d(1024),
-    nn.GELU(),
-    nn.Dropout(0.25),
-    
-    nn.Linear(1024, 4096),
-    nn.BatchNorm1d(4096),
-    nn.GELU(),
-    nn.Dropout(0.25),
-    
-    nn.Linear(4096, 2048),
-    nn.BatchNorm1d(2048),
-    nn.GELU(),
-    nn.Dropout(0.25),
-    
-    nn.Linear(2048, 1024),
-    nn.BatchNorm1d(1024),
-    nn.GELU(),
-    nn.Dropout(0.25),
-    
-    nn.Linear(1024, output_size)
-)
-```
+## Results
 
-### Contextual Frame Handling
+I tracked 53 runs in Weights & Biases. A few patterns stood out:
 
-A critical insight was that phoneme identification requires temporal context. Speech sounds aren't produced in isolation but flow together in continuous utterances. I implemented a context window approach:
+- **Early runs** with a cylinder network, ReLU and smaller contexts sat between roughly 40% and 70% validation accuracy.
+- **Switching to the diamond network with GELU and a 64-frame context** pushed short runs into the high 70s and low 80s.
+- **Training on the full dataset for longer** did the rest. Runs of 72, 100, 152 and 172 epochs landed at 85.8%, 85.9%, 85.9% and **86.0%**, so by the end, extra epochs were buying only fractions of a point.
 
-1. **Context Size Exploration**: Tested window sizes from 16 to 64 frames
-2. **Data Preparation**: Concatenated all utterances and added zero-padding at boundaries
-3. **Windowing Function**: Implemented in the dataset's `__getitem__` method:
+The best run trained for 172 epochs, about 12.4 hours, and finished at 86.02% validation accuracy with training accuracy almost exactly the same, a good sign the regularization was doing its job.
 
-```python
-def __getitem__(self, ind):
-    # Calculate start and end positions for frame window
-    start = ind
-    end = ind + (2 * self.context) + 1
-    
-    # Extract window of frames with context on both sides
-    frames = self.mfccs[start:end]
-    
-    # Return target phoneme for the center frame
-    phonemes = self.transcripts[ind]
-    
-    return frames, phonemes
-```
+## What I Took Away
 
-The large context size (64 frames) proved crucial, allowing the model to "see" approximately 1.28 seconds of speech (640ms before and after each frame) when making classifications.
-
-### Signal Processing Optimizations
-
-To further enhance model performance, I implemented advanced signal processing techniques:
-
-1. **Cepstral Mean Normalization**: Removed channel effects by subtracting the mean across frames:
-
-```python
-# Normalize the MFCC by subtracting the mean across time dimension
-mfccs_normalized = (mfcc - np.mean(mfcc, axis=0))
-```
-
-This technique eliminated variations caused by microphone characteristics, room acoustics, and other recording artifacts, helping the model focus on the acoustic properties relevant for phoneme identification.
-
-2. **Data Augmentation**: Implemented frequency and time masking techniques from SpecAugment:
-
-```python
-def collate_fn(self, batch):
-    x, y = zip(*batch)
-    x = torch.stack(x, dim=0)
-
-    # Apply augmentations with 70% probability
-    if np.random.rand() < 0.70:
-        x = x.transpose(1, 2)  # Shape: (batch_size, freq, time)
-        x = self.freq_masking(x)  # Mask random frequency bands
-        x = self.time_masking(x)  # Mask random time segments
-        x = x.transpose(1, 2)  # Shape back to: (batch_size, time, freq)
-
-    return x, torch.tensor(y)
-```
-
-Fine-tuning these augmentation parameters through grid search (frequency_mask_param=4, time_mask_param=8) yielded a 3.5% accuracy improvement.
-
-![Spectrogram visualization with time and frequency masking](@images/project/IDLHW1Spectogram.jpg)
-
-![Spectrogram visualization with time and frequency masking](@images/project/IDLHW1Spectogram2.jpg)
-
-### Training Optimizations
-
-Advanced optimization techniques were crucial for achieving high performance:
-
-1. **Mixed Precision Training**: Implemented automatic mixed precision to improve training efficiency:
-
-```python
-# Initialize scaler for mixed precision training
-scaler = torch.amp.GradScaler(enabled=True)
-
-# In training loop
-with torch.autocast(device_type=device, dtype=torch.float16):
-    # Forward propagation
-    logits = model(frames)
-    # Loss calculation
-    loss = criterion(logits, phonemes)
-
-# Backward pass with scaled gradients
-scaler.scale(loss).backward()
-scaler.step(optimizer)
-scaler.update()
-```
-
-2. **Weight Initialization**: Kaiming initialization significantly improved training stability and convergence:
-
-```python
-def initialize_weights(self):
-    for m in self.modules():
-        if isinstance(m, torch.nn.Linear):
-            if config["weight_initialization"] == "kaiming_normal":
-                torch.nn.init.kaiming_normal_(m.weight, nonlinearity='relu')
-            # Initialize bias to 0
-            m.bias.data.fill_(0)
-```
-
-3. **Learning Rate Scheduling**: Implemented a step-based scheduler that reduced learning rate by 50% every 50 epochs:
-
-```python
-scheduler = torch.optim.lr_scheduler.StepLR(
-    optimizer, 
-    step_size=50, 
-    gamma=0.5
-)
-```
-
-This schedule proved more stable than more aggressive approaches like ReduceLROnPlateau, which sometimes decreased learning rate too quickly.
-
-## Experiments and Results
-
-To systematically evaluate different approaches, I tracked over 30 experiments using Weights & Biases. Key findings included:
-
-| Experiment | Test Accuracy | Training Time | Parameters |
-|------------|---------------|---------------|------------|
-| Basic MLP (3 layers, ReLU) | 76.8% | 4.2 hours | 12.3M |
-| Cylinder Architecture | 82.3% | 5.1 hours | 17.8M |
-| Pyramid Architecture | 81.5% | 4.8 hours | 16.2M |
-| Inverse Pyramid | 79.7% | 5.3 hours | 18.5M |
-| Diamond Architecture | 86.0% | 6.2 hours | 19.3M |
-
-The diamond architecture consistently outperformed other structures, with context size being the second most important factor:
-
-| Context Size | Accuracy | Feature Vector Size |
-|--------------|----------|---------------------|
-| 16 frames | 78.2% | 924 |
-| 25 frames | 81.5% | 1,428 |
-| 32 frames | 83.7% | 1,820 |
-| 48 frames | 85.1% | 2,716 |
-| 64 frames | 86.0% | 3,612 |
-
-The final model achieved 86% accuracy on the validation set after 172 epochs, with the learning curve showing continued improvement potential with more training time:
-
-<!-- ![Learning curve showing training and validation accuracy over 172 epochs](/images/projects/learning-curve.jpg) -->
-
-## Technical Challenges and Solutions
-
-### Memory Management
-
-Processing large context windows (64 frames on each side) with batch sizes sufficient for effective training created significant memory pressure. Key solutions included:
-
-1. **Mixed precision training**: Reduced memory usage by ~50%
-2. **Gradient accumulation**: Allowed effective batch sizes larger than GPU memory would normally permit
-3. **Optimized data pipeline**: Implemented prefetching and pinned memory for faster data loading
-
-### Overfitting Prevention
-
-With nearly 20 million parameters, preventing overfitting was critical. The implemented strategies included:
-
-1. **Strategic dropout application**: 0.25 dropout rate after every layer
-2. **Batch normalization**: Applied before activation functions
-3. **Data augmentation**: Frequency and time masking applied with 70% probability
-4. **Weight decay**: L2 regularization with λ=0.05
-
-### Learning Rate Optimization
-
-Finding the optimal learning rate schedule proved challenging. After extensive experimentation:
-
-1. Initial attempts with larger learning rates (1e-3) led to unstable training
-2. Very small values (1e-7) provided stability but risked local minima
-3. Step-based decay (starting at 1e-5, multiplied by 0.5 every 50 epochs) provided the best balance of stability and convergence speed
-
-## Conclusion
-
-This project demonstrated the effectiveness of carefully designed MLPs for speech recognition tasks. While modern speech systems typically employ more advanced architectures like CNNs, RNNs, or Transformers, this work showed that traditional feedforward networks can achieve strong performance with appropriate design choices.
-
-Key lessons from this project include:
-
-1. **Temporal context is crucial**: Speech recognition requires significant surrounding context for accurate classification
-2. **Architecture matters**: The specific pattern of layer sizes has substantial impact on model performance
-3. **Signal processing techniques remain relevant**: Even with deep learning approaches, traditional preprocessing like cepstral normalization provides significant benefits
-
-The diamond architecture with large context windows represents an effective approach for frame-level phoneme classification, demonstrating how classical neural network designs can be optimized for complex sequence processing tasks.
-
-<!-- ![Complete model architecture diagram](/images/projects/model-architecture.jpg) -->
-
-## Future Improvements
-
-With additional computational resources, several promising directions emerge:
-
-1. **Ensemble Methods**: Combining multiple diamond architectures with different context sizes
-2. **Advanced Augmentation**: Applying pitch shifting and speed perturbation techniques
-3. **Learning Rate Exploration**: Implementing a more adaptive learning rate schedule
-4. **Feature Engineering**: Exploring alternative mel-spectrogram configurations and delta features
+The lesson I keep coming back to is that the model has no idea time exists until you tell it. Almost every big improvement came from the input, not the network: more context, better normalization and augmentation. The architecture work mattered, but it mattered less than making sure each prediction could see enough of the sentence around it. It was also good motivation for the rest of the course, where convolutions, recurrence and attention build that sense of time into the model itself.
 
 ## Links
 - [Kaggle Competition](https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2)

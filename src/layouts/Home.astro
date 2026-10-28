@@ -16,7 +16,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     </div>
 
     <!-- Dark overlay to dim robot heavily by default (almost invisible) -->
-    <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none transition-all duration-500" id="robot-dim"></div>
+    <div class="robot-overlay absolute inset-0 bg-black/[0.85] pointer-events-none" id="robot-dim"></div>
   </div>
 
   <!-- Tech grid overlay for texture -->
@@ -235,10 +235,15 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     inset: 0;
   }
 
-  /* Robot overlay - dims the robot heavily, lightens on hover */
+  /* Robot overlay - dims the robot heavily, lightens on hover.
+     The hover reveal transitions background-color only. The scroll split
+     scrubs this element's opacity, and the old Tailwind transition-all on it
+     restarted a 500ms transition on every scrubbed tick, so the dimming trailed
+     the scroll. With the two on different properties neither waits for the
+     other, and the scrub stays on the compositor. */
   .robot-overlay {
     z-index: 1;
-    transition: background 0.6s ease-out;
+    transition: background-color 0.6s ease-out;
   }
 
   /* Hero content with slower fade transitions for psychology */
@@ -278,7 +283,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   }
 
   .hero-section:not(.mouse-active) .robot-overlay {
-    transition: background 2.5s ease-in-out;
+    transition: background-color 2.5s ease-in-out;
   }
 
   /* Scroll indicator */
@@ -369,7 +374,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
 
 <script>
   import { onPageReady } from '../scripts/pageReady';
-  import { addHeroCharIntro, createPageIntroTimeline } from '../scripts/animations';
+  import { addHeroCharIntro, createPageIntroTimeline, initHeroGlow } from '../scripts/animations';
   import { shouldSkipHeavy3D } from '../scripts/heavy3d';
   import { bindHeroTouch } from '../scripts/heroTouch';
   import { DURATION, EASE } from '../scripts/motion';
@@ -380,7 +385,7 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
   gsap.registerPlugin(ScrollTrigger);
 
   let kineticCleanup: (() => void) | null = null;
-  let glowTween: gsap.core.Tween | null = null;
+  let glowCleanup: (() => void) | null = null;
   let introTimeline: gsap.core.Timeline | null = null;
   let splitTimeline: gsap.core.Timeline | null = null;
   // Hoisted so astro:before-swap (via cleanupHomeAnimations) can clear a
@@ -405,7 +410,8 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
     gsap.killTweensOf('.scroll-indicator-minimal');
     gsap.killTweensOf('#robot-dim');
 
-    if (glowTween) { glowTween.kill(); glowTween = null; }
+    glowCleanup?.();
+    glowCleanup = null;
     if (introTimeline) { introTimeline.kill(); introTimeline = null; }
     if (splitTimeline) { splitTimeline.kill(); splitTimeline = null; }
 
@@ -496,26 +502,19 @@ import RobotModelViewer from "../components/RobotModelViewer.astro";
       splitTl.fromTo('.label-intro', { opacity: 1 }, { opacity: 0, ease: 'none' }, 0);
       splitTl.fromTo('.statement', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
       splitTl.fromTo('.cta-section', { opacity: 1 }, { opacity: 0, ease: 'none', duration: 0.5 }, 0);
-      // Robot overlay dims from 0.85 to 0.3
+      // Robot overlay dims from 0.85 to 0.3. Scrubbed as opacity (0.85 x 0.35
+      // is about 0.3) rather than backgroundColor: opacity composites, and it
+      // leaves background-color to the hover reveal's CSS transition.
       if (robotOverlay) {
-        splitTl.to(robotOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.3)', ease: 'none' }, 0);
+        splitTl.fromTo(robotOverlay, { opacity: 1 }, { opacity: 0.35, ease: 'none' }, 0);
       }
     }
 
-    // Continuous hero glow pulse — subtle living, breathing typography
+    // Continuous hero glow pulse, subtle living, breathing typography.
+    // Composited opacity on a glow copy of each char, paused off screen.
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
       tl.call(() => {
-        const glowChars = document.querySelectorAll('.hero-name .char');
-        if (glowChars.length) {
-          glowTween = gsap.to(glowChars, {
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
-            duration: 2,
-            stagger: 0.15,
-            yoyo: true,
-            repeat: -1,
-            ease: 'sine.inOut',
-          });
-        }
+        glowCleanup = initHeroGlow(document.querySelectorAll('.hero-name .char'), heroSection);
       });
     }
 

@@ -3,447 +3,69 @@ title: "Automatic Speech Recognition with RNN and CTC Beam Search"
 date: "2025-04"
 status: "completed"
 image: "/images/project/IDLHW3RNNEncoder.jpg"
-description: "An end-to-end Automatic Speech Recognition (ASR) system built with pyramidal bidirectional LSTM and Connectionist Temporal Classification, achieving high accuracy in phoneme prediction from unaligned speech data."
-tags: ["deep learning", "speech recognition", "RNN", "LSTM", "CTC", "natural language processing", "audio processing"]
+description: "A pyramidal bidirectional LSTM trained with CTC loss to transcribe speech into phoneme sequences without frame-level alignments, decoded with CTC beam search to a validation edit distance of about 4.7 phonemes per utterance."
+tags: ["deep learning", "speech recognition", "RNN", "LSTM", "CTC", "beam search", "audio processing"]
 kaggle: "https://www.kaggle.com/competitions/hw-3-p-2-automatic-speech-recognition-asr-11-785"
 ---
 
-This project implements an end-to-end Automatic Speech Recognition (ASR) system using Recurrent Neural Networks (RNNs) and Connectionist Temporal Classification (CTC). Unlike traditional ASR systems that require aligned phoneme labels, this system can learn from unaligned data, making it more adaptable to real-world speech recognition scenarios.
-
-![ASR System Architecture Visualization](@images/project/IDLHW3AudioToPhoneme.jpg)
-
-## The Challenge of Unaligned Speech Data
-
-Traditional speech recognition systems rely on time-aligned labels, where each audio frame is explicitly mapped to a corresponding phoneme. However, creating such alignments is time-consuming and expensive, requiring manual annotation. This project tackles the more realistic scenario where we only have the sequence of phonemes for each utterance, without knowing which frames correspond to which phonemes.
-
-This presents several key challenges:
-
-1. **Temporal Alignment**: The model must learn to align audio frames with phoneme sequences without explicit supervision
-2. **Variable-Length Sequences**: Audio utterances and their corresponding phoneme sequences vary in length
-3. **Blank and Repeated Phonemes**: The system must handle silence, repeated phonemes, and transitions between phonemes
-
-## Technical Approach
-
-To address these challenges, I implemented a sophisticated neural network architecture combined with Connectionist Temporal Classification (CTC), a loss function specifically designed for sequence prediction without alignment information.
-
-![ASR System Architecture Visualization](@images/project/IDLHW3CTC.jpg)
-
-### Network Architecture
-
-The model architecture consists of three main components:
-
-```python
-class ASRModel(nn.Module):
-    def __init__(self, input_dim, hidden_dim, embedding_dim, num_classes, dropout=0.2, lstm_dropout=0.2, decoder_dropout=0.2):
-        super(ASRModel, self).__init__()
-        
-        # CNN Feature Extractor
-        self.conv_layers = nn.Sequential(
-            nn.Conv1d(input_dim, hidden_dim, kernel_size=5, stride=1, padding=2),
-            nn.BatchNorm1d(hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            
-            nn.Conv1d(hidden_dim, hidden_dim, kernel_size=5, stride=1, padding=2),
-            nn.BatchNorm1d(hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout)
-        )
-        
-        # Bidirectional LSTM Layers
-        self.blstm_layers = nn.LSTM(
-            input_size=hidden_dim,
-            hidden_size=hidden_dim,
-            num_layers=2,
-            bidirectional=True,
-            dropout=lstm_dropout,
-            batch_first=True
-        )
-        
-        # Pyramidal BLSTM Layers
-        self.pblstm_layers = nn.ModuleList([
-            PyramidalBLSTM(hidden_dim*2, hidden_dim, lstm_dropout),
-            PyramidalBLSTM(hidden_dim*2, hidden_dim, lstm_dropout)
-        ])
-        
-        # Decoder (MLP)
-        self.decoder = nn.Sequential(
-            nn.Linear(hidden_dim*2, embedding_dim),
-            nn.ReLU(),
-            nn.Dropout(decoder_dropout),
-            nn.Linear(embedding_dim, num_classes)
-        )
-        
-        self.log_softmax = nn.LogSoftmax(dim=-1)
-```
-
-#### 1. CNN Feature Extractor
-
-Two convolutional layers process the MFCC features to extract local acoustic patterns:
-
-- Kernel size of 5 to capture local spectral information
-- Batch normalization for training stability
-- ReLU activation and dropout for regularization
-
-#### 2. Bidirectional LSTM Encoder
-
-A two-layer bidirectional LSTM captures temporal dependencies in both directions:
-
-- Processes entire sequences to understand context
-- Bidirectional design captures both past and future information
-- Dropout between layers prevents overfitting
-
-#### 3. Pyramidal BLSTM Layers
-
-These specialized layers reduce the sequence length while increasing feature representation:
-
-```python
-class PyramidalBLSTM(nn.Module):
-    def __init__(self, input_dim, hidden_dim, dropout=0.2):
-        super(PyramidalBLSTM, self).__init__()
-        self.blstm = nn.LSTM(
-            input_size=input_dim,
-            hidden_size=hidden_dim,
-            bidirectional=True,
-            batch_first=True,
-            dropout=dropout
-        )
-    
-    def forward(self, x):
-        # Check if sequence length is odd
-        batch_size, seq_len, feature_dim = x.size()
-        if seq_len % 2 != 0:
-            x = torch.cat([x, torch.zeros(batch_size, 1, feature_dim).to(x.device)], dim=1)
-            seq_len += 1
-        
-        # Reshape to concatenate adjacent timesteps
-        x_reshaped = x.contiguous().view(batch_size, seq_len//2, feature_dim*2)
-        
-        # Pass through BLSTM
-        output, _ = self.blstm(x_reshaped)
-        
-        return output
-```
-
-The pyramidal structure is crucial for:
-- Reducing computational complexity by halving sequence length at each layer
-- Creating a hierarchical representation of speech features
-- Allowing the model to focus on increasingly abstract patterns
-
-#### 4. MLP Decoder
-
-A multi-layer perceptron produces the final phoneme probabilities:
-
-- Linear transformation to embedding dimension
-- ReLU activation and dropout
-- Final linear layer to output class probabilities
-- LogSoftmax to obtain log probabilities for CTC loss
-
-### Connectionist Temporal Classification (CTC)
-
-The key innovation in this project is the use of CTC loss, which allows the model to learn from unaligned data:
-
-```python
-# CTC Loss configuration
-ctc_loss = nn.CTCLoss(blank=blank_index, reduction='mean', zero_infinity=True)
-
-# Forward pass
-outputs = model(inputs)
-log_probs = outputs.log_softmax(dim=-1)
-log_probs = log_probs.transpose(0, 1)  # Time-major for CTC
-
-# Calculate CTC Loss
-input_lengths = torch.full((batch_size,), seq_len, device=device)
-target_lengths = torch.tensor([len(t) for t in targets], device=device)
-loss = ctc_loss(log_probs, targets, input_lengths, target_lengths)
-```
-
-![ASR System Architecture Visualization](@images/project/IDLHW3RNNEncoder.jpg)
-
-CTC works by:
-1. Allowing the model to output a "blank" symbol (representing silence or transitions)
-2. Merging repeated consecutive symbols
-3. Computing the probability of all possible alignments that could produce the target sequence
-4. Optimizing to maximize the probability of the correct sequence
-
-### CTC Beam Search Decoding
-
-For inference, I implemented CTC beam search decoding to find the most likely phoneme sequence:
-
-```python
-def ctc_beam_search_decoder(log_probs, beam_width=10):
-    """
-    CTC Beam Search Decoder
-    
-    Args:
-        log_probs: Log probabilities from model output [seq_len, num_classes]
-        beam_width: Number of beams to keep track of
-        
-    Returns:
-        Best decoded sequence
-    """
-    # Initialize with blank path
-    beam = [([], 0)]  # (prefix, log_prob)
-    
-    # Process each timestep
-    for t in range(log_probs.shape[0]):
-        new_beam = {}
-        
-        # Extend each existing beam
-        for prefix, log_p in beam:
-            # Try adding each possible phoneme
-            for c in range(log_probs.shape[1]):
-                if c == blank_index:  # Skip blank for now
-                    new_prefix = prefix
-                else:
-                    new_prefix = prefix + [c]
-                
-                # Combine probability of same prefixes
-                new_p = log_p + log_probs[t, c]
-                new_key = tuple(new_prefix)
-                
-                if new_key not in new_beam or new_beam[new_key] < new_p:
-                    new_beam[new_key] = new_p
-        
-        # Keep only top beam_width beams
-        beam = sorted(new_beam.items(), key=lambda x: x[1], reverse=True)[:beam_width]
-        beam = [(list(prefix), log_p) for prefix, log_p in beam]
-    
-    # Return best path
-    return beam[0][0]
-```
-
-
-
-The beam search algorithm:
-- Maintains a list of the most probable partial phoneme sequences
-- Extends each sequence with every possible phoneme at each timestep
-- Prunes the list to keep only the most promising candidates
-- Returns the most likely complete sequence
-
-## Data Processing and Augmentation
-
-### MFCC Feature Extraction
-
-The model processes Mel-frequency cepstral coefficients (MFCCs), which are acoustic features that represent the short-term power spectrum of audio:
-
-```python
-def process_audio_features(mfcc_features):
-    """Normalize and prepare MFCC features"""
-    # Cepstral mean normalization
-    mfcc_norm = mfcc_features - np.mean(mfcc_features, axis=0)
-    return mfcc_norm
-```
-
-### Data Augmentation
-
-To improve model robustness, I implemented time and frequency masking:
-
-```python
-def augment_features(features):
-    """Apply time and frequency masking augmentation"""
-    features_tensor = torch.FloatTensor(features)
-    
-    # Reshape for SpecAugment [channels, freq, time]
-    features_tensor = features_tensor.transpose(0, 1).unsqueeze(0)
-    
-    # Apply frequency masking
-    freq_mask = torchaudio.transforms.FrequencyMasking(freq_mask_param=4)
-    features_tensor = freq_mask(features_tensor)
-    
-    # Apply time masking
-    time_mask = torchaudio.transforms.TimeMasking(time_mask_param=8)
-    features_tensor = time_mask(features_tensor)
-    
-    # Reshape back to original [time, freq]
-    features_tensor = features_tensor.squeeze(0).transpose(0, 1)
-    
-    return features_tensor.numpy()
-```
-
-These augmentation techniques:
-- Randomly mask frequency bands to simulate channel variations
-- Randomly mask time segments to improve robustness to speech rate variations
-- Together provide a 15% improvement in final model accuracy
-
-## Training Methodology
-
-The training process involved several optimization strategies:
-
-### Mixed Precision Training
-
-I implemented mixed precision training to speed up computation while maintaining numerical stability:
-
-```python
-scaler = torch.cuda.amp.GradScaler()
-
-# In training loop
-with torch.cuda.amp.autocast():
-    outputs = model(inputs)
-    loss = ctc_loss(outputs, targets, input_lengths, target_lengths)
-
-scaler.scale(loss).backward()
-scaler.step(optimizer)
-scaler.update()
-```
-
-### Learning Rate Scheduling
-
-The learning rate was dynamically adjusted using ReduceLROnPlateau:
-
-```python
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-    optimizer, 
-    mode='min', 
-    factor=0.5, 
-    patience=2,
-    threshold=0.001
-)
-
-# In training loop
-scheduler.step(validation_loss)
-```
-
-This scheduling approach:
-- Reduces the learning rate when validation performance plateaus
-- Allows faster convergence early in training
-- Enables fine-tuning in later stages
-- Resulted in approximately 20% faster convergence
-
-### Packed Sequence Handling
-
-To efficiently process variable-length sequences, I implemented packed sequence handling:
-
-```python
-def collate_fn(batch):
-    """Custom collate function for variable length sequences"""
-    # Sort batch by sequence length (descending)
-    batch.sort(key=lambda x: len(x[0]), reverse=True)
-    
-    # Separate inputs and targets
-    inputs, targets = zip(*batch)
-    
-    # Get sequence lengths
-    input_lengths = [len(x) for x in inputs]
-    max_input_len = max(input_lengths)
-    
-    # Pad sequences
-    padded_inputs = torch.zeros(len(inputs), max_input_len, input_dim)
-    for i, (input, length) in enumerate(zip(inputs, input_lengths)):
-        padded_inputs[i, :length] = torch.FloatTensor(input)
-    
-    # Create packed sequence
-    packed_inputs = nn.utils.rnn.pack_padded_sequence(
-        padded_inputs, input_lengths, batch_first=True
-    )
-    
-    return packed_inputs, targets
-```
-
-This approach:
-- Minimizes padding overhead
-- Improves memory efficiency
-- Speeds up computation for batches with variable-length sequences
-
-## Experimental Results
-
-Through extensive experimentation tracked with Weights & Biases, I optimized the model architecture and hyperparameters:
-
-### Embedding Size Ablation
-
-| Embedding Size | Validation Levenshtein Distance | Parameters | Training Time |
-|----------------|----------------------------------|------------|--------------|
-| 64             | 19.2                             | 3.4M       | 6.5h         |
-| 128            | 16.5                             | 5.7M       | 7.2h         |
-| 256            | 14.3                             | 9.2M       | 8.5h         |
-| 324            | 12.8                             | 11.6M      | 9.1h         |
-
-### Dropout Configuration Ablation
-
-| Encoder Dropout | LSTM Dropout | Decoder Dropout | Validation Levenshtein Distance |
-|-----------------|--------------|-----------------|----------------------------------|
-| 0.1             | 0.1          | 0.1             | 14.7                             |
-| 0.2             | 0.2          | 0.2             | 12.8                             |
-| 0.3             | 0.3          | 0.3             | 15.2                             |
-| 0.2             | 0.3          | 0.1             | 13.5                             |
-
-### CTC Beam Width Ablation
-
-| Test Beam Width | Train Beam Width | Validation Levenshtein Distance | Inference Time (ms/sample) |
-|-----------------|------------------|----------------------------------|----------------------------|
-| 3               | 1                | 16.9                             | 1.2                        |
-| 5               | 3                | 14.3                             | 2.5                        |
-| 10              | 3                | 12.8                             | 4.8                        |
-| 20              | 3                | 12.7                             | 9.3                        |
-
-The final model achieved a validation Levenshtein distance of 12.8, demonstrating strong phoneme recognition capabilities. This metric measures the minimum number of single-character edits (insertions, deletions, substitutions) required to change one sequence into another.
-
-### Performance Highlights
-
-- **Best Validation Levenshtein Distance**: 12.8
-- **Final Model Parameters**: 11.6M
-- **Convergence Time**: 284 epochs (approximately 9 hours on NVIDIA T4 GPU)
-- **Inference Speed**: 4.8ms per sample with beam width 10
-
-## Technical Challenges and Solutions
-
-### Handling Variable-Length Sequences
-
-One significant challenge was efficiently processing audio sequences of varying lengths.
-
-**Solution**: I implemented a custom collate function that:
-- Sorts sequences by length in descending order
-- Pads sequences to the length of the longest in the batch
-- Creates packed sequences for efficient RNN processing
-- Unpacks sequences after processing
-
-This approach reduced training time by approximately 35% compared to naive padding.
-
-### CTC Loss Instability
-
-CTC loss is known to be unstable during training, often producing NaN values.
-
-**Solution**: I implemented several stabilization techniques:
-- Using log probabilities instead of raw probabilities
-- Enabling the `zero_infinity` parameter in PyTorch's CTCLoss
-- Applying gradient clipping during backpropagation
-- Carefully selecting learning rates and implementing scheduled reductions
-
-These modifications reduced training instability by 90%, allowing for consistent convergence.
-
-### Feature Normalization
-
-Ensuring appropriate feature normalization was crucial for model performance.
-
-**Solution**: I implemented cepstral mean normalization to:
-- Remove channel effects from MFCC features
-- Improve invariance to recording conditions
-- Enhance model generalization across different speakers and environments
-
-This normalization technique improved accuracy by approximately 8% compared to unnormalized features.
-
-## Conclusion
-
-This project demonstrates the effectiveness of combining pyramidal bidirectional LSTMs with CTC loss for automatic speech recognition from unaligned data. The final model successfully learns to predict phoneme sequences without explicit alignment information, showcasing the power of end-to-end deep learning approaches for speech recognition.
-
-Key findings include:
-- Pyramidal BiLSTM architecture significantly reduces sequence length while preserving important temporal information
-- CTC loss effectively addresses the lack of alignment information in speech data
-- Beam search decoding substantially improves prediction accuracy compared to greedy decoding
-- Data augmentation techniques like time and frequency masking enhance model robustness
-
-These techniques collectively enable the development of high-performance ASR systems that can be trained on more realistic, unaligned speech data, reducing the need for expensive manual annotation.
-
-## Future Improvements
-
-With additional time and resources, several promising directions emerge:
-
-1. **Attention Mechanisms**: Incorporating attention layers could further improve the model's ability to focus on relevant parts of the input sequence
-2. **Language Model Integration**: Adding a language model to the beam search decoder could enhance phoneme prediction by incorporating linguistic context
-3. **Transformer Architecture**: Replacing LSTM layers with Transformer encoder layers might capture longer-range dependencies
-4. **Multi-task Learning**: Jointly predicting phonemes and other speech characteristics could improve overall feature representation
-5. **Spectrogram Features**: Experimenting with raw spectrograms instead of MFCCs could provide richer input features
+This was the third homework of Carnegie Mellon's 11-785 Introduction to Deep Learning in Spring 2025. In the first homework, every audio frame came with its own phoneme label. Here that crutch is gone: each utterance comes with only the **sequence** of phonemes that was spoken, with no indication of which frames belong to which phoneme. The model has to learn the alignment on its own, and the tool that makes that possible is **Connectionist Temporal Classification (CTC)**.
+
+Because this is course work, this page describes the design, the experiments and what I learned, not the implementation itself.
+
+![From audio frames to a phoneme sequence](@images/project/IDLHW3AudioToPhoneme.jpg)
+
+## Why Alignment Is the Hard Part
+
+An utterance might be several hundred frames long and contain only a few dozen phonemes. Each phoneme stretches over a variable number of frames, there are pauses between words, and the same phoneme can legitimately appear twice in a row. Hand-labeling every frame is expensive, which is exactly why real speech datasets usually do not have those labels.
+
+CTC sidesteps the problem by never committing to one alignment:
+
+1. At every frame the network outputs a probability over the phonemes plus one extra symbol, the **blank**.
+2. A frame-level path is turned into a transcript by **merging repeated symbols and then removing blanks**. Many different paths collapse to the same transcript, and the blank is what lets the model write a genuine double phoneme: two copies separated by a blank survive the merge.
+3. The loss is the negative log of the **total probability of every path** that collapses to the correct transcript. A forward-backward dynamic program sums over all those paths efficiently, the same way an HMM sums over hidden state sequences.
+
+The network is never told where a phoneme starts or ends. It is only rewarded for putting probability mass on paths that spell the right answer.
+
+![CTC collapses many frame-level paths into one transcript](@images/project/IDLHW3CTC.jpg)
+
+## The Model
+
+The network is an encoder that turns MFCC frames into a shorter sequence of rich features, followed by a small classifier that turns each feature into phoneme probabilities.
+
+- **Input:** 28 MFCC coefficients per frame, normalized per utterance to zero mean and unit variance in each coefficient.
+- **Convolutional front end:** two 1D convolutions (kernel size 3, widening from 28 to 128 to 256 channels) with batch normalization, which pick up local spectral patterns across neighboring frames.
+- **Bidirectional LSTM:** two stacked BiLSTM layers read the whole utterance forward and backward, so every frame's representation depends on the context on both sides.
+- **Pyramidal BiLSTM:** two more BiLSTM layers that each concatenate pairs of adjacent frames before processing, halving the sequence length each time. After both, the encoder runs at a quarter of the input frame rate. That cuts computation, and it brings the number of output steps much closer to the number of phonemes, which makes the CTC alignment easier to learn. The one requirement is that the shortened sequence must still be at least as long as the transcript, or CTC has no valid path.
+- **Classifier:** batch normalization and a three-layer MLP (512, 256, then the 41 output symbols: 40 phonemes plus blank), with a log-softmax for the CTC loss.
+
+Dropout of 0.2 sits between the LSTM layers, after each pyramidal layer and inside the classifier. Variable-length utterances are padded and **packed**, so the LSTMs never process padding, and the sequence lengths are tracked through every downsampling step because CTC needs the true output length of each utterance.
+
+![The pyramidal BiLSTM encoder](@images/project/IDLHW3RNNEncoder.jpg)
+
+## Training
+
+- **Loss:** CTC, with the blank as its own output class.
+- **Optimizer:** AdamW with weight decay of 1e-5, and a `ReduceLROnPlateau` schedule that halves the learning rate when validation distance stops improving for two epochs.
+- **Augmentation:** random frequency masking and time masking on the MFCCs, in the style of SpecAugment, so the model cannot depend on any single coefficient band or short stretch of audio.
+- **Mixed precision** training, for faster runs on a single GPU.
+
+## Decoding with Beam Search
+
+The network's output is a probability for every symbol at every step, not a transcript. The simplest way to read it is **greedy decoding**: take the most likely symbol at every step, then merge and remove blanks. That misses the point of CTC, though, because the most likely single path is not necessarily the most likely transcript. A transcript that many moderately likely paths collapse to can beat one supported by a single strong path.
+
+**CTC beam search** fixes that by working in transcript space. It keeps the top few candidate prefixes at each step, tracking for each prefix the probability that it currently ends in a blank and the probability that it ends in its last phoneme. Keeping those two apart is what lets it merge paths correctly: extending a prefix with the same phoneme it already ends with means "still the same phoneme" after a non-blank, but "a new copy of it" after a blank. Prefixes that turn out to be identical are merged by adding their probabilities, and the list is pruned back to the beam width.
+
+I used torchaudio's GPU CTC beam search decoder with a narrow beam of 3 during training, to keep validation cheap, and a beam of 10 for the final test predictions.
+
+## Results
+
+The metric is the **Levenshtein distance** between the predicted and true phoneme sequences: the number of insertions, deletions and substitutions needed to turn one into the other, averaged over utterances. Lower is better.
+
+I tracked about 30 runs in Weights & Biases. My first runs used learning rates that were far too small and stalled with validation distances between 16 and 26. Moving the learning rate up into the 1e-4 to 1e-3 range and training longer brought the distance down to around 10, and the final full-length runs landed between **4.7 and 5.4**, with the best at about **4.73** using a learning rate of 1e-4.
+
+## What I Took Away
+
+CTC is the first loss I used that marginalizes over something the data does not tell you, and once that clicked, the rest of the design followed from it. The pyramidal layers exist to make that marginalization tractable and the alignment easier. Packing and length tracking exist because the loss needs the true lengths. Beam search exists because the loss scores transcripts, not paths. The biggest practical lesson was less exciting: most of my improvement came from fixing the learning rate and training long enough, not from changing the architecture.
 
 ## Project Links
-- [WandB Project](https://wandb.ai/rohansi2-carnegie-mellon-university/hw3p2-11785-ablations?nw=nwuserrohansi2)
 - [Kaggle Challenge](https://www.kaggle.com/competitions/hw-3-p-2-automatic-speech-recognition-asr-11-785)

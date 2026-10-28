@@ -3,47 +3,59 @@ title: "LiDAR Driven Maze Robot"
 date: "2023-01"
 status: "completed"
 image: "/images/project/MazeBotModel.png"
-description: "An advanced robotic system capable of autonomously navigating complex mazes using LiDAR technology and sophisticated control algorithms."
-tags: ["robotics", "LiDAR", "autonomous systems", "ROS", "Python", "C++"]
+description: "A LiDAR maze-solving robot I led for Texas A&M TURTLE Robotics: drive train and chassis design around ODrive-controlled brushless motors, and a known-maze planner using fast-marching trees, Bezier smoothing and TOPP-RA time parameterization."
+tags: ["robotics", "LiDAR", "ROS 2", "path planning", "mechanical design"]
 ---
 
-The **LiDAR Driven Maze Bot** project was an ambitious initiative led by the Texas A&M University Robotics team. This project aimed to develop an advanced robotic system capable of autonomously navigating complex mazes by integrating state-of-the-art LiDAR technology and sophisticated control algorithms. The challenge was to optimize both the mechanical and software aspects while maintaining cost efficiency.
+The Maze Bot was a **Texas A&M TURTLE Robotics** project that I led with a five-person team split into mechanical and software groups. The goal was a small wheeled robot that could find its way out of a maze it had never seen, using a 2D LiDAR to see the walls. The maze itself was meant to be reconfigurable: a pegboard grid with walls and shapes that pin into it, so we could change the layout between runs.
 
-![Maze Bot Model](@images/project/MazeBotModel.png)
+This page covers what we actually finished: the hardware design and a path planner for the case where the whole maze is known. The robot was still being assembled when the project wrapped up, and the full unknown-maze solver, localization and control software were never built.
 
-## Hardware Enhancements
+![Maze Bot CAD model with the LiDAR, Jetson Nano, ODrive and step-down converter labeled](@images/project/MazeBotModel.png)
 
-At the heart of the robot's movement system was a carefully selected combination of high-performance motors and precision encoders. To ensure reliable navigation, we incorporated **high-torque 750Kv motors**, which provided enhanced rotational force essential for maneuverability. The addition of **8192 CPR encoders** allowed for precise position tracking, ensuring that the bot could accurately measure and adjust its movements.
+## Hardware
 
-![Maze Bot Gear Ratio](@images/project/MazeBotGearRatio.png)
+The parts list for the final design:
 
-For motor control, we implemented the **ODrive 3.6 motor controller**, which enabled dynamic velocity profiling, ensuring smooth and efficient motion. Stability was further reinforced with a **DC voltage step-down converter**, guaranteeing a steady power supply to critical components. To enhance communication and connectivity, the **Jetson WiFi Module** was integrated, facilitating seamless data transfer between the onboard computing system and external monitoring interfaces.
+- **Motors:** 750Kv brushless motors. That is far too fast for a maze robot at the wheel, so they had to be geared down.
+- **Encoders:** 8192 CPR, for accurate wheel odometry.
+- **Motor control:** an **ODrive 3.6**, which handles closed-loop velocity control and lets us command velocity profiles directly instead of raw PWM.
+- **Power:** a DC step-down converter from the battery to 5 V at 3 A for the compute and sensor side.
+- **Compute and sensing:** a **Jetson Nano** running Jetson Linux 18.04 with a WiFi module, and an **RPLidar A1** mounted on top.
 
+## Mechanical Design
 
-![Kinematics Profiles](@images/project/KinematicsProfilesMazeBot.png)
+On the mechanical side, the main design work was fitting the drive train and electronics into a compact chassis in CAD.
 
-## Mechanical Design and Fabrication
+- We settled on a **6:1 gear reduction** between each motor and its wheel, trading the motors' excess speed for torque.
+- The base was remodeled around the motor mount, with slots that locate both the base plate and the motor's rotor.
+- We added a full frame that holds every electrical component: the Jetson, ODrive, step-down converter, batteries and encoders, with the LiDAR on a mast at the top.
 
-The mechanical design of the robot was engineered to balance performance and reliability. We designed a **6:1 gear ratio**, ensuring an optimal balance between torque and speed, crucial for precise navigation through the maze. The entire base of the robot was **CAD-modeled**, integrating motor mounts that streamlined assembly and improved structural integrity.
+![The 6:1 gear reduction](@images/project/MazeBotGearRatio.png)
 
-Fabrication involved a combination of **laser-cut precision components** for high accuracy and **3D-printed custom parts**, allowing for flexible modifications and design iterations. The frame was meticulously designed to house all electrical components securely, ensuring durability and ease of maintenance.
+The major parts went to the campus 3D printing service, and end-of-semester queues delayed them. That delay is where the build stalled: the next steps on our final deck were finishing the prints, assembling the electronics into the printed frame and building the maze.
 
-## Software Development
+## Path Planning for a Known Maze
 
-On the software side, the project leveraged modern robotics frameworks and advanced algorithms to achieve seamless autonomous navigation. **ROS 2 Humble** served as the core framework for message passing and visualization, ensuring real-time data communication between sensors, controllers, and decision-making algorithms.
+The software group, working in **ROS 2 Humble**, broke the problem down. The full task (no assumptions about maze shape, goal somewhere on the boundary and visually marked) is hard, so we first solved the subproblem where the entire maze is known.
 
-Path planning was enhanced using **Fast-Marching Trees**, an efficient algorithm for generating feasible navigation paths within complex environments. To ensure smooth trajectory execution, **Bezier Curves** were employed for generating continuous, obstacle-free motion paths. Additionally, **TOPPRA (Time-Optimal Path Parameterization)** was integrated to fine-tune movement speed, ensuring optimal performance in dynamic conditions.
+1. **Fast-marching trees (FMT\*)** sample the free space and find a piecewise linear path from start to goal.
+2. **Bezier curves** replace the sharp corners. The curves are joined at the endpoints of the linear segments, and the polygon formed by each curve's control points is constrained to lie inside free space. A Bezier curve always lies inside the convex hull of its control points, so that constraint guarantees the smoothed path does not clip a wall.
+3. **TOPP-RA** (time-optimal path parameterization based on reachability analysis) turns the geometric curve into a trajectory, producing position, velocity and acceleration profiles that respect the robot's limits.
 
-## Advanced Technologies
+![A fast-marching tree path through sampled free space around an obstacle](@images/project/LiDARMappingMazeBot.png)
 
-The robot's perception system relied on the **RPLidar A1**, a cost-effective yet powerful LiDAR sensor used for environment mapping. Running on a **Jetson Nano** with **Linux 18.04**, the system was capable of real-time data analysis and autonomous decision-making. The integration of these components allowed the robot to dynamically adapt to its environment, making intelligent navigation decisions without human intervention.
+![A four-control-point Bezier segment and the position, velocity and acceleration profiles TOPP-RA generated for it](@images/project/KinematicsProfilesMazeBot.png)
 
-![LiDAR Mapping](@images/project/LiDARMappingMazeBot.png)
+The plan for the full solver was to apply the known-maze planner iteratively to whatever part of the maze the LiDAR had revealed, and to follow a boundary until it either closed into a shape or reached the exit.
 
-## Future Enhancements
+## Where It Ended
 
-While the project successfully achieved its goal of autonomous maze navigation, several improvements are planned for future iterations. Enhancements in control software will refine navigation precision, while a deeper **LiDAR integration** will improve environmental perception. Advanced **localization techniques**, including multi-sensor fusion, will further increase accuracy. Ultimately, the goal is to achieve **fully autonomous navigation**, enabling the robot to operate seamlessly in even more complex and dynamic environments.
+Honestly, this one did not reach the finish line. When the project wrapped, the remaining work was:
 
-The **LiDAR Driven Maze Bot** is a testament to the potential of robotics in real-world navigation challenges. With ongoing improvements, it stands to become an even more capable autonomous system, pushing the boundaries of robotic intelligence and control.
+- extending the planner to a partially known maze,
+- writing the control software that would track the TOPP-RA trajectories on the ODrive,
+- LiDAR localization, and
+- a Gazebo simulation of the maze.
 
----
+What I took from it was the planning pipeline itself: splitting a hard problem into a subproblem we could actually solve, and leaning on a geometric property like the Bezier convex hull to get a collision guarantee without extra checks. As lead, the print delay also taught me to put long-lead fabrication at the start of the schedule, not the end.

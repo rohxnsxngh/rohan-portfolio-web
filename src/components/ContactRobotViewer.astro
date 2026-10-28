@@ -77,6 +77,14 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
     type ThreeModules,
   } from '../scripts/heavy3d';
   import { frameCameraForAspect } from '../scripts/frameCamera';
+  import {
+    createResolutionBudget,
+    msaaSamples,
+    syncComposer,
+    syncSobelResolution,
+    watchDevicePixelRatio,
+    type ResolutionBudget,
+  } from '../scripts/viewerResolution';
   // Type-only imports cost nothing at runtime; the values come from resolveThree().
   import type {
     AnimationMixer,
@@ -143,10 +151,12 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
   let height = 0;
   let aspectRatio = 1;
   // One pixel ratio per init, shared by the renderer, the composer's render
-  // target and the Sobel resolution uniform. Touch devices cap lower: the
-  // scene is dimmed behind a scrim, so the extra fill cost buys nothing
-  // visible.
+  // target and the Sobel resolution uniform. The value comes from the
+  // scene's resolution budget (viewerResolution.ts): 2 to start, stepped down
+  // by a frame-time watchdog, never below 1.5 on touch, and re-read on every
+  // resize so browser zoom and monitor moves land at the right resolution.
   let pixelRatio = 1;
+  let budget: ResolutionBudget | null = null;
   const backgroundColor = "#000000";
 
   // Variables. The model handles are nulled by the scene's cleanup so a re-run
@@ -254,13 +264,14 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
 
     camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
 
-    // Disable antialiasing on large viewports for performance
-    const isLargeViewport = width > 1920 || height > 1080;
-
     renderer = new THREE.WebGLRenderer({
-      antialias: !isLargeViewport,
+      // The scene renders into the composer's target, so canvas MSAA only
+      // ever smoothed the full-screen Sobel quad. MSAA lives on the target.
+      antialias: false,
       powerPreference: "high-performance",
-      precision: "mediump",
+      // mediump is 16-bit on phone GPUs: the Sobel pass's UVs then land up
+      // to 0.4 texel off centre on a 1700px-tall target and blur the edges.
+      precision: "highp",
       alpha: true, // Enable alpha for transparent background
     });
 
@@ -390,6 +401,7 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
       {
         format: THREE.RGBAFormat,
         type: THREE.UnsignedByteType,
+        samples: msaaSamples(width, height, pixelRatio),
       }
     );
 
@@ -400,8 +412,7 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
     composer.addPass(renderPass);
 
     const sobelPass = new lib.ShaderPass(createSobelAlphaShader());
-    sobelPass.uniforms['resolution'].value.x = width * pixelRatio;
-    sobelPass.uniforms['resolution'].value.y = height * pixelRatio;
+    syncSobelResolution(renderer, sobelPass.uniforms['resolution'].value);
     composer.addPass(sobelPass);
   }
 
@@ -440,15 +451,18 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
 
     applyFraming();
 
+    // Re-read the pixel ratio: browser zoom and monitor moves change it,
+    // and the budget may have stepped down since the last resize.
+    if (budget) pixelRatio = budget.pixelRatio;
+
     renderer.setSize(width, height);
     renderer.setPixelRatio(pixelRatio);
 
     // Update composer and Sobel pass resolution
-    composer.setSize(width, height);
+    syncComposer(composer, width, height, pixelRatio);
     const sobelPass = composer.passes[1] as ShaderPass;
     if (sobelPass && sobelPass.uniforms['resolution']) {
-      sobelPass.uniforms['resolution'].value.x = width * pixelRatio;
-      sobelPass.uniforms['resolution'].value.y = height * pixelRatio;
+      syncSobelResolution(renderer, sobelPass.uniforms['resolution'].value);
     }
 
     composer.render();
@@ -550,7 +564,8 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
       fallBack();
       return;
     }
-    pixelRatio = Math.min(window.devicePixelRatio, touch ? 1.5 : 2);
+    budget = createResolutionBudget(touch, handleResize);
+    pixelRatio = budget.pixelRatio;
 
     _disposing = false;
     clock = new THREE.Clock();
@@ -668,6 +683,7 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
 
       const delta = clock.getDelta();
       const elapsed = clock.getElapsedTime();
+      if (_live) budget?.tick(delta);
 
       if (_mixerRobot) {
         _mixerRobot.update(delta);
@@ -734,6 +750,7 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
       // back gets a delta of however long the viewer was off screen and the
       // animation jumps.
       clock.getDelta();
+      budget?.resume();
       _animationId = requestAnimationFrame(animate);
     }
 
@@ -789,6 +806,8 @@ const blankGif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAA
     // Scene-level listeners live on their own controller so a tap-to-load
     // re-run after context loss does not stack a second set.
     const sceneAbort = new AbortController();
+    // Zoom fires resize, but a move between a 1x and a 2x monitor may not.
+    watchDevicePixelRatio(handleResize, sceneAbort.signal);
 
     // Store cleanup function (called on navigation or re-init)
     currentCleanup = () => {

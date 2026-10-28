@@ -1,9 +1,12 @@
 ---
+import { formatContentDate } from "../../scripts/formatDate";
 import { getCollection, getEntry } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import Navbar from "../../layouts/Navigation.astro";
 import Footer from "../../layouts/Footer.astro";
 import MarkdownContent from "../../components/MarkdownContent.astro";
+import Diagram from "../../components/Diagram.astro";
+import { diagramsFor } from "../../data/diagrams";
 import { calculateReadingTime, formatReadingTime } from "../../utils/readingTime";
 
 export async function getStaticPaths() {
@@ -16,6 +19,7 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const post = await getEntry("blog", slug);
 const { Content } = await post.render();
+const diagrams = diagramsFor("blog", post.slug);
 
 // Calculate reading time from the raw content
 const readingTime = calculateReadingTime(post.body);
@@ -134,11 +138,7 @@ export const prerender = true;
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <time datetime={post.data.date}>
-                  {new Date(post.data.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {formatContentDate(post.data.date)}
                 </time>
               </div>
               <div class="flex items-center gap-2 font-mono text-sm text-white/50">
@@ -167,6 +167,16 @@ export const prerender = true;
             )}
           </div>
         </section>
+
+        <!-- HOW IT WORKS: animated diagrams from src/data/diagrams.ts. -->
+        {diagrams.length > 0 && (
+          <section class="diagram-section w-full sm:px-20 px-6 pt-12">
+            <h2 class="section-label font-mono text-sm tracking-[0.3em] uppercase text-white/50">
+              // HOW IT WORKS
+            </h2>
+            {diagrams.map((d, i) => <Diagram {...d} index={i + 1} />)}
+          </section>
+        )}
 
         <!-- Story Content Section -->
         <section class="content-section w-full sm:px-20 px-6 py-12">

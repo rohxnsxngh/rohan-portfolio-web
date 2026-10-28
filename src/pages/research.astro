@@ -1,4 +1,5 @@
 ---
+import { formatContentDate } from "../scripts/formatDate";
 import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../layouts/Navigation.astro";
@@ -156,11 +157,7 @@ export const prerender = true;
                         </span>
                       </div>
                       <p class="text-sm text-primary/60 mb-4">
-                        {new Date(date).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric"
-                        })}
+                        {formatContentDate(date)}
                       </p>
                       <p class="text-primary/80 flex-grow line-clamp-3">{description}</p>
                       <div class="mt-4 flex flex-wrap gap-2">

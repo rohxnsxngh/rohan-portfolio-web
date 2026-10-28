@@ -477,7 +477,7 @@ export const prerender = true;
 <script>
   import { onPageReady } from '../scripts/pageReady';
   import { DURATION, EASE } from '../scripts/motion';
-  import { addHeroCharIntro, animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline } from '../scripts/animations';
+  import { addHeroCharIntro, animateLineExpand, batchScrollReveal, scrollReveal, createPageIntroTimeline, initHeroGlow } from '../scripts/animations';
   import { initKineticText } from '../scripts/kinetic-text';
   import gsap from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -543,16 +543,11 @@ export const prerender = true;
       }
     }
 
-    // Continuous glow pulse on hero chars
+    // Continuous glow pulse on hero chars. Composited opacity on a glow copy
+    // of each char, paused while the hero is off screen (see initHeroGlow).
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.matchMedia('(min-width: 768px)').matches) {
       tl.call(() => {
-        const glowChars = document.querySelectorAll('.hero-title .char');
-        if (glowChars.length) {
-          gsap.to(glowChars, {
-            textShadow: '0 0 40px rgba(255, 255, 255, 0.3), 0 0 80px rgba(255, 255, 255, 0.1)',
-            duration: 2, stagger: 0.15, yoyo: true, repeat: -1, ease: 'sine.inOut',
-          });
-        }
+        initHeroGlow(document.querySelectorAll('.hero-title .char'), document.getElementById('hero-section'));
       });
     }
 

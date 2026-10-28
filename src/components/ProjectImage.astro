@@ -1,6 +1,7 @@
 ---
 // src/components/ProjectImage.astro
 import { Image } from "astro:assets";
+import { allowedWidths, getImageSize } from "../utils/imageSize";
 
 interface Props {
   image?: string;
@@ -52,28 +53,50 @@ const getImagePath = (path: string | undefined) => {
 };
 
 const imagePath = getImagePath(image);
+
+// The card slot is h-48 (192px) at the full column width. The widest column is
+// about 507 CSS px (1728px viewport, 3 columns) and a 3x phone draws a 342px
+// column at 1026 device px, so 1080 covers both and 1200 the 2x 1920 desktop.
+// Every value must be on Vercel's allowed list; see VERCEL_WIDTHS.
+const size = hasRealImage ? getImageSize(imagePath) : undefined;
+const widths = size ? allowedWidths(size.naturalWidth, [640, 828, 1080, 1200]) : [];
+const declaredWidth = widths[widths.length - 1] ?? 1200;
+
+// Very wide sources (the spectrogram is 3.44:1) are height-limited in a
+// 192px box under object-cover: it would crop most of the figure and need
+// about 2000 device px to stay sharp. Letterbox them on black instead, which
+// keeps the whole figure and keeps the slot width-limited, so `sizes` holds.
+const isVeryWide = !!size && size.naturalWidth / size.naturalHeight > 2.5;
+const fitClass = isVeryWide ? "object-contain bg-black" : "object-cover";
 ---
 
 {hasRealImage ? (
   <div class="w-full h-48 overflow-hidden rounded-lg image-container" id={uniqueId}>
     {/* Served through Astro's image pipeline rather than as a raw <img>.
         These source files are 3-4MB camera originals in public/, and the card
-        renders them into a 192px-tall box — a plain <img src> shipped the full
+        renders them into a 192px-tall box; a plain <img src> shipped the full
         original, roughly 20x more bytes than the slot can use. `widths` +
         `sizes` emit a srcset so the browser picks a size that matches the
-        card's real width in the 1/2/3-column grid. */}
+        card's real width in the 1/2/3-column grid.
+
+        `sizes` mirrors the layout in src/pages/project.astro: px-6 (48px)
+        below 640, sm:px-20 (160px) from 640, then gap-6 (24px) between the
+        2 columns at md and the 3 columns at lg. The old 400px desktop value
+        undercounted the 410-507px column, and its 414w candidate was off
+        Vercel's list, so a 1x phone picked it, got a 400, and fell back to
+        the initials placeholder. */}
     <Image
       src={imagePath}
       alt={title}
-      width={828}
-      height={414}
-      widths={[414, 640, 828]}
-      sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 400px"
+      width={declaredWidth}
+      height={Math.round(declaredWidth / 2)}
+      widths={widths}
+      sizes="(max-width: 639px) calc(100vw - 48px), (max-width: 767px) calc(100vw - 160px), (max-width: 1023px) calc((100vw - 184px) / 2), calc((100vw - 208px) / 3)"
       format="webp"
-      quality={72}
+      quality={80}
       loading="lazy"
       decoding="async"
-      class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105 real-image"
+      class={`w-full h-full ${fitClass} object-center transition-transform duration-300 group-hover:scale-105 real-image`}
       onerror={`
         // The path-guessing retry this used to carry was dead code: every image
         // referenced by the project collection resolves. Keep only the graceful

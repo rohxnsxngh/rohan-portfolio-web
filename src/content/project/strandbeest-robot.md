@@ -3,58 +3,58 @@ title: "Strandbeest Walking Robot"
 date: "2023-04"
 status: "completed"
 image: "/images/project/StrandbeestPrototype.png"
-description: "A bio-inspired walking robot based on Theo Jansen's Strandbeest mechanism, featuring advanced control systems and autonomous capabilities."
-tags: ["robotics", "mechanical design", "bio-inspired", "control systems", "CAD"]
-# github: "https://github.com/rohan/strandbeest-robot"
+description: "A motor-driven walking robot built on Theo Jansen's Strandbeest linkage for Texas A&M TURTLE Robotics: eight laser-cut legs, four gear assemblies, and an ODrive and Raspberry Pi control stack driven from a pygame dashboard over WebSockets."
+tags: ["robotics", "mechanical design", "bio-inspired", "linkages", "SolidWorks"]
 ---
 
-Inspired by Theo Jansen’s iconic **Strandbeest** kinetic sculptures, this project brought the fusion of **biomechanics and engineering** into the realm of robotics. The goal was to design and build a **walking robot** that not only replicated the mesmerizing gait of Jansen’s creatures but also incorporated **advanced control systems** for autonomous movement.
+Theo Jansen's Strandbeests are wind-powered kinetic sculptures that walk on beaches. Sails catch the wind, and that energy turns a crank that drives his **Jansen linkage** legs, which turn rotation into a surprisingly lifelike walking gait. In Spring 2023, a six-person team of us at **Texas A&M TURTLE Robotics** set out to build a motor-driven version as a fun showcase robot for the club.
 
-![Strandbeest Prototype](@images/project/StrandbeestPrototype.png)
+![The assembled Strandbeest prototype](@images/project/StrandbeestPrototype.png)
 
-## Engineering the Walking Mechanism  
+## The Linkage
 
-At the heart of this project was the **Strandbeest leg mechanism**, a system of carefully optimized linkages designed for efficient, natural motion. Unlike traditional wheeled robots, this design allowed for **smooth, energy-efficient walking**, making it adaptable to uneven terrain. The linkage geometry was meticulously analyzed to ensure **stability, efficiency, and minimal power consumption**, laying the foundation for a robust mechanical structure.  
+The whole robot depends on getting the leg geometry right. A Jansen leg is a single degree of freedom mechanism: one crank rotates and every other joint follows, tracing a foot path that is flat along the bottom (the stance phase, when the foot pushes on the ground) and lifts clear on the return (the swing phase).
 
-![Strandbeest Linkages Math](@images/project/StrandBeestLinkagesMath.png)
+Our initial research settled three things before any CAD:
 
-Using **SolidWorks**, a detailed CAD model was developed, featuring **eight synchronized leg assemblies, four gear-driven power transmission units, and custom-designed joints**. The lightweight yet durable aluminum frame was chosen for its strength-to-weight ratio, while **3D-printed joints** allowed for rapid prototyping and refinement.  
+- the **ideal leg linkage dimensions**, from the existing research on Jansen's linkage,
+- the **leg configuration**, meaning how many legs to run and how to phase them around the crank so some feet are always on the ground, and
+- the **motor requirements**: low speed and high torque, since the crank turns slowly and has to lift the whole body.
 
-![Strandbeest CAD Model](@images/project/strandbeestCAD.png)
+![Jansen linkage joint layout for a mirrored leg pair](@images/project/StrandBeestLinkagesMath.png)
 
-## Integrating Control & Electronics  
+![The foot path traced by one leg as the crank turns](@images/project/StrandbeestLinkagesDrawing.png)
 
-To bring the robot to life, an advanced **electronics architecture** was implemented. At its core was an **ODrive 3.6 motor controller**, paired with **high-torque servo motors and CUI-AMT10 encoders** to deliver precise movement control. A **Raspberry Pi 4B**, running Debian Bullseye, handled real-time processing and communication via **WebSockets**, enabling remote control and monitoring through a **custom-built Pygame GUI**.  
+## Design and Fabrication
 
-The system was designed to be modular, allowing for **sensor integration, power monitoring, and autonomous operation**. The ultimate goal was to create a walking platform that could **navigate varied terrains with adaptive control strategies**.  
+We modeled everything in **SolidWorks**, scaling the research dimensions into real parts. The final assembly has **8 leg assemblies** driven through **4 gear assemblies**.
 
-![Strandbeest Electronics Diagram](@images/project/StrandbeestElectronicsDiagram.png)
+- **Gears and leg linkages:** laser cut.
+- **Chassis:** a base plate cut on a scroll saw and painted, with laser-cut side plates.
+- **Hardware:** 6 mm steel axles running in 6 mm ID bearings, with a variety of spacers to keep each linkage layer in its own plane.
 
+![SolidWorks model of the full robot](@images/project/strandbeestCAD.png)
 
-## Performance & Capabilities  
+## Control System
 
-Once assembled, the robot was tested across different walking scenarios. It successfully demonstrated:  
+The electronics are deliberately simple:
 
-- **Multiple gait patterns**, including slow, stable walking and faster strides  
-- **Variable speed control** through software-tuned motor adjustments  
-- **Terrain adaptability**, showing the ability to traverse uneven surfaces  
-- **Obstacle detection and avoidance**, leveraging integrated sensors  
-- **Energy efficiency**, optimizing power consumption for prolonged operation  
+- a 22.2 V, 5200 mAh battery feeds an **ODrive 3.6**, with a brake resistor to absorb regenerated energy, driving two brushless motors,
+- a **CUI AMT10** encoder (8192 CPR) gives the ODrive closed-loop feedback,
+- a 5 V, 3 A step-down powers a **Raspberry Pi 4B** running Debian Bullseye, and
+- a small travel router puts the Pi on its own network.
 
-The robot’s movements were stable, responsive, and demonstrated a high degree of **coordination between mechanical and electronic systems**.  
+The Pi talks to a **pygame dashboard** over **WebSockets**, so the robot can be driven and monitored from a laptop.
 
-![Strandbeest Linkages Drawing](@images/project/StrandbeestLinkagesDrawing.png)
+![Power and data diagram](@images/project/StrandbeestElectronicsDiagram.png)
 
-## Future Enhancements & Research  
+## What We Would Change
 
-While the prototype performed exceptionally well, several improvements are planned for future iterations:  
+At the end of the semester, our list of changes for the next iteration was:
 
-- **Enhanced joint stability** to reduce mechanical wear over time  
-- **Surface-adaptive feet** for better grip and shock absorption  
-- **Structural reinforcement** for added durability without increasing weight  
-- **Advanced sensor integration**, including LIDAR and IMU for autonomous navigation  
-- **Improved control algorithms** to optimize energy efficiency and motion planning  
+- **Increase joint stability.** Each leg has many pinned joints, and play in each one adds up at the foot.
+- **Add feet** so it can walk on softer or uneven surfaces.
+- **Add ribs across the base plate** for stiffness, and **reduce the weight** of the main chassis plate.
+- **Add sensors and autonomous operation.** This version is driven by hand from the dashboard.
 
-This project serves as a foundation for further exploration into **bio-inspired locomotion, robotics control, and material optimization**. The Strandbeest Walking Robot is more than just an engineering challenge; it’s a step toward more **versatile, nature-inspired robotic systems** capable of navigating complex environments with ease. 🚀
-
----
+For me, the project was a lesson in how much a mechanism's behavior lives in its geometry. The motors only turn cranks, so the gait is decided by link lengths and phasing in CAD long before any control code runs, and most of what we wanted to fix afterward was mechanical: stiffness, tolerances and weight.

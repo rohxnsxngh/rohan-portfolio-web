@@ -1,4 +1,6 @@
 ---
+import { existsSync } from "node:fs";
+import path from "node:path";
 import siteData from "../data/siteData.json";
 import jsonLDGenerator, { toAbsoluteUrl } from "../js/jsonLD";
 
@@ -18,10 +20,20 @@ const jsonLD = jsonLDGenerator({
   site: Astro.site,
 });
 
+// Every route has a 1200x630 card rendered by `npm run og` into public/og/,
+// named the way ogSlugForPath() in scripts/generate-og-images.mjs names it. The
+// card wins over a page's own photo, which was never cut for a 1.91:1 preview.
+// Every page is prerendered, so this file check runs once at build time.
+const trimmedPath = Astro.url.pathname.replace(/^\/+|\/+$/g, "");
+const ogCard = `/og/${trimmedPath === "" ? "home" : trimmedPath.replace(/\//g, "-")}.png`;
+const hasOgCard = existsSync(path.join(process.cwd(), "public", ogCard));
+
 // A page may hand in either a bare path ("/og/blog-foo.png") or an object with
 // its own alt text and intrinsic size, so templates do not have to know which
 // shape the rest of this file wants.
-const pageImage = typeof image === "string" ? { src: image } : image;
+const pageImage = hasOgCard
+  ? { src: ogCard, alt: title }
+  : typeof image === "string" ? { src: image } : image;
 const imageSrc = String(pageImage?.src || siteData.image.src);
 
 // Link-preview crawlers (Facebook, X/Twitter, LinkedIn, Slack, iMessage)
