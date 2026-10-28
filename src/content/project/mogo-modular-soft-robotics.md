@@ -24,7 +24,7 @@ images:
 
 MOGO started with a deceptively simple question: *what if building a soft robot were as intuitive as snapping together LEGO bricks?* Soft robots are safe around people, adapt to their surroundings, and deform in ways rigid machines can't, but every new soft robot is still hand-engineered from scratch. We set out to fix that with a set of reconfigurable building blocks, and in the process stumbled onto a genuinely surprising result about what makes a soft connection strong.
 
-This was a semester-long research project for Carnegie Mellon's 24-673, built with Yujia Liu, Hongfei Liu, and Brady Stump.
+This was a semester-long research project for Carnegie Mellon's 24-673, built with Yujia Liu, Hongfei Liu, and Brady Stump. The paper we wrote from it, with the full method, data tables and FEA, is on the research page: **[MOGO: A Fully-Soft Ball-and-Socket Connector for Modular Soft Robotics](/research/mogo-fully-soft-connector)**.
 
 ![The final MOGO modules 3D printed in white TPU](@images/project/MogoHero.jpg)
 

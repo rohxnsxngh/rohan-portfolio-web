@@ -343,18 +343,6 @@
     4032,
     3024
   ],
-  "/images/project/cerlab-website/home.jpg": [
-    1600,
-    1000
-  ],
-  "/images/project/cerlab-website/research-areas.jpg": [
-    1600,
-    1000
-  ],
-  "/images/project/cerlab-website/research.jpg": [
-    1600,
-    820
-  ],
   "/images/project/HansAubsForge.png": [
     1256,
     530
@@ -555,26 +543,6 @@
     1240,
     437
   ],
-  "/images/project/quaternion-studios-site/field.jpg": [
-    1600,
-    1000
-  ],
-  "/images/project/quaternion-studios-site/hero.jpg": [
-    1600,
-    1000
-  ],
-  "/images/project/quaternion-studios-site/map.jpg": [
-    1600,
-    1000
-  ],
-  "/images/project/quaternion-studios-site/shadow-gram.jpg": [
-    1600,
-    1000
-  ],
-  "/images/project/quaternion-studios-site/voyage.jpg": [
-    1600,
-    1000
-  ],
   "/images/project/ResearchCustomStrats.jpg": [
     633,
     461
@@ -626,6 +594,30 @@
   "/images/project/StrandbeestPrototype.png": [
     1920,
     1415
+  ],
+  "/images/research/mogo/ballsocket-cad.jpg": [
+    480,
+    611
+  ],
+  "/images/research/mogo/fea-bending.jpg": [
+    874,
+    850
+  ],
+  "/images/research/mogo/fea-interlock.jpg": [
+    858,
+    861
+  ],
+  "/images/research/mogo/final-modules.jpg": [
+    1830,
+    645
+  ],
+  "/images/research/mogo/force-testing.jpg": [
+    467,
+    793
+  ],
+  "/images/research/mogo/manufacturing-evolution.jpg": [
+    1110,
+    1000
   ],
   "/images/RS.jpg": [
     1024,

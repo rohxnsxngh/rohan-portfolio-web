@@ -6,7 +6,6 @@
 // route would still be listed by the sitemap integration (it reads every
 // static route, not the files written) and would need a 404 Response that a
 // prerendered page cannot send.
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Diagram from '../../components/Diagram.astro';
 import { DIAGRAMS } from '../../data/diagrams';
@@ -17,12 +16,8 @@ export function getStaticPaths() {
 
 export const prerender = true;
 
-const timeline = (await getCollection('experience')).map((e) => ({
-  c: e.data.company, r: e.data.title, s: e.data.date, e: e.data.endDate || null, slug: e.slug,
-}));
 const entries = [
   ...Object.entries(DIAGRAMS).filter(([k], i, all) => all.findIndex(([, v]) => v[0].kind === DIAGRAMS[k][0].kind) === i),
-  ['experience (listing)', [{ kind: 'career-timeline', label: 'Career timeline', caption: 'Career timeline.', aspect: 3.6, aspectSm: 1.1, data: timeline }]],
 ] as [string, typeof DIAGRAMS[string]][];
 ---
 

@@ -6,7 +6,6 @@ import Footer from "../layouts/Footer.astro";
 import ArtParticleViewer from "../components/ArtParticleViewer.astro";
 import CompanyMark from "../components/CompanyMark.astro";
 import { companyMark } from "../data/companyMarks";
-import Diagram from "../components/Diagram.astro";
 
 const allExperiences = await getCollection("experience");
 
@@ -33,12 +32,6 @@ const sortedExperiences = allExperiences.sort((a, b) => {
   // Within the same group (both current or both ended), sort by start date descending
   return new Date(b.data.date).getTime() - new Date(a.data.date).getTime();
 });
-
-// Every role as a bar on the career-timeline diagram, straight from the
-// collection, so the chart can never disagree with the cards below it.
-const timeline = sortedExperiences.map((e) => ({
-  c: e.data.company, r: e.data.title, s: e.data.date, e: e.data.endDate || null, slug: e.slug,
-}));
 
 // Static at build time. Nothing on this page reads request-time state, so it is
 // served straight from the edge instead of invoking a function per request.
@@ -93,19 +86,6 @@ export const prerender = true;
                   Career Journey
                 </p>
                 <div class="h-px flex-1 bg-gradient-to-r from-primary/20 to-transparent"></div>
-              </div>
-
-              <!-- Career timeline: one bar per role, overlaps stacked. Clicking a
-                   bar dispatches diagram:focus, handled beside
-                   scrollToExperienceCard(slug) in the script below. -->
-              <div class="career-timeline-diagram mb-10">
-                <Diagram
-                  kind="career-timeline"
-                  aspect={3.6}
-                  aspectSm={0.9}
-                  data={timeline}
-                  label="Timeline of every role from 2021 to now, with concurrent roles stacked in separate rows."
-                />
               </div>
 
               <!-- Timeline Container -->
@@ -1858,8 +1838,7 @@ export const prerender = true;
    * Goes through Lenis when it is running: a native smooth scrollTo while
    * Lenis owns the wheel meant two smooth scrolls fighting over one page. The
    * pulse is a GSAP scale tween rather than an inline `transform`, which
-   * overwrote the x/rotateY GSAP had left on the card and made it snap. Also
-   * the tap target for the career-timeline diagram when it is mounted.
+   * overwrote the x/rotateY GSAP had left on the card and made it snap.
    */
   function scrollToExperienceCard(slug: string) {
     const card = document.querySelector<HTMLElement>(
@@ -1882,23 +1861,12 @@ export const prerender = true;
     }
   }
 
-  // The career-timeline diagram dispatches diagram:focus with a role's slug
-  // when a bar is clicked. One listener per page view, dropped with the rest
-  // when experienceAbort fires.
-  function bindTimelineFocus(signal: AbortSignal) {
-    document.addEventListener('diagram:focus', (e) => {
-      const slug = (e as CustomEvent<string>).detail;
-      if (typeof slug === 'string') scrollToExperienceCard(slug);
-    }, { signal });
-  }
-
   onPageReady(() => {
     if (!document.querySelector('.experience-title')) return;
 
     experienceAbort?.abort();
     experienceAbort = new AbortController();
     const { signal } = experienceAbort;
-    bindTimelineFocus(signal);
 
     // Pointer-following glows. Each caches its host's rect per hover and
     // batches its writes into one frame (see bindPointerGlow).

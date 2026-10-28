@@ -24,6 +24,14 @@ const pointcloud: DiagramSpec = {
   caption: 'Set abstraction, the block PointNeXt is built from. Farthest point sampling picks well spread centroids, a ball query gathers each centroid\'s neighbours, and pooling collapses each group into one richer point. Two levels later the cluster is small enough to classify. Cutting the encoder from 6 set abstraction blocks to 4 took the model from 1.36M to 0.26M parameters.',
 };
 
+const mogo: DiagramSpec = {
+  kind: 'mogo-connector',
+  aspect: 2,
+  aspectSm: 0.68,
+  label: 'Cross-section of the MOGO TPU ball-and-socket joint being inserted and pulled out, with socket lips flexing and a force against displacement curve traced alongside.',
+  caption: 'The socket lips are soft enough to flex open as the ball passes, so assembly takes about 25 N. Pulling out, the conforming lips and a brief partial vacuum hold the ball until about 55 N, a ratio of 2.2. The socket prints at 20 to 30% rectilinear infill to stay compliant and the ball at 50% gyroid to keep its shape. The force curve is a schematic drawn through the measured peaks.',
+};
+
 export const DIAGRAMS: Record<string, DiagramSpec[]> = {
   'project/strandbeest-robot': [{
     kind: 'jansen-linkage',
@@ -39,13 +47,8 @@ export const DIAGRAMS: Record<string, DiagramSpec[]> = {
     label: 'Top view of the T-Bone robot fish: five servo tail segments driven by phase-shifted sine waves, alternating between constant amplitude and multiplying undulation, with the joint angle traces below.',
     caption: 'Each of the five tail servos follows the same sine wave, shifted in phase from the one before, so a wave travels down the tail. Constant tail propulsion gives every joint the same amplitude and, in the pool, left the robot stationary. Multiplying undulation scales the joints by 0.5, 0.6, 1.1, 1.2 and 1.3, concentrating motion at the tail, and moved it forward. The parameters are trials 2 and 4 from the results table. Tap to switch patterns.',
   }],
-  'project/mogo-modular-soft-robotics': [{
-    kind: 'mogo-connector',
-    aspect: 2,
-    aspectSm: 0.68,
-    label: 'Cross-section of the MOGO TPU ball-and-socket joint being inserted and pulled out, with socket lips flexing and a force against displacement curve traced alongside.',
-    caption: 'The socket lips are soft enough to flex open as the ball passes, so assembly takes about 25 N. Pulling out, the conforming lips and a brief partial vacuum hold the ball until about 55 N, a ratio of 2.2. The socket prints at 20 to 30% rectilinear infill to stay compliant and the ball at 50% gyroid to keep its shape. The force curve is a schematic drawn through the measured peaks.',
-  }],
+  'project/mogo-modular-soft-robotics': [mogo],
+  'research/mogo-fully-soft-connector': [mogo],
   'project/lidar-maze-robot': [{
     kind: 'lidar-maze',
     aspect: 1.8,
@@ -68,13 +71,6 @@ export const DIAGRAMS: Record<string, DiagramSpec[]> = {
     aspectSm: 0.75,
     label: 'A CTC trellis for the phoneme target B UH K K EY S: the forward pass fills the grid, sampled valid alignment paths collapse to the target, and a path without a blank between the two K phonemes collapses to the wrong sequence.',
     caption: 'The CTC forward pass over the extended target, blank, B, blank, UH and so on. Every frame-level path that merges repeats and drops blanks into B UH K K EY S counts toward the loss, and the dynamic program sums them all at once. A path may skip a blank between different phonemes, but not between the two Ks: without a blank between them, they merge into one.',
-  }],
-  'experience/octapulse-cto': [{
-    kind: 'octapulse-phenotype',
-    aspect: 2,
-    aspectSm: 0.75,
-    label: 'A synthetic trout on a calibrated mat: the fiducial sets the scale, segmentation masks resolve the body and eight features, a midline gives length and depth, and each fish becomes one row, with failed measurements flagged rather than estimated.',
-    caption: 'The phenotyping pipeline, drawn on a synthetic fish. The printed fiducial gives every photo its own scale, instance segmentation isolates the body and eight features, and a geometry engine turns pixels into inches along the midline. Each fish becomes one row of 20-plus traits. When a part cannot be measured, the row is flagged, never filled with an estimate.',
   }],
   'experience/asml-robotics-intern': [{
     kind: 'asml-sweep',

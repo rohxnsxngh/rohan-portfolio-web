@@ -361,13 +361,6 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
-"cerlab-website.md": {
-	id: "cerlab-website.md";
-  slug: "cerlab-website";
-  body: string;
-  collection: "project";
-  data: InferEntrySchema<"project">
-} & { render(): Render[".md"] };
 "connectionist-temporal-classification.md": {
 	id: "connectionist-temporal-classification.md";
   slug: "connectionist-temporal-classification";
@@ -417,13 +410,6 @@ declare module 'astro:content' {
   collection: "project";
   data: InferEntrySchema<"project">
 } & { render(): Render[".md"] };
-"quaternion-studios-site.md": {
-	id: "quaternion-studios-site.md";
-  slug: "quaternion-studios-site";
-  body: string;
-  collection: "project";
-  data: InferEntrySchema<"project">
-} & { render(): Render[".md"] };
 "strandbeest-robot.md": {
 	id: "strandbeest-robot.md";
   slug: "strandbeest-robot";
@@ -436,6 +422,13 @@ declare module 'astro:content' {
 "echocardiagram-ml.md": {
 	id: "echocardiagram-ml.md";
   slug: "echocardiagram-ml";
+  body: string;
+  collection: "research";
+  data: InferEntrySchema<"research">
+} & { render(): Render[".md"] };
+"mogo-fully-soft-connector.md": {
+	id: "mogo-fully-soft-connector.md";
+  slug: "mogo-fully-soft-connector";
   body: string;
   collection: "research";
   data: InferEntrySchema<"research">
