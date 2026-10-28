@@ -8,7 +8,7 @@ description: "What building and teaching the hands-on labs for Carnegie Mellon's
 tags: ["teaching", "agentic AI", "CMU", "LLMs", "education", "OctaPulse"]
 ---
 
-I teach the Guided Virtual Labs for the [Agentic AI Program](https://execonline.cs.cmu.edu/agentic-ai-program) at Carnegie Mellon's School of Computer Science Executive Education, delivered with Emeritus. It runs seven weeks, live and online. Each week has a faculty-led session and two hands-on labs, and the program ends with a capstone.
+I teach the Guided Virtual Labs and run office hours for the [Agentic AI Program](https://execonline.cs.cmu.edu/agentic-ai-program) at Carnegie Mellon's School of Computer Science Executive Education, delivered with Emeritus. It runs seven weeks, live and online. Each week has a faculty-led session and two hands-on labs, and the program ends with a capstone.
 
 I built the live slide decks and the teaching guides for all 14 labs. One deck per lab, from about 19 slides up to 74 for the very first one.
 

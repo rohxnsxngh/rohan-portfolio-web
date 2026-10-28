@@ -1,7 +1,7 @@
 ---
 title: "Lab Instructor, Agentic AI Program"
 company: "Emeritus x Carnegie Mellon University"
-description: "Teaching the Guided Virtual Labs for Carnegie Mellon School of Computer Science Executive Education's seven-week Agentic AI Program, delivered with Emeritus, and building the live slide decks and teaching guides for all 14 labs."
+description: "Teaching the Guided Virtual Labs and running office hours for Carnegie Mellon School of Computer Science Executive Education's seven-week Agentic AI Program, delivered with Emeritus, and building the live slide decks and teaching guides for all 14 labs."
 date: "2026-09"
 endDate: ""
 location: "Remote"
@@ -10,11 +10,50 @@ tags: ["Agentic AI", "Teaching", "LLMs", "RAG", "Multi-Agent Systems", "MCP", "A
 
 ## Teaching Agentic AI at Carnegie Mellon
 
-I teach the Guided Virtual Labs for the [Agentic AI Program](https://execonline.cs.cmu.edu/agentic-ai-program) from Carnegie Mellon University's School of Computer Science Executive Education, delivered in collaboration with Emeritus.
+I teach the Guided Virtual Labs and run office hours for the [Agentic AI Program](https://execonline.cs.cmu.edu/agentic-ai-program) from Carnegie Mellon University's School of Computer Science Executive Education, delivered in collaboration with Emeritus.
 
 The program runs seven weeks, live and online. Each week has one faculty-led live session and two hands-on labs, and it ends with a capstone. The program is built for working engineers: AI and ML engineers, backend and platform engineers, data scientists. They already know Python. They want to know how agents actually work, and they want to build one.
 
 That is fourteen labs. I built the teaching layer for all of them: a cell-by-cell instructor guide for every lab, and a live, animated slide deck for every lab.
+
+Office hours are the other half of the job. Students bring their notebooks, their error messages and their capstone ideas, and we work through them together. It is where I learn which parts of a lab actually landed.
+
+### All fourteen labs
+
+**Module 1: Foundations**
+
+- **1.1 Introduction to Large Language Models:** Benchmarking quality, cost and latency; few-shot and native chain of thought; hallucination probes; scaling from Qwen3 0.6B to 4B; tokenization.
+- **1.2 Model Context Protocol:** Host, client and server; JSON-RPC 2.0 and transports; tools, resources and prompts; sampling, roots and elicitation; scope-based auth.
+
+**Module 2: Reasoning and tools**
+
+- **2.1 Building a ReAct Agent:** Thought, action and observation loops; when to think versus act; recovering from partial failures.
+- **2.2 Tool Calling in Agents:** Tool schemas and input/output contracts; validated, safe dispatch; behavior under noisy tool outputs.
+
+**Module 3: Retrieval**
+
+- **3.1 Domain-Specific GPT with RAG:** Building and indexing a domain corpus; grounding generation in retrieval with open-source models.
+- **3.2 Maximal Marginal Relevance:** The relevance and redundancy tradeoff; MMR from scratch; measuring faithfulness and coverage.
+
+**Module 4: Deliberate reasoning**
+
+- **4.1 Tree of Thoughts:** Thought generation and evaluation; BFS over reasoning states; replicating IO vs CoT vs ToT on the Game of 24.
+- **4.2 Agentic Harnesses:** System prompt, tool suite, agent loop, context management, permission gate and sandbox; Claude Code, Codex CLI and opencode.
+
+**Module 5: Adaptation and multi-agent**
+
+- **5.1 Multi-Agent Coordination:** Roles, protocols and shared context; pipeline, supervisor, swarm and ensemble topologies; CrewAI and LangGraph.
+- **5.2 LLM Fine-Tuning:** Dataset preparation; LoRA; monitoring training; measuring gains and regressions.
+
+**Module 6: Reliability**
+
+- **6.1 Guardrailing Hallucinations:** Hallucination taxonomy; guardrails before, during and after generation; ablations.
+- **6.2 Monitoring Trajectories for Sabotage:** Trajectory logging; suspicion monitors calibrated to a false-positive budget; ROC and AUC; human escalation.
+
+**Module 7: Shipping**
+
+- **7.1 Building a Plugin:** MCP server, skill, agent and hook packaged for Claude Code and Gemini CLI.
+- **7.2 Capstone:** A modular web-research agent, graded on the quality of its report.
 
 **An agent is just a loop around an LLM.** That is the kind of plain-language framing my guides open with, and almost everything in the course is a variation on that loop.
 

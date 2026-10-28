@@ -2,6 +2,7 @@
 title: "MOGO: A Fully-Soft Ball-and-Socket Connector for Modular Soft Robotics"
 date: "2025-12"
 status: "completed"
+paper: "/papers/mogo-connector-compliance-paradox.pdf"
 image: "/images/research/mogo/final-modules.jpg"
 description: "An extended abstract on the Connector Compliance Paradox: every surveyed modular soft robot joins soft modules with connectors 100 to 5000 times stiffer than they are. MOGO is a single-material TPU ball-and-socket joint at a compliance ratio near 1, where infill engineering gives 25 N insertion, 55 N pull-out, a 2.2 force ratio and more than 500 cycles without visible wear."
 tags: ["soft robotics", "modular robots", "compliant connectors", "TPU", "infill engineering", "finite element analysis", "CMU"]
@@ -11,7 +12,9 @@ images:
   - src: "/images/research/mogo/manufacturing-evolution.jpg"
     alt: "CAD renders and hand-assembly trials across the three manufacturing phases, from SLA ribbed interlocks to the TPU ball-and-socket"
   - src: "/images/research/mogo/force-testing.jpg"
-    alt: "A connected module pair mounted on a digital force gauge test stand, with arrows marking the insertion and pull-out directions"
+    alt: "A connected module pair mounted on a Mark-10 Series 5 force gauge and motorized test stand, with arrows marking the insertion and pull-out directions"
+  - src: "/images/research/mogo/infill-force-plots.jpg"
+    alt: "Insertion force against socket infill for Rectilinear and Grid patterns, and pull-out force against Gyroid ball infill, with error bars and the selected ranges shaded"
   - src: "/images/research/mogo/fea-interlock.jpg"
     alt: "SOLIDWORKS displacement and von Mises plots of the abandoned cross-shaped interlock connector"
 ---
@@ -20,7 +23,7 @@ images:
 
 *Yujia Liu, Rohan Singh, Hongfei Liu, Brady Stump. Carnegie Mellon University, course 24-673, December 2025. Written in the format of an IEEE RoboSoft extended abstract.*
 
-This is the paper behind the [MOGO project](/project/mogo-modular-soft-robotics). The project page tells the build story; this page follows the paper: the problem it defines, the method, the measurements and what they do and do not show.
+This is the paper behind the [MOGO project](/project/mogo-modular-soft-robotics). The project page tells the build story; this page follows the paper: the problem it defines, the method, the measurements and what they do and do not show. The full paper is available as a **[PDF](/papers/mogo-connector-compliance-paradox.pdf)**.
 
 ## Abstract
 
@@ -92,9 +95,9 @@ The three load cases were tied to human-factors data so that the magnitudes matc
 
 ### D. Force testing
 
-Each module pair was mounted on a digital force gauge test stand in peak-capture mode, with the base module fixed and the gauge pulling the mobile module. Two values were recorded per pair: **insertion force**, the peak force to seat the ball (the user's assembly effort), and **pull-out force**, the peak force to separate the modules (retention strength).
+Each module pair was mounted on a Mark-10 Series 5 digital force gauge on a motorized Mark-10 test stand, in peak-capture mode, with the base module fixed and the stand driving the mobile module at about 10 mm/min. Two values were recorded per pair: **insertion force**, the peak force to seat the ball (the user's assembly effort), and **pull-out force**, the peak force to separate the modules (retention strength).
 
-![Force testing setup and a connected TPU pair, with arrows marking the insertion and pull-out directions](@images/research/mogo/force-testing.jpg)
+![Force testing on the Mark-10 gauge and test stand, and a connected TPU pair with arrows marking the insertion and pull-out directions](@images/research/mogo/force-testing.jpg)
 
 ## IV. Results
 
@@ -125,6 +128,8 @@ The two trends compete: anything that makes the socket easier to enter also risk
 > **η = F_pull-out / F_insertion = 55.2 / 25.3 ≈ 2.18**
 
 so separating the joint takes more than twice the force of making it, the easy-in, hard-out behavior a stable assembly needs.
+
+![Insertion force falls with lower socket infill and pull-out force rises with ball infill; points are mean and standard deviation over three specimen pairs and five cycles each, with the selected ranges shaded](@images/research/mogo/infill-force-plots.jpg)
 
 | Metric | Target | Achieved |
 |---|---|---|
