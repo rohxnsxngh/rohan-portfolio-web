@@ -2,14 +2,14 @@
 title: "Strandbeest Walking Robot"
 date: "2023-04"
 status: "completed"
-image: "/images/project/StrandbeestPrototype.png"
+image: "/images/project/StrandbeestPrototype.webp"
 description: "A motor-driven walking robot built on Theo Jansen's Strandbeest linkage for Texas A&M TURTLE Robotics: eight laser-cut legs, four gear assemblies, and an ODrive and Raspberry Pi control stack driven from a pygame dashboard over WebSockets."
 tags: ["robotics", "mechanical design", "bio-inspired", "linkages", "SolidWorks"]
 ---
 
 Theo Jansen's Strandbeests are wind-powered kinetic sculptures that walk on beaches. Sails catch the wind, and that energy turns a crank that drives his **Jansen linkage** legs, which turn rotation into a surprisingly lifelike walking gait. In Spring 2023, a six-person team of us at **Texas A&M TURTLE Robotics** set out to build a motor-driven version as a fun showcase robot for the club.
 
-![The assembled Strandbeest prototype](@images/project/StrandbeestPrototype.png)
+![The assembled Strandbeest prototype](@images/project/StrandbeestPrototype.webp)
 
 ## The Linkage
 

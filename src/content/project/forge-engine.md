@@ -31,7 +31,7 @@ The result is a wall of sound you can walk along, where the shape and the color 
 - **Positional audio.** The track also plays as a three.js `PositionalAudio` source attached to a sphere at the origin, so it gets louder as you walk toward the center.
 - **Navigation.** `FirstPersonControls` with clamped look angles and height, plus a soft boundary that teleports you back to the start if you wander off the map.
 
-![Laboratory environment](@images/project/HansAubsLab.png)
+![Laboratory environment](@images/project/HansAubsLab.jpg)
 
 ## The Portal and the Factory
 

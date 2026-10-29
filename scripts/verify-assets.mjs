@@ -67,23 +67,10 @@ const RAW_IMAGE_PATTERNS = [
 const RASTER_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif']);
 const MAX_IMAGE_BYTES = 1_000_000;
 
-// Originals that predate the size rule, all referenced only through the
-// optimizer (markdown @images/ or frontmatter <Image>), so the browser never
-// downloads them as-is. Sizes are recorded so growth still fails.
-const KNOWN_OVERSIZED = new Map([
-  ['/images/experience/octapulse/photo_50575.jpg', 8_647_052],
-  ['/images/experience/octapulse/photo_52203.jpg', 5_854_699],
-  ['/images/experience/octapulse/photo_51731.jpg', 4_739_888],
-  ['/images/project/BiobotTBone.JPG', 3_636_785],
-  ['/images/project/StrandbeestPrototype.png', 3_631_122],
-  ['/images/project/BiobotGroupPicture.JPG', 3_624_622],
-  ['/images/project/BiobotMesh.png', 3_597_283],
-  ['/images/project/BiobotWaterside.JPG', 3_589_716],
-  ['/images/project/BiobotCFD2.png', 2_660_515],
-  ['/images/project/BiobotBaby.JPG', 2_636_438],
-  ['/images/project/MachineLearningBaseballMapping.png', 1_881_254],
-  ['/images/project/HansAubsLab.png', 1_384_862],
-]);
+// Originals that predate the size rule, each with its recorded size so growth
+// still fails. Empty since `npm run optimize-images` brought every original
+// under MAX_IMAGE_BYTES; keep it that way rather than adding entries.
+const KNOWN_OVERSIZED = new Map([]);
 
 const scanBuilt = process.argv.includes('--built');
 

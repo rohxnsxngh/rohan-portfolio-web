@@ -68,7 +68,7 @@ The head serves as the primary electronics housing and tail attachment point, fe
 - A dedicated servo-actuated rudder mechanism for directional control
 - Mounting points for AprilTag markers used in visual tracking
 
-![Head Design with Streamlined Hydrodynamic Shape](@images/project/BiobotMesh.png)
+![Head Design with Streamlined Hydrodynamic Shape](@images/project/BiobotMesh.jpg)
 
 Fabricated using 3D printing with PLA material at 15% infill, the head achieves sufficient buoyancy while maintaining structural integrity. Waterproofing was accomplished through silicone sealant application at all seams and potential leakage points, creating a robust platform that balances multiple functional requirements.
 
@@ -125,7 +125,7 @@ A comprehensive CFD study was conducted to optimize the robot's hydrodynamic pro
 
 The fin length of 2.5" with 2" curvature showed the best performance, with an average TKE around 7-9 × 10^-3 m²/s². This optimal design showed a complete turbulence profile without points of excessive TKE that would indicate regions of turbulence detrimental to efficient propulsion.
 
-![CFD Analysis Showing Turbulent Kinetic Energy Profile](@images/project/BiobotCFD2.png)
+![CFD Analysis Showing Turbulent Kinetic Energy Profile](@images/project/BiobotCFD2.jpg)
 
 The final robot design incorporated fins at a diagonal angle from the head's base, which CFD analysis confirmed generated a complete turbulence profile in the wake at a moderate range (around 8 × 10^-3 m²/s²) - acceptable for propulsion without creating regions of high turbulence.
 

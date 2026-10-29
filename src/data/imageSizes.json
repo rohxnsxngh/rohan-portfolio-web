@@ -4,20 +4,20 @@
     1536
   ],
   "/images/art/demon-masks-illustration.jpeg": [
-    2154,
-    1916
+    1920,
+    1708
   ],
   "/images/art/pooh-tigger-butterfly.jpg": [
-    2054,
-    1916
+    1920,
+    1791
   ],
   "/images/art/pooh-tigger-dreaming.jpg": [
-    2582,
-    1916
+    1920,
+    1425
   ],
   "/images/blog/cmu-cv/ap-vs-iou-threshold.png": [
-    2565,
-    1694
+    1920,
+    1268
   ],
   "/images/blog/cmu-cv/hw1-aquarium-wordmap.png": [
     640,
@@ -83,7 +83,7 @@
     432,
     313
   ],
-  "/images/experience/nvidia/NvidiaCAD.png": [
+  "/images/experience/nvidia/NvidiaCAD.jpg": [
     1440,
     757
   ],
@@ -96,12 +96,12 @@
     2048
   ],
   "/images/experience/octapulse/4DABB450-8CE3-49C1-A66F-495E35A8C055_1_102_o.jpeg": [
-    2048,
-    1536
+    1920,
+    1440
   ],
   "/images/experience/octapulse/64E3A15F-B59A-4345-9173-FF3BECEA3153.JPG": [
-    2048,
-    1536
+    1920,
+    1440
   ],
   "/images/experience/octapulse/81297189-8C22-4939-AA1B-520078DC9FA3_1_105_c.jpeg": [
     1024,
@@ -116,16 +116,16 @@
     1024
   ],
   "/images/experience/octapulse/photo_50575.jpg": [
-    4000,
-    2667
+    1920,
+    1280
   ],
   "/images/experience/octapulse/photo_51731.jpg": [
-    3000,
-    2000
+    1920,
+    1280
   ],
   "/images/experience/octapulse/photo_52203.jpg": [
-    3000,
-    2000
+    1920,
+    1280
   ],
   "/images/experience/pioneer/pioneer-cookies.jpg": [
     1080,
@@ -135,29 +135,25 @@
     400,
     285
   ],
-  "/images/experience/tesla/TeslaAestheticsFDT.png": [
-    1170,
-    1407
-  ],
   "/images/experience/tesla/TeslaCrashDummy.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
   "/images/experience/tesla/TeslaCrashDummySideView.jpg": [
     1920,
     1440
   ],
   "/images/experience/tesla/TeslaCyberRodeo.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
   "/images/experience/tesla/TeslaCyberRodeoScreen.jpg": [
     1920,
     1440
   ],
   "/images/experience/tesla/TeslaCyberTruck.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
   "/images/experience/tesla/TeslaExtractionServiceCustomFrontend.png": [
     628,
@@ -172,8 +168,8 @@
     510
   ],
   "/images/experience/tesla/TeslaFlyingY.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
   "/images/experience/tesla/TeslaLiDARControlTargets.png": [
     398,
@@ -184,24 +180,24 @@
     537
   ],
   "/images/experience/tesla/TeslaLight.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
   "/images/experience/tesla/TeslaMapWithConversion.png": [
     634,
     891
   ],
   "/images/experience/tesla/TeslaModelYWrapped.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
-  "/images/experience/tesla/TeslaMoreAesthetic.png": [
+  "/images/experience/tesla/TeslaMoreAesthetic.jpg": [
     1170,
     1167
   ],
   "/images/experience/tesla/TeslaOptimus.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
   "/images/experience/tesla/TeslaRevitExtractionServiceArchitecture.png": [
     940,
@@ -212,8 +208,8 @@
     1440
   ],
   "/images/experience/tesla/TeslaRobotics.jpg": [
-    1920,
-    1440
+    1440,
+    1920
   ],
   "/images/experience/toyota/LexusConceptCar.jpg": [
     750,
@@ -276,14 +272,14 @@
     576
   ],
   "/images/project/BiobotBaby.JPG": [
-    4032,
-    3024
+    1920,
+    2560
   ],
   "/images/project/BiobotCFD.png": [
     1388,
     944
   ],
-  "/images/project/BiobotCFD2.png": [
+  "/images/project/BiobotCFD2.jpg": [
     1920,
     1381
   ],
@@ -296,10 +292,10 @@
     1200
   ],
   "/images/project/BiobotGroupPicture.JPG": [
-    4032,
-    3024
+    1920,
+    1440
   ],
-  "/images/project/BiobotMesh.png": [
+  "/images/project/BiobotMesh.jpg": [
     1920,
     1221
   ],
@@ -308,8 +304,8 @@
     940
   ],
   "/images/project/BiobotPosterDay.JPG": [
-    4032,
-    3024
+    1920,
+    1440
   ],
   "/images/project/BiobotRender.jpg": [
     512,
@@ -320,8 +316,8 @@
     596
   ],
   "/images/project/BiobotSlides.JPG": [
-    4032,
-    3024
+    1920,
+    1440
   ],
   "/images/project/BiobotSwimming.jpg": [
     879,
@@ -332,16 +328,16 @@
     600
   ],
   "/images/project/BiobotTBone.JPG": [
-    4032,
-    3024
+    1920,
+    1440
   ],
   "/images/project/BiobotWaterPic.JPG": [
-    4032,
-    3024
+    1920,
+    1440
   ],
   "/images/project/BiobotWaterside.JPG": [
-    4032,
-    3024
+    1920,
+    1440
   ],
   "/images/project/HansAubsForge.png": [
     1256,
@@ -351,7 +347,7 @@
     1458,
     766
   ],
-  "/images/project/HansAubsLab.png": [
+  "/images/project/HansAubsLab.jpg": [
     1920,
     858
   ],
@@ -427,10 +423,6 @@
     1308,
     558
   ],
-  "/images/project/MachineLearningBaseballMapping.png": [
-    1920,
-    840
-  ],
   "/images/project/MachineLearningEric.png": [
     671,
     324
@@ -448,8 +440,8 @@
     402
   ],
   "/images/project/MogoBallModule.jpg": [
-    2048,
-    1152
+    1920,
+    1080
   ],
   "/images/project/MogoCADIterations.png": [
     492,
@@ -460,8 +452,8 @@
     698
   ],
   "/images/project/MogoConnection.jpg": [
-    2048,
-    1152
+    1920,
+    1080
   ],
   "/images/project/MogoFEABending.png": [
     935,
@@ -476,8 +468,8 @@
     719
   ],
   "/images/project/MogoForceGraphs.png": [
-    2002,
-    980
+    1920,
+    940
   ],
   "/images/project/MogoForceTest.jpg": [
     1280,
@@ -488,8 +480,8 @@
     720
   ],
   "/images/project/MogoHero.jpg": [
-    2048,
-    1152
+    1920,
+    1080
   ],
   "/images/project/MogoInfillCrossSection.jpg": [
     1588,
@@ -500,12 +492,12 @@
     640
   ],
   "/images/project/MogoSocketModule.jpg": [
-    2048,
-    1152
+    1920,
+    1080
   ],
   "/images/project/MogoStanding.jpg": [
-    2048,
-    1152
+    1920,
+    1080
   ],
   "/images/project/PointnextBaseline.jpg": [
     1058,
@@ -591,7 +583,7 @@
     532,
     314
   ],
-  "/images/project/StrandbeestPrototype.png": [
+  "/images/project/StrandbeestPrototype.webp": [
     1920,
     1415
   ],

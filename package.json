@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "image-sizes": "node scripts/generate-image-sizes.mjs",
+    "optimize-images": "node scripts/optimize-images.mjs",
     "verify-assets": "node scripts/verify-assets.mjs",
     "posters": "node scripts/render-model-posters.mjs",
     "og": "node scripts/generate-og-images.mjs",

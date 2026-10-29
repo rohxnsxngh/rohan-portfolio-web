@@ -40,7 +40,7 @@ I also got hands-on experience with Geometric Dimensioning and Tolerancing (GD&T
 
 Applying Design for Manufacturability (DFM) principles was another huge learning experience. I learned to think beyond just creating a perfect CAD model. Each design needed to be optimized for cost-effective and scalable production. This really challenged me to balance creativity with real-world constraints and reinforced how important practical engineering design is.
 
-![NVIDIA CAD](@images/experience/nvidia/NvidiaCAD.png)
+![NVIDIA CAD](@images/experience/nvidia/NvidiaCAD.jpg)
 
 ### 3D Modeling and Large Systems
 

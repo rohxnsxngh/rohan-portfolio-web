@@ -30,7 +30,7 @@ Building the Revit Extraction Service was honestly pretty challenging. I had to 
 
 My design skills came in handy for building an advanced frontend tool that complemented the automated Revit extraction. Using ReactJS and Deck.gl, I created dynamic data visualizations that made it way easier for users to interact with the data and get useful insights. Learning Deck.gl was cool because I got to turn all that extracted data into visually compelling 3D representations. This helped stakeholders actually understand what was going on and make better decisions about factory design and layout optimization.
 
-![TeslaMoreAesthetic](@images/experience/tesla/TeslaMoreAesthetic.png)
+![TeslaMoreAesthetic](@images/experience/tesla/TeslaMoreAesthetic.jpg)
 
 ![Tesla FDT Data Display](@images/experience/tesla/TeslaFDTDataDisplay.png)
 
