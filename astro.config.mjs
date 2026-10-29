@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import vercel from "@astrojs/vercel/serverless";
 import tailwind from "@astrojs/tailwind";
 import sitemap from "@astrojs/sitemap";
-import rehypeMarkdownImageSizes from "./src/plugins/rehypeMarkdownImageSizes.mjs";
+import rehypeMarkdownImageSizes, { remarkPublicMarkdownImages } from "./src/plugins/rehypeMarkdownImageSizes.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -28,8 +28,10 @@ export default defineConfig({
     },
   },
   markdown: {
-    // Prose images in .md files get widths/sizes/quality here, since a
-    // components override on <Content /> is MDX-only. See the plugin header.
+    // Prose images in .md files are served from public/ through the Vercel
+    // optimizer with widths/sizes/quality set here, rather than copied into
+    // _astro/ by astro:assets. See the plugin header.
+    remarkPlugins: [remarkPublicMarkdownImages],
     rehypePlugins: [rehypeMarkdownImageSizes],
   },
   output: "server",
