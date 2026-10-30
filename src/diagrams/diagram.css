@@ -11,8 +11,10 @@
   --dg-ok: #4ade80;
   --dg-bad: #f87171;
   --dg-font: 'IBM Plex Mono', monospace;
-  margin: 2rem 0 0;
-  max-width: 72rem;
+  /* Same column as the prose under it (.markdown-content is max-w-4xl
+     mx-auto), so figure and text share one centre line. */
+  margin: 2rem auto 0;
+  max-width: 56rem;
 }
 
 @media (prefers-contrast: more) {
