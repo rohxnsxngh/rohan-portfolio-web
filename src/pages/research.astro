@@ -132,7 +132,11 @@ export const prerender = true;
               const statusDisplay = statusText[status] || "Unknown";
 
               return (
-                <a href={`/research/${research.slug}`} class="group h-full relative research-card" data-haptic="light">
+                <!-- A div with one link stretched over it, not an <a> wrapper: the
+                     GitHub / Read Paper links inside would be an <a> in an <a>,
+                     which the HTML parser splits into a second, empty card. -->
+                <div class="group h-full relative research-card">
+                  <a href={`/research/${research.slug}`} class="card-link" aria-label={title} data-haptic="light"></a>
                   <!-- Corner accent marks -->
                   <div class="card-corner-accent card-corner-tl"></div>
                   <div class="card-corner-accent card-corner-tr"></div>
@@ -148,7 +152,7 @@ export const prerender = true;
                   <!-- Glow overlay that follows mouse -->
                   <div class="glow-overlay"></div>
 
-                  <div class="card-content p-6 border border-accent/20 rounded-xl bg-secondary hover:bg-accent/5 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl h-full flex flex-col relative z-10">
+                  <div class="card-content pointer-events-none p-6 border border-accent/20 rounded-xl bg-secondary group-hover:bg-accent/5 transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-xl h-full flex flex-col relative z-10">
                     <div class="flex flex-col h-full">
                       <div class="flex justify-between items-start mb-3">
                         <h2 class="text-xl font-bold group-hover:text-primary/90 transition-colors">{title}</h2>
@@ -172,8 +176,7 @@ export const prerender = true;
                               href={github}
                               target="_blank"
                               rel="noopener noreferrer"
-                              class="text-sm text-primary/80 hover:text-primary transition-colors"
-                              onclick="arguments[0].stopPropagation()"
+                              class="pointer-events-auto text-sm text-primary/80 hover:text-primary transition-colors"
                             >
                               GitHub →
                             </a>
@@ -183,8 +186,7 @@ export const prerender = true;
                               href={paper}
                               target="_blank"
                               rel="noopener noreferrer"
-                              class="text-sm text-primary/80 hover:text-primary transition-colors"
-                              onclick="arguments[0].stopPropagation()"
+                              class="pointer-events-auto text-sm text-primary/80 hover:text-primary transition-colors"
                             >
                               Read Paper →
                             </a>
@@ -193,7 +195,7 @@ export const prerender = true;
                       )}
                     </div>
                   </div>
-                </a>
+                </div>
               );
             } catch {
               return (
@@ -313,6 +315,22 @@ export const prerender = true;
 
   .research-card:hover {
     transform: translateY(-4px);
+  }
+
+  /* Covers the whole card so it stays one click target. It sits under every
+     other layer: the decoration and .card-content ignore the pointer, so
+     clicks fall through to it, except on the GitHub and paper links, which
+     opt back in with pointer-events-auto. */
+  .card-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 0.75rem;
+  }
+
+  .card-link:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.6);
+    outline-offset: 2px;
   }
 
   /* Corner accent marks */
