@@ -2,7 +2,7 @@
 title: "AI Umpire: Modeling MLB Strike Zones"
 date: "2023-12"
 status: "completed"
-image: "/images/project/baseball/called-pitches-overview.jpg"
+image: "/images/project/cards/baseball-analytics.jpg"
 description: "Random forest, gradient boosting and SVM models that learn the individual strike zones of six MLB umpires from 35,508 called pitches across 170 games."
 tags: ["machine learning", "scikit-learn", "sports analytics", "Python", "classification"]
 github: "https://github.com/rohxnsxngh/Machine-Learning-MEEN/tree/main/Project"

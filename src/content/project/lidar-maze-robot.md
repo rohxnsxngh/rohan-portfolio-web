@@ -2,7 +2,7 @@
 title: "LiDAR Driven Maze Robot"
 date: "2023-01"
 status: "completed"
-image: "/images/project/MazeBotModel.png"
+image: "/images/project/cards/lidar-maze-robot.jpg"
 description: "A LiDAR maze-solving robot I led for Texas A&M TURTLE Robotics: drive train and chassis design around ODrive-controlled brushless motors, and a known-maze planner using fast-marching trees, Bezier smoothing and TOPP-RA time parameterization."
 tags: ["robotics", "LiDAR", "ROS 2", "path planning", "mechanical design"]
 ---

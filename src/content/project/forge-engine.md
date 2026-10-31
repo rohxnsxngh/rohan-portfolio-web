@@ -2,7 +2,7 @@
 title: "The Forge: ThreeJS Sandbox"
 date: "2022-12"
 status: "completed"
-image: "/images/project/HansAubsHome.png"
+image: "/images/project/cards/forge-engine.jpg"
 description: "A first-person three.js world I built as my first personal site, with a scrolling 3D audio spectrogram driven by the Web Audio API, reflective water, metaballs and a portal into a second factory scene."
 tags: ["three.js", "WebGL", "GLSL", "Web Audio", "procedural generation"]
 github: "https://github.com/rohxnsxngh/hans-aubs"

@@ -2,7 +2,7 @@
 title: "Transformer Speech Recognition and Language Modeling"
 date: "2025-04"
 status: "completed"
-image: "/images/project/IDLHW4TransformerSublayers.jpg"
+image: "/images/project/cards/attention-mechanisms-and-memory-networks.jpg"
 description: "A from-scratch decoder-only Transformer language model and a 30.7M-parameter Transformer encoder-decoder speech recognizer, reaching about 11.6% character error rate with beam search."
 tags: ["deep learning", "transformers", "self-attention", "speech recognition", "CTC", "beam search", "natural language processing", "sequence modeling"]
 kaggle: "https://www.kaggle.com/competitions/11785-s25-hw4p2-asr/overview"

@@ -2,7 +2,7 @@
 title: "Phoneme Recognition: Neural Networks for Speech Classification"
 date: "2025-02"
 status: "completed"
-image: "/images/project/IDLHW1Spectogram2.jpg"
+image: "/images/project/cards/phoneme-recognition.jpg"
 description: "A frame-level phoneme classifier for speech built only from fully connected layers, using a 1.29-second context window and a diamond-shaped MLP to reach 86% validation accuracy."
 tags: ["deep learning", "speech recognition", "neural networks", "pytorch", "signal processing", "machine learning"]
 kaggle: "https://www.kaggle.com/competitions/11785-spring-25-hw-1-p-2"

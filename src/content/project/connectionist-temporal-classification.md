@@ -2,7 +2,7 @@
 title: "Automatic Speech Recognition with RNN and CTC Beam Search"
 date: "2025-04"
 status: "completed"
-image: "/images/project/IDLHW3RNNEncoder.jpg"
+image: "/images/project/cards/connectionist-temporal-classification.jpg"
 description: "A pyramidal bidirectional LSTM trained with CTC loss to transcribe speech into phoneme sequences without frame-level alignments, decoded with CTC beam search to a validation edit distance of about 4.7 phonemes per utterance."
 tags: ["deep learning", "speech recognition", "RNN", "LSTM", "CTC", "beam search", "audio processing"]
 kaggle: "https://www.kaggle.com/competitions/hw-3-p-2-automatic-speech-recognition-asr-11-785"

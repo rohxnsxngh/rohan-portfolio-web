@@ -2,7 +2,7 @@
 title: "Strandbeest Walking Robot"
 date: "2023-04"
 status: "completed"
-image: "/images/project/StrandbeestPrototype.webp"
+image: "/images/project/cards/strandbeest-robot.jpg"
 description: "A motor-driven walking robot built on Theo Jansen's Strandbeest linkage for Texas A&M TURTLE Robotics: eight laser-cut legs, four gear assemblies, and an ODrive and Raspberry Pi control stack driven from a pygame dashboard over WebSockets."
 tags: ["robotics", "mechanical design", "bio-inspired", "linkages", "SolidWorks"]
 ---

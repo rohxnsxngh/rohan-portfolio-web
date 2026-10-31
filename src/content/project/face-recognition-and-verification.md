@@ -2,7 +2,7 @@
 title: "CNN Face Recognition and Verification"
 date: "2025-02"
 status: "completed"
-image: "/images/project/IDLHW2FaceClassificationArchitecture.jpg"
+image: "/images/project/cards/face-recognition-and-verification.jpg"
 description: "A residual CNN with squeeze-and-excitation trained to classify 8,631 identities, whose embeddings verify unseen faces by cosine similarity at 97.9% validation accuracy."
 tags: ["deep learning", "face recognition", "neural networks", "pytorch", "CNNs", "machine learning"]
 kaggle: "https://www.kaggle.com/competitions/11785-hw-2-p-2-face-verification-spring-2025"
